@@ -1,0 +1,118 @@
+@import 'Colors';
+
+$pad: 1.25rem; // 20px, matches bootstrap
+$padSm: 0.625rem; //10px
+$padTn: 0.3125rem; //5px
+$padTop: 8.75rem; // compensate for fixed top nav
+
+html#ov {
+  // override bootstrap styles
+
+  body#body {
+    padding-top: $padTop;
+
+    main {
+      padding: 1.25em;
+    }
+
+    .btn {
+      border-radius: $padSm;
+      max-width: 200px;
+    }
+
+    .btn-noMax {
+      max-width: none;
+    }
+
+    .btn.iconBtn {
+      min-width: 3rem;
+    }
+
+    .input-radius {
+      border-radius: $padSm;
+    }
+
+    .noTextOverflow {
+      display: block;
+      overflow: hidden;
+      text-wrap: none;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .txtSm {
+      font-size: 0.8rem;
+    }
+
+    .txtTn {
+      font-size: 0.5rem;
+    }
+
+    .txLink {
+      text-decoration: underline;
+      cursor: pointer;
+      color: $col-info;
+    }
+
+    .clickable {
+      cursor: pointer;
+    }
+
+    .responsiveImg {
+      width: 100%;
+      height: auto;
+    }
+
+    .inlineImg {
+      height: 1em;
+      width: auto;
+    }
+
+    .gutter {
+      // use on elements with d-flex
+      &:last-child {
+        margin-right: 0;
+      }
+    }
+
+    .gutter-1 {
+      @extend .gutter;
+
+      & > * {
+        margin-right: 0.25rem;
+      }
+    }
+
+    .gutter-2 {
+      @extend .gutter;
+
+      & > * {
+        margin-right: 0.5rem;
+      }
+    }
+
+    .gutter-3 {
+      @extend .gutter;
+
+      & > * {
+        margin-right: 1rem;
+      }
+    }
+
+    .gutter-4 {
+      @extend .gutter;
+
+      & > * {
+        margin-right: 1.5rem;
+      }
+    }
+
+    .gutter-5 {
+      @extend .gutter;
+
+      & > * {
+        margin-right: 3rem;
+      }
+    }
+  }
+}
