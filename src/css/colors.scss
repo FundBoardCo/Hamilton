@@ -1,52 +1,69 @@
-$col-primary: #2E2D7A;
-$col-primary-lighter: lighten($col-primary, 20%);
-$col-primary-lightest: lighten($col-primary, 40%);
-$col-primary-ghost: lighten($col-primary, 60%);
-$col-primary-darker: darken($col-primary, 20%);
-$col-primary-darkest: darken($col-primary, 40%);
-$col-primary-darkestest: darken($col-primary, 60%);
+$col-primary: #694494;
+$col-primary--light: lighten($col-primary, 20%);
+$col-primary-light2: lighten($col-primary, 40%);
+$col-primary-light3: lighten($col-primary, 60%);
+$col-primary-light4: lighten($col-primary, 80%);
+$col-primary-dark: darken($col-primary, 20%);
+$col-primary-dark2: darken($col-primary, 40%);
+$col-primary-dark3: darken($col-primary, 60%);
 
-$col-secondary: #32194D;
-$col-secondary-lighter: lighten($col-secondary, 20%);
-$col-secondary-lightest: lighten($col-secondary, 40%);
-$col-secondary-ghost: lighten($col-secondary, 60%);
-$col-secondary-darker: darken($col-secondary, 20%);
-$col-secondary-darkest: darken($col-secondary, 40%);
+$col-secondary: #921A7F;
+$col-secondary--light: lighten($col-secondary, 20%);
+$col-secondary-light2: lighten($col-secondary, 40%);
+$col-secondary-light3: lighten($col-secondary, 60%);
+$col-secondary-light4: lighten($col-secondary, 80%);
+$col-secondary-dark: darken($col-secondary, 20%);
+$col-secondary-dark2: darken($col-secondary, 40%);
 
-$col-info: #AA2C91;
-$col-info-lighter: lighten($col-info, 20%);
-$col-info-lightest: lighten($col-info, 40%);
-$col-info-ghost: lighten($col-info, 60%); // just white
-$col-info-darker: darken($col-info, 20%);
-$col-info-darkest: darken($col-info, 40%);
+$col-info: #1F9D94;
+$col-info--light: lighten($col-info, 20%);
+$col-info-light2: lighten($col-info, 40%);
+$col-info-light3: lighten($col-info, 60%);
+$col-info-light4: lighten($col-info, 80%);
+$col-info-dark: darken($col-info, 20%);
+$col-info-dark2: darken($col-info, 40%);
 
-$col-success: #50997A;
-$col-success-lighter: lighten($col-success, 20%);
-$col-success-lightest: lighten($col-success, 40%);
-$col-success-darker: darken($col-success, 20%);
-$col-success-darkest: darken($col-success, 40%);
+$col-success: #154D4A;
+$col-success--light: lighten($col-success, 20%);
+$col-success-light2: lighten($col-success, 40%);
+$col-success-light3: lighten($col-success, 60%);
+$col-success-light4: lighten($col-success, 80%);
+$col-success-dark: darken($col-success, 20%);
+$col-success-dark2: darken($col-success, 40%);
 
-$col-danger: #E67372;
-$col-danger-lighter: lighten($col-danger, 20%);
-$col-danger-lightest: lighten($col-danger, 40%);
-$col-danger-darker: darken($col-danger, 20%);
-$col-danger-darkest: darken($col-danger, 40%);
+$col-danger: #DD5B5F;
+$col-danger--light: lighten($col-danger, 20%);
+$col-danger-light2: lighten($col-danger, 40%);
+$col-danger-light3: lighten($col-danger, 60%);
+$col-danger-light4: lighten($col-danger, 80%);
+$col-danger-dark: darken($col-danger, 20%);
+$col-danger-dark2: darken($col-danger, 40%);
 
 $col-warning: #E10E55;
-$col-warning-lighter: lighten($col-warning, 20%);
-$col-warning-lightest: lighten($col-warning, 40%);
-$col-warning-darker: darken($col-warning, 20%);
-$col-warning-darkest: darken($col-warning, 40%);
+$col-warning--light: lighten($col-warning, 20%);
+$col-warning-light2: lighten($col-warning, 40%);
+$col-warning-light3: lighten($col-warning, 60%);
+$col-warning-light4: lighten($col-warning, 80%);
+$col-warning-dark: darken($col-warning, 20%);
+$col-warning-dark2: darken($col-warning, 40%);
 
-$col-emp: #AF872E;
-$col-emp-lighter: lighten($col-emp, 20%);
-$col-emp-lightest: lighten($col-emp, 40%);
-$col-emp-darker: darken($col-emp, 20%);
-$col-emp-darkest: darken($col-emp, 40%);
+$col-emp: #A0852A;
+$col-emp--light: lighten($col-emp, 20%);
+$col-emp-light2: lighten($col-emp, 40%);
+$col-emp-light3: lighten($col-emp, 60%);
+$col-emp-light4: lighten($col-emp, 80%);
+$col-emp-dark: darken($col-emp, 20%);
+$col-emp-dark2: darken($col-emp, 40%);
+
+$col-structure: #20133C;
+$col-emp--light: lighten($col-structure, 20%);
+$col-emp-light2: lighten($col-structure, 40%);
+$col-emp-light3: lighten($col-structure, 60%);
+$col-emp-light4: lighten($col-structure, 80%);
 
 $col-light: #fff;
-$col-light-darker: #f8f9fa;
-$col-light-darkest: #e9eaeb;
+$col-light-dark: #f8f9fa;
+$col-light-dark2: #e9eaeb;
 $col-text: #10203e;
 $col-text-light: #768392;
 
@@ -75,27 +92,27 @@ $col-text-light: #768392;
 html#ov {
   // override bootstrap styles
 
-  body#body {
+  body {
     #root {
 
       .text-primary {
         color: $col-primary !important;
       }
 
-      .text-primary-darker {
-        color: $col-primary-darker !important;
+      .text-primary-dark {
+        color: $col-primary-dark !important;
       }
 
       .text-primary-ghost {
-        color: $col-primary-ghost !important;
+        color: $col-primary-light4 !important;
       }
 
       .text-secondary {
         color: $col-secondary !important;
       }
 
-      .text-secondary-darker {
-        color: $col-secondary-darker !important;
+      .text-secondary-dark {
+        color: $col-secondary-dark !important;
       }
 
       .text-success {
@@ -115,7 +132,7 @@ html#ov {
       }
 
       .text-info-ghost {
-        color: $col-info-ghost !important;
+        color: $col-info-light4 !important;
       }
 
       .text-emp {
@@ -130,48 +147,48 @@ html#ov {
         background-color: $col-primary !important;
       }
 
-      .bg-primary-lighter {
-        background-color: $col-primary-lighter !important;
+      .bg-primary-light2 {
+        background-color: $col-primary-light2 !important;
       }
 
-      .bg-primary-lightest {
-        background-color: $col-primary-lightest !important;
+      .bg-primary-light3 {
+        background-color: $col-primary-light3 !important;
       }
 
-      .bg-primary-ghost {
-        background-color: $col-primary-ghost !important;
+      .bg-primary-light4 {
+        background-color: $col-primary-light4 !important;
       }
 
-      .bg-primary-darker {
-        background-color: $col-primary-darker !important;
+      .bg-primary-dark {
+        background-color: $col-primary-dark !important;
       }
 
-      .bg-primary-darkest {
-        background-color: $col-primary-darkest !important;
+      .bg-primary-dark2 {
+        background-color: $col-primary-dark2 !important;
       }
 
       .bg-secondary {
         background-color: $col-secondary !important;
       }
 
-      .bg-secondary-lighter {
-        background-color: $col-secondary-lighter !important;
+      .bg-secondary-light2 {
+        background-color: $col-secondary-light2 !important;
       }
 
-      .bg-secondary-lightest {
-        background-color: $col-secondary-lightest !important;
+      .bg-secondary-light3 {
+        background-color: $col-secondary-light3 !important;
       }
 
-      .bg-secondary-ghost {
-        background-color: $col-secondary-ghost !important;
+      .bg-secondary-light4 {
+        background-color: $col-secondary-light4 !important;
       }
 
-      .bg-secondary-darker {
-        background-color: $col-secondary-darker !important;
+      .bg-secondary-dark {
+        background-color: $col-secondary-dark !important;
       }
 
-      .bg-secondary-darkest {
-        background-color: $col-secondary-darkest !important;
+      .bg-secondary-dark2 {
+        background-color: $col-secondary-dark2 !important;
       }
 
       .bg-success {
@@ -182,12 +199,12 @@ html#ov {
         background-color: $col-danger !important;
       }
 
-      .bg-danger-lighter {
-        background-color: $col-danger-lighter !important;
+      .bg-danger-light2 {
+        background-color: $col-danger-light2 !important;
       }
 
-      .bg-danger-lightest {
-        background-color: $col-danger-lightest !important;
+      .bg-danger-light3 {
+        background-color: $col-danger-light3 !important;
       }
 
       .bg-warning {
@@ -198,24 +215,24 @@ html#ov {
         background-color: $col-info !important;
       }
 
-      .bg-info-lighter {
-        background-color: $col-info-lighter !important;
+      .bg-info-light2 {
+        background-color: $col-info-light2 !important;
       }
 
-      .bg-info-lightest {
-        background-color: $col-info-lightest !important;
+      .bg-info-light3 {
+        background-color: $col-info-light3 !important;
       }
 
-      .bg-info-ghost {
-        background-color: $col-info-ghost !important;
+      .bg-info-light4 {
+        background-color: $col-info-light4 !important;
       }
 
-      .bg-info-darker {
-        background-color: $col-info-darker !important;
+      .bg-info-dark {
+        background-color: $col-info-dark !important;
       }
 
-      .bg-info-darkest {
-        background-color: $col-info-darkest !important;
+      .bg-info-dark2 {
+        background-color: $col-info-dark2 !important;
       }
 
       .bg-emp {
@@ -226,88 +243,88 @@ html#ov {
         background-color: $col-light !important;
       }
 
-      .bg-light-darker {
-        background-color: $col-light-darker !important;
+      .bg-light-dark {
+        background-color: $col-light-dark !important;
       }
 
-      .bg-light-darkest {
-        background-color: $col-light-darkest !important;
+      .bg-light-dark2 {
+        background-color: $col-light-dark2 !important;
       }
 
-      .bd-primary-darker {
-        border-color: $col-primary-darker !important;
+      .bd-primary-dark {
+        border-color: $col-primary-dark !important;
       }
 
-      .bd-info-darker {
-        border-color: $col-info-darker !important;
+      .bd-info-dark {
+        border-color: $col-info-dark !important;
       }
 
       .btn-primary, .badge-primary {
-        @include btn-colors($col-primary, $col-primary-darker, $col-primary-lighter, $col-light, $col-light);
+        @include btn-colors($col-primary, $col-primary-dark, $col-primary-light2, $col-light, $col-light);
       }
 
       .btn-outline-primary {
-        @include btn-colors($col-light, $col-primary, $col-primary-lighter, $col-primary, $col-light);
+        @include btn-colors($col-light, $col-primary, $col-primary-light2, $col-primary, $col-light);
       }
 
       .btn-primary-dark {
-        @include btn-colors($col-primary-darker, $col-primary-darkest, $col-primary, $col-light, $col-light);
+        @include btn-colors($col-primary-dark, $col-primary-dark2, $col-primary, $col-light, $col-light);
       }
 
-      .btn-primary-darker {
-        @include btn-colors($col-primary-darkest, $col-primary-darkestest, $col-primary, $col-light, $col-light);
+      .btn-primary-dark {
+        @include btn-colors($col-primary-dark2, $col-primary-dark3, $col-primary, $col-light, $col-light);
       }
 
       .btn-secondary, .badge-secondary {
-        @include btn-colors($col-secondary, $col-secondary-darker, $col-secondary-lighter, $col-light, $col-light);
+        @include btn-colors($col-secondary, $col-secondary-dark, $col-secondary-light2, $col-light, $col-light);
       }
 
       .btn-outline-secondary {
-        @include btn-colors($col-light, $col-secondary, $col-secondary-lighter, $col-secondary, $col-light);
+        @include btn-colors($col-light, $col-secondary, $col-secondary-light2, $col-secondary, $col-light);
       }
 
       .btn-danger, .badge-danger {
-        @include btn-colors($col-danger, $col-danger-darker, $col-danger-lighter, $col-light, $col-light);
+        @include btn-colors($col-danger, $col-danger-dark, $col-danger-light2, $col-light, $col-light);
       }
 
       .btn-outline-danger {
-        @include btn-colors($col-light, $col-danger, $col-danger-lighter, $col-danger, $col-light);
+        @include btn-colors($col-light, $col-danger, $col-danger-light2, $col-danger, $col-light);
       }
 
       .btn-warning, .badge-warning {
-        @include btn-colors($col-warning, $col-warning-darker, $col-warning-lighter, $col-light, $col-light);
+        @include btn-colors($col-warning, $col-warning-dark, $col-warning-light2, $col-light, $col-light);
       }
 
       .btn-outline-warning {
-        @include btn-colors($col-light, $col-warning, $col-warning-lighter, $col-warning, $col-light);
+        @include btn-colors($col-light, $col-warning, $col-warning-light2, $col-warning, $col-light);
       }
 
       .btn-success, .badge-success {
-        @include btn-colors($col-success, $col-success-darker, $col-success-lighter, $col-light, $col-light);
+        @include btn-colors($col-success, $col-success-dark, $col-success-light2, $col-light, $col-light);
       }
 
       .btn-outline-success {
-        @include btn-colors($col-light, $col-success, $col-success-lighter, $col-success, $col-light);
+        @include btn-colors($col-light, $col-success, $col-success-light2, $col-success, $col-light);
       }
 
       .btn-info, .badge-info, .page-item.active .page-link {
-        @include btn-colors($col-info, $col-info-darker, $col-info-lighter, $col-light, $col-light);
+        @include btn-colors($col-info, $col-info-dark, $col-info-light2, $col-light, $col-light);
       }
 
       .btn-outline-info, .page-link {
-        @include btn-colors($col-light, $col-info, $col-info-lighter, $col-info, $col-light);
+        @include btn-colors($col-light, $col-info, $col-info-light2, $col-info, $col-light);
       }
 
       .btn-emp, .badge-emp {
-        @include btn-colors($col-emp, $col-emp-darker, $col-emp-lighter, $col-light, $col-light);
+        @include btn-colors($col-emp, $col-emp-dark, $col-emp-light2, $col-light, $col-light);
       }
 
       .btn-outline-emp {
-        @include btn-colors($col-light, $col-emp, $col-emp-lighter, $col-emp, $col-light);
+        @include btn-colors($col-light, $col-emp, $col-emp-light2, $col-emp, $col-light);
       }
 
       .btn-light, .badge-light {
-        @include btn-colors($col-light, $col-light-darker, $col-light-darkest, $col-text, $col-text);
+        @include btn-colors($col-light, $col-light-dark, $col-light-dark2, $col-text, $col-text);
       }
 
       input.form-control, textarea.form-control {
