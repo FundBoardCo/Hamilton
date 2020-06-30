@@ -38,10 +38,15 @@ html#ov {
     }
 
     .btn {
-      border-radius: $pad;
-      max-width: 200px;
-      font-size: $h3;
-      padding: $padSm $pad;
+      border-radius: $pad3;
+      max-width: $maxBtn;
+      font-size: $tx;
+      padding: $pad2 $pad3;
+
+      @media (min-width: $mediaXs) {
+        font-size: $h3;
+        padding: $pad2 $pad3;
+      }
     }
 
     .btnNoMax {
@@ -52,7 +57,7 @@ html#ov {
       max-width: none;
 
       @media (min-width: $mediaLg) {
-        max-width: 200px;
+        max-width: $maxBtn;
       }
     }
 
@@ -61,7 +66,7 @@ html#ov {
     }
 
     .input-radius {
-      border-radius: $padSm;
+      border-radius: $pad2;
     }
 
     .noTextOverflow {
@@ -97,16 +102,52 @@ html#ov {
       font-weight: 500;
     }
 
-    .tx {
+    .txs-3 {
       font-size: $tx;
     }
 
-    .txMd {
+    .txs-2 {
       font-size: $txMd;
     }
 
-    .txSm {
+    .txs-1 {
       font-size: $txSm;
+    }
+
+    .h-sm-4 {
+      @media (min-width: $mediaSm) {
+        font-size: $h4;
+      }
+    }
+
+    .h-lg-1 {
+      @media (min-width: $mediaLg) {
+        font-size: $h1;
+      }
+    }
+
+    .h-lg-5 {
+      @media (min-width: $mediaLg) {
+        font-size: $h5;
+      }
+    }
+
+    .txs-lg-1 {
+      @media (min-width: $mediaLg) {
+        font-size: $txSm;
+      }
+    }
+
+    .txs-lg-2 {
+      @media (min-width: $mediaLg) {
+        font-size: $txMd;
+      }
+    }
+
+    .tx-lg-tx3 {
+      @media (min-width: $mediaLg) {
+        font-size: $tx;
+      }
     }
 
     .responsiveImg {

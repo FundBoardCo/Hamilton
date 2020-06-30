@@ -2,6 +2,12 @@
 @import 'colors.scss';
 @import 'vars.scss';
 
+@mixin colPadding {
+  box-sizing: border-box;
+  padding-left: 15px;
+  padding-right: 15px;
+}
+
 html#ov {
   // override bootstrap styles
   height: 100%;
@@ -22,16 +28,15 @@ html#ov {
       #Nav {
         display: flex;
         align-items: center;
-        min-height: 46px;
-        box-sizing: border-box;
-        padding: $padSm;
+        min-height: $navSz1;
+        padding: 0;
         order: 2; // nav on the bottom for mobile
         background-color: $col-structure;
         color: $col-structure-light4;
 
         .navbar-nav {
           flex-grow: 1;
-          font-size: 26px;
+          font-size: 20px;
           display: flex;
           justify-content: space-around;
 
@@ -45,6 +50,7 @@ html#ov {
 
             span {
               display: none;
+              line-height: 1;
             }
           }
 
@@ -80,11 +86,11 @@ html#ov {
           }
         }
 
-        @media (min-width: $mediaSm) {
-          min-height: 66px;
+        @media (min-width: $mediaXs) {
+          min-height: $navSz2;
 
           .navbar-nav {
-            font-size: 46px;
+            font-size: 38px;
           }
         }
 
@@ -94,7 +100,7 @@ html#ov {
           #NavLogo {
             display: block;
             width: 46px;
-            margin-right: 0.5em;
+            margin: 0 0.5em;
           }
 
           #NavName {
@@ -135,11 +141,12 @@ html#ov {
       }
 
       #Main {
-        display: flex;
         flex-grow: 1;
         order: 1;
         width: 100%;
         margin: 0 auto; // center
+        position: relative;
+        overflow: auto;
 
         @media (min-width: $mediaLg) {
           order: 2;
@@ -159,12 +166,64 @@ html#ov {
 
         .pageContainer {
           flex: 1 1 auto;
+          min-height: calc(100vh - #{$navSz1});
+          @include colPadding();
+
+          @media (min-width: $mediaXs) {
+            min-height: calc(100vh - #{$navSz2});
+          }
         }
 
         #PageIntro {
 
-          #Logo {
-            width: 200px;
+          .introTop, .introBottom {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+
+            #Logo {
+              width: 100px;
+            }
+          }
+
+          .introTop {
+            flex-grow: 1;
+          }
+
+          .introBottom {
+          }
+
+          @media (min-width: $mediaSm) {
+            .introTop, .introBottom {
+              display: flex;
+              flex-direction: column;
+              justify-content: center;
+              align-items: center;
+
+              #Logo {
+                width: 200px;
+              }
+            }
+
+            .introTop {
+              height: 100%;
+            }
+          }
+
+          @media (min-width: $mediaLg) {
+            .introTop {
+              justify-content: flex-start;
+              padding-top: $pad7;
+              height: auto;
+              margin-bottom: $pad7;
+              flex-grow: 0;
+
+              #Logo {
+                width: 300px;
+                margin-bottom: $pad3;
+              }
+            }
           }
         }
       }

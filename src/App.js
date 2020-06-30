@@ -111,18 +111,20 @@ function App() {
             }
           </Nav>
         </Navbar>
-        <main className="container-xl" id="Main">
-          <Switch>
-            <Route path="/" exact>
-              {loggedIn ?  <Redirect to="/board" /> : <Redirect to="/intro" />}
-            </Route>
-            <Route path="/intro" component={Intro} />
-            <Route path="/board" component={Board} />
-            <Route path="/search" component={Search} />
-            <Route path="/profile" component={Profile} />
-            <Route path="/login" component={Login} />
-            <Route component={NotFound} />
-          </Switch>
+        <main id="Main">
+          <div className="container-xl">
+            <Switch>
+              <Route path="/" exact>
+                {loggedIn ?  <Redirect to="/board" /> : <Redirect to="/intro" />}
+              </Route>
+              <Route path="/intro" component={Intro} />
+              <Route path="/board" component={Board} />
+              <Route path="/search" component={Search} />
+              <Route path="/profile" component={Profile} />
+              <Route path="/login" component={Login} />
+              <Route component={NotFound} />
+            </Switch>
+          </div>
         </main>
       </ScrollToTop>
     </Router>
