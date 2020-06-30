@@ -26,20 +26,8 @@ html#ov {
         box-sizing: border-box;
         padding: $padSm;
         order: 2; // nav on the bottom for mobile
-        background-color: #32194D;
-        color: #fff;
-
-        #NavLogo {
-          display: none;
-        }
-
-        #NavName {
-          display: none;
-        }
-
-        #NavVersion {
-          display: none;
-        }
+        background-color: $col-structure;
+        color: $col-structure-light4;
 
         .navbar-nav {
           flex-grow: 1;
@@ -60,6 +48,28 @@ html#ov {
           }
         }
 
+        #NavBrand {
+          display: flex;
+          align-items: center;
+          text-decoration: none;
+        }
+
+        @media (max-width: $mediaMaxMd) {
+          #NavBrand {
+            #NavLogo {
+              display: none;
+            }
+
+            #NavName {
+              @include hidden();
+            }
+
+            #NavVersion {
+              @include hidden();
+            }
+          }
+        }
+
         @media (min-width: $mediaLg) {
           order: 1;
 
@@ -73,6 +83,8 @@ html#ov {
             display: inline;
             font-size: 40px;
             font-weight: 700;
+            text-decoration: none;
+            color: $col-structure-light4;
           }
 
           #NavVersion {
@@ -125,9 +137,15 @@ html#ov {
           }
         }
 
-        #pageContainer {
+        .pageContainer {
           min-height: calc(100vh - #{$padTop});
           flex: 1 1 auto;
+        }
+
+        #PageIntro {
+          #Logo {
+            width: 200px;
+          }
         }
       }
 

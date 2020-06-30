@@ -1,6 +1,15 @@
 @import 'colors.scss';
 @import 'vars.scss';
 
+@mixin hidden {
+  position: absolute;
+  overflow: hidden;
+  left: -100000px;
+  top: auto;
+  width: 1px;
+  height: 1px;
+}
+
 html#ov {
   // override bootstrap styles
 
@@ -104,6 +113,10 @@ html#ov {
       & > * {
         margin-right: 3rem;
       }
+    }
+
+    .hidden {
+      @include hidden();
     }
   }
 }

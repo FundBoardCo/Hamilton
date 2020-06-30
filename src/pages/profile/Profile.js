@@ -5,7 +5,7 @@ import Col from 'react-bootstrap/Col';
 
 export default function Profile() {
   return (
-    <Row id="pageContainer">
+    <Row className="pageContainer">
       <Container fluid>
         <Row>
           <Col>

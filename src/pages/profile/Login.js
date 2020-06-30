@@ -3,7 +3,7 @@ import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 
-export default function Board() {
+export default function Profile() {
   return (
     <Row className="pageContainer">
       <Container fluid>
@@ -14,7 +14,7 @@ export default function Board() {
         </Row>
         <Row>
           <Col xs={12}>
-            Placeholder for board
+            Placeholder for login
           </Col>
         </Row>
       </Container>
