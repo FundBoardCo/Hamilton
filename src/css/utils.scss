@@ -1,19 +1,10 @@
-@import 'Colors';
-
-$pad: 1.25rem; // 20px, matches bootstrap
-$padSm: 0.625rem; //10px
-$padTn: 0.3125rem; //5px
-$padTop: 8.75rem; // compensate for fixed top nav
+@import 'colors.scss';
+@import 'vars.scss';
 
 html#ov {
   // override bootstrap styles
 
-  body#body {
-    padding-top: $padTop;
-
-    main {
-      padding: 1.25em;
-    }
+  #root {
 
     .btn {
       border-radius: $padSm;

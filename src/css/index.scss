@@ -1,8 +1,137 @@
-@import 'app.scss';
+@import 'utils';
+@import 'colors.scss';
+@import 'vars.scss';
 
-body {
-  margin: 0;
+html#ov {
+  // override bootstrap styles
+  height: 100%;
   font-family: 'Source Sans Pro', Helvetica, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+
+  body {
+    height: 100%;
+    margin: 0;
+
+    #root {
+      display: flex;
+      justify-content: center;
+      flex-direction: column;
+      height: 100%;
+
+      #Nav {
+        display: flex;
+        align-items: center;
+        min-height: 66px;
+        box-sizing: border-box;
+        padding: $padSm;
+        order: 2; // nav on the bottom for mobile
+        background-color: #32194D;
+        color: #fff;
+
+        #NavLogo {
+          display: none;
+        }
+
+        #NavName {
+          display: none;
+        }
+
+        #NavVersion {
+          display: none;
+        }
+
+        .navbar-nav {
+          flex-grow: 1;
+          font-size: 46px;
+          display: flex;
+          justify-content: space-around;
+
+          a {
+            color: inherit;
+            flex-grow: 1;
+            display: flex;
+            justify-content: center;
+            height: fit-content;
+
+            span {
+              display: none;
+            }
+          }
+        }
+
+        @media (min-width: $mediaLg) {
+          order: 1;
+
+          #NavLogo {
+            display: block;
+            width: 46px;
+            margin-right: 0.5em;
+          }
+
+          #NavName {
+            display: inline;
+            font-size: 40px;
+            font-weight: 700;
+          }
+
+          #NavVersion {
+            display: inline;
+            font-size: $txSm;
+            align-self: baseline;
+            margin-left: 0.5em;
+          }
+
+          .navbar-nav {
+            font-size: $h5;
+            justify-content: flex-end;
+
+            a {
+              flex-grow: 0;
+              margin-right: 2em;
+              svg {
+                margin-right: 0.5em;
+              }
+              span {
+                display: inline-block;
+              }
+            }
+          }
+        }
+
+
+      }
+
+      #Main {
+        flex-grow: 1;
+        order: 1;
+        width: 100%;
+        margin: 0 auto; // center
+        background-color: pink;
+
+        @media (min-width: $mediaLg) {
+          order: 2;
+        }
+
+        @media (min-width: $mediaXL) {
+          &.container, &.container-xl {
+            max-width: 1400px;
+          }
+        }
+
+        @media (min-width: $mediaXX) {
+          &.container, &.container-xl {
+            max-width: 2000px;
+          }
+        }
+
+        #pageContainer {
+          min-height: calc(100vh - #{$padTop});
+          flex: 1 1 auto;
+        }
+      }
+
+    }
+  }
 }
+
