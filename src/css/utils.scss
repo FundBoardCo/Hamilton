@@ -10,18 +10,50 @@
   height: 1px;
 }
 
+@mixin link {
+  text-decoration: underline;
+  color: $col-primary;
+
+  &:hover {
+    color: $col-primary-dark2;
+  }
+}
+
 html#ov {
   // override bootstrap styles
 
   #root {
 
-    .btn {
-      border-radius: $padSm;
-      max-width: 200px;
+    a {
+      @include link();
     }
 
-    .btn-noMax {
+    .txLink { // use for non-anchor interactive elements styled like links
+      @include link();
+      cursor: pointer;
+    }
+
+    .clickable {
+      cursor: pointer;
+    }
+
+    .btn {
+      border-radius: $pad;
+      max-width: 200px;
+      font-size: $h3;
+      padding: $padSm $pad;
+    }
+
+    .btnNoMax {
       max-width: none;
+    }
+
+    .btnResponsiveMax {
+      max-width: none;
+
+      @media (min-width: $mediaLg) {
+        max-width: 200px;
+      }
     }
 
     .btn.iconBtn {
@@ -40,22 +72,41 @@ html#ov {
       white-space: nowrap;
     }
 
-    .txtSm {
-      font-size: 0.8rem;
+    .h1, h1 {
+      font-size: $h1;
+      font-weight: 700;
     }
 
-    .txtTn {
-      font-size: 0.5rem;
+    .h2, h2 {
+      font-size: $h2;
+      font-weight: 700;
     }
 
-    .txLink {
-      text-decoration: underline;
-      cursor: pointer;
-      color: $col-info;
+    .h3, h3 {
+      font-size: $h3;
+      font-weight: 700;
     }
 
-    .clickable {
-      cursor: pointer;
+    .h4, h4 {
+      font-size: $h4;
+      font-weight: 500;
+    }
+
+    .h5, h5 {
+      font-size: $h5;
+      font-weight: 500;
+    }
+
+    .tx {
+      font-size: $tx;
+    }
+
+    .txMd {
+      font-size: $txMd;
+    }
+
+    .txSm {
+      font-size: $txSm;
     }
 
     .responsiveImg {
@@ -66,6 +117,10 @@ html#ov {
     .inlineImg {
       height: 1em;
       width: auto;
+    }
+
+    .h100 {
+      height: 100%;
     }
 
     .gutter {

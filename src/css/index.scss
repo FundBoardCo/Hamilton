@@ -22,7 +22,7 @@ html#ov {
       #Nav {
         display: flex;
         align-items: center;
-        min-height: 66px;
+        min-height: 46px;
         box-sizing: border-box;
         padding: $padSm;
         order: 2; // nav on the bottom for mobile
@@ -31,7 +31,7 @@ html#ov {
 
         .navbar-nav {
           flex-grow: 1;
-          font-size: 46px;
+          font-size: 26px;
           display: flex;
           justify-content: space-around;
 
@@ -40,10 +40,20 @@ html#ov {
             flex-grow: 1;
             display: flex;
             justify-content: center;
+            align-items: center;
             height: fit-content;
 
             span {
               display: none;
+            }
+          }
+
+          .login {
+            svg {
+              margin-right: 0.5em;
+            }
+            span {
+              display: inline-block;
             }
           }
         }
@@ -70,6 +80,14 @@ html#ov {
           }
         }
 
+        @media (min-width: $mediaSm) {
+          min-height: 66px;
+
+          .navbar-nav {
+            font-size: 46px;
+          }
+        }
+
         @media (min-width: $mediaLg) {
           order: 1;
 
@@ -92,6 +110,8 @@ html#ov {
             font-size: $txSm;
             align-self: baseline;
             margin-left: 0.5em;
+            text-decoration: none;
+            color: $col-structure-light4;
           }
 
           .navbar-nav {
@@ -115,11 +135,11 @@ html#ov {
       }
 
       #Main {
+        display: flex;
         flex-grow: 1;
         order: 1;
         width: 100%;
         margin: 0 auto; // center
-        background-color: pink;
 
         @media (min-width: $mediaLg) {
           order: 2;
@@ -138,11 +158,11 @@ html#ov {
         }
 
         .pageContainer {
-          min-height: calc(100vh - #{$padTop});
           flex: 1 1 auto;
         }
 
         #PageIntro {
+
           #Logo {
             width: 200px;
           }
