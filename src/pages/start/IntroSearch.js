@@ -1,12 +1,10 @@
 import React, { useState } from 'react';
 import { useSelector, useDispatch } from "react-redux";
-import Container from 'react-bootstrap/Container';
-import Row from 'react-bootstrap/Row';
-import Col from 'react-bootstrap/Col';
 import Navbar from "react-bootstrap/Navbar";
 import Nav from "react-bootstrap/Nav";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import { INTROSEARCH_STAGES } from '../../constants';
+import Keywords from "./Keywords";
 
 export default function Search() {
   const [stage, setStage] = useState(0);
@@ -25,10 +23,8 @@ export default function Search() {
   };
 
   return (
-    <Row id="PageIntroSearch" className="pageContainer flex-column flex-grow-1">
-      <div>
-        search stuff here
-      </div>
+    <div id="PageIntroSearch" className="pageContainer">
+      {INTROSEARCH_STAGES[stage] === 'keywords' && <Keywords />}
       <Navbar className="nav">
         <Nav>
           <a
@@ -56,6 +52,6 @@ export default function Search() {
           </a>
         </Nav>
       </Navbar>
-    </Row>
+    </div>
   );
 }
