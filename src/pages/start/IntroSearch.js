@@ -6,6 +6,7 @@ import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import { INTROSEARCH_STAGES } from '../../constants';
 import Keywords from "./Keywords";
 
+
 export default function Search() {
   const [stage, setStage] = useState(0);
   const keywords = useSelector(state => state.search.keywords);

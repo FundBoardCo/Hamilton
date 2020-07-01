@@ -205,7 +205,7 @@ html#ov {
             align-items: center;
 
             #Logo {
-              width: 100px;
+              width: 150px;
             }
           }
 
@@ -216,6 +216,14 @@ html#ov {
           .introBottom {
           }
 
+          @media (min-width: $mediaXs) {
+            .introTop {
+              #Logo {
+                width: 200px;
+              }
+            }
+          }
+
           @media (min-width: $mediaSm) {
             .introTop, .introBottom {
               display: flex;
@@ -224,7 +232,7 @@ html#ov {
               align-items: center;
 
               #Logo {
-                width: 200px;
+                width: 250px;
               }
             }
           }
