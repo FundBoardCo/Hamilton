@@ -11,6 +11,8 @@ import Nav from 'react-bootstrap/Nav';
 import { library } from '@fortawesome/fontawesome-svg-core';
 import { fab } from '@fortawesome/free-brands-svg-icons';
 import {
+  faCaretLeft,
+  faCaretRight,
   faCog,
   faFileCsv,
   faFileExport,
@@ -27,6 +29,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Logo from './imgs/FundBoard_Logo.svg';
 import ScrollToTop from './components/ScrollToTop';
 import Intro from './pages/start/Intro';
+import IntroSearch from "./pages/start/IntroSearch";
 import Board from './pages/board/Board';
 import Search from './pages/search/Search';
 import Profile from './pages/profile/Profile';
@@ -36,6 +39,8 @@ import NotFound from './pages/NotFound';
 // import common icons so they're accessible later.
 library.add(
   fab,
+  faCaretLeft,
+  faCaretRight,
   faCog,
   faFileCsv,
   faFileExport,
@@ -55,11 +60,11 @@ function App() {
   return (
     <Router>
       <ScrollToTop>
-        <Navbar id="Nav">
-          <a href="/" id="NavBrand">
-            <img id="NavLogo" src={Logo} alt="FundBoard Logo" />
-            <span id="NavName">FundBoard</span>
-            <span id="NavVersion">0.1</span>
+        <Navbar className="nav">
+          <a href="/" className="navBrand">
+            <img className="navLogo" src={Logo} alt="FundBoard Logo" />
+            <span className="navName">FundBoard</span>
+            <span className="navVersion">0.1</span>
           </a>
           <Nav className="ml-auto" defaultActiveKey={window.location.pathname}>
             {loggedIn &&
@@ -118,6 +123,7 @@ function App() {
                 {loggedIn ?  <Redirect to="/board" /> : <Redirect to="/intro" />}
               </Route>
               <Route path="/intro" component={Intro} />
+              <Route path="/introsearch" component={IntroSearch} />
               <Route path="/board" component={Board} />
               <Route path="/search" component={Search} />
               <Route path="/profile" component={Profile} />

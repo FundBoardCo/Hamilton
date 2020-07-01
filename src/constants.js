@@ -4,3 +4,5 @@ export const AIRTABLE_BASEID = 'app4gi0gtnE5VML0M';
 export const AIRTABLE_APIKEY = 'keym1B881Ly2v7cNw';
 
 export const CBURL = 'https://api.crunchbase.com/api/v4/';
+
+export const INTROSEARCH_STAGES = ['keywords', 'raise', 'location'];

@@ -42,6 +42,7 @@ html#ov {
       max-width: $maxBtn;
       font-size: $tx;
       padding: $pad2 $pad3;
+      text-decoration: none;
 
       @media (min-width: $mediaXs) {
         font-size: $h3;

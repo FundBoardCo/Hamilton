@@ -13,3 +13,8 @@ import {
   CBURL,
 } from '../constants.js';
 import { getSafeVar } from '../utils';
+
+
+export default function* rootSaga() {
+  //yield fork(watchOrgsSubmited);
+}

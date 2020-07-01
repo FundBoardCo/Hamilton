@@ -25,11 +25,11 @@ html#ov {
       flex-direction: column;
       height: 100%;
 
-      #Nav {
+      .nav {
         display: flex;
         align-items: center;
         min-height: $navSz1;
-        padding: 0;
+        padding: 0 $pad3;
         order: 2; // nav on the bottom for mobile
         background-color: $col-structure;
         color: $col-structure-light4;
@@ -40,7 +40,7 @@ html#ov {
           display: flex;
           justify-content: space-around;
 
-          a {
+          a.nav-link {
             color: inherit;
             flex-grow: 1;
             display: flex;
@@ -51,36 +51,40 @@ html#ov {
             span {
               display: none;
               line-height: 1;
+              margin-left: 0.5em;
             }
-          }
 
-          .login {
-            svg {
-              margin-right: 0.5em;
+            &:disabled,
+            &.disabled,
+            &[aria-disabled="true"] {
+              opacity: 0.2;
             }
-            span {
-              display: inline-block;
+
+            &.login {
+              span {
+                display: inline-block;
+              }
             }
           }
         }
 
-        #NavBrand {
+        .navBrand {
           display: flex;
           align-items: center;
           text-decoration: none;
         }
 
         @media (max-width: $mediaMaxMd) {
-          #NavBrand {
-            #NavLogo {
+          .navBrand {
+            .navLogo {
               display: none;
             }
 
-            #NavName {
+            .navName {
               @include hidden();
             }
 
-            #NavVersion {
+            .navVersion {
               @include hidden();
             }
           }
@@ -97,13 +101,13 @@ html#ov {
         @media (min-width: $mediaLg) {
           order: 1;
 
-          #NavLogo {
+          .navLogo {
             display: block;
             width: 46px;
-            margin: 0 0.5em;
+            margin-right: 0.5em;
           }
 
-          #NavName {
+          .navName {
             display: inline;
             font-size: 40px;
             font-weight: 700;
@@ -111,7 +115,7 @@ html#ov {
             color: $col-structure-light4;
           }
 
-          #NavVersion {
+          .navVersion {
             display: inline;
             font-size: $txSm;
             align-self: baseline;
@@ -124,14 +128,16 @@ html#ov {
             font-size: $h5;
             justify-content: flex-end;
 
-            a {
+            a.nav-link {
               flex-grow: 0;
               margin-right: 2em;
-              svg {
-                margin-right: 0.5em;
-              }
+
               span {
                 display: inline-block;
+              }
+
+              &:last-child {
+                margin-right: 0;
               }
             }
           }
@@ -222,6 +228,40 @@ html#ov {
               #Logo {
                 width: 300px;
                 margin-bottom: $pad3;
+              }
+            }
+          }
+        }
+
+        #PageIntroSearch {
+          .nav {
+            position: fixed;
+            left: 0;
+            bottom: 0;
+            right: 0;
+
+            .navbar-nav {
+              justify-content: space-between;
+
+              .nav-link {
+                cursor: pointer;
+                flex-grow: 0;
+
+                &:last-child {
+                  span {
+                    margin-right: 0.5em;
+                  }
+                }
+              }
+            }
+          }
+
+          @media (min-width: $mediaLg) {
+            .nav {
+              position: relative;
+
+              .navbar-nav {
+
               }
             }
           }
