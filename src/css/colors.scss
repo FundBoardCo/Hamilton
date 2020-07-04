@@ -13,6 +13,8 @@ $col-secondary-light: lighten($col-secondary, 20%);
 $col-secondary-light2: lighten($col-secondary, 30%);
 $col-secondary-light3: lighten($col-secondary, 40%);
 $col-secondary-light4: lighten($col-secondary, 50%);
+$col-secondary-light5: lighten($col-secondary, 60%);
+$col-secondary-light6: lighten($col-secondary, 65%);
 $col-secondary-dark: darken($col-secondary, 20%);
 $col-secondary-dark2: darken($col-secondary, 30%);
 
@@ -54,6 +56,8 @@ $col-emp-light: lighten($col-emp, 20%);
 $col-emp-light2: lighten($col-emp, 30%);
 $col-emp-light3: lighten($col-emp, 40%);
 $col-emp-light4: lighten($col-emp, 50%);
+$col-emp-light5: lighten($col-emp, 55%);
+$col-emp-light6: lighten($col-emp, 60%);
 $col-emp-dark: darken($col-emp, 20%);
 $col-emp-dark2: darken($col-emp, 30%);
 
@@ -69,7 +73,7 @@ $col-structure-light7: lighten($col-structure, 80%);
 $col-light: #fff;
 $col-light-dark: #f8f9fa;
 $col-light-dark2: #e9eaeb;
-$col-text: #10203e;
+$col-text: #20133C;
 $col-text-light: #768392;
 
 @mixin btn-colors($colP, $colD, $colL, $colT, $colTA) {
@@ -84,6 +88,12 @@ $col-text-light: #768392;
   &.active {
     background-color: $colL !important;
     color: $colTA !important;
+  }
+
+  &:disabled {
+    background-color: $colP !important;
+    color: $colT !important;
+    opacity: 0.25;
   }
 }
 
@@ -258,7 +268,7 @@ html#ov {
       }
 
       .btn-primary, .badge-primary {
-        @include btn-colors($col-primary, $col-primary-dark, $col-primary-light2, $col-primary-light4, $col-light);
+        @include btn-colors($col-primary, $col-primary-dark, $col-primary-light2, $col-primary-light5, $col-primary-light5);
       }
 
       .btn-outline-primary {
@@ -266,7 +276,7 @@ html#ov {
       }
 
       .btn-secondary, .badge-secondary {
-        @include btn-colors($col-secondary, $col-secondary-dark, $col-secondary-light2, $col-secondary-light4, $col-light);
+        @include btn-colors($col-secondary, $col-secondary-dark, $col-secondary-light2, $col-secondary-light6, $col-secondary-light6);
       }
 
       .btn-outline-secondary {
@@ -318,7 +328,7 @@ html#ov {
       }
 
       input.form-control, textarea.form-control {
-        border-color: $col-info;
+        border-color: $col-primary;
       }
 
       .shadow-big {

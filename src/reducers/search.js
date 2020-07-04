@@ -8,11 +8,15 @@ export default function search(state = {}, action) {
     };
     case types.SEARCH_SET_RAISE: return {
       ...state,
-      raise: (typeof action.raise === "number") ? action.raise : 0,
+      raise: (typeof action.raise === 'number') ? action.raise : 0,
     };
     case types.SEARCH_SET_LOCATION: return {
       ...state,
       location: action.location,
+    };
+    case types.SEARCH_SET_REMOTE: return {
+      ...state,
+      remote: action.remote,
     };
     default: return state;
   }

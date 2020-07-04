@@ -5,6 +5,8 @@ import Nav from "react-bootstrap/Nav";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import { INTROSEARCH_STAGES } from '../../constants';
 import Keywords from "./Keywords";
+import Raise from './Raise';
+import Location from './Location';
 
 
 export default function Search() {
@@ -26,6 +28,8 @@ export default function Search() {
   return (
     <div id="PageIntroSearch" className="pageContainer">
       {INTROSEARCH_STAGES[stage] === 'keywords' && <Keywords />}
+      {INTROSEARCH_STAGES[stage] === 'raise' && <Raise />}
+      {INTROSEARCH_STAGES[stage] === 'location' && <Location />}
       <Navbar className="nav">
         <Nav>
           <a
@@ -33,23 +37,27 @@ export default function Search() {
             onClick={onClickPrev}
             aria-disabled={stage === 0}
           >
-            <FontAwesomeIcon icon="caret-left"/>
-            {stage !== 0 &&
-              <span>Back to {INTROSEARCH_STAGES[stage - 1]}</span>
-            }
+            <FontAwesomeIcon icon="caret-left" />
+            {stage !== 0 && (
+              <span>
+                Back to {INTROSEARCH_STAGES[stage - 1]}
+              </span>
+            )}
           </a>
           <div>
-            Step {stage + 1} of {INTROSEARCH_STAGES.length}
+            {`Step ${stage + 1} of ${INTROSEARCH_STAGES.length}`}
           </div>
           <a
             className="nav-link"
             onClick={onClickNext}
             aria-disabled={stage >= INTROSEARCH_STAGES.length -1}
           >
-            {stage < INTROSEARCH_STAGES.length - 1 &&
-              <span>Forward to {INTROSEARCH_STAGES[stage + 1]}</span>
-            }
-            <FontAwesomeIcon icon="caret-right"/>
+            {stage < INTROSEARCH_STAGES.length - 1 && (
+              <span>
+                Forward to {INTROSEARCH_STAGES[stage + 1]}
+              </span>
+            )}
+            <FontAwesomeIcon icon="caret-right" />
           </a>
         </Nav>
       </Navbar>

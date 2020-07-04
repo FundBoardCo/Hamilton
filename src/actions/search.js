@@ -11,3 +11,7 @@ export function setSearchRaise(raise = 0) {
 export function setSearchLocation(location = '') {
   return { type: types.SEARCH_SET_LOCATION, location };
 }
+
+export function setSerchRemote(remote = false) {
+  return { type: types.SEARCH_SET_REMOTE, remote };
+}
