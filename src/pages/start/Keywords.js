@@ -4,7 +4,7 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 
 export default function Keywords() {
-  const keywords = useSelector(state => state.search.keywords) || [];
+  const searchKeywords = useSelector(state => state.search.keywords) || [];
   const airtableKeywords = useSelector(state => state.airtable.keywords) || {};
   const wordsToShow = Array.isArray(airtableKeywords.data) ? airtableKeywords.data : [];
   const dispatch = useDispatch();
@@ -14,7 +14,7 @@ export default function Keywords() {
   });
 
   useEffect(() => {
-    if(!Array.isArray(airtableKeywords.data) && !airtableKeywords.state) getKeywords();
+    if (!Array.isArray(airtableKeywords.data) && !airtableKeywords.state) getKeywords();
   });
 
   const setKeywords = keywords => dispatch({
@@ -24,9 +24,9 @@ export default function Keywords() {
 
   const onTileClick = (word, active) => {
     if(active) {
-      setKeywords(keywords.filter(w => w !== word));
+      setKeywords(searchKeywords.filter(w => w !== word));
     } else {
-      setKeywords([...keywords, word]);
+      setKeywords([...searchKeywords, word]);
     }
   };
 
@@ -36,16 +36,18 @@ export default function Keywords() {
         <h1 className="text-center">We Are</h1>
         <div className="tiles">
           {wordsToShow.map(w => {
-            const active = keywords.includes(w);
+            const active = searchKeywords.includes(w);
             return (
-              <div
+              <button
                 className={`tile ${active ? 'active' : ''}`}
                 onClick={() => onTileClick(w, active)}
                 key={w}
+                tabIndex={0}
+                type="button"
               >
                 {w}
-              </div>
-            )
+              </button>
+            );
           })}
         </div>
       </Col>

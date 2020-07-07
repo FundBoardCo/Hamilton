@@ -12,6 +12,9 @@ export default function Location() {
   const storedRemote = useSelector(state => state.search.remote) || '';
   const [remoteValue, setRemoteValue] = useState(storedRemote);
 
+  const [validated, setValidated] = useState(false);
+  const [isValid, setIsValid] = useState(false);
+
   const dispatch = useDispatch();
 
   const setLocation = location => dispatch({
@@ -24,9 +27,18 @@ export default function Location() {
     remote,
   });
 
-  const onLocationChange = val => {
-    setLocationValue(val);
-    setLocation(val);
+  const onLocationChange = e => {
+    const form = e.currentTarget;
+    const val = e.target.value;
+    setValidated(true);
+    if (form.checkValidity()) {
+      setIsValid(true);
+      setLocationValue(val);
+      setLocation(val);
+    } else {
+      setLocationValue(val);
+      setIsValid(false);
+    }
   };
 
   const onRemoteChange = val => {
@@ -39,14 +51,22 @@ export default function Location() {
       <Col className="locationInner">
         <h1 className="text-center">Near</h1>
         <div className="formWrapper">
-          <Form>
+          <Form noValidate validated={validated}>
             <Form.Group controlId="LocationInput">
-              <Form.Label>My Zip Code</Form.Label>
+              <Form.Label>My Zip Code (5 digit)</Form.Label>
               <Form.Control
+                required
+                maxlength={5}
+                pattern="[0-9]{5}"
                 type="text"
                 placeholder="zip code"
-                onChange={e => onLocationChange(e.target.value)}
+                value={locationValue}
+                onChange={e => onLocationChange(e)}
+                isInvalid={validated && !isValid}
               />
+              <Form.Control.Feedback type="invalid">
+                Please enter a valid zip code.
+              </Form.Control.Feedback>
             </Form.Group>
             <Form.Group
               controlId="RemoteCheckbox"
@@ -55,6 +75,7 @@ export default function Location() {
               <Form.Check
                 type="checkbox"
                 label="We're fully remote"
+                checked={remoteValue}
                 onChange={e => onRemoteChange(e.target.checked)}
               />
             </Form.Group>

@@ -1,4 +1,4 @@
-import React, { useState} from 'react';
+import React, { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
@@ -15,7 +15,7 @@ export default function Raise() {
     raise,
   });
 
-  const onRaiseChange = (val) => {
+  const onRaiseChange = val => {
     setRaiseValue(val);
     setRaise(val);
   };
