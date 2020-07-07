@@ -23,7 +23,7 @@ export default function Keywords() {
   });
 
   const onTileClick = (word, active) => {
-    if(active) {
+    if (active) {
       setKeywords(searchKeywords.filter(w => w !== word));
     } else {
       setKeywords([...searchKeywords, word]);

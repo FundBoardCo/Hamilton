@@ -1,13 +1,17 @@
-import React, { useState} from 'react';
+import React, { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
+import {useHistory} from 'react-router';
 
 export default function Location() {
-  const storedLocation = useSelector(state => state.search.location) || '';
-  const [locationValue, setLocationValue] = useState(storedLocation);
+  const searchKeywords = useSelector(state => state.search.keywords) || [];
+  const searchRaise = useSelector(state => state.search.raise) || 100000;
+
+  const searchLocation = useSelector(state => state.search.location) || '';
+  const [locationValue, setLocationValue] = useState(searchLocation);
 
   const storedRemote = useSelector(state => state.search.remote) || '';
   const [remoteValue, setRemoteValue] = useState(storedRemote);
@@ -16,6 +20,8 @@ export default function Location() {
   const [isValid, setIsValid] = useState(false);
 
   const dispatch = useDispatch();
+
+  const history = useHistory();
 
   const setLocation = location => dispatch({
     type: 'SEARCH_SET_LOCATION',
@@ -26,6 +32,17 @@ export default function Location() {
     type: 'SEARCH_SET_REMOTE',
     remote,
   });
+
+  const getResults = () => {
+    const params = {};
+    params.location = searchLocation;
+    params.raise = searchRaise;
+    params.keywords = searchKeywords;
+    return dispatch({
+      type: 'SEARCH_GET_RESULTS_REQUESTED',
+      params,
+    });
+  };
 
   const onLocationChange = e => {
     const form = e.currentTarget;
@@ -46,6 +63,11 @@ export default function Location() {
     setRemote(val);
   };
 
+  const onSearchClick = () => {
+    getResults();
+    history.push('/search');
+  };
+
   return (
     <Row id="Location">
       <Col className="locationInner">
@@ -56,7 +78,7 @@ export default function Location() {
               <Form.Label>My Zip Code (5 digit)</Form.Label>
               <Form.Control
                 required
-                maxlength={5}
+                maxLength={5}
                 pattern="[0-9]{5}"
                 type="text"
                 placeholder="zip code"
@@ -82,7 +104,8 @@ export default function Location() {
             <Button
               variant="secondary"
               className="btnResponsiveMax"
-              disabled={!storedLocation}
+              disabled={!searchLocation}
+              onClick={onSearchClick}
             >
               See My Matches
             </Button>

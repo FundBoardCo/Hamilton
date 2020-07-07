@@ -12,7 +12,7 @@ import {
   AIRTABLE_APIKEY,
   CBURL,
 } from '../constants.js';
-import { getSafeVar } from '../utils';
+import { getSafeVar, capitalizeFirstLetter } from '../utils';
 
 function requestAirtableGetKeywords() {
   return axios.get('https://api.airtable.com/v0/app5hJojHQxyJ7ElS/Keywords', {
@@ -37,15 +37,34 @@ function requestSearchGetResults(params = {}) {
   // Temporary Airtable code.
   // TODO: replace with real API code.
   // params should be an object with field: term key:value pairs.
-  const formulas = Object.keys(params).reduce((acc, key) => {
-    if (!params[key]) return acc;
-    const stringToFind = params[key];
-    const whereToSearch = key;
-    return `${acc}${acc ? ', ' : ''}FIND("${stringToFind}", {${whereToSearch}}) > 0`;
+  let { keywords } = params;
+  const { raise, location } = params;
+
+  // change each keyword into a FIND formula
+  const formulas = [];
+  keywords = keywords.reduce((a, key) => {
+    const lKey = key.toLowerCase();
+    const uKey = capitalizeFirstLetter(key);
+    const lower = `${a}${a ? ', ' : ''}FIND("${lKey}", {description})>0`;
+    const upper = `${a}${a ? ', ' : ''}FIND("${uKey}", {description})>0`;
+    return `${lower}, ${upper}`;
   }, '');
-  const airParams = formulas ? { filterByFormula: `OR(${formulas})` } : {};
+  if (keywords && keywords.length) formulas.push(keywords);
+  if (raise) {
+    formulas.push(`AND({raise_min}<=${raise},{raise_max}>=${raise})`);
+  }
+  if (location) formulas.push(`FIND("${location}", {location_zipcode})>0`);
+
+  console.log(formulas)
   return axios.get('https://api.airtable.com/v0/appDqWxN1pcWrdjsn/Investors',
-    { params: airParams });
+    {
+      params: {
+        maxRecords: 100,
+        view: 'Grid view',
+        filterByFormula: `OR(${formulas.join(',')})`,
+      },
+      headers: { Authorization: `Bearer ${AIRTABLE_APIKEY}` },
+    });
 }
 
 function* workSearchGetResults(action) {

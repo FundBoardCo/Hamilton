@@ -5,8 +5,8 @@ import Col from 'react-bootstrap/Col';
 import RangeSlider from 'react-bootstrap-range-slider';
 
 export default function Raise() {
-  const storedRaise = useSelector(state => state.search.raise) || 100000;
-  const [raiseValue, setRaiseValue] = useState(storedRaise);
+  const searchRaise = useSelector(state => state.search.raise) || 100000;
+  const [raiseValue, setRaiseValue] = useState(searchRaise);
 
   const dispatch = useDispatch();
 

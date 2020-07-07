@@ -23,13 +23,13 @@ import {
   faPlus,
   faPlusCircle,
   faSearch,
-  faSignInAlt
+  faSignInAlt,
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Logo from './imgs/FundBoard_Logo.svg';
 import ScrollToTop from './components/ScrollToTop';
 import Intro from './pages/start/Intro';
-import IntroSearch from "./pages/start/IntroSearch";
+import IntroSearch from './pages/start/IntroSearch';
 import Board from './pages/board/Board';
 import Search from './pages/search/Search';
 import Profile from './pages/profile/Profile';
@@ -67,60 +67,64 @@ function App() {
             <span className="navVersion">0.1</span>
           </a>
           <Nav className="ml-auto" defaultActiveKey={window.location.pathname}>
-            {loggedIn &&
-            <Nav.Link
-              as={NavLink}
-              href="/board"
-              to="/board"
-              className='board'
-            >
-              <FontAwesomeIcon icon="list"/>
-              <span>My FundBoard</span>
-            </Nav.Link>
-            }
-            {loggedIn &&
-            <Nav.Link
-              as={NavLink}
-              href="/search"
-              to="/search"
-              className='search'
-              activeClassName="active"
-            >
-              <FontAwesomeIcon icon="search"/>
-              <span>Search</span>
-            </Nav.Link>
-            }
-            {loggedIn &&
-            <Nav.Link
-              as={NavLink}
-              href="/profile"
-              to="/profile"
-              className='profile'
-              activeClassName="profile"
-            >
-              <FontAwesomeIcon icon="cog"/>
-              <span>My Profile</span>
-            </Nav.Link>
-            }
-            {!loggedIn &&
-            <Nav.Link
-              as={NavLink}
-              href="/login"
-              to="/login"
-              className='login'
-              activeClassName="login"
-            >
-              <FontAwesomeIcon icon="sign-in-alt"/>
-              <span>Log In</span>
-            </Nav.Link>
-            }
+            {loggedIn
+            && (
+              <Nav.Link
+                as={NavLink}
+                href="/board"
+                to="/board"
+                className="board"
+              >
+                <FontAwesomeIcon icon="list" />
+                <span>My FundBoard</span>
+              </Nav.Link>
+            )}
+            {loggedIn
+            && (
+              <Nav.Link
+                as={NavLink}
+                href="/search"
+                to="/search"
+                className="search"
+                activeClassName="active"
+              >
+                <FontAwesomeIcon icon="search" />
+                <span>Search</span>
+              </Nav.Link>
+            )}
+            {loggedIn
+            && (
+              <Nav.Link
+                as={NavLink}
+                href="/profile"
+                to="/profile"
+                className="profile"
+                activeClassName="profile"
+              >
+                <FontAwesomeIcon icon="cog" />
+                <span>My Profile</span>
+              </Nav.Link>
+            )}
+            {!loggedIn
+            && (
+              <Nav.Link
+                as={NavLink}
+                href="/login"
+                to="/login"
+                className="login"
+                activeClassName="login"
+              >
+                <FontAwesomeIcon icon="sign-in-alt" />
+                <span>Log In</span>
+              </Nav.Link>
+            )}
           </Nav>
         </Navbar>
         <main id="Main">
           <div className="container-xl">
             <Switch>
               <Route path="/" exact>
-                {loggedIn ?  <Redirect to="/board" /> : <Redirect to="/intro" />}
+                {loggedIn ? <Redirect to="/board" /> : <Redirect to="/intro" />}
               </Route>
               <Route path="/intro" component={Intro} />
               <Route path="/introsearch" component={IntroSearch} />
