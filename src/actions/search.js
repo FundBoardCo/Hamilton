@@ -1,5 +1,9 @@
 import * as types from './types';
 
+export function getSearchResults(params = {}) {
+  return { type: types.SEARCH_GET_RESULTS_REQUESTED, params };
+}
+
 export function setSearchKeywords(keywords = []) {
   return { type: types.SEARCH_SET_KEYWORDS, keywords };
 }
