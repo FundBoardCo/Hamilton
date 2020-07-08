@@ -43,10 +43,26 @@ html#ov {
       font-size: $tx;
       padding: $pad2 $pad3;
       text-decoration: none;
+      border: 0 none;
 
       @media (min-width: $mediaXs) {
         font-size: $h3;
         padding: $pad2 $pad3;
+      }
+    }
+
+    .btn.bntOutline {
+      border-width: 1px;
+      border-style: solid;
+    }
+
+    .btn.btn-text,
+    .btn.btn-text-light {
+      padding: 0;
+
+      @media (min-width: $mediaXs) {
+        font-size: $tx;
+        padding: 0;
       }
     }
 
@@ -63,7 +79,21 @@ html#ov {
     }
 
     .btn.iconBtn {
-      min-width: 3rem;
+      // for buttons that are only icons
+      // use font size to control the size
+      background-color: transparent;
+      border-color: transparent;
+      padding: 0;
+      border-radius: 0;
+      font-size: 1em;
+      line-height: 1em;
+    }
+
+    .btn.inlineBtn {
+      display: inline-block;
+      font-size: 0.6em;
+      line-height: 0.6em;
+      padding: 0.5em 0.8em;
     }
 
     .input-radius {

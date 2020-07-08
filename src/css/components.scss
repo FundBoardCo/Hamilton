@@ -1,0 +1,106 @@
+@import 'colors';
+@import 'vars';
+
+html#ov {
+  // override bootstrap styles
+
+  body {
+
+    #root {
+      .person {
+        display: flex;
+        background-color: $col-light;
+        border-radius: $pad4;
+        overflow: hidden;
+        margin-bottom: $pad2;
+
+        .thumb {
+          width:$pad6b;
+          border-right: 1px solid $col-primary-light4;
+
+          @media (min-width: $mediaLg) {
+            width: $pad7;
+          }
+        }
+
+        .content {
+          display: flex;
+          flex-direction: column;
+          flex-grow: 1;
+          padding: $pad2;
+
+          h1 {
+            font-size: $h5;
+          }
+
+          .details {
+            margin-top: auto;
+
+            .orgLogoWrapper {
+              max-width: $pad5;
+              padding-right: $pad1;
+            }
+
+            .orgText {
+              display: flex;
+              flex-direction: column;
+              flex-wrap: nowrap;
+              font-size: $txMd;
+            }
+
+            .orgText > * {
+              width: 100%;
+              overflow: hidden;
+              text-wrap: none;
+              text-overflow: ellipsis;
+            }
+          }
+
+          @media (min-width: $mediaLg) {
+
+            h1 {
+              font-size: $h3;
+            }
+
+            .details {
+              .orgLogoWrapper {
+                padding-right: $pad2;
+              }
+
+              .orgText {
+                flex-direction: row;
+                font-size: $h5;
+              }
+            }
+          }
+        }
+
+        .controls {
+          flex-basis: 15%;
+          display: flex;
+          flex-direction: column;
+          align-items: flex-end;
+          justify-content: flex-start;
+          padding: $pad2;
+
+          .addBtn {
+            font-size: $pad4b;
+          }
+
+          .percentageMatch {
+            margin-top: auto;
+            font-size: $h4;
+            color: $col-primary;
+            text-align: center;
+          }
+
+          @media (min-width: $mediaLg) {
+            .addBtn {
+              font-size: $pad5;
+            }
+          }
+        }
+      }
+    }
+  }
+}

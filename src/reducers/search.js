@@ -30,7 +30,7 @@ export default function search(state = {}, action) {
     };
     case types.SEARCH_GET_RESULTS_SUCCEEDED: return {
       ...state,
-      results: getSafeVar(() => action.data.results, []),
+      results: getSafeVar(() => action.data.records, []),
       results_state: 'succeeded',
     };
     case types.SEARCH_GET_RESULTS_FAILED: return {

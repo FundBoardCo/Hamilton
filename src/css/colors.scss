@@ -74,7 +74,7 @@ $col-light: #fff;
 $col-light-dark: #f8f9fa;
 $col-light-dark2: #e9eaeb;
 $col-text: #20133C;
-$col-text-light: #768392;
+$col-text-light: lighten($col-structure, 80%);
 
 @mixin btn-colors($colP, $colD, $colL, $colT, $colTA) {
   background-color: $colP !important;
@@ -94,6 +94,27 @@ $col-text-light: #768392;
     background-color: $colP !important;
     color: $colT !important;
     opacity: 0.25;
+  }
+}
+
+@mixin btn-icon-colors($colP, $colD, $colL) {
+  color: $colP !important;
+  background-color: transparent !important;
+
+  &:hover, &:focus {
+    color: $colD !important;
+    background-color: transparent !important;
+  }
+
+  &.active {
+    color: $colL !important;
+    background-color: transparent !important;
+  }
+
+  &:disabled {
+    color: $colP !important;
+    opacity: 0.25;
+    background-color: transparent !important;
   }
 }
 
@@ -243,6 +264,10 @@ html#ov {
         background-color: $col-info-dark2 !important;
       }
 
+      .bg-transparent {
+        background-color: transparent !important;
+      }
+
       .bg-emp {
         background-color: $col-emp !important;
       }
@@ -269,6 +294,10 @@ html#ov {
 
       .btn-primary, .badge-primary {
         @include btn-colors($col-primary, $col-primary-dark, $col-primary-light2, $col-primary-light5, $col-primary-light5);
+      }
+
+      .btn-primary-light, .badge-primary-light {
+        @include btn-colors($col-primary-light, $col-primary, $col-primary-light3, $col-primary-light5, $col-primary-light5);
       }
 
       .btn-outline-primary {
@@ -307,11 +336,11 @@ html#ov {
         @include btn-colors($col-light, $col-success, $col-success-light2, $col-success, $col-light);
       }
 
-      .btn-info, .badge-info, .page-item.active .page-link {
+      .btn-info, .badge-info {
         @include btn-colors($col-info, $col-info-dark, $col-info-light2, $col-info-light4, $col-light);
       }
 
-      .btn-outline-info, .page-link {
+      .btn-outline-info {
         @include btn-colors($col-light, $col-info, $col-info-light2, $col-info, $col-light);
       }
 
@@ -325,6 +354,46 @@ html#ov {
 
       .btn-light, .badge-light {
         @include btn-colors($col-light, $col-light-dark, $col-light-dark2, $col-text, $col-text);
+      }
+
+      .btn-text {
+        @include btn-colors(transparent, transparent, transparent, $col-text, $col-primary-light);
+      }
+
+      .btn-text-light {
+        @include btn-colors(transparent, transparent, transparent, $col-text-light, $col-primary-light4);
+      }
+
+      .btn-icon-primary {
+        @include btn-icon-colors($col-primary, $col-primary-dark, $col-primary-light2);
+      }
+
+      .btn-icon-secondary {
+        @include btn-icon-colors($col-secondary, $col-secondary-dark, $col-secondary-light2);
+      }
+
+      .btn-icon-danger {
+        @include btn-icon-colors($col-danger, $col-danger-dark, $col-danger-light2);
+      }
+
+      .btn-icon-warning {
+        @include btn-icon-colors($col-warning, $col-warning-dark, $col-warning-light2);
+      }
+
+      .btn-icon-success {
+        @include btn-icon-colors($col-success, $col-success-dark, $col-success-light2);
+      }
+
+      .btn-icon-info {
+        @include btn-icon-colors($col-info, $col-info-dark, $col-info-light2);
+      }
+
+      .btn-icon-emp {
+        @include btn-icon-colors($col-emp, $col-emp-dark, $col-emp-light2);
+      }
+
+      .btn-icon-light {
+        @include btn-icon-colors($col-light, $col-light-dark, $col-light-dark2);
       }
 
       input.form-control, textarea.form-control {

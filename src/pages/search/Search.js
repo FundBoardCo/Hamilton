@@ -1,8 +1,11 @@
-import React from 'react';
+import React, {useState} from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import Container from 'react-bootstrap/Container';
+import Button from 'react-bootstrap/Button';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import Spinner from 'react-bootstrap/Spinner';
+import Person from '../../components/people/Person';
 
 export default function Search() {
   const searchKeywords = useSelector(state => state.search.keywords) || [];
@@ -12,22 +15,39 @@ export default function Search() {
   const searchState = useSelector(state => state.search.results_state) || '';
   console.log(searchResults)
 
+  const [detailsOpen, setDetailsOpen] = useState(false);
+
   const usdFormatter = new Intl.NumberFormat('en-US', {
     style: 'currency',
     currency: 'USD',
   });
 
+  const onDetailClick = () => {
+    setDetailsOpen(!detailsOpen);
+  };
+
   return (
-    <Row className="pageContainer">
-      <Container fluid>
-        <Row>
-          <Col>
-            <h1>Search</h1>
-          </Col>
-        </Row>
-        <Row>
-          <Col xs={12}>
-            <p>placeholder for search</p>
+    <Row id="PageSearch" className="pageContainer flex-column flex-grow-1">
+      {searchState === 'pending' && <Spinner />}
+      <div className="searchDetailsBar">
+        <div className="primaryDetails">
+          <Button
+            className="primaryDetailsLink"
+            variant="text-light"
+            onClick={onDetailClick}
+          >
+            {`${searchResults.length} investors match`}
+          </Button>
+          <Button
+            variant="primary-light"
+            className="btnTn inlineBtn"
+          >
+            <FontAwesomeIcon icon="edit" />
+            edit
+          </Button>
+        </div>
+        {detailsOpen && (
+          <div className="secondaryDetails">
             <p>
               {`You searched for: ${searchKeywords.join()}`}
             </p>
@@ -37,15 +57,18 @@ export default function Search() {
             <p>
               {`Location: ${searchLocation}`}
             </p>
-            <p>
-              {`Search state: ${searchState}`}
-            </p>
-            <p>
-              {`Search result count: ${searchResults.length}`}
-            </p>
-          </Col>
-        </Row>
-      </Container>
+          </div>
+        )}
+      </div>
+      <div className="results">
+        {searchResults.map(r => {
+          const personProps = { ...r.fields };
+          const pKey = personProps.permalink || personProps.image_id;
+          return (
+            <Person key={pKey} {...personProps} />
+          );
+        })}
+      </div>
     </Row>
   );
 }

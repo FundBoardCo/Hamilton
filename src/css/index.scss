@@ -1,6 +1,7 @@
 @import 'utils';
-@import 'colors.scss';
-@import 'vars.scss';
+@import 'colors';
+@import 'vars';
+@import 'components';
 
 @mixin colPadding {
   box-sizing: border-box;
@@ -44,7 +45,7 @@ html#ov {
         padding: 0 $pad3;
         order: 2; // nav on the bottom for mobile
         background-color: $col-structure;
-        color: $col-structure-light7;
+        color: $col-text-light;
 
         .navbar-nav {
           flex-grow: 1;
@@ -124,7 +125,7 @@ html#ov {
             font-size: 40px;
             font-weight: 700;
             text-decoration: none;
-            color: $col-structure-light4;
+            color: $col-text-light; // override link color
           }
 
           .navVersion {
@@ -133,7 +134,7 @@ html#ov {
             align-self: baseline;
             margin-left: 0.5em;
             text-decoration: none;
-            color: $col-structure-light4;
+            color: $col-text-light; // override link color
           }
 
           .navbar-nav {
@@ -165,7 +166,7 @@ html#ov {
         margin: 0 auto; // center
         position: relative;
         overflow: auto;
-        background: linear-gradient($col-light, $col-primary-light4);
+        background: linear-gradient($col-primary-light5, $col-primary-light3);
 
         @media (min-width: $mediaLg) {
           order: 2;
@@ -482,9 +483,62 @@ html#ov {
             }
           }
         }
+
+        #PageSearch {
+          margin-top: 74px;
+
+          .searchDetailsBar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 92px;
+
+            .primaryDetails {
+              display: flex;
+              justify-content: space-between;
+              align-items: center;
+              font-size: $h3;
+              background-color: $col-structure;
+              color: $col-text-light;
+              padding: $pad2;
+
+              .primaryDetailsLink {
+                font-size: $h3;
+                font-weight: 700;
+              }
+            }
+
+            .secondaryDetails {
+              padding: $pad2;
+              background-color: $col-info;
+              color: $col-text-light;
+            }
+          }
+
+          @media (min-width: $mediaLg) {
+            margin-top: 0;
+
+            .searchDetailsBar {
+              position: static;
+
+              .primaryDetails {
+                padding: 0 0 $pad1 0;
+                background-color: transparent !important;
+                color: $col-text;
+                border-bottom: 1px solid $col-primary;
+                margin-top: $pad3;
+
+                .primaryDetailsLink {
+                  color: $col-text !important;
+                }
+              }
+            }
+          }
+        }
       }
 
-    }
+    } //end #Root
   }
 }
 

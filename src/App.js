@@ -14,6 +14,7 @@ import {
   faCaretLeft,
   faCaretRight,
   faCog,
+  faEdit,
   faFileCsv,
   faFileExport,
   faFlag,
@@ -42,6 +43,7 @@ library.add(
   faCaretLeft,
   faCaretRight,
   faCog,
+  faEdit,
   faFileCsv,
   faFileExport,
   faFlag,
@@ -54,7 +56,7 @@ library.add(
   faSignInAlt,
 );
 
-const loggedIn = false; //TODO: base this off of the redux state
+const loggedIn = true; //TODO: base this off of the redux state
 
 function App() {
   return (
