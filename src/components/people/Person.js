@@ -70,8 +70,8 @@ export default function Person(props) {
             <div>
               {`${primary_job_title}${primary_job_title && ','}`}
               &nbsp;
+              {primary_organization}
             </div>
-            <div>{primary_organization}</div>
           </div>
         </div>
       </div>

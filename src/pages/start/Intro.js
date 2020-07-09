@@ -4,7 +4,7 @@ import Logo from "../../imgs/FundBoard_Logo.svg";
 
 export default function Intro() {
   return (
-    <Row id="PageIntro" className="pageContainer flex-column flex-grow-1">
+    <Row id="PageIntro" className="pageContainer">
       <div className='introTop'>
         <img id="Logo" className="responsiveImg" src={Logo} alt="FundBoard Logo" />
         <h1 className="mb-lg-2 h3 h-lg-1">FundBoard</h1>

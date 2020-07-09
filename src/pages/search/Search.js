@@ -27,7 +27,7 @@ export default function Search() {
   };
 
   return (
-    <Row id="PageSearch" className="pageContainer flex-column flex-grow-1">
+    <Row id="PageSearch" className="pageContainer">
       {searchState === 'pending' && <Spinner />}
       <div className="searchDetailsBar">
         <div className="primaryDetails">

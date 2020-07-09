@@ -27,7 +27,7 @@ html#ov {
   body {
     height: 100%;
     margin: 0;
-    font-family: 'Source Sans Pro', Helvetica, sans-serif;
+    font-family: 'Nunito Sans', sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     color: $col-text;
@@ -186,9 +186,12 @@ html#ov {
 
         .pageContainer {
           flex: 1 1 auto;
+          flex-direction: column;
+          flex-wrap: nowrap;
+          flex-grow: 1;
           min-height: calc(568px - #{$navSz1}); // always at least iPhoneSE tall
           height: calc(100vh - #{$navSz1});
-          @include colPadding();
+          @include colPadding;
 
           @media (min-width: $mediaXs) {
             min-height: calc(568px - #{$navSz2}); // always at least iPhoneSE tall
@@ -492,7 +495,6 @@ html#ov {
             top: 0;
             left: 0;
             right: 0;
-            height: 92px;
 
             .primaryDetails {
               display: flex;
@@ -504,7 +506,7 @@ html#ov {
               padding: $pad2;
 
               .primaryDetailsLink {
-                font-size: $h3;
+                font-size: $h5;
                 font-weight: 700;
               }
             }
@@ -516,24 +518,48 @@ html#ov {
             }
           }
 
+          @media (min-width: $mediaXs) {
+            .searchDetailsBar {
+              .primaryDetails {
+                .primaryDetailsLink {
+                  font-size: $h3;
+                }
+              }
+            }
+          }
+
           @media (min-width: $mediaLg) {
             margin-top: 0;
+            padding-top:$pad3;
 
             .searchDetailsBar {
               position: static;
+              height: auto;
 
               .primaryDetails {
                 padding: 0 0 $pad1 0;
                 background-color: transparent !important;
                 color: $col-text;
                 border-bottom: 1px solid $col-primary;
-                margin-top: $pad3;
+                margin: 0 0 $pad3 0;
 
                 .primaryDetailsLink {
                   color: $col-text !important;
                 }
               }
             }
+
+            .results {
+              overflow: auto;
+            }
+          }
+
+          @media (max-width: $mediaMaxSm) {
+            height: calc(100vh - #{$navPlusSearchBarSz1});
+          }
+
+          @media (max-width: $mediaMaxMd) {
+            height: calc(100vh - #{$navPlusSearchBarSz2});
           }
         }
       }

@@ -59,6 +59,7 @@ html#ov {
     .btn.btn-text,
     .btn.btn-text-light {
       padding: 0;
+      max-width: none;
 
       @media (min-width: $mediaXs) {
         font-size: $tx;
@@ -94,6 +95,7 @@ html#ov {
       font-size: 0.6em;
       line-height: 0.6em;
       padding: 0.5em 0.8em;
+      max-width: none;
     }
 
     .input-radius {
