@@ -55,7 +55,6 @@ function requestSearchGetResults(params = {}) {
   }
   if (location) formulas.push(`FIND("${location}", {location_zipcode})>0`);
 
-  console.log(formulas)
   return axios.get('https://api.airtable.com/v0/appDqWxN1pcWrdjsn/Investors',
     {
       params: {
@@ -71,6 +70,7 @@ function* workSearchGetResults(action) {
   try {
     const results = yield call(requestSearchGetResults, action.params);
     yield put({ type: 'SEARCH_GET_RESULTS_SUCCEEDED', data: results.data });
+    yield put({ type: 'PEOPLE_UPDATE', data: results.data });
   } catch (error) {
     yield put({ type: 'SEARCH_GET_RESULTS_FAILED', error });
   }

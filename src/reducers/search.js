@@ -1,8 +1,21 @@
 import { REHYDRATE } from 'redux-persist';
 import * as types from '../actions/types';
-import { processErr, getSafeVar } from '../utils';
+import { processErr } from '../utils';
 
 export default function search(state = {}, action) {
+  const results = {};
+  const fakeSearchData = {
+    isLead: true,
+    isOpen: true,
+    isImpact: true,
+    matches: {
+      keywords: ['B2B', 'AI', 'Automation', 'AR'],
+      raise: true,
+      location: true,
+      name: true,
+      org: true,
+    },
+  };
   switch (action.type) {
     case REHYDRATE: return {
       ...state,
@@ -28,11 +41,17 @@ export default function search(state = {}, action) {
       ...state,
       results_state: 'pending',
     };
-    case types.SEARCH_GET_RESULTS_SUCCEEDED: return {
-      ...state,
-      results: getSafeVar(() => action.data.records, []),
-      results_state: 'succeeded',
-    };
+    case types.SEARCH_GET_RESULTS_SUCCEEDED:
+      if (action.data.records) {
+        action.data.records.forEach(r => {
+          results[r.id] = { ...fakeSearchData, ...r.fields };
+        });
+      }
+      return {
+        ...state,
+        results,
+        results_state: 'succeeded',
+      };
     case types.SEARCH_GET_RESULTS_FAILED: return {
       ...state,
       results_state: processErr(action.error),

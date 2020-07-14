@@ -36,7 +36,7 @@ export default function Search() {
             variant="text-light"
             onClick={onDetailClick}
           >
-            {`${searchResults.length} investors match`}
+            {`${Object.keys(searchResults).length} investors match`}
           </Button>
           <Button
             variant="primary-light"
@@ -61,8 +61,9 @@ export default function Search() {
         )}
       </div>
       <div className="results">
-        {searchResults.map(r => {
-          const personProps = { ...r.fields };
+        {Object.keys(searchResults).map(k => {
+          const personProps = { ...searchResults[k] };
+          personProps.uuid = k;
           const pKey = personProps.permalink || personProps.image_id;
           return (
             <Person key={pKey} {...personProps} />

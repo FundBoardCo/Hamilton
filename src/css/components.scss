@@ -1,120 +1,302 @@
 @import 'colors';
 @import 'vars';
 
-html#ov {
+html#ov body {
   // override bootstrap styles
 
-  body {
+  .person {
+    display: flex;
+    background-color: $col-light;
+    border-radius: $pad4;
+    overflow: hidden;
+    margin-bottom: $pad2;
 
-    #root {
-      .person {
-        display: flex;
-        background-color: $col-light;
-        border-radius: $pad4;
-        overflow: hidden;
-        margin-bottom: $pad2;
+    .thumb {
+      width: $pad6;
+      flex-shrink: 0;
+      padding: 0;
+      border: 0;
+      border-right: 1px solid $col-primary-light4;
 
-        .thumb {
-          width:$pad6;
+      @media (min-width: $mediaXs) {
+        width: $pad6;
+      }
+
+      @media (min-width: $mediaLg) {
+        width: $pad7;
+      }
+    }
+
+    .content {
+      display: flex;
+      flex-direction: column;
+      flex-grow: 1;
+      padding: $pad2;
+
+      h1 {
+        font-size: $tx;
+
+        button {
+          color: inherit;
+          width: 100%;
+          text-align: left;
+          font-weight: 700;
+          border: none;
+          padding: 0;
+          background: none;
+
+          &:active {
+            color: inherit;
+          }
+        }
+      }
+
+      .details {
+        margin-top: auto;
+
+        .orgLogoWrapper {
+          width: 28px;
+          height: 28px;
           flex-shrink: 0;
-          border-right: 1px solid $col-primary-light4;
-
-          @media (min-width: $mediaXs) {
-            width: $pad6;
-          }
-
-          @media (min-width: $mediaLg) {
-            width: $pad7;
-          }
+          padding-right: $pad1;
+          display: none;
         }
 
-        .content {
-          display: flex;
-          flex-direction: column;
-          flex-grow: 1;
-          padding: $pad2;
+        .orgText {
+          font-size: $txSm;
+        }
+      }
 
-          h1 {
-            font-size: $tx;
-            font-weight: 700;
+      @media (min-width: $mediaXs) {
+        .details {
+          .orgLogoWrapper {
+            display: block;
+          }
+        }
+      }
+
+      @media (min-width: $mediaLg) {
+
+        h1 {
+          font-size: $h3;
+        }
+
+        .details {
+          .orgLogoWrapper {
+            padding-right: $pad2;
+            width: 38px;
+            height: 38px;
           }
 
-          .details {
-            margin-top: auto;
-
-            .orgLogoWrapper {
-              width: 28px;
-              height: 28px;
-              flex-shrink: 0;
-              padding-right: $pad1;
-              display: none;
-            }
-
-            .orgText {
-              font-size: $txSm;
-            }
+          .orgText {
+            font-size: $h5;
           }
+        }
+      }
+    }
 
-          @media (min-width: $mediaXs) {
-            .details {
-              .orgLogoWrapper {
-                display: block;
+    .controls {
+      flex-basis: 15%;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      justify-content: flex-start;
+      padding: $pad2;
+
+      .addBtn {
+        font-size: $pad4;
+      }
+
+      .percentageMatch {
+        margin-top: auto;
+        font-size: $txMd;
+        color: $col-primary;
+        text-align: center;
+      }
+
+      @media (min-width: $mediaXs) {
+        .percentageMatch {
+          font-size: $tx;
+        }
+      }
+
+      @media (min-width: $mediaLg) {
+        .addBtn {
+          font-size: $pad5;
+        }
+
+        .percentageMatch {
+          font-size: $h4;
+        }
+      }
+    }
+  }
+
+  // Modal is a peer to #Root
+  .modal {
+    .modal-dialog {
+
+      .modal-content {
+        border-radius: $pad3;
+        border-color: $col-primary;
+        border-width: 2px;
+
+        .modal-header {
+          border-bottom: none;
+
+          .close {
+            opacity: 0.75;
+
+            span {
+              color: $col-primary;
+              font-size: 40px;
+              line-height: 0.6;
+
+              @media (min-width: $mediaXs) {
+                font-size: 50px;
+              }
+
+              @media (min-width: $mediaLg) {
+                font-size: 70px;
               }
             }
           }
 
-          @media (min-width: $mediaLg) {
+          .close:not(:disabled):not(.disabled):focus,
+          .close:not(:disabled):not(.disabled):hover {
+            opacity: 1;
+          }
+        }
+      }
+    }
 
-            h1 {
-              font-size: $h3;
-            }
+    &.modal-investor {
+      .modal-dialog {
+        .modal-content {
+          .modal-header {
+            position: absolute;
+            right: 0;
+            z-index: 10;
+          }
 
-            .details {
-              .orgLogoWrapper {
-                padding-right: $pad2;
-                width: 38px;
-                height: 38px;
+          .modal-body {
+
+            .investorHeader {
+              display: flex;
+
+              .thumbCol {
+                flex-grow: 0;
+                flex-shrink: 0;
+                min-width: auto;
+                margin-right: $pad2;
+
+                .thumb {
+                  width: $pad5;
+                  height: $pad5;
+                  overflow: hidden;
+                  border-radius: $pad2;
+                  border: 1px solid $col-primary-light4;
+
+                  img {
+                    width: 100%;
+                    height: auto;
+                  }
+                }
+
+                @media (min-width: $mediaXs) {
+                  .thumb {
+                    width: $pad6;
+                    height: $pad6;
+                  }
+                }
+
+                @media (min-width: $mediaLg) {
+                  margin-right: $pad3;
+                  .thumb {
+                    width: $pad7;
+                    height: $pad7;
+                  }
+                }
               }
 
-              .orgText {
+              h1 {
                 font-size: $h5;
+
+                @media (min-width: $mediaXs) {
+                  font-size: $h4;
+                }
+
+                @media (min-width: $mediaMd) {
+                  font-size: $h3;
+                }
+
+                @media (min-width: $mediaLg) {
+                  font-size: $h2;
+                }
+              }
+
+              .orgDetails {
+                display: flex;
+                margin-top: auto;
+                font-size: $txSm;
+
+                .orgLogoWrapper {
+                  width: $pad4;
+                  flex-shrink: 0;
+                  padding-right: $pad1;
+
+                  img {
+                    width: 100%;
+                    height: auto;
+                  }
+                }
+
+                @media (min-width: $mediaXs) {
+                  font-size: $txMd;
+                }
+
+                @media (min-width: $mediaMd) {
+                  font-size: $tx;
+                }
+
+                @media (min-width: $mediaLg) {
+                  font-size: $tx;
+
+                  .orgLogoWrapper {
+                    width: $pad5;
+                  }
+                }
               }
             }
-          }
-        }
 
-        .controls {
-          flex-basis: 15%;
-          display: flex;
-          flex-direction: column;
-          align-items: flex-end;
-          justify-content: flex-start;
-          padding: $pad2;
-
-          .addBtn {
-            font-size: $pad4;
-          }
-
-          .percentageMatch {
-            margin-top: auto;
-            font-size: $txMd;
-            color: $col-primary;
-            text-align: center;
-          }
-
-          @media (min-width: $mediaXs) {
-            .percentageMatch {
-              font-size: $tx;
-            }
-          }
-
-          @media (min-width: $mediaLg) {
-            .addBtn {
-              font-size: $pad5;
+            .crunchBaseAttribution {
+              color: $col-primary;
+              font-style: italic;
             }
 
-            .percentageMatch {
-              font-size: $h4;
+            .description {
+              max-height: 4.5em;
+              overflow-y: scroll;
+            }
+
+            .matches {
+              h2 {
+                color: $col-primary;
+              }
+
+              ul {
+                padding: 0;
+                list-style-type: none;
+
+                li {
+                  display: flex;
+                  margin-bottom: $pad2;
+
+                  .iconDisc {
+                    margin-right: $pad2;
+                  }
+                }
+              }
             }
           }
         }

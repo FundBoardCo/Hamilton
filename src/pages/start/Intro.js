@@ -1,6 +1,6 @@
 import React from 'react';
 import Row from 'react-bootstrap/Row';
-import Logo from "../../imgs/FundBoard_Logo.svg";
+import Logo from '../../imgs/FundBoard_Logo.svg';
 
 export default function Intro() {
   return (

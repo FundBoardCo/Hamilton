@@ -4,7 +4,7 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
-import {useHistory} from 'react-router';
+import { useHistory } from 'react-router';
 
 export default function Location() {
   const searchKeywords = useSelector(state => state.search.keywords) || [];
@@ -103,7 +103,7 @@ export default function Location() {
             </Form.Group>
             <Button
               variant="secondary"
-              className="btnResponsiveMax"
+              className="btnNoMax"
               disabled={!searchLocation}
               onClick={onSearchClick}
             >

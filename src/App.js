@@ -11,18 +11,22 @@ import Nav from 'react-bootstrap/Nav';
 import { library } from '@fortawesome/fontawesome-svg-core';
 import { fab } from '@fortawesome/free-brands-svg-icons';
 import {
+  faBalanceScale,
   faCaretLeft,
   faCaretRight,
   faCog,
+  faDoorOpen,
   faEdit,
   faFileCsv,
   faFileExport,
   faFlag,
+  faKey,
   faLink,
   faList,
   faMapMarkerAlt,
   faPlus,
   faPlusCircle,
+  faRocket,
   faSearch,
   faSignInAlt,
 } from '@fortawesome/free-solid-svg-icons';
@@ -36,27 +40,32 @@ import Search from './pages/search/Search';
 import Profile from './pages/profile/Profile';
 import Login from './pages/profile/Login';
 import NotFound from './pages/NotFound';
+import Modal from './modals/ModalWrapper';
 
 // import common icons so they're accessible later.
 library.add(
   fab,
+  faBalanceScale,
   faCaretLeft,
   faCaretRight,
   faCog,
+  faDoorOpen,
   faEdit,
   faFileCsv,
   faFileExport,
   faFlag,
+  faKey,
   faLink,
   faList,
   faMapMarkerAlt,
   faPlus,
   faPlusCircle,
+  faRocket,
   faSearch,
   faSignInAlt,
 );
 
-const loggedIn = true; //TODO: base this off of the redux state
+const loggedIn = false; //TODO: base this off of the redux state
 
 function App() {
   return (
@@ -138,6 +147,7 @@ function App() {
             </Switch>
           </div>
         </main>
+        <Modal />
       </ScrollToTop>
     </Router>
   );
