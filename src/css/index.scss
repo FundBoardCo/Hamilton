@@ -426,7 +426,7 @@ html#ov {
                 }
               }
 
-              @media (max-width: $mediaMaxSm) {
+              @media (min-height: $mediaMaxLg) {
                 .sliderWrapper {
                   width: 100%;
                   height: 100%;

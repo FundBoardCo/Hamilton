@@ -272,6 +272,13 @@ html#ov body {
     width: auto;
   }
 
+  .clamp2 {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp:2;
+    overflow: hidden;
+  }
+
   .clamp3 {
     display: -webkit-box;
     -webkit-box-orient: vertical;

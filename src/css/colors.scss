@@ -76,6 +76,8 @@ $col-light-dark2: #e9eaeb;
 $col-text: #20133C;
 $col-text-light: lighten($col-structure, 80%);
 
+$col-linkedin: #2867B2;
+
 @mixin btn-colors($colP, $colD, $colL, $colT, $colTA) {
   background-color: $colP !important;
   color: $colT !important;
@@ -167,6 +169,10 @@ html#ov body {
 
   .text-light {
     color: $col-light !important;
+  }
+
+  .text-linkedin {
+    color: $col-linkedin !important;
   }
 
   .bg-primary {

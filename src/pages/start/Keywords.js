@@ -1,6 +1,7 @@
-import React, {useEffect} from 'react';
-import { useSelector, useDispatch } from "react-redux";
+import React, { useEffect} from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import Row from 'react-bootstrap/Row';
+
 import Col from 'react-bootstrap/Col';
 
 export default function Keywords() {
@@ -25,7 +26,7 @@ export default function Keywords() {
   const onTileClick = (word, active) => {
     if (active) {
       setKeywords(searchKeywords.filter(w => w !== word));
-    } else {
+    } else if (searchKeywords.length < 5) {
       setKeywords([...searchKeywords, word]);
     }
   };
@@ -34,6 +35,7 @@ export default function Keywords() {
     <Row id="Keywords">
       <Col className="keywordsInner">
         <h1 className="text-center">We Are</h1>
+        <p className="text-center">Choose up to 5 keywords that describe your startup.</p>
         <div className="tiles">
           {wordsToShow.map(w => {
             const active = searchKeywords.includes(w);

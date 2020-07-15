@@ -4,6 +4,7 @@ import { processErr } from '../utils';
 
 export default function search(state = {}, action) {
   const results = {};
+  // TODO: remove this when we have real data
   const fakeSearchData = {
     isLead: true,
     isOpen: true,

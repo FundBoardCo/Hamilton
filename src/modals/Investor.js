@@ -1,14 +1,14 @@
-import React, { Suspense, useState } from 'react';
+import React, { Suspense } from 'react';
 import { useHistory } from 'react-router';
 import { useSelector, useDispatch } from 'react-redux';
-import Row from 'react-bootstrap/Row';
-import Col from 'react-bootstrap/Col';
 import Modal from 'react-bootstrap/Modal';
 import PropTypes from 'prop-types';
 import { useImage } from 'react-image';
 import Spinner from 'react-bootstrap/Spinner';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { Timeline } from 'react-twitter-widgets';
 import GreySquare from '../imgs/greySquare.jpg';
+import PersonStamp from '../components/people/PersonStamp';
 
 function ImgComp(params) {
   const { imgSrc = '', alt = '' } = params;
@@ -61,10 +61,11 @@ export default function Investor(props) {
   const people = useSelector(state => state.people);
   const data = people[investor] || {};
   console.log(data);
+  const twitterName = data.twitter.substr(data.twitter.lastIndexOf('/') + 1);
 
   const searchData = useSelector(state => state.search.results[investor]);
 
-  console.log(searchData)
+  console.log(searchData);
 
   const { matches } = searchData;
   let percentageMatch = (matches.keywords && matches.keywords.length) || 0;
@@ -80,12 +81,17 @@ export default function Investor(props) {
     history.goBack();
   };
 
+  const addInvestor = () => {
+    console.log('ping')
+  };
+
   return (
     <Modal
       size="lg"
       aria-labelledby="Modal-Title"
       centered
       show
+      scrollable
       onHide={closeModal}
       className="modal-investor"
     >
@@ -126,7 +132,7 @@ export default function Investor(props) {
           </a>
         </div>
         {data.description && (
-          <div className="description mb-2">
+          <div className="description mb-3">
             {data.description}
           </div>
         )}
@@ -159,7 +165,59 @@ export default function Investor(props) {
             )}
           </ul>
         </div>
+        <div className="funded">
+          <h2>Founders they&apos;ve funded</h2>
+          <div className="founders">
+            {data.investments.map(i => {
+              const pProps = {
+                org_name: i.name,
+                logo_url: i.logo_url,
+                ...i.founders[0],
+              };
+              return <PersonStamp key={i.id} {...pProps} />;
+            })}
+          </div>
+        </div>
+        <div className="twitterFeed">
+          {twitterName && (
+            <Timeline
+              dataSource={{
+                sourceType: 'profile',
+                screenName: twitterName,
+              }}
+              options={{
+                height: '400',
+                tweetLimit: '3',
+              }}
+            />
+          )}
+        </div>
+        {data.linkedin && (
+          <div className="mb-4 h3 text-linkedin d-flex">
+            <FontAwesomeIcon icon={['fab', 'linkedin']} />
+            &nbsp;
+            <a href={data.linkedin} className="text-linkedin">
+              LinkedIn Profile
+            </a>
+          </div>
+        )}
+        <div className="mb-4 h3 text-danger d-flex">
+          <FontAwesomeIcon icon="exclamation-triangle" />
+          &nbsp;
+          <a href={data.linkedin} className="text-danger">
+            I think this profile is out of date.
+          </a>
+        </div>
       </Modal.Body>
+      <Modal.Footer>
+        <button
+          className="addBtn"
+          type="button"
+          onClick={addInvestor}
+        >
+          Add to my FundBoard
+        </button>
+      </Modal.Footer>
     </Modal>
   );
 }

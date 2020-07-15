@@ -72,6 +72,7 @@ export default function Location() {
     <Row id="Location">
       <Col className="locationInner">
         <h1 className="text-center">Near</h1>
+        <p className="text-center">The location of your office, or home if you're remote.</p>
         <div className="formWrapper">
           <Form noValidate validated={validated}>
             <Form.Group controlId="LocationInput">
@@ -96,7 +97,7 @@ export default function Location() {
             >
               <Form.Check
                 type="checkbox"
-                label="We're fully remote"
+                label="We're fully remote, but I still entered my zip code."
                 checked={remoteValue}
                 onChange={e => onRemoteChange(e.target.checked)}
               />
