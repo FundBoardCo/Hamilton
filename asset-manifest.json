@@ -1,24 +1,24 @@
 {
   "files": {
-    "main.css": "/App/static/css/main.66bfae54.chunk.css",
-    "main.js": "/App/static/js/main.9afc13c7.chunk.js",
-    "main.js.map": "/App/static/js/main.9afc13c7.chunk.js.map",
-    "runtime-main.js": "/App/static/js/runtime-main.3d4ca5c2.js",
-    "runtime-main.js.map": "/App/static/js/runtime-main.3d4ca5c2.js.map",
-    "static/js/2.9dd60f54.chunk.js": "/App/static/js/2.9dd60f54.chunk.js",
-    "static/js/2.9dd60f54.chunk.js.map": "/App/static/js/2.9dd60f54.chunk.js.map",
-    "index.html": "/App/index.html",
-    "precache-manifest.95c54f07d951356fae83d8837359ad8b.js": "/App/precache-manifest.95c54f07d951356fae83d8837359ad8b.js",
-    "service-worker.js": "/App/service-worker.js",
-    "static/css/main.66bfae54.chunk.css.map": "/App/static/css/main.66bfae54.chunk.css.map",
-    "static/js/2.9dd60f54.chunk.js.LICENSE.txt": "/App/static/js/2.9dd60f54.chunk.js.LICENSE.txt",
-    "static/media/FundBoard_Logo.svg": "/App/static/media/FundBoard_Logo.4f77b573.svg",
-    "static/media/greySquare.jpg": "/App/static/media/greySquare.af186e0f.jpg"
+    "main.css": "/FundBoardCo/App/static/css/main.66bfae54.chunk.css",
+    "main.js": "/FundBoardCo/App/static/js/main.c1f82a23.chunk.js",
+    "main.js.map": "/FundBoardCo/App/static/js/main.c1f82a23.chunk.js.map",
+    "runtime-main.js": "/FundBoardCo/App/static/js/runtime-main.9aef3db7.js",
+    "runtime-main.js.map": "/FundBoardCo/App/static/js/runtime-main.9aef3db7.js.map",
+    "static/js/2.9dd60f54.chunk.js": "/FundBoardCo/App/static/js/2.9dd60f54.chunk.js",
+    "static/js/2.9dd60f54.chunk.js.map": "/FundBoardCo/App/static/js/2.9dd60f54.chunk.js.map",
+    "index.html": "/FundBoardCo/App/index.html",
+    "precache-manifest.46ba26a3b031a0e6ee47c80951a6e3cb.js": "/FundBoardCo/App/precache-manifest.46ba26a3b031a0e6ee47c80951a6e3cb.js",
+    "service-worker.js": "/FundBoardCo/App/service-worker.js",
+    "static/css/main.66bfae54.chunk.css.map": "/FundBoardCo/App/static/css/main.66bfae54.chunk.css.map",
+    "static/js/2.9dd60f54.chunk.js.LICENSE.txt": "/FundBoardCo/App/static/js/2.9dd60f54.chunk.js.LICENSE.txt",
+    "static/media/FundBoard_Logo.svg": "/FundBoardCo/App/static/media/FundBoard_Logo.4f77b573.svg",
+    "static/media/greySquare.jpg": "/FundBoardCo/App/static/media/greySquare.af186e0f.jpg"
   },
   "entrypoints": [
-    "static/js/runtime-main.3d4ca5c2.js",
+    "static/js/runtime-main.9aef3db7.js",
     "static/js/2.9dd60f54.chunk.js",
     "static/css/main.66bfae54.chunk.css",
-    "static/js/main.9afc13c7.chunk.js"
+    "static/js/main.c1f82a23.chunk.js"
   ]
 }
