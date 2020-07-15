@@ -1,18 +1,14 @@
 import {
-  all,
   put,
   call,
   fork,
   takeLatest,
-  takeEvery,
 } from 'redux-saga/effects';
 import axios from 'axios';
 import {
-  CRUNCHBASE_APIKEY,
   AIRTABLE_APIKEY,
-  CBURL,
-} from '../constants.js';
-import { getSafeVar, capitalizeFirstLetter } from '../utils';
+} from '../constants';
+import { capitalizeFirstLetter } from '../utils';
 
 function requestAirtableGetKeywords() {
   return axios.get('https://api.airtable.com/v0/app5hJojHQxyJ7ElS/Keywords', {
@@ -30,7 +26,7 @@ function* workAirtableGetKeywords() {
 }
 
 function* watchAirtableGetKeywords() {
-  yield takeLatest('AIRTABLE_GET_KEYWORDS_REQUESTED', workAirtableGetKeywords)
+  yield takeLatest('AIRTABLE_GET_KEYWORDS_REQUESTED', workAirtableGetKeywords);
 }
 
 function requestSearchGetResults(params = {}) {
@@ -77,7 +73,7 @@ function* workSearchGetResults(action) {
 }
 
 function* watchSearchGetResults() {
-  yield takeLatest('SEARCH_GET_RESULTS_REQUESTED', workSearchGetResults)
+  yield takeLatest('SEARCH_GET_RESULTS_REQUESTED', workSearchGetResults);
 }
 
 export default function* rootSaga() {

@@ -60,12 +60,9 @@ export default function Investor(props) {
 
   const people = useSelector(state => state.people);
   const data = people[investor] || {};
-  console.log(data);
   const twitterName = data.twitter.substr(data.twitter.lastIndexOf('/') + 1);
 
   const searchData = useSelector(state => state.search.results[investor]);
-
-  console.log(searchData);
 
   const { matches } = searchData;
   let percentageMatch = (matches.keywords && matches.keywords.length) || 0;
@@ -75,14 +72,39 @@ export default function Investor(props) {
 
   const name = `${data['first name']} ${data['last name']}`;
 
+  const investors = useSelector(state => state.board.ids) || [];
+
+  const isOnBoard = investors.includes(investor);
+
+  const dispatch = useDispatch();
+
   const history = useHistory();
 
   const closeModal = () => {
     history.goBack();
   };
 
-  const addInvestor = () => {
-    console.log('ping')
+  const addInvestor = () => dispatch({
+    type: 'BOARD_ADD',
+    id: investor,
+  });
+
+  const removeInvestor = () => dispatch({
+    type: 'BOARD_REMOVE',
+    id: investor,
+  });
+
+  const toggleInvestor = () => {
+    if (isOnBoard) {
+      removeInvestor();
+    } else {
+      addInvestor();
+    }
+  };
+
+  const addBtnProps = {
+    text: isOnBoard ? 'Remove from my FundBoard' : 'Add to my FundBoard',
+    bgCol: isOnBoard ? 'bg-warning' : 'bg-secondary',
   };
 
   return (
@@ -127,7 +149,7 @@ export default function Investor(props) {
         </div>
         <div className="crunchBaseAttribution mb-2">
           Sourced from CrunchBase.&nbsp;
-          <a href={data.crunchbase} target="_blank" rel="noreferrer">
+          <a href={data.crunchbase} target="_blank" rel="noopener noreferrer">
             Click to view profile.
           </a>
         </div>
@@ -211,11 +233,11 @@ export default function Investor(props) {
       </Modal.Body>
       <Modal.Footer>
         <button
-          className="addBtn"
+          className={`addBtn ${addBtnProps.bgCol}`}
           type="button"
-          onClick={addInvestor}
+          onClick={toggleInvestor}
         >
-          Add to my FundBoard
+          {addBtnProps.text}
         </button>
       </Modal.Footer>
     </Modal>

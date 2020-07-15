@@ -1,5 +1,6 @@
 import { combineReducers } from 'redux';
 import airtable from './airtable';
+import board from './board';
 import search from './search';
 import user from './user';
 import people from './people';
@@ -32,6 +33,7 @@ const initialState = {
 export const rootReducer = combineReducers({
   initialState,
   airtable,
+  board,
   people,
   search,
   //user,

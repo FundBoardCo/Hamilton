@@ -25,9 +25,9 @@ export default function Person(props) {
     primary_job_title,
     primary_organization,
     matches,
-    isLead,
-    isOpen,
-    isImpact,
+    // isLead,
+    // isOpen,
+    // isImpact,
   } = props;
   // TODO: replace with data from real API
   const primary_organization_logo = ''; // placeholder
@@ -105,9 +105,9 @@ Person.defaultProps = {
     name: false,
     org: false,
   },
-  isLead: false,
-  isOpen: false,
-  isImpact: false,
+  // isLead: false,
+  // isOpen: false,
+  // isImpact: false,
 };
 
 Person.propTypes = {
@@ -120,7 +120,7 @@ Person.propTypes = {
       PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.string), PropTypes.bool]),
     ),
   }),
-  isLead: PropTypes.bool,
-  isOpen: PropTypes.bool,
-  isImpact: PropTypes.bool,
+  // isLead: PropTypes.bool,
+  // isOpen: PropTypes.bool,
+  // isImpact: PropTypes.bool,
 };
