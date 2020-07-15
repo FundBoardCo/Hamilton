@@ -1,5 +1,6 @@
 import React, {useState} from 'react';
 import { useSelector, useDispatch } from 'react-redux';
+import { useHistory } from 'react-router';
 import Button from 'react-bootstrap/Button';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
@@ -26,6 +27,12 @@ export default function Search() {
     setDetailsOpen(!detailsOpen);
   };
 
+  const history = useHistory();
+
+  const onEditClick = () => {
+    history.push('search/menu');
+  };
+
   return (
     <Row id="PageSearch" className="pageContainer">
       {searchState === 'pending' && <Spinner />}
@@ -41,6 +48,7 @@ export default function Search() {
           <Button
             variant="primary-light"
             className="btnTn inlineBtn"
+            onClick={onEditClick}
           >
             <FontAwesomeIcon icon="edit" />
             edit

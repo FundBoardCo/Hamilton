@@ -170,6 +170,35 @@ html#ov body {
       }
     }
 
+    &.modal-sidebar-left {
+      .modal-dialog {
+        position: absolute;
+        top: 0;
+        left: -20px;
+        bottom: 0;
+        margin: 0;
+        max-height: none;
+
+        .modal-content {
+          min-height: calc(100vh - 20px);
+          min-width: calc(95vw + 20px);
+          padding-left: 30px;
+          border-radius: $pad2;
+        }
+      }
+
+      &.fade {
+        .modal-dialog {
+          left: calc(-95vw - 20px);
+          transition: opacity 0.3s linear, left 0.3s ease-out;
+        }
+
+        &.show .modal-dialog {
+          left: -20px;
+        }
+      }
+    }
+
     &.modal-investor {
       .modal-dialog {
         .modal-content {
