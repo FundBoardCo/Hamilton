@@ -137,6 +137,7 @@ html#ov body {
     display: inline-flex;
     align-items: center;
     padding-left: 2.5em;
+    height: 2em;
   }
 
   input[type="checkbox"] + label::before,
@@ -152,7 +153,9 @@ html#ov body {
     width: 2em;
     border-radius: $pad2;
     border: 1px solid $col-primary;
+    background-color: #fff;
     left: 0;
+    top: 0;
   }
 
   /*Checkmark of the fake checkbox*/
@@ -162,8 +165,8 @@ html#ov body {
     border-left: 4px solid #694494;
     border-bottom: 4px solid #694494;
     transform: rotate(-45deg);
-    left: 8px;
-    top: 5px;
+    left: 7px;
+    top: 9px;
   }
 
   /*Hide the checkmark by default*/

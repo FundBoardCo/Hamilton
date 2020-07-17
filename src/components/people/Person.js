@@ -1,5 +1,6 @@
 import React, { Suspense } from 'react';
 import PropTypes from 'prop-types';
+import { useSelector, useDispatch } from 'react-redux';
 import { useHistory } from 'react-router';
 import Button from 'react-bootstrap/Button';
 import Spinner from 'react-bootstrap/Spinner';
@@ -37,10 +38,39 @@ export default function Person(props) {
   if (matchForPercentage.location) percentageMatch += 1;
   percentageMatch = Math.floor((percentageMatch / 7) * 100);
 
+  const investors = useSelector(state => state.board.ids) || [];
+  const isOnBoard = investors.includes(uuid);
+
   const history = useHistory();
 
   const showPerson = () => {
     history.push(`/search/${uuid}`);
+  };
+
+  const dispatch = useDispatch();
+
+  const addInvestor = () => dispatch({
+    type: 'BOARD_ADD',
+    id: uuid,
+  });
+
+  const removeInvestor = () => dispatch({
+    type: 'BOARD_REMOVE',
+    id: uuid,
+  });
+
+  const toggleInvestor = () => {
+    if (isOnBoard) {
+      removeInvestor();
+    } else {
+      addInvestor();
+    }
+  };
+
+  const addBtnProps = {
+    text: isOnBoard ? 'Remove from my FundBoard' : 'Add to my FundBoard',
+    variant: isOnBoard ? 'icon-warning' : 'icon-info',
+    faIcon: isOnBoard ? 'minus-circle' : 'plus-circle',
   };
 
   return (
@@ -80,10 +110,12 @@ export default function Person(props) {
       </div>
       <div className="controls">
         <Button
-          variant="icon-info"
+          variant={addBtnProps.variant}
           className="iconBtn addBtn"
+          onClick={toggleInvestor}
         >
-          <FontAwesomeIcon icon="plus-circle" />
+          <FontAwesomeIcon icon={addBtnProps.faIcon} />
+          <span className="sr-only">{addBtnProps.text}</span>
         </Button>
         <div className="percentageMatch">
           {`${percentageMatch}%`}

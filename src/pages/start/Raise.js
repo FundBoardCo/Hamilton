@@ -23,6 +23,7 @@ export default function Raise() {
   const usdFormatter = new Intl.NumberFormat('en-US', {
     style: 'currency',
     currency: 'USD',
+    minimumFractionDigits: 0,
   });
 
   return (
@@ -32,6 +33,9 @@ export default function Raise() {
         <p className="text-center">Select the amount you are raising.</p>
         <h2 className="text-center">{usdFormatter.format(raiseValue)}</h2>
         <div className="sliderWrapper">
+          <div className="sliderMin">
+            {usdFormatter.format(100000)}
+          </div>
           <RangeSlider
             value={raiseValue}
             min={100000}
@@ -40,8 +44,12 @@ export default function Raise() {
             size="lg"
             variant="primary"
             tooltip="on"
+            tooltipLabel={val => usdFormatter.format(val)}
             onChange={e => onRaiseChange(Number(e.target.value))}
           />
+          <div className="sliderMax">
+            {usdFormatter.format(10000000)}
+          </div>
         </div>
       </Col>
     </Row>

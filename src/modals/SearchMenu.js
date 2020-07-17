@@ -3,27 +3,55 @@ import { useHistory } from 'react-router';
 import { useSelector, useDispatch } from 'react-redux';
 import Modal from 'react-bootstrap/Modal';
 import Form from 'react-bootstrap/Form';
+import RangeSlider from 'react-bootstrap-range-slider';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 const usdFormatter = new Intl.NumberFormat('en-US', {
   style: 'currency',
   currency: 'USD',
+  minimumFractionDigits: 0,
 });
+
+function SectionTitle(params) {
+  const {
+    text,
+    faIcon,
+    detailText,
+    subText,
+  } = params;
+  return (
+    <div className="sectionTitle">
+      <div className="title">
+        <span className="iconDisc bg-primary">
+          <FontAwesomeIcon icon={faIcon} />
+        </span>
+        <h2>{text}</h2>
+        {detailText && (
+          <span className="detail">
+            {detailText}
+          </span>
+        )}
+      </div>
+      {subText && (
+        <p>{subText}</p>
+      )}
+    </div>
+  );
+}
 
 export default function SearchMenu() {
   const airtableKeywords = useSelector(state => state.airtable.keywords) || {};
+  const wordsToShow = Array.isArray(airtableKeywords.data) ? airtableKeywords.data : [];
 
   const searchKeywords = useSelector(state => state.search.keywords) || [];
-  const [keywordsValue, setKeywordsValue] = useState(searchKeywords);
 
   const searchRaise = useSelector(state => state.search.raise) || 100000;
-  const [raiseValue, setRaiseValue] = useState(searchRaise);
 
   const searchLocation = useSelector(state => state.search.location) || '';
+  // use local state to handle invalid entries without recording them
   const [locationValue, setLocationValue] = useState(searchLocation);
 
   const storedRemote = useSelector(state => state.search.remote) || '';
-  const [remoteValue, setRemoteValue] = useState(storedRemote);
 
   const [validated, setValidated] = useState(false);
   const [isValid, setIsValid] = useState(false);
@@ -56,14 +84,40 @@ export default function SearchMenu() {
     remote,
   });
 
+  const onTileClick = (word, active) => {
+    if (active) {
+      setKeywords(searchKeywords.filter(w => w !== word));
+    } else if (searchKeywords.length < 5) {
+      setKeywords([...searchKeywords, word]);
+    }
+  };
+
+  const onRaiseChange = val => {
+    setRaise(val);
+  };
+
   const onRemoteChange = val => {
-    setRemoteValue(val);
+    setRemote(val);
+  };
+
+  const onLocationChange = e => {
+    const input = e.currentTarget;
+    const val = e.target.value;
+    setValidated(true);
+    if (input.checkValidity()) {
+      setIsValid(true);
+      setLocationValue(val);
+      setLocation(val);
+    } else {
+      setLocationValue(val);
+      setIsValid(false);
+    }
   };
 
   const getResults = () => {
     const params = {};
-    params.keywords = keywordsValue;
-    params.raise = raiseValue;
+    params.keywords = searchKeywords;
+    params.raise = searchRaise;
     params.location = locationValue;
 
     return dispatch({
@@ -73,10 +127,6 @@ export default function SearchMenu() {
   };
 
   const closeModal = () => {
-    setKeywords(keywordsValue);
-    setRaise(raiseValue);
-    setLocation(locationValue);
-    setRemote(remoteValue);
     getResults();
     history.goBack();
   };
@@ -93,15 +143,69 @@ export default function SearchMenu() {
       show
       scrollable
       onHide={closeModal}
-      className="modal-sidebar-left"
+      className="modal-sidebar-left modal-searchMenu"
     >
       <Modal.Header closeButton>
         <Modal.Title className="sr-only">
-          Search Settings
+          <h1>Search Settings</h1>
         </Modal.Title>
       </Modal.Header>
       <Modal.Body>
+        <SectionTitle
+          text="My Keywords"
+          faIcon="key"
+          detailText={`${searchKeywords.length} selected`}
+          subText="Choose up to 5 words that describe your startup"
+        />
+        <div className="tilesWrapper mb-5">
+          <div className="tiles">
+            {wordsToShow.map(w => {
+              const active = searchKeywords.includes(w);
+              return (
+                <button
+                  className={`tile ${active ? 'active' : ''}`}
+                  onClick={() => onTileClick(w, active)}
+                  key={w}
+                  tabIndex={0}
+                  type="button"
+                >
+                  {w}
+                </button>
+              );
+            })}
+          </div>
+        </div>
+        <SectionTitle
+          faIcon="rocket"
+          text="Raising"
+          detailText={usdFormatter.format(searchRaise)}
+          subText="The amount you're trying to raise this round"
+        />
+        <div className="sliderWrapper">
+          <div className="sliderMin">
+            {usdFormatter.format(100000)}
+          </div>
+          <RangeSlider
+            value={searchRaise}
+            min={100000}
+            max={10000000}
+            step={100000}
+            size="lg"
+            variant="primary"
+            tooltip="on"
+            tooltipLabel={val => usdFormatter.format(val)}
+            onChange={e => onRaiseChange(Number(e.target.value))}
+          />
+          <div className="sliderMax">
+            {usdFormatter.format(10000000)}
+          </div>
+        </div>
         <Form noValidate validated={validated}>
+          <SectionTitle
+            faIcon="map-marker-alt"
+            text="Location"
+            subText="The Zip Code of your office or home"
+          />
           <Form.Group controlId="LocationInput">
             <Form.Label>My Zip Code (5 digit)</Form.Label>
             <Form.Control
@@ -125,12 +229,21 @@ export default function SearchMenu() {
             <Form.Check
               type="checkbox"
               label="We're fully remote, but I still entered my zip code."
-              checked={remoteValue}
+              checked={storedRemote}
               onChange={e => onRemoteChange(e.target.checked)}
             />
           </Form.Group>
         </Form>
       </Modal.Body>
+      <Modal.Footer>
+        <button
+          className="searchBtn"
+          type="button"
+          onClick={closeModal}
+        >
+          Search
+        </button>
+      </Modal.Footer>
     </Modal>
   );
 }

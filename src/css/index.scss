@@ -189,12 +189,11 @@ html#ov {
           flex-direction: column;
           flex-wrap: nowrap;
           flex-grow: 1;
-          min-height: calc(568px - #{$navSz1}); // always at least iPhoneSE tall
           height: calc(100vh - #{$navSz1});
           @include colPadding;
+          padding-top: $pad3;
 
           @media (min-width: $mediaXs) {
-            min-height: calc(568px - #{$navSz2}); // always at least iPhoneSE tall
             height: calc(100vh - #{$navSz2});
           }
         }
@@ -341,99 +340,28 @@ html#ov {
               flex-direction: column;
 
               .sliderWrapper {
-                flex-grow: 1;
-                display: flex;
-                align-items: center;
-
-                .range-slider__wrap {
-                  flex-grow: 1;
-
-                  input[type=range].range-slider.range-slider--lg::-webkit-slider-thumb {
-                    height: 48px;
-                    width: 48px;
-                    margin-top: -22px;
-                  }
-                  input[type=range].range-slider.range-slider--lg::-moz-range-thumb {
-                    height: 48px;
-                    width: 48px;
-                  }
-                  input[type=range].range-slider.range-slider--lg::-ms-thumb {
-                    height: 48px;
-                    width: 48px;
-                    margin-top: 0;
-                  }
-
-                  input[type=range].range-slider.range-slider--primary::-webkit-slider-thumb {
-                    background: $col-light;
-                    border: 2px solid $col-primary;
-                  }
-                  input[type=range].range-slider.range-slider--primary::-moz-range-thumb {
-                    background: $col-light;
-                    border: 2px solid $col-primary;
-                  }
-                  input[type=range].range-slider.range-slider--primary::-ms-thumb {
-                    background: $col-light;
-                    border: 2px solid $col-primary;
-                  }
-
-                  input[type=range].range-slider:not(.disabled):focus::-webkit-slider-thumb {
-                    box-shadow: 0 0 0 0.1rem $col-primary;
-                  }
-                  input[type=range].range-slider:not(.disabled):focus::-moz-range-thumb {
-                    box-shadow: 0 0 0 0.1rem $col-primary;
-                  }
-                  input[type=range].range-slider:not(.disabled):focus::-ms-thumb {
-                    box-shadow: 0 0 0 0.1rem $col-primary;
-                  }
-                  input[type=range].range-slider:not(.disabled):active::-webkit-slider-thumb {
-                    box-shadow: 0 0 0 0.2rem $col-primary;
-                  }
-                  input[type=range].range-slider:not(.disabled):active::-moz-range-thumb {
-                    box-shadow: 0 0 0 0.2rem $col-primary;
-                  }
-                  input[type=range].range-slider:not(.disabled):active::-ms-thumb {
-                    box-shadow: 0 0 0 0.2rem $col-primary;
-                  }
-
-                  .range-slider__tooltip {
-                    opacity: 1;
-
-                    .range-slider__tooltip__label {
-                      display: flex;
-                      align-items: center;
-                      padding: $pad4;
-                      background-color: $col-emp-light6;
-                      border: 2px solid $col-primary;
-                      opacity: 1;
-                      font-size: $h4;
-                      color: $col-text;
-                      font-weight: 700;
-                      top: 0.8rem;
-                    }
-
-                    .range-slider__tooltip__arrow {
-                      transform: translateY(0.4rem);
-                      width: 0.8rem;
-                      height: 0.8rem;
-                      opacity: 1;
-
-                      &:before {
-                        border-top-color: $col-primary;
-                        border-bottom-color: $col-primary;
-                      }
-                    }
-                  }
-                }
+                padding-left: 90px;
+                padding-right: 90px;
+                margin: auto 0;
+                flex-grow: 0;
               }
 
-              @media (min-height: $mediaMaxLg) {
+              @media (max-width: 414px) {
                 .sliderWrapper {
-                  width: 100%;
-                  height: 100%;
+                  flex-grow: 1;
+                  padding: 0;
+
+                  .sliderMin {
+                    top: auto;
+                    bottom: 0;
+                  }
+
+                  .sliderMax {
+                    left: 0;
+                  }
 
                   .range-slider__wrap {
-                    transform-origin: 50% 50%;
-                    transform: rotate(-90deg) translateY(calc(50% - 30px)); // half width container - half width slider (60px)
+                    transform: rotate(-90deg) translateY(-200%); // make room for the label
 
                     .range-slider__tooltip {
                       transform: rotate(90deg);
@@ -441,11 +369,13 @@ html#ov {
                       .range-slider__tooltip__label {
                         transform: translateX(0);
                         top: -40%;
+                        left: -14px;
                       }
 
                       .range-slider__tooltip__arrow {
                         transform: translateX(-0.8rem) rotate(-90deg);
                         top: 50%;
+                        left: -10px;
                       }
                     }
                   }
@@ -512,9 +442,14 @@ html#ov {
             }
 
             .secondaryDetails {
-              padding: $pad2;
-              background-color: $col-info;
-              color: $col-text-light;
+              padding: $pad3;
+              background-color: $col-primary-light3;
+              color: $col-text;
+              border-bottom: 1px solid $col-structure;
+
+              p:last-child {
+                margin: 0;
+              }
             }
           }
 
@@ -535,17 +470,24 @@ html#ov {
             .searchDetailsBar {
               position: static;
               height: auto;
+              margin: 0 0 $pad3 0;
 
               .primaryDetails {
-                padding: 0 0 $pad1 0;
+                padding: 0;
                 background-color: transparent !important;
                 color: $col-text;
                 border-bottom: 1px solid $col-primary;
-                margin: 0 0 $pad3 0;
 
                 .primaryDetailsLink {
                   color: $col-text !important;
                 }
+              }
+
+              .secondaryDetails {
+                border: 1px solid $col-structure;
+                border-top: none;
+                border-bottom-right-radius: $pad2;
+                border-bottom-left-radius: $pad2;
               }
             }
 
