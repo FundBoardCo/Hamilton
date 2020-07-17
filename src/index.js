@@ -11,7 +11,7 @@ import * as serviceWorker from './serviceWorker';
 
 ReactDOM.render(
   <Provider store={store}>
-    <PersistGate loading={<Spinner />} persistor={persistor}>
+    <PersistGate loading={<Spinner animation="border" variant="info" />} persistor={persistor}>
       <App />
     </PersistGate>
   </Provider>,

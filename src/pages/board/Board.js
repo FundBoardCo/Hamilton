@@ -1,32 +1,54 @@
-import React from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-import Container from 'react-bootstrap/Container';
+import React, { useState } from 'react';
+import { useSelector } from 'react-redux';
 import Row from 'react-bootstrap/Row';
-import Col from 'react-bootstrap/Col';
-import { useHistory } from 'react-router';
+import Button from 'react-bootstrap/Button';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import Person from '../../components/people/Person';
 
 export default function Board() {
   const investors = useSelector(state => state.board.ids) || [];
-  console.log(investors)
+  const people = useSelector(state => state.people);
+  const investorList = {};
+  investors.forEach(i => {
+    investorList[i] = people[i];
+  });
 
-  const dispatch = useDispatch();
+  const [detailsOpen, setDetailsOpen] = useState(false);
 
-  const history = useHistory();
+  const onDetailClick = () => {
+    setDetailsOpen(!detailsOpen);
+  };
 
   return (
-    <Row className="pageContainer">
-      <Container fluid>
-        <Row>
-          <Col>
-            <h1>My FundBoard</h1>
-          </Col>
-        </Row>
-        <Row>
-          <Col xs={12}>
-            Placeholder for board
-          </Col>
-        </Row>
-      </Container>
+    <Row id="PageBoard" className="pageContainer">
+      <div className="boardDetailsBar">
+        <div className="primaryDetails">
+          <Button
+            className="primaryDetailsLink"
+            variant="text-light"
+            onClick={onDetailClick}
+          >
+            {`My Fundboard: ${Object.keys(investors).length} investors`}
+          </Button>
+        </div>
+        {detailsOpen && (
+          <div className="secondaryDetails">
+            <p>
+            </p>
+          </div>
+        )}
+      </div>
+      <div className="results">
+        {Object.keys(investorList).map(k => {
+          const personProps = { ...investorList[k] };
+          personProps.uuid = k;
+          personProps.isBoard = true;
+          const pKey = personProps.permalink || personProps.image_id;
+          return (
+            <Person key={pKey} {...personProps} />
+          );
+        })}
+      </div>
     </Row>
   );
 }

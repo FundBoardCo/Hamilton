@@ -29,6 +29,7 @@ export default function Person(props) {
     // isLead,
     // isOpen,
     // isImpact,
+    isBoard,
   } = props;
   // TODO: replace with data from real API
   const primary_organization_logo = ''; // placeholder
@@ -44,7 +45,8 @@ export default function Person(props) {
   const history = useHistory();
 
   const showPerson = () => {
-    history.push(`/search/${uuid}`);
+    const root = isBoard ? 'board' : 'search';
+    history.push(`/${root}/${uuid}`);
   };
 
   const dispatch = useDispatch();
@@ -67,18 +69,30 @@ export default function Person(props) {
     }
   };
 
-  const addBtnProps = {
+  // TODO: add a "are you sure" step to removing if it's on the board page.
+
+  let addBtnProps = {
     text: isOnBoard ? 'Remove from my FundBoard' : 'Add to my FundBoard',
     variant: isOnBoard ? 'icon-warning' : 'icon-info',
     faIcon: isOnBoard ? 'minus-circle' : 'plus-circle',
+    action: toggleInvestor,
   };
+
+  if (isBoard) {
+    addBtnProps = {
+      text: 'See Investor Details',
+      variant: 'icon-info',
+      faIcon: 'ellipsis-h',
+      action: showPerson,
+    };
+  }
 
   return (
     <div
       className="person"
     >
       <button className="thumb" onClick={showPerson} type="button">
-        <Suspense fallback={<Spinner animation="border" role="status" size="sm" />}>
+        <Suspense fallback={<Spinner animation="border" variant="info" role="status" size="sm" />}>
           <ImgComp imgSrc={image_id} alt={name} />
         </Suspense>
       </button>
@@ -95,7 +109,7 @@ export default function Person(props) {
         </div>
         <div className="d-flex details">
           <div className="orgLogoWrapper">
-            <Suspense fallback={<Spinner animation="border" role="status" size="sm" />}>
+            <Suspense fallback={<Spinner animation="border" variant="info" role="status" size="sm" />}>
               <ImgComp imgSrc={primary_organization_logo} alt={name} />
             </Suspense>
           </div>
@@ -112,7 +126,7 @@ export default function Person(props) {
         <Button
           variant={addBtnProps.variant}
           className="iconBtn addBtn"
-          onClick={toggleInvestor}
+          onClick={addBtnProps.action}
         >
           <FontAwesomeIcon icon={addBtnProps.faIcon} />
           <span className="sr-only">{addBtnProps.text}</span>
@@ -140,6 +154,7 @@ Person.defaultProps = {
   // isLead: false,
   // isOpen: false,
   // isImpact: false,
+  isBoard: false,
 };
 
 Person.propTypes = {
@@ -155,4 +170,5 @@ Person.propTypes = {
   // isLead: PropTypes.bool,
   // isOpen: PropTypes.bool,
   // isImpact: PropTypes.bool,
+  isBoard: PropTypes.bool,
 };

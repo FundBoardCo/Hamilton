@@ -1,9 +1,8 @@
-import React, {useState} from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import React, { useState } from 'react';
+import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router';
 import Button from 'react-bootstrap/Button';
 import Row from 'react-bootstrap/Row';
-import Col from 'react-bootstrap/Col';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Spinner from 'react-bootstrap/Spinner';
 import Person from '../../components/people/Person';
@@ -14,7 +13,6 @@ export default function Search() {
   const searchLocation = useSelector(state => state.search.location) || '';
   const searchResults = useSelector(state => state.search.results) || [];
   const searchState = useSelector(state => state.search.results_state) || '';
-  console.log(searchResults)
 
   const [detailsOpen, setDetailsOpen] = useState(false);
 
@@ -36,7 +34,7 @@ export default function Search() {
 
   return (
     <Row id="PageSearch" className="pageContainer">
-      {searchState === 'pending' && <Spinner />}
+      {searchState === 'pending' && <Spinner animation="border" variant="info" variant="info" />}
       <div className="searchDetailsBar">
         <div className="primaryDetails">
           <Button

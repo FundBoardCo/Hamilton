@@ -29,11 +29,11 @@ export default function PersonStamp(props) {
     >
       <a href={`https://www.crunchbase.com/person/${permalink}`} target="_blank" rel="noreferrer">
         <div className="imageWrapper">
-          <Suspense fallback={<Spinner animation="border" role="status" size="sm" />}>
+          <Suspense fallback={<Spinner animation="border" variant="info" role="status" size="sm" />}>
             <ImgComp imgSrc={image_url} alt={name} />
           </Suspense>
           <div className="orgLogoWrapper">
-            <Suspense fallback={<Spinner animation="border" role="status" size="sm" />}>
+            <Suspense fallback={<Spinner animation="border" variant="info" role="status" size="sm" />}>
               <ImgComp imgSrc={logo_url} alt={org_name} />
             </Suspense>
           </div>

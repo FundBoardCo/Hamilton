@@ -504,6 +504,94 @@ html#ov {
             height: calc(100vh - #{$navPlusSearchBarSz2});
           }
         }
+
+        #PageBoard {
+          margin-top: 74px;
+
+          .boardDetailsBar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+
+            .primaryDetails {
+              display: flex;
+              justify-content: space-between;
+              align-items: center;
+              font-size: $h3;
+              background-color: $col-structure;
+              color: $col-text-light;
+              padding: $pad2;
+
+              .primaryDetailsLink {
+                font-size: $h5;
+                font-weight: 700;
+              }
+            }
+
+            .secondaryDetails {
+              padding: $pad3;
+              background-color: $col-primary-light3;
+              color: $col-text;
+              border-bottom: 1px solid $col-structure;
+
+              p:last-child {
+                margin: 0;
+              }
+            }
+          }
+
+          @media (min-width: $mediaXs) {
+            .boardDetailsBar {
+              .primaryDetails {
+                .primaryDetailsLink {
+                  font-size: $h3;
+                }
+              }
+            }
+          }
+
+          @media (min-width: $mediaLg) {
+            margin-top: 0;
+            padding-top:$pad3;
+
+            .boardDetailsBar {
+              position: static;
+              height: auto;
+              margin: 0 0 $pad3 0;
+
+              .primaryDetails {
+                padding: 0;
+                background-color: transparent !important;
+                color: $col-text;
+                border-bottom: 1px solid $col-primary;
+
+                .primaryDetailsLink {
+                  color: $col-text !important;
+                }
+              }
+
+              .secondaryDetails {
+                border: 1px solid $col-structure;
+                border-top: none;
+                border-bottom-right-radius: $pad2;
+                border-bottom-left-radius: $pad2;
+              }
+            }
+
+            .results {
+              overflow: auto;
+            }
+          }
+
+          @media (max-width: $mediaMaxSm) {
+            height: calc(100vh - #{$navPlusSearchBarSz1});
+          }
+
+          @media (max-width: $mediaMaxMd) {
+            height: calc(100vh - #{$navPlusSearchBarSz2});
+          }
+        }
       }
 
     } //end #Root

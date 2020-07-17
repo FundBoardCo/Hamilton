@@ -17,6 +17,7 @@ import {
   faCog,
   faDoorOpen,
   faEdit,
+  faEllipsisH,
   faExclamationTriangle,
   faFileCsv,
   faFileExport,
@@ -53,6 +54,7 @@ library.add(
   faCog,
   faDoorOpen,
   faEdit,
+  faEllipsisH,
   faExclamationTriangle,
   faFileCsv,
   faFileExport,
@@ -69,7 +71,7 @@ library.add(
   faSignInAlt,
 );
 
-const loggedIn = false; //TODO: base this off of the redux state
+const loggedIn = true; //TODO: base this off of the redux state
 
 function App() {
   return (

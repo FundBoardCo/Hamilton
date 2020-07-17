@@ -127,7 +127,7 @@ export default function Investor(props) {
         <div className="investorHeader mb-2">
           <div className="thumbCol">
             <div className="thumb">
-              <Suspense fallback={<Spinner animation="border" role="status" size="sm" />}>
+              <Suspense fallback={<Spinner animation="border" variant="info" role="status" size="sm" />}>
                 <ImgComp imgSrc={data.image_id} alt={name} />
               </Suspense>
             </div>
@@ -136,7 +136,7 @@ export default function Investor(props) {
             <h1>{name}</h1>
             <div className="orgDetails">
               <div className="orgLogoWrapper">
-                <Suspense fallback={<Spinner animation="border" role="status" size="sm" />}>
+                <Suspense fallback={<Spinner animation="border" variant="info" role="status" size="sm" />}>
                   <ImgComp imgSrc={data.logo} alt={data.primary_organization} />
                 </Suspense>
               </div>

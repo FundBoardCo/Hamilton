@@ -28,7 +28,7 @@ export default function CallStatus(props) {
   if (status && !hide) {
     return (
       <Alert variant={variant} className={className}>
-        {showSpinner && <Spinner animation="border" role="status" size="sm" className="mr-2" />}
+        {showSpinner && <Spinner animation="border" variant="info"role="status" size="sm" className="mr-2" />}
         {`${typeTitle}${msg}`}
       </Alert>
     );
