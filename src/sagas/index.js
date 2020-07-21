@@ -32,7 +32,7 @@ function* watchAirtableGetKeywords() {
 
 function personPutInvalid(params = {}) {
   const data = {
-    fields: { uuid: params.id, reason: params.reason },
+    fields: { ...params },
   };
   return axios({
     method: 'post',
@@ -42,12 +42,12 @@ function personPutInvalid(params = {}) {
   });
 }
 
-function* workPersonPutInvalid(params = {}) {
+function* workPersonPutInvalid(action) {
   try {
-    const results = yield call(personPutInvalid(params));
-    yield put({ type: 'PERSON_PUT_INVALID_SUCCEEDED', results, params });
+    yield call(personPutInvalid, action.params);
+    yield put({ type: 'PERSON_PUT_INVALID_SUCCEEDED' });
   } catch (error) {
-    yield put({ type: 'PERSON_PUT_INVALID_SUCCEEDED', error });
+    yield put({ type: 'PERSON_PUT_INVALID_FAILED', error });
   }
 }
 

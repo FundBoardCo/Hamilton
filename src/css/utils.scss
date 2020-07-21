@@ -49,7 +49,7 @@ html#ov body {
     }
   }
 
-  .btn.bntOutline {
+  .btn.btnOutline {
     border-width: 1px;
     border-style: solid;
   }
@@ -63,6 +63,16 @@ html#ov body {
       font-size: $tx;
       padding: 0;
     }
+  }
+
+  .btn.btn-link {
+    padding: 0;
+    border-width: 0;
+    font-size: 1em;
+    max-width: none;
+    text-decoration: underline;
+    text-align: start;
+    color: inherit;
   }
 
   .btnNoMax {

@@ -1,8 +1,11 @@
 import { REHYDRATE } from 'redux-persist';
 import * as types from '../actions/types';
+import { processErr } from '../utils';
 
 export default function people(state = {}, action) {
   const records = {};
+  const { params = {} } = action;
+  const { uuid, reason } = params;
   // TODO: remove this when we have real data
   const fakeData = {
     investments: [
@@ -204,6 +207,32 @@ export default function people(state = {}, action) {
       return {
         ...state,
         ...records,
+      };
+    case types.PERSON_PUT_INVALID_REQUESTED:
+      return {
+        ...state,
+        [uuid]: {
+          ...state[uuid],
+          invalid: true,
+          invalid_reason: reason,
+          invalid_state: 'pending',
+        },
+      };
+    case types.PERSON_PUT_INVALID_SUCCEEDED:
+      return {
+        ...state,
+        [uuid]: {
+          ...state[uuid],
+          invalid_state: 'succeeded',
+        },
+      };
+    case types.PERSON_PUT_INVALID_FAILED:
+      return {
+        ...state,
+        [uuid]: {
+          ...state[uuid],
+          invalid_state: processErr(action.error),
+        },
       };
     default: return state;
   }

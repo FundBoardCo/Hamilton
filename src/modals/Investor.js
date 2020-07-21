@@ -1,14 +1,16 @@
-import React, { Suspense } from 'react';
+import React, { Suspense, useState } from 'react';
 import { useHistory } from 'react-router';
 import { useSelector, useDispatch } from 'react-redux';
 import Modal from 'react-bootstrap/Modal';
 import PropTypes from 'prop-types';
 import { useImage } from 'react-image';
 import Spinner from 'react-bootstrap/Spinner';
+import Button from 'react-bootstrap/Button';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Timeline } from 'react-twitter-widgets';
 import GreySquare from '../imgs/greySquare.jpg';
 import PersonStamp from '../components/people/PersonStamp';
+import { stateIsError } from '../utils';
 
 function ImgComp(params) {
   const { imgSrc = '', alt = '' } = params;
@@ -77,6 +79,8 @@ export default function Investor(props) {
 
   const isOnBoard = investors.includes(investor);
 
+  const [invalidOpen, setInvalidOpen] = useState(false);
+
   const dispatch = useDispatch();
 
   const history = useHistory();
@@ -102,6 +106,14 @@ export default function Investor(props) {
       addInvestor();
     }
   };
+
+  const reportInvalid = reason => dispatch({
+    type: 'PERSON_PUT_INVALID_REQUESTED',
+    params: {
+      uuid: investor,
+      reason,
+    },
+  });
 
   const addBtnProps = {
     text: isOnBoard ? 'Remove from my FundBoard' : 'Add to my FundBoard',
@@ -219,17 +231,68 @@ export default function Investor(props) {
           <div className="mb-4 h3 text-linkedin d-flex">
             <FontAwesomeIcon icon={['fab', 'linkedin']} />
             &nbsp;
-            <a href={data.linkedin} className="text-linkedin">
+            <a href={data.linkedin} className="text-linkedin" target="_blank" rel="noreferrer">
               LinkedIn Profile
             </a>
           </div>
         )}
-        <div className="mb-4 h3 text-danger d-flex">
-          <FontAwesomeIcon icon="exclamation-triangle" />
-          &nbsp;
-          <a href={data.linkedin} className="text-danger">
-            I think this profile is out of date.
-          </a>
+        <div className={`invalidWrapper ${invalidOpen ? 'open' : ''}`}>
+          {!data.invalid && (
+            <div className="mb-4 h3 text-danger d-flex align-items-center">
+              <FontAwesomeIcon icon="exclamation-triangle" />
+              &nbsp;
+              <Button
+                variant="link"
+                onClick={() => setInvalidOpen(!invalidOpen)}
+              >
+                I think this profile is out of date.
+              </Button>
+            </div>
+          )}
+          {invalidOpen && !data.invalid && (
+            <div className="invalidBtns">
+              {!data.invalid_state && (
+                <div>
+                  <Button
+                    variant="danger-light"
+                    onClick={() => reportInvalid('NameTitleOrg')}
+                  >
+                    The name, title, or their organization is outdated
+                  </Button>
+                  <Button
+                    variant="danger-light"
+                    onClick={() => reportInvalid('Criteria')}
+                  >
+                    They shouldn&apos;t be in my search results.
+                  </Button>
+                  <Button
+                    variant="danger-light"
+                    onClick={() => reportInvalid('Other')}
+                  >
+                    Something else about their information is out of date.
+                  </Button>
+                </div>
+              )}
+              {data.invalid_state === 'pending' && (
+                <Spinner animation="border" variant="info" role="status" size="sm" />
+              )}
+              {data.invalid_state === 'succeeded' && (
+                <div className="p-3 text-center">
+                  Thank you. Your report has been recieved.
+                </div>
+              )}
+              {stateIsError(data.invalid_state) && (
+                <div className="p-3 text-center">
+                  {`Error: ${data.invalid_state}`}
+                </div>
+              )}
+            </div>
+          )}
+          {data.invalid && (
+            <div className="p-3 text-center h4 text-danger">
+              Thank you. Your report has been recieved.
+            </div>
+          )}
         </div>
       </Modal.Body>
       <Modal.Footer>
