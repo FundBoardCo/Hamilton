@@ -4,6 +4,7 @@ import { processErr } from '../utils';
 
 const defaultState = {
   results_state: '',
+  results: {},
   keywords: [],
   raise: 100000,
   location: '',
@@ -63,6 +64,11 @@ export default function search(state = { ...defaultState }, action) {
     case types.SEARCH_GET_RESULTS_FAILED: return {
       ...state,
       results_state: processErr(action.error),
+    };
+    case types.SEARCH_CLEAR_RESULTS: return {
+      ...state,
+      results_state: '',
+      results: {},
     };
     default: return state;
   }
