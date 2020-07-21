@@ -65,6 +65,9 @@ $col-emp-light3: scale_color($col-emp, $lightness: 40%);
 $col-emp-light4: scale_color($col-emp, $lightness: 50%);
 $col-emp-light5: scale_color($col-emp, $lightness: 60%);
 $col-emp-light6: scale_color($col-emp, $lightness: 70%);
+$col-emp-light7: scale_color($col-emp, $lightness: 80%);
+$col-emp-light8: scale_color($col-emp, $lightness: 90%);
+$col-emp-light9: scale_color($col-emp, $lightness: 95%);
 $col-emp-dark: scale_color($col-emp, $lightness: -20%);
 $col-emp-dark2: scale_color($col-emp, $lightness: -30%);
 
@@ -324,6 +327,10 @@ html#ov body {
 
   .btn-danger, .badge-danger {
     @include btn-colors($col-danger, $col-danger-dark, $col-danger-light2, $col-text-light, $col-light);
+  }
+
+  .btn-danger-light, .badge-danger-light {
+    @include btn-colors($col-danger-light, $col-danger, $col-danger-light3, $col-text-light, $col-light);
   }
 
   .btn-outline-danger {
