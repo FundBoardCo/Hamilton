@@ -304,29 +304,52 @@ html#ov {
               display: flex;
               flex-direction: column;
 
-              .tiles {
-                flex-grow: 1;
+              .tilesWrapper {
+                position: relative;
                 display: flex;
-                flex-wrap: wrap;
-                overflow: auto;
+                flex-direction: column;
+                overflow: hidden;
 
-                .tile {
-                  flex: 1 1 auto;
-                  background-color: $col-light;
-                  border: 1px solid $col-primary-light3;
-                  color: $col-primary-dark;
-                  font-size: $h4;
-                  text-align: center;
-                  padding: $pad2;
-                  border-radius: $pad2;
-                  margin: $pad1;
-                  cursor: pointer;
+                .tiles {
+                  flex-grow: 1;
+                  display: flex;
+                  flex-wrap: wrap;
+                  overflow: auto;
+                  position: relative;
 
-                  &.active {
-                    background-color: $col-info;
-                    border-color: $col-info-dark;
-                    color: $col-info-light5;
+                  .tile {
+                    flex: 1 1 auto;
+                    background-color: $col-light;
+                    border: 1px solid $col-primary-light3;
+                    color: $col-primary-dark;
+                    font-size: $h4;
+                    text-align: center;
+                    padding: $pad2;
+                    border-radius: $pad2;
+                    margin: $pad1;
+                    cursor: pointer;
+
+                    &.active {
+                      background-color: $col-info;
+                      border-color: $col-info-dark;
+                      color: $col-info-light5;
+                    }
                   }
+                }
+
+                #TileWarning {
+                  position: absolute;
+                  top: -5px;
+                  bottom: -5px;
+                  left: -5px;
+                  right: -5px;
+                  background: $col-warning-op1;
+                  display: flex;
+                  justify-content: center;
+                  align-items: center;
+                  font-size: $h3;
+                  color: $col-text-light;
+                  padding: $pad4;
                 }
               }
             }
