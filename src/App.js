@@ -6,6 +6,7 @@ import {
   Redirect,
   Switch,
 } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 import Navbar from 'react-bootstrap/Navbar';
 import Nav from 'react-bootstrap/Nav';
 import { library } from '@fortawesome/fontawesome-svg-core';
@@ -71,9 +72,11 @@ library.add(
   faSignInAlt,
 );
 
-const loggedIn = true; //TODO: base this off of the redux state
-
 function App() {
+  const searchResults = useSelector(state => state.search.results) || [];
+  const loggedIn = Object.keys(searchResults).length > 0;
+  // TODO: base this off of the redux logged in state
+
   return (
     <Router>
       <ScrollToTop>
