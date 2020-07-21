@@ -2,6 +2,7 @@ import {
   put,
   call,
   fork,
+  takeEvery,
   takeLatest,
 } from 'redux-saga/effects';
 import axios from 'axios';
@@ -27,6 +28,31 @@ function* workAirtableGetKeywords() {
 
 function* watchAirtableGetKeywords() {
   yield takeLatest('AIRTABLE_GET_KEYWORDS_REQUESTED', workAirtableGetKeywords);
+}
+
+function personPutInvalid(params = {}) {
+  const data = {
+    fields: { uuid: params.id, reason: params.reason },
+  };
+  return axios({
+    method: 'post',
+    url: 'https://api.airtable.com/v0/apps8kfzmvaJV4oV6/reports',
+    headers: { Authorization: `Bearer ${AIRTABLE_APIKEY}` },
+    data,
+  });
+}
+
+function* workPersonPutInvalid(params = {}) {
+  try {
+    const results = yield call(personPutInvalid(params));
+    yield put({ type: 'PERSON_PUT_INVALID_SUCCEEDED', results, params });
+  } catch (error) {
+    yield put({ type: 'PERSON_PUT_INVALID_SUCCEEDED', error });
+  }
+}
+
+function* watchPersonPutInvalid() {
+  yield takeEvery({ type: 'PERSON_PUT_INVALID_REQUESTED', workPersonPutInvalid });
 }
 
 function requestSearchGetResults(params = {}) {
@@ -78,5 +104,6 @@ function* watchSearchGetResults() {
 
 export default function* rootSaga() {
   yield fork(watchAirtableGetKeywords);
+  yield fork(watchPersonPutInvalid);
   yield fork(watchSearchGetResults);
 }
