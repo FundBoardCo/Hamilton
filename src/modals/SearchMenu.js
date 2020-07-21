@@ -5,6 +5,7 @@ import Modal from 'react-bootstrap/Modal';
 import Form from 'react-bootstrap/Form';
 import RangeSlider from 'react-bootstrap-range-slider';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import Button from 'react-bootstrap/Button';
 
 const usdFormatter = new Intl.NumberFormat('en-US', {
   style: 'currency',
@@ -132,7 +133,21 @@ export default function SearchMenu() {
     });
   };
 
+  const resetSearch = () => {
+    setKeywords([]);
+    setRaise(100000);
+    setLocation('');
+
+    return dispatch({
+      type: 'SEARCH_CLEAR_RESULTS',
+    });
+  };
+
   const closeModal = () => {
+    history.goBack();
+  };
+
+  const closeAndSearch = () => {
     getResults();
     history.goBack();
   };
@@ -254,12 +269,22 @@ export default function SearchMenu() {
             />
           </Form.Group>
         </Form>
+        <div>
+          <Button
+            variant="danger"
+            className="btnNoMax w-100"
+            onClick={resetSearch}
+            data-track="ResetSearch"
+          >
+            Reset Search
+          </Button>
+        </div>
       </Modal.Body>
       <Modal.Footer>
         <button
           className="searchBtn"
           type="button"
-          onClick={closeModal}
+          onClick={closeAndSearch}
           data-track="SubmitSearch"
         >
           Search
