@@ -2,7 +2,14 @@ import { REHYDRATE } from 'redux-persist';
 import * as types from '../actions/types';
 import { processErr } from '../utils';
 
-export default function search(state = {}, action) {
+const defaultState = {
+  results_state: '',
+  keywords: [],
+  raise: 100000,
+  location: '',
+};
+
+export default function search(state = { ...defaultState }, action) {
   const results = {};
   // TODO: remove this when we have real data
   const fakeSearchData = {
@@ -28,7 +35,7 @@ export default function search(state = {}, action) {
     };
     case types.SEARCH_SET_RAISE: return {
       ...state,
-      raise: (typeof action.raise === 'number') ? action.raise : 0,
+      raise: (typeof action.raise === 'number') ? action.raise : 1000000,
     };
     case types.SEARCH_SET_LOCATION: return {
       ...state,

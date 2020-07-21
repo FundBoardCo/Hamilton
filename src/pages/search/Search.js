@@ -34,13 +34,13 @@ export default function Search() {
 
   return (
     <Row id="PageSearch" className="pageContainer">
-      {searchState === 'pending' && <Spinner animation="border" variant="info" variant="info" />}
       <div className="searchDetailsBar">
         <div className="primaryDetails">
           <Button
             className="primaryDetailsLink"
             variant="text-light"
             onClick={onDetailClick}
+            data-track="ToggleSearchDetails"
           >
             {`${Object.keys(searchResults).length} investors match`}
           </Button>
@@ -48,6 +48,7 @@ export default function Search() {
             variant="primary-light"
             className="btnTn inlineBtn"
             onClick={onEditClick}
+            data-track="EditSearch"
           >
             <FontAwesomeIcon icon="edit" />
             edit
@@ -67,6 +68,9 @@ export default function Search() {
           </div>
         )}
       </div>
+      {searchState === 'pending' && !searchResults.length && (
+        <Spinner animation="border" variant="info" />
+      )}
       <div className="results">
         {Object.keys(searchResults).map(k => {
           const personProps = { ...searchResults[k] };

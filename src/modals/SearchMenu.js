@@ -56,6 +56,8 @@ export default function SearchMenu() {
   const [validated, setValidated] = useState(false);
   const [isValid, setIsValid] = useState(false);
 
+  const [showTileWarning, setShowTileWarning] = useState(false);
+
   const dispatch = useDispatch();
 
   const history = useHistory();
@@ -87,8 +89,12 @@ export default function SearchMenu() {
   const onTileClick = (word, active) => {
     if (active) {
       setKeywords(searchKeywords.filter(w => w !== word));
+      setShowTileWarning(false);
     } else if (searchKeywords.length < 5) {
       setKeywords([...searchKeywords, word]);
+      setShowTileWarning(false);
+    } else {
+      setShowTileWarning(true);
     }
   };
 
@@ -168,12 +174,23 @@ export default function SearchMenu() {
                   key={w}
                   tabIndex={0}
                   type="button"
+                  data-track={`tile-${w}`}
                 >
                   {w}
                 </button>
               );
             })}
           </div>
+          {showTileWarning && (
+            <button
+              id="TileWarning"
+              type="button"
+              onClick={() => setShowTileWarning(false)}
+              data-track="TileWarningBtn"
+            >
+              You can only select 5 keywords. Deselect one if you want to change it.
+            </button>
+          )}
         </div>
         <SectionTitle
           faIcon="rocket"
@@ -195,6 +212,7 @@ export default function SearchMenu() {
             tooltip="on"
             tooltipLabel={val => usdFormatter.format(val)}
             onChange={e => onRaiseChange(Number(e.target.value))}
+            data-track="RaiseSlider"
           />
           <div className="sliderMax">
             {usdFormatter.format(10000000)}
@@ -217,6 +235,7 @@ export default function SearchMenu() {
               value={locationValue}
               onChange={e => onLocationChange(e)}
               isInvalid={validated && !isValid}
+              data-track="LocationInput"
             />
             <Form.Control.Feedback type="invalid">
               Please enter a valid zip code.
@@ -231,6 +250,7 @@ export default function SearchMenu() {
               label="We're fully remote, but I still entered my zip code."
               checked={storedRemote}
               onChange={e => onRemoteChange(e.target.checked)}
+              data-track="RemoteCheckbox"
             />
           </Form.Group>
         </Form>
@@ -240,6 +260,7 @@ export default function SearchMenu() {
           className="searchBtn"
           type="button"
           onClick={closeModal}
+          data-track="SubmitSearch"
         >
           Search
         </button>

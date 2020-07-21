@@ -444,7 +444,8 @@ html#ov body {
               padding: $pad2;
               border-radius: $pad3;
               overflow: hidden;
-              background-color: $col-primary-light4;
+              background-color: $col-primary-light7;
+              position: relative;
 
               .tiles {
                 height: 12em;
@@ -475,6 +476,21 @@ html#ov body {
                     color: $col-info-light5;
                   }
                 }
+              }
+
+              #TileWarning {
+                position: absolute;
+                top: -5px;
+                bottom: -5px;
+                left: -5px;
+                right: -5px;
+                background: $col-warning-op1;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                font-size: $h4;
+                color: $col-text-light;
+                padding: $pad3;
               }
             }
 
