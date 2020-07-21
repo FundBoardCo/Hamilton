@@ -52,7 +52,7 @@ function* workPersonPutInvalid(params = {}) {
 }
 
 function* watchPersonPutInvalid() {
-  yield takeEvery({ type: 'PERSON_PUT_INVALID_REQUESTED', workPersonPutInvalid });
+  yield takeEvery('PERSON_PUT_INVALID_REQUESTED', workPersonPutInvalid);
 }
 
 function requestSearchGetResults(params = {}) {
