@@ -269,15 +269,44 @@ html#ov {
             right: 0;
 
             .navbar-nav {
-              justify-content: space-between;
+              justify-content: stretch;
+              align-items: center;
+
+              div {
+                text-align: center;
+                flex-basis: 80%;
+              }
 
               .nav-link {
                 cursor: pointer;
                 flex-grow: 0;
+                flex-basis: 10%;
+                background-color: transparent;
+                border: none;
+                color: $col-text-light;
+                text-align: left;
+
+                span {
+                  margin-left: 0.5em;
+                }
 
                 &:last-child {
+                  text-align: right;
                   span {
+                    margin-left: 0;
                     margin-right: 0.5em;
+                  }
+                }
+              }
+            }
+          }
+
+          @media (max-width: $mediaMaxMd) {
+            .nav {
+              .navbar-nav {
+                .nav-link {
+                  span {
+                    @include hidden();
                   }
                 }
               }
@@ -293,7 +322,9 @@ html#ov {
               position: relative;
 
               .navbar-nav {
-
+                .nav-link, div {
+                  flex-basis: 33%;
+                }
               }
             }
           }

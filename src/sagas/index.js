@@ -43,11 +43,12 @@ function personPutInvalid(params = {}) {
 }
 
 function* workPersonPutInvalid(action) {
+  const { params } = action;
   try {
-    yield call(personPutInvalid, action.params);
-    yield put({ type: 'PERSON_PUT_INVALID_SUCCEEDED' });
+    yield call(personPutInvalid, params);
+    yield put({ type: 'PERSON_PUT_INVALID_SUCCEEDED', params });
   } catch (error) {
-    yield put({ type: 'PERSON_PUT_INVALID_FAILED', error });
+    yield put({ type: 'PERSON_PUT_INVALID_FAILED', params, error });
   }
 }
 

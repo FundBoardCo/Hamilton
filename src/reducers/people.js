@@ -213,7 +213,6 @@ export default function people(state = {}, action) {
         ...state,
         [uuid]: {
           ...state[uuid],
-          invalid: true,
           invalid_reason: reason,
           invalid_state: 'pending',
         },
@@ -223,6 +222,7 @@ export default function people(state = {}, action) {
         ...state,
         [uuid]: {
           ...state[uuid],
+          invalid: true,
           invalid_state: 'succeeded',
         },
       };
@@ -232,6 +232,16 @@ export default function people(state = {}, action) {
         [uuid]: {
           ...state[uuid],
           invalid_state: processErr(action.error),
+        },
+      };
+    case types.PERSON_CLEAR_INVALID:
+      return {
+        ...state,
+        [uuid]: {
+          ...state[uuid],
+          invalid: false,
+          invalid_reason: '',
+          invalid_state: '',
         },
       };
     default: return state;

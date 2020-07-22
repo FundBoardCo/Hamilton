@@ -115,6 +115,13 @@ export default function Investor(props) {
     },
   });
 
+  const clearInvalid = () => dispatch({
+    type: 'PERSON_CLEAR_INVALID',
+    params: {
+      uuid: investor,
+    },
+  });
+
   const addBtnProps = {
     text: isOnBoard ? 'Remove from my FundBoard' : 'Add to my FundBoard',
     bgCol: isOnBoard ? 'bg-warning' : 'bg-secondary',
@@ -231,14 +238,14 @@ export default function Investor(props) {
           <div className="mb-4 h3 text-linkedin d-flex">
             <FontAwesomeIcon icon={['fab', 'linkedin']} />
             &nbsp;
-            <a href={data.linkedin} className="text-linkedin" target="_blank" rel="noreferrer">
+            <a href={data.linkedin} className="text-linkedin" target="_blank" rel="noopener noreferrer">
               LinkedIn Profile
             </a>
           </div>
         )}
         <div className={`invalidWrapper ${invalidOpen ? 'open' : ''}`}>
           {!data.invalid && (
-            <div className="mb-4 h3 text-danger d-flex align-items-center">
+            <div className="openLinkWrapper">
               <FontAwesomeIcon icon="exclamation-triangle" />
               &nbsp;
               <Button
@@ -282,8 +289,16 @@ export default function Investor(props) {
                 </div>
               )}
               {stateIsError(data.invalid_state) && (
-                <div className="p-3 text-center">
-                  {`Error: ${data.invalid_state}`}
+                <div className="invalidError">
+                  <span>
+                    {`Error: ${data.invalid_state}`}
+                  </span>
+                  <Button
+                    variant="danger-light"
+                    onClick={clearInvalid}
+                  >
+                    Clear error and try again
+                  </Button>
                 </div>
               )}
             </div>

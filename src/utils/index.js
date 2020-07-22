@@ -1,7 +1,12 @@
 export function processErr(err) {
   if (!err) return false;
   if (err.response && err.response.data) {
-    if (err.response.data.error) return err.response.data.error;
+    if (err.response.data.error) {
+      if (typeof err.response.data.error === 'object') {
+        return JSON.stringify(err.response.data.error);
+      }
+      return err.response.data.error;
+    }
     return err.response.data;
   }
   if (err.message) return err.message;
