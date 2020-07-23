@@ -8,6 +8,16 @@ export default function people(state = {}, action) {
   const { uuid, reason } = params;
   // TODO: remove this when we have real data
   const fakeData = {
+    isLead: true,
+    isOpen: true,
+    isImpact: true,
+    matches: {
+      keywords: ['B2B', 'AI', 'Automation', 'AR'],
+      raise: true,
+      location: true,
+      name: true,
+      org: true,
+    },
     investments: [
       {
         id: 'foo1',

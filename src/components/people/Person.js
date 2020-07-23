@@ -1,12 +1,13 @@
 import React, { Suspense } from 'react';
 import PropTypes from 'prop-types';
 import { useSelector, useDispatch } from 'react-redux';
-import { useHistory } from 'react-router';
+import { useHistory, useLocation } from 'react-router';
 import Button from 'react-bootstrap/Button';
 import Spinner from 'react-bootstrap/Spinner';
 import { useImage } from 'react-image';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import GreySquare from '../../imgs/greySquare.jpg';
+import { capitalizeFirstLetter } from '../../utils';
 
 function ImgComp(params) {
   const { imgSrc = '', alt = '' } = params;
@@ -49,6 +50,10 @@ export default function Person(props) {
     history.push(`/${root}/${uuid}`);
   };
 
+  const location = useLocation();
+
+  const path = capitalizeFirstLetter(location.pathname.substring(1));
+
   const dispatch = useDispatch();
 
   const addInvestor = () => dispatch({
@@ -75,6 +80,7 @@ export default function Person(props) {
     text: isOnBoard ? 'Remove from my FundBoard' : 'Add to my FundBoard',
     variant: isOnBoard ? 'icon-warning' : 'icon-info',
     faIcon: isOnBoard ? 'minus-circle' : 'plus-circle',
+    track: isOnBoard ? 'remove' : 'add',
     action: toggleInvestor,
   };
 
@@ -83,6 +89,7 @@ export default function Person(props) {
       text: 'See Investor Details',
       variant: 'icon-info',
       faIcon: 'ellipsis-h',
+      track: 'details',
       action: showPerson,
     };
   }
@@ -91,7 +98,12 @@ export default function Person(props) {
     <div
       className="person"
     >
-      <button className="thumb" onClick={showPerson} type="button">
+      <button
+        className="thumb"
+        onClick={showPerson}
+        type="button"
+        data-track={`${path}PersonThumb`}
+      >
         <Suspense fallback={<Spinner animation="border" variant="info" role="status" size="sm" />}>
           <ImgComp imgSrc={image_id} alt={name} />
         </Suspense>
@@ -102,6 +114,7 @@ export default function Person(props) {
             <button
               onClick={showPerson}
               type="button"
+              data-track={`${path}PersonShow`}
             >
               {name}
             </button>
@@ -127,6 +140,7 @@ export default function Person(props) {
           variant={addBtnProps.variant}
           className="iconBtn addBtn"
           onClick={addBtnProps.action}
+          data-track={`${path}PersonAdd-${addBtnProps.track}`}
         >
           <FontAwesomeIcon icon={addBtnProps.faIcon} />
           <span className="sr-only">{addBtnProps.text}</span>

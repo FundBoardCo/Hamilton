@@ -44,6 +44,9 @@ export default function Search() {
           >
             {`${Object.keys(searchResults).length} investors match`}
           </Button>
+          {searchState === 'pending' && !searchResults.length && (
+            <Spinner animation="border" variant="info" />
+          )}
           <Button
             variant="primary-light"
             className="btnTn inlineBtn"
@@ -54,23 +57,18 @@ export default function Search() {
             edit
           </Button>
         </div>
-        {detailsOpen && (
-          <div className="secondaryDetails">
-            <p>
-              {`You searched for: ${searchKeywords.join()}`}
-            </p>
-            <p>
-              {`Raise: ${usdFormatter.format(searchRaise)}`}
-            </p>
-            <p>
-              {`Location: ${searchLocation}`}
-            </p>
-          </div>
-        )}
+        <div className={`secondaryDetails ${detailsOpen ? '' : 'sr-only'}`}>
+          <p>
+            {`You searched for: ${searchKeywords.join()}`}
+          </p>
+          <p>
+            {`Raise: ${usdFormatter.format(searchRaise)}`}
+          </p>
+          <p>
+            {`Location: ${searchLocation}`}
+          </p>
+        </div>
       </div>
-      {searchState === 'pending' && !searchResults.length && (
-        <Spinner animation="border" variant="info" />
-      )}
       <div className="results">
         {Object.keys(searchResults).map(k => {
           const personProps = { ...searchResults[k] };

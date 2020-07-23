@@ -497,9 +497,8 @@ html#ov {
 
             .secondaryDetails {
               padding: $pad3;
-              background-color: $col-primary-light3;
-              color: $col-text;
-              border-bottom: 1px solid $col-structure;
+              background-color: $col-primary-light;
+              color: $col-text-light;
 
               p:last-child {
                 margin: 0;
@@ -530,7 +529,7 @@ html#ov {
                 padding: 0;
                 background-color: transparent !important;
                 color: $col-text;
-                border-bottom: 1px solid $col-primary;
+                border-bottom: 2px solid $col-primary;
 
                 .primaryDetailsLink {
                   color: $col-text !important;
@@ -538,14 +537,13 @@ html#ov {
               }
 
               .secondaryDetails {
-                border: 1px solid $col-structure;
-                border-top: none;
                 border-bottom-right-radius: $pad2;
                 border-bottom-left-radius: $pad2;
               }
             }
 
             .results {
+              position: relative; // no idea why this is needed, without it the pageContainer is the height of all the results regardless of the overflow.
               overflow: auto;
             }
           }
@@ -585,9 +583,8 @@ html#ov {
 
             .secondaryDetails {
               padding: $pad3;
-              background-color: $col-primary-light3;
-              color: $col-text;
-              border-bottom: 1px solid $col-structure;
+              background-color: $col-primary-light;
+              color: $col-text-light;
 
               p:last-child {
                 margin: 0;
@@ -618,7 +615,7 @@ html#ov {
                 padding: 0;
                 background-color: transparent !important;
                 color: $col-text;
-                border-bottom: 1px solid $col-primary;
+                border-bottom: 2px solid $col-primary;
 
                 .primaryDetailsLink {
                   color: $col-text !important;
@@ -626,14 +623,13 @@ html#ov {
               }
 
               .secondaryDetails {
-                border: 1px solid $col-structure;
-                border-top: none;
                 border-bottom-right-radius: $pad2;
                 border-bottom-left-radius: $pad2;
               }
             }
 
             .results {
+              position: relative;
               overflow: auto;
             }
           }

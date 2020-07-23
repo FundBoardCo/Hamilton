@@ -1,5 +1,5 @@
 import React, { Suspense, useState } from 'react';
-import { useHistory } from 'react-router';
+import { useHistory, useLocation } from 'react-router';
 import { useSelector, useDispatch } from 'react-redux';
 import Modal from 'react-bootstrap/Modal';
 import PropTypes from 'prop-types';
@@ -10,7 +10,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Timeline } from 'react-twitter-widgets';
 import GreySquare from '../imgs/greySquare.jpg';
 import PersonStamp from '../components/people/PersonStamp';
-import { stateIsError } from '../utils';
+import { capitalizeFirstLetter, stateIsError } from '../utils';
 
 function ImgComp(params) {
   const { imgSrc = '', alt = '' } = params;
@@ -81,13 +81,17 @@ export default function Investor(props) {
 
   const [invalidOpen, setInvalidOpen] = useState(false);
 
-  const dispatch = useDispatch();
+  const location = useLocation();
+
+  const path = capitalizeFirstLetter(location.pathname.substring(1));
 
   const history = useHistory();
 
   const closeModal = () => {
     history.goBack();
   };
+
+  const dispatch = useDispatch();
 
   const addInvestor = () => dispatch({
     type: 'BOARD_ADD',
@@ -125,6 +129,7 @@ export default function Investor(props) {
   const addBtnProps = {
     text: isOnBoard ? 'Remove from my FundBoard' : 'Add to my FundBoard',
     bgCol: isOnBoard ? 'bg-warning' : 'bg-secondary',
+    track: isOnBoard ? 'remove' : 'add',
   };
 
   return (
@@ -169,7 +174,12 @@ export default function Investor(props) {
         </div>
         <div className="crunchBaseAttribution mb-2">
           Sourced from CrunchBase.&nbsp;
-          <a href={data.crunchbase} target="_blank" rel="noopener noreferrer">
+          <a
+            href={data.crunchbase}
+            target="_blank"
+            rel="noopener noreferrer"
+            data-track={`${path}InvestorCrunchBase`}
+          >
             Click to view profile.
           </a>
         </div>
@@ -238,7 +248,13 @@ export default function Investor(props) {
           <div className="mb-4 h3 text-linkedin d-flex">
             <FontAwesomeIcon icon={['fab', 'linkedin']} />
             &nbsp;
-            <a href={data.linkedin} className="text-linkedin" target="_blank" rel="noopener noreferrer">
+            <a
+              href={data.linkedin}
+              className="text-linkedin"
+              target="_blank"
+              rel="noopener noreferrer"
+              data-track={`${path}InvestorLinkedIn`}
+            >
               LinkedIn Profile
             </a>
           </div>
@@ -251,6 +267,7 @@ export default function Investor(props) {
               <Button
                 variant="link"
                 onClick={() => setInvalidOpen(!invalidOpen)}
+                data-track={`${path}InvestorToggleInvalid`}
               >
                 I think this profile is out of date.
               </Button>
@@ -263,18 +280,21 @@ export default function Investor(props) {
                   <Button
                     variant="danger-light"
                     onClick={() => reportInvalid('NameTitleOrg')}
+                    data-track={`${path}InvestorInvalid-NameTitleOrg`}
                   >
                     The name, title, or their organization is outdated
                   </Button>
                   <Button
                     variant="danger-light"
                     onClick={() => reportInvalid('Criteria')}
+                    data-track={`${path}InvestorInvalid-Criteria`}
                   >
                     They shouldn&apos;t be in my search results.
                   </Button>
                   <Button
                     variant="danger-light"
                     onClick={() => reportInvalid('Other')}
+                    data-track={`${path}InvestorInvalid-Other`}
                   >
                     Something else about their information is out of date.
                   </Button>
@@ -315,6 +335,7 @@ export default function Investor(props) {
           className={`addBtn ${addBtnProps.bgCol}`}
           type="button"
           onClick={toggleInvestor}
+          data-track={`${path}InvestorAdd-${addBtnProps.track}`}
         >
           {addBtnProps.text}
         </button>
