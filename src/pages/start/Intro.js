@@ -15,6 +15,7 @@ export default function Intro() {
         <a
           href="/introSearch"
           className="btn btn-secondary btnNoMax mb-3 mb-lg-4"
+          data-track="IntroPageSearch"
         >
           Build your FundBoard
         </a>
@@ -24,7 +25,14 @@ export default function Intro() {
         <p className="txSm tx-lg-tx text-center">
           If not, you can
           &nbsp;
-          <a href="https://fundboard.co">learn more about building and funding your startup here.</a>
+          <a
+            href="https://fundboard.co"
+            data-track="IntroPageLearn"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            learn more about building and funding your startup here.
+          </a>
         </p>
       </div>
     </Row>

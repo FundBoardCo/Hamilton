@@ -30,6 +30,7 @@ export default function Search() {
             onClick={onClickPrev}
             aria-disabled={stage === 0}
             type="button"
+            data-track="IntroSearchNavPrev"
           >
             <FontAwesomeIcon icon="caret-left" />
             {stage !== 0 && (
@@ -46,6 +47,7 @@ export default function Search() {
             onClick={onClickNext}
             aria-disabled={stage >= INTROSEARCH_STAGES.length - 1}
             type="button"
+            data-track="IntroSearchNavNext"
           >
             {stage < INTROSEARCH_STAGES.length - 1 && (
               <span>

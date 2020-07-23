@@ -1,6 +1,5 @@
-import { processErr } from '../utils';
+import { processErr, capitalizeFirstLetter } from '../utils';
 import * as types from '../actions/types';
-import { capitalizeFirstLetter } from '../utils';
 
 export default function airTable(state = {}, action) {
   console.log(action)

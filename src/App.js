@@ -94,6 +94,7 @@ function App() {
                 href="/board"
                 to="/board"
                 className="board"
+                data-track="navBoard"
               >
                 <FontAwesomeIcon icon="list" />
                 <span>My FundBoard</span>
@@ -107,6 +108,7 @@ function App() {
                 to="/search"
                 className="search"
                 activeClassName="active"
+                data-track="navSearch"
               >
                 <FontAwesomeIcon icon="search" />
                 <span>Search</span>
@@ -120,6 +122,7 @@ function App() {
                 to="/profile"
                 className="profile"
                 activeClassName="profile"
+                data-track="navProfile"
               >
                 <FontAwesomeIcon icon="cog" />
                 <span>My Profile</span>
@@ -133,6 +136,7 @@ function App() {
                 to="/login"
                 className="login"
                 activeClassName="login"
+                data-track="navLogin"
               >
                 <FontAwesomeIcon icon="sign-in-alt" />
                 <span>Log In</span>

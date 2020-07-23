@@ -46,6 +46,7 @@ export default function Raise() {
             tooltip="on"
             tooltipLabel={val => usdFormatter.format(val)}
             onChange={e => onRaiseChange(Number(e.target.value))}
+            data-track="IntroSearchRaiseSlider"
           />
           <div className="sliderMax">
             {usdFormatter.format(10000000)}

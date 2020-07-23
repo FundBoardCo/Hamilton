@@ -9,7 +9,11 @@ import axios from 'axios';
 import {
   AIRTABLE_APIKEY,
 } from '../constants';
-import { capitalizeFirstLetter } from '../utils';
+import { capitalizeFirstLetter, processErr } from '../utils';
+
+function trackErr(err) {
+  window.heap.track('Error', { message: processErr(err) });
+}
 
 function requestAirtableGetKeywords() {
   return axios.get('https://api.airtable.com/v0/app5hJojHQxyJ7ElS/Keywords', {
@@ -22,6 +26,7 @@ function* workAirtableGetKeywords() {
     const results = yield call(requestAirtableGetKeywords);
     yield put({ type: 'AIRTABLE_GET_KEYWORDS_SUCCEEDED', data: results.data });
   } catch (error) {
+    trackErr(error);
     yield put({ type: 'AIRTABLE_GET_KEYWORDS_FAILED', error });
   }
 }
@@ -48,6 +53,7 @@ function* workPersonPutInvalid(action) {
     yield call(personPutInvalid, params);
     yield put({ type: 'PERSON_PUT_INVALID_SUCCEEDED', params });
   } catch (error) {
+    trackErr(error);
     yield put({ type: 'PERSON_PUT_INVALID_FAILED', params, error });
   }
 }
@@ -95,6 +101,7 @@ function* workSearchGetResults(action) {
     yield put({ type: 'SEARCH_GET_RESULTS_SUCCEEDED', data: results.data });
     yield put({ type: 'PEOPLE_UPDATE', data: results.data });
   } catch (error) {
+    trackErr(error);
     yield put({ type: 'SEARCH_GET_RESULTS_FAILED', error });
   }
 }

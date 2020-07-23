@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import Row from 'react-bootstrap/Row';
 
@@ -54,6 +54,7 @@ export default function Keywords() {
                   key={w}
                   tabIndex={0}
                   type="button"
+                  data-track="IntroSearchKeyword"
                 >
                   {w}
                 </button>
@@ -65,7 +66,7 @@ export default function Keywords() {
               id="TileWarning"
               type="button"
               onClick={() => setShowTileWarning(false)}
-              data-track="TileWarningBtn"
+              data-track="IntroSearchTileWarningBtn"
             >
               You can only select 5 keywords. Deselect one if you want to change it.
             </button>

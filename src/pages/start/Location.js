@@ -86,6 +86,7 @@ export default function Location() {
                 value={locationValue}
                 onChange={e => onLocationChange(e)}
                 isInvalid={validated && !isValid}
+                data-track="IntroSearchZipCode"
               />
               <Form.Control.Feedback type="invalid">
                 Please enter a valid zip code.
@@ -100,6 +101,7 @@ export default function Location() {
                 label="We're fully remote, but I still entered my zip code."
                 checked={remoteValue}
                 onChange={e => onRemoteChange(e.target.checked)}
+                data-track="IntroSearchRemote"
               />
             </Form.Group>
             <Button
@@ -107,6 +109,7 @@ export default function Location() {
               className="btnNoMax"
               disabled={!searchLocation}
               onClick={onSearchClick}
+              data-track="IntroSearchSeeMatches"
             >
               See My Matches
             </Button>
