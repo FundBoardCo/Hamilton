@@ -53,13 +53,14 @@ html#ov {
           display: flex;
           justify-content: space-around;
 
-          a.nav-link {
-            color: inherit;
+          a.nav-link,
+          .fauxLink {
             flex-grow: 1;
             display: flex;
             justify-content: center;
             align-items: center;
             height: fit-content;
+            color: inherit;
 
             span {
               display: none;
@@ -67,17 +68,20 @@ html#ov {
               margin-left: 0.5em;
             }
 
+            &:hover,
+            &:active {
+              opacity: 0.7;
+            }
+
             &:disabled,
             &.disabled,
             &[aria-disabled="true"] {
               opacity: 0.2;
             }
+          }
 
-            &.login {
-              span {
-                display: inline-block;
-              }
-            }
+          .fauxLink {
+            padding: 0.5rem;
           }
         }
 
@@ -141,7 +145,8 @@ html#ov {
             font-size: $h5;
             justify-content: flex-end;
 
-            a.nav-link {
+            a.nav-link,
+            .fauxLink {
               flex-grow: 0;
               margin-right: 2em;
 

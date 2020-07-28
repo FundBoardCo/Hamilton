@@ -6,9 +6,10 @@ import {
   Redirect,
   Switch,
 } from 'react-router-dom';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import Navbar from 'react-bootstrap/Navbar';
 import Nav from 'react-bootstrap/Nav';
+import Button from 'react-bootstrap/Button'
 import { library } from '@fortawesome/fontawesome-svg-core';
 import { fab } from '@fortawesome/free-brands-svg-icons';
 import {
@@ -35,6 +36,7 @@ import {
   faSignInAlt,
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import * as types from './actions/types';
 import Logo from './imgs/FundBoard_Logo.svg';
 import ScrollToTop from './components/ScrollToTop';
 import Intro from './pages/start/Intro';
@@ -42,7 +44,6 @@ import IntroSearch from './pages/start/IntroSearch';
 import Board from './pages/board/Board';
 import Search from './pages/search/Search';
 import Profile from './pages/profile/Profile';
-import Login from './pages/profile/Login';
 import NotFound from './pages/NotFound';
 import Modal from './modals/ModalWrapper';
 
@@ -73,9 +74,14 @@ library.add(
 );
 
 function App() {
-  const searchResults = useSelector(state => state.search.results) || [];
-  const loggedIn = Object.keys(searchResults).length > 0;
-  // TODO: base this off of the redux logged in state
+  const loggedIn = useSelector(state => state.user.token);
+
+  const dispatch = useDispatch();
+
+  const setModal = modal => dispatch({
+    type: types.MODAL_SET_OPEN,
+    modal,
+  });
 
   return (
     <Router>
@@ -84,7 +90,7 @@ function App() {
           <a href="/" className="navBrand">
             <img className="navLogo" src={Logo} alt="FundBoard Logo" />
             <span className="navName">FundBoard</span>
-            <span className="navVersion">0.1</span>
+            <span className="navVersion">Alpha 0.1</span>
           </a>
           <Nav className="ml-auto" defaultActiveKey={window.location.pathname}>
             {loggedIn
@@ -100,20 +106,17 @@ function App() {
                 <span>My FundBoard</span>
               </Nav.Link>
             )}
-            {loggedIn
-            && (
-              <Nav.Link
-                as={NavLink}
-                href="/search"
-                to="/search"
-                className="search"
-                activeClassName="active"
-                data-track="navSearch"
-              >
-                <FontAwesomeIcon icon="search" />
-                <span>Search</span>
-              </Nav.Link>
-            )}
+            <Nav.Link
+              as={NavLink}
+              href="/search"
+              to="/search"
+              className="search"
+              activeClassName="active"
+              data-track="navSearch"
+            >
+              <FontAwesomeIcon icon="search" />
+              <span>Search</span>
+            </Nav.Link>
             {loggedIn
             && (
               <Nav.Link
@@ -131,12 +134,10 @@ function App() {
             {!loggedIn
             && (
               <Nav.Link
-                as={NavLink}
-                href="/login"
-                to="/login"
-                className="login"
-                activeClassName="login"
+                as={Button}
+                className="btn-link fauxLink"
                 data-track="navLogin"
+                onClick={() => setModal('login')}
               >
                 <FontAwesomeIcon icon="sign-in-alt" />
                 <span>Log In</span>
@@ -155,7 +156,6 @@ function App() {
               <Route path="/board" component={Board} />
               <Route path="/search" component={Search} />
               <Route path="/profile" component={Profile} />
-              <Route path="/login" component={Login} />
               <Route component={NotFound} />
             </Switch>
           </div>

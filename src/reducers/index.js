@@ -3,6 +3,7 @@ import airtable from './airtable';
 import board from './board';
 import search from './search';
 import user from './user';
+import modal from './modal';
 import people from './people';
 
 // TODO: update all of these to the real keys
@@ -34,7 +35,8 @@ export const rootReducer = combineReducers({
   initialState,
   airtable,
   board,
+  modal,
   people,
   search,
-  //user,
+  user,
 });

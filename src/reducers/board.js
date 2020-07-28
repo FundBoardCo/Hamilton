@@ -29,6 +29,19 @@ export default function board(state = { ids: [] }, action) {
       ...state,
       board_state: processErr(action.error),
     };
+    case types.BOARD_GET_REQUESTED: return {
+      ...state,
+      board_state: 'pending',
+    };
+    case types.BOARD_GET_SUCCEEDED: return {
+      ...state,
+      board_state: 'succeeded',
+      ids: action.data.ids,
+    };
+    case types.BOARD_GET_FAILED: return {
+      ...state,
+      board_state: processErr(action.error),
+    };
     default: return state;
   }
 }

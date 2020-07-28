@@ -68,12 +68,18 @@ html#ov body {
   .btn.btn-link {
     padding: 0;
     border-width: 0;
+    background-color: transparent !important;
     font-size: 1em;
     line-height: 1.2em;
     max-width: none;
     text-decoration: underline;
     text-align: start;
     color: inherit;
+
+    &:hover {
+      color: inherit;
+      background-color: transparent !important;
+    }
   }
 
   .btnNoMax {

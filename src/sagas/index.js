@@ -10,6 +10,7 @@ import {
   AIRTABLE_APIKEY,
 } from '../constants';
 import { capitalizeFirstLetter, processErr } from '../utils';
+import * as types from '../actions/types';
 
 function trackErr(err) {
   window.heap.track('Error', { message: processErr(err) });
@@ -33,6 +34,59 @@ function* workAirtableGetKeywords() {
 
 function* watchAirtableGetKeywords() {
   yield takeLatest('AIRTABLE_GET_KEYWORDS_REQUESTED', workAirtableGetKeywords);
+}
+
+function userLogin(data = {}) {
+  /*
+  return axios({
+    method: 'post',
+    url: 'END POINT GOES HERE',
+    headers: { AUTH GOES HERE },
+    data,
+  });
+   */
+  return { data: { token: 'foo' } };
+}
+
+function* workUserLogin(action) {
+  try {
+    const { params } = action;
+    const results = yield call(userLogin, params);
+    console.log(results)
+    yield put({ type: types.USER_LOGIN_SUCCEEDED, data: results.data });
+  } catch (error) {
+    trackErr(error);
+    yield put({ type: types.USER_LOGIN_FAILED, error });
+  }
+}
+
+function* watchUserLogin() {
+  yield takeLatest(types.USER_LOGIN_REQUESTED, workUserLogin);
+}
+
+function userCreate(data = {}) {
+  /*
+  return axios({
+    method: 'post',
+    url: 'END POINT GOES HERE',
+    data,
+  });
+   */
+}
+
+function* workUserCreate(action) {
+  try {
+    const { params } = action;
+    const results = yield call(userCreate, params);
+    yield put({ type: types.USER_CREATE_SUCCEEDED, data: results.data });
+  } catch (error) {
+    trackErr(error);
+    yield put({ type: types.USER_CREATE_FAILED, error });
+  }
+}
+
+function* watchUserCreate() {
+  yield takeLatest(types.USER_CREATE_REQUESTED, workUserCreate);
 }
 
 function personPutInvalid(params = {}) {
@@ -60,6 +114,28 @@ function* workPersonPutInvalid(action) {
 
 function* watchPersonPutInvalid() {
   yield takeEvery('PERSON_PUT_INVALID_REQUESTED', workPersonPutInvalid);
+}
+
+function getBoard() {
+  /*
+  return axios.get('END POINT GOES HERE', {
+    headers: { Authorization: `AUTH GOES HERE' },
+  });
+   */
+}
+
+function* workGetBoard() {
+  try {
+    const results = yield call(getBoard);
+    yield put({ type: types.BOARD_GET_SUCCEEDED, data: results.data });
+  } catch (error) {
+    trackErr(error);
+    yield put({ type: types.BOARD_GET_FAILED, error });
+  }
+}
+
+function* watchGetBoard() {
+  yield takeLatest(types.BOARD_GET_REQUESTED, workGetBoard);
 }
 
 function requestSearchGetResults(params = {}) {
@@ -112,6 +188,9 @@ function* watchSearchGetResults() {
 
 export default function* rootSaga() {
   yield fork(watchAirtableGetKeywords);
+  yield fork(watchUserCreate);
+  yield fork(watchUserLogin);
   yield fork(watchPersonPutInvalid);
   yield fork(watchSearchGetResults);
+  yield fork(watchGetBoard);
 }
