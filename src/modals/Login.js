@@ -160,13 +160,14 @@ export default function Login() {
             <div className="footerBtnWrapper">
               <Button
                 variant="secondary"
-                className="mr-3"
+                className="mr-3 btnNoMax"
                 type="submit"
               >
                 Log in
               </Button>
               <Button
                 variant="text"
+                className="btnNoMax"
                 onClick={onCreateClick}
               >
                 Create Account
@@ -177,13 +178,14 @@ export default function Login() {
             <div className="footerBtnWrapper">
               <Button
                 variant="text"
-                className="mr-3"
+                className="mr-3 btnNoMax"
                 onClick={onLoginClick}
               >
                 Cancel
               </Button>
               <Button
                 variant="secondary"
+                className="btnNoMax"
                 type="submit"
               >
                 Save
