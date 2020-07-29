@@ -45,14 +45,15 @@ function userLogin(data = {}) {
     data,
   });
    */
-  return { data: { token: 'foo' } };
+  const { email, password } = data;
+  return { data: { email, token: password } };
 }
 
 function* workUserLogin(action) {
   try {
     const { params } = action;
     const results = yield call(userLogin, params);
-    console.log(results)
+    console.log(results.data)
     yield put({ type: types.USER_LOGIN_SUCCEEDED, data: results.data });
   } catch (error) {
     trackErr(error);

@@ -4,7 +4,6 @@ import { useSelector } from 'react-redux';
 import Investor from './Investor';
 import SearchMenu from './SearchMenu';
 import Login from './Login';
-import { capitalizeFirstLetter } from '../utils';
 
 export default function ModalWrapper() {
   const loggedIn = useSelector(state => state.user.token);

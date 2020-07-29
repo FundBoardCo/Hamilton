@@ -25,7 +25,6 @@ export default function Login() {
   const [mode, setMode] = useState('login');
 
   const [validated, setValidated] = useState(false);
-  const [isValid, setIsValid] = useState(false);
 
   const [emailValue, setEmailValue] = useState(email);
   const [password, setPassword] = useState('');
@@ -34,12 +33,12 @@ export default function Login() {
 
   const create = () => dispatch({
     type: types.USER_CREATE_REQUESTED,
-    params: { email, password },
+    params: { email: emailValue, password },
   });
 
   const login = () => dispatch({
     type: types.USER_LOGIN_REQUESTED,
-    params: { email, password },
+    params: { email: emailValue, password },
   });
 
   const reset = params => dispatch({
@@ -52,46 +51,46 @@ export default function Login() {
     modal: null,
   });
 
-  const onEmailChange = e => {
-    const input = e.currentTarget;
-    const val = e.target.value;
-    setValidated(true);
-    if (input.checkValidity()) {
-      setIsValid(true);
-      setEmailValue(val);
+  const history = useHistory();
+
+  const closeModal = () => {
+    if (openModal) {
+      unSetModal();
     } else {
-      setEmailValue(val);
-      setIsValid(false);
+      history.goBack();
     }
+  };
+
+  const handleSubmit = event => {
+    const form = event.currentTarget;
+    event.preventDefault();
+    event.stopPropagation();
+    setValidated(true);
+    if (form.checkValidity() !== false) {
+      if (mode === 'login') {
+        login();
+        closeModal();
+      } else if (mode === 'create') {
+        create();
+        closeModal();
+      }
+    }
+  };
+
+  const onEmailChange = e => {
+    setEmailValue(e.target.value);
   };
 
   const onPasswordChange = e => {
-    const input = e.currentTarget;
-    const val = e.target.value;
-    setValidated(true);
-    if (input.checkValidity()) {
-      setIsValid(true);
-      setPassword(val);
-    } else {
-      setPassword(val);
-      setIsValid(false);
-    }
+    setPassword(e.target.value);
   };
 
   const onLoginClick = () => {
-    if (mode === 'login') {
-      login();
-    } else {
-      setMode('login');
-    }
+    setMode('login');
   };
 
   const onCreateClick = () => {
-    if (mode === 'create') {
-      create();
-    } else {
-      setMode('create');
-    }
+    setMode('create');
   };
 
   const location = useLocation();
@@ -103,16 +102,6 @@ export default function Login() {
   if (path === 'board') modalTitleEnd = 'your FundBoard.';
 
   if (path === 'profile') modalTitleEnd = 'your profile.';
-
-  const history = useHistory();
-
-  const closeModal = () => {
-    if (openModal) {
-      unSetModal();
-    } else {
-      history.goBack();
-    }
-  };
 
   return (
     <Modal
@@ -130,7 +119,11 @@ export default function Login() {
         </Modal.Title>
       </Modal.Header>
       <Modal.Body>
-        <Form noValidate validated={validated}>
+        <Form
+          noValidate
+          validated={validated}
+          onSubmit={handleSubmit}
+        >
           <Form.Group controlId="EmailInput">
             <Form.Label className="sr-only">Email Address</Form.Label>
             <Form.Control
@@ -139,7 +132,6 @@ export default function Login() {
               placeholder="email address"
               value={emailValue}
               onChange={e => onEmailChange(e)}
-              isInvalid={validated && !isValid}
               data-track="LoginEmail-{mode}"
             />
             <Form.Control.Feedback type="invalid">
@@ -155,35 +147,51 @@ export default function Login() {
               value={password}
               pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}"
               onChange={e => onPasswordChange(e)}
-              isInvalid={validated && !isValid}
               data-track="LoginPassword-{mode}"
             />
             <Form.Text className="text-muted">
-              Enter a password with 8 or more characters, and at least one upper and lower case letter, number, and special character.
+              Enter a password with 8 or more characters, and at least one upper and lower case letter and number.
             </Form.Text>
             <Form.Control.Feedback type="invalid">
               Please enter a valid password.
             </Form.Control.Feedback>
           </Form.Group>
+          {mode === 'login' && (
+            <div className="d-flex flex-grow-1 justify-content-end">
+              <Button
+                variant="secondary"
+                className="mr-3"
+                type="submit"
+              >
+                Log in
+              </Button>
+              <Button
+                variant="text"
+                onClick={onCreateClick}
+              >
+                Create Account
+              </Button>
+            </div>
+          )}
+          {mode === 'create' && (
+            <div className="d-flex flex-grow-1 justify-content-end">
+              <Button
+                variant="text"
+                className="mr-3"
+                onClick={onLoginClick}
+              >
+                Cancel
+              </Button>
+              <Button
+                variant="secondary"
+                type="submit"
+              >
+                Save
+              </Button>
+            </div>
+          )}
         </Form>
       </Modal.Body>
-      <Modal.Footer>
-        <div className="d-flex flex-grow-1 justify-content-end">
-          <Button
-            variant={mode === 'login' ? 'secondary' : 'text'}
-            className="mr-3"
-            onClick={onLoginClick}
-          >
-            {mode === 'login' ? 'Log in' : 'Cancel'}
-          </Button>
-          <Button
-            variant={mode === 'create' ? 'secondary' : 'text'}
-            onClick={onCreateClick}
-          >
-            {mode === 'create' ? 'Save' : 'Create Account'}
-          </Button>
-        </div>
-      </Modal.Footer>
     </Modal>
   );
 }
