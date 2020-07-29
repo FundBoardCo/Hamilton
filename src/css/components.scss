@@ -175,12 +175,18 @@ html#ov body {
           // note: this might not be in the footer if it needs to be inside a form in the body.
           display: flex;
           flex-grow: 1;
-          justify-content: stretch;
+          justify-content: space-between;
           align-items: center;
         }
 
         .footerBtnWrapper > .btn {
-          flex-basis: 50%;
+          flex-grow: 1;
+        }
+
+        @media (min-width: $mediaMd) {
+          .footerBtnWrapper > .btn {
+            flex-basis: 50%;
+          }
         }
       }
     }

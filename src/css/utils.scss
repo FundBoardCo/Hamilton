@@ -74,12 +74,12 @@ html#ov body {
     max-width: none;
     text-decoration: underline;
     text-align: start;
-    color: inherit;
 
     &:hover {
-      color: inherit;
       background-color: transparent !important;
     }
+
+    @include link();
   }
 
   .btnNoMax {

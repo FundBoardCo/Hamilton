@@ -15,14 +15,15 @@ export default function Login() {
   console.log(user)
   const {
     email,
-    token,
     create_state,
     login_state,
+    reset_state,
   } = user;
 
   const openModal = useSelector(state => state.modal.openModal);
 
   const [mode, setMode] = useState('login');
+  let prevMode = '';
 
   const [validated, setValidated] = useState(false);
 
@@ -41,9 +42,9 @@ export default function Login() {
     params: { email: emailValue, password },
   });
 
-  const reset = params => dispatch({
+  const reset = () => dispatch({
     type: types.USER_RESETPASSWORD_REQUESTED,
-    params,
+    params: { email: emailValue },
   });
 
   const unSetModal = () => dispatch({
@@ -73,6 +74,9 @@ export default function Login() {
       } else if (mode === 'create') {
         create();
         closeModal();
+      } else if (mode === 'reset') {
+        reset();
+        setMode('reseted');
       }
     }
   };
@@ -93,6 +97,16 @@ export default function Login() {
     setMode('create');
   };
 
+  const onResetClick = () => {
+    console.log('reset click')
+    prevMode = mode;
+    setMode('reset');
+  };
+
+  const onCancelResetClick = () => {
+    setMode(prevMode);
+  };
+
   const location = useLocation();
 
   const path = location.pathname.substring(1);
@@ -102,6 +116,62 @@ export default function Login() {
   if (path === 'board') modalTitleEnd = 'your FundBoard.';
 
   if (path === 'profile') modalTitleEnd = 'your profile.';
+
+  const btnProps = {
+    login: {
+      variant: 'secondary',
+      text: 'Log in',
+      type: 'submit',
+    },
+    create: {
+      variant: 'text',
+      text: 'Create account',
+      onClick: onCreateClick,
+    },
+  };
+
+  if (mode === 'create') {
+    btnProps.login = {
+      variant: 'text',
+      text: 'Cancel',
+      onClick: onLoginClick,
+    };
+    btnProps.create = {
+      variant: 'secondary',
+      text: 'Save',
+      type: 'submit',
+    };
+  }
+
+  if (mode === 'reset') {
+    console.log('mode is reset')
+    btnProps.login = {
+      variant: 'text',
+      text: 'Cancel',
+      onClick: onCancelResetClick,
+    };
+    btnProps.create = {
+      variant: 'secondary',
+      text: 'Send reset email',
+      type: 'submit',
+    };
+  }
+
+  if (mode === 'reseted') {
+    btnProps.login = {
+      variant: 'text',
+      text: 'Cancel',
+      disabled: true,
+    };
+    btnProps.create = {
+      variant: 'secondary',
+      text: 'Email sent',
+      disabled: true,
+    };
+  }
+
+  console.log(mode)
+  console.log(btnProps)
 
   return (
     <Modal
@@ -138,60 +208,50 @@ export default function Login() {
               Please enter a valid email address.
             </Form.Control.Feedback>
           </Form.Group>
-          <Form.Group controlId="PasswordInput">
-            <Form.Label className="sr-only">Password</Form.Label>
-            <Form.Control
-              required
-              type="password"
-              placeholder="password"
-              value={password}
-              pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}"
-              onChange={e => onPasswordChange(e)}
-              data-track="LoginPassword-{mode}"
-            />
-            <Form.Text className="text-muted">
-              Enter a password with 8 or more characters, and at least one upper and lower case letter and number.
-            </Form.Text>
-            <Form.Control.Feedback type="invalid">
-              Please enter a valid password.
-            </Form.Control.Feedback>
-          </Form.Group>
-          {mode === 'login' && (
-            <div className="footerBtnWrapper">
+          {['login', 'create'].includes(mode) && (
+            <Form.Group controlId="PasswordInput">
+              <Form.Label className="sr-only">Password</Form.Label>
+              <Form.Control
+                required
+                type="password"
+                placeholder="password"
+                value={password}
+                pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}"
+                onChange={e => onPasswordChange(e)}
+                data-track="LoginPassword-{mode}"
+              />
+              <Form.Text className="text-muted">
+                Enter a password with 8 or more characters, and at least one upper and lower case letter and number.
+              </Form.Text>
+              <Form.Control.Feedback type="invalid">
+                Please enter a valid password.
+              </Form.Control.Feedback>
+            </Form.Group>
+          )}
+          {['login', 'create'].includes(mode) && (
+            <div className="d-flex justify-content-end mb-4">
               <Button
-                variant="secondary"
-                className="mr-3 btnNoMax"
-                type="submit"
+                variant="link"
+                onClick={onResetClick}
               >
-                Log in
-              </Button>
-              <Button
-                variant="text"
-                className="btnNoMax"
-                onClick={onCreateClick}
-              >
-                Create Account
+                <span className="txs-2">Reset my password</span>
               </Button>
             </div>
           )}
-          {mode === 'create' && (
-            <div className="footerBtnWrapper">
-              <Button
-                variant="text"
-                className="mr-3 btnNoMax"
-                onClick={onLoginClick}
-              >
-                Cancel
-              </Button>
-              <Button
-                variant="secondary"
-                className="btnNoMax"
-                type="submit"
-              >
-                Save
-              </Button>
-            </div>
-          )}
+          <div className="footerBtnWrapper">
+            <Button
+              className="mr-3 btnNoMax"
+              {...btnProps.login}
+            >
+              {btnProps.login.text}
+            </Button>
+            <Button
+              className="btnNoMax"
+              {...btnProps.create}
+            >
+              {btnProps.create.text}
+            </Button>
+          </div>
         </Form>
       </Modal.Body>
     </Modal>

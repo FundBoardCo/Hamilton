@@ -8,6 +8,7 @@ const defaults = {
   login_state: '',
   update_state: '',
   delete_state: '',
+  reset_state: '',
   token: '',
   password: '',
 };
@@ -75,6 +76,18 @@ export default function user(state = { ...defaults }, action) {
     case types.USER_DELETE_FAILED: return {
       ...state,
       delete_state: processErr(action.error),
+    };
+    case types.USER_RESETPASSWORD_REQUESTED: return {
+      ...state,
+      reset_state: 'pending',
+    };
+    case types.USER_RESETPASSWORD_SUCCEEDED: return {
+      ...state,
+      reset_state: 'succeeded',
+    };
+    case types.USER_RESETPASSWORD_FAILED: return {
+      ...state,
+      reset_state: processErr(action.error),
     };
     default: return state;
   }
