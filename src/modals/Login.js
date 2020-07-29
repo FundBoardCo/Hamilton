@@ -157,7 +157,7 @@ export default function Login() {
             </Form.Control.Feedback>
           </Form.Group>
           {mode === 'login' && (
-            <div className="d-flex flex-grow-1 justify-content-end">
+            <div className="footerBtnWrapper">
               <Button
                 variant="secondary"
                 className="mr-3"
@@ -174,7 +174,7 @@ export default function Login() {
             </div>
           )}
           {mode === 'create' && (
-            <div className="d-flex flex-grow-1 justify-content-end">
+            <div className="footerBtnWrapper">
               <Button
                 variant="text"
                 className="mr-3"

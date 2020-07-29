@@ -170,6 +170,18 @@ html#ov body {
         .modal-footer {
           border-top: none;
         }
+
+        .footerBtnWrapper {
+          // note: this might not be in the footer if it needs to be inside a form in the body.
+          display: flex;
+          flex-grow: 1;
+          justify-content: stretch;
+          align-items: center;
+        }
+
+        .footerBtnWrapper > .btn {
+          flex-basis: 50%;
+        }
       }
     }
 
