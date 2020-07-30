@@ -1,18 +1,15 @@
-import React, { useEffect, useState } from 'react';
-import {useHistory, useLocation} from 'react-router';
+import React, { useState } from 'react';
+import { useHistory, useLocation } from 'react-router';
 import { useSelector, useDispatch } from 'react-redux';
 import Form from 'react-bootstrap/Form';
-import Container from 'react-bootstrap/Container';
-import Row from 'react-bootstrap/Row';
-import Col from 'react-bootstrap/Col';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Button from 'react-bootstrap/Button';
+import Modal from 'react-bootstrap/Modal';
 import * as types from '../actions/types';
-import Modal from "react-bootstrap/Modal";
+
+let prevMode = '';
 
 export default function Login() {
   const user = useSelector(state => state.user) || {};
-  console.log(user)
   const {
     email,
     create_state,
@@ -23,7 +20,6 @@ export default function Login() {
   const openModal = useSelector(state => state.modal.openModal);
 
   const [mode, setMode] = useState('login');
-  let prevMode = '';
 
   const [validated, setValidated] = useState(false);
 
@@ -98,7 +94,6 @@ export default function Login() {
   };
 
   const onResetClick = () => {
-    console.log('reset click')
     prevMode = mode;
     setMode('reset');
   };
@@ -130,6 +125,15 @@ export default function Login() {
     },
   };
 
+  if (mode === 'login') {
+    // this isn't currently doing anything because the modal closes on login
+    // TODO: delay closing the modal until login is successful
+    if (login_state === 'pending') {
+      btnProps.login.text = 'Loggin in...';
+      btnProps.login.disabled = true;
+    }
+  }
+
   if (mode === 'create') {
     btnProps.login = {
       variant: 'text',
@@ -144,7 +148,6 @@ export default function Login() {
   }
 
   if (mode === 'reset') {
-    console.log('mode is reset')
     btnProps.login = {
       variant: 'text',
       text: 'Cancel',
@@ -169,9 +172,6 @@ export default function Login() {
       disabled: true,
     };
   }
-
-  console.log(mode)
-  console.log(btnProps)
 
   return (
     <Modal
