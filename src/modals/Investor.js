@@ -275,7 +275,7 @@ export default function Investor(props) {
           )}
           {invalidOpen && !data.invalid && (
             <div className="invalidBtns">
-              {!data.invalid_state && (
+              {!data.invalid_status && (
                 <div>
                   <Button
                     variant="danger-light"
@@ -300,18 +300,18 @@ export default function Investor(props) {
                   </Button>
                 </div>
               )}
-              {data.invalid_state === 'pending' && (
+              {data.invalid_status === 'pending' && (
                 <Spinner animation="border" variant="info" role="status" size="sm" />
               )}
-              {data.invalid_state === 'succeeded' && (
+              {data.invalid_status === 'succeeded' && (
                 <div className="p-3 text-center">
                   Thank you. Your report has been recieved.
                 </div>
               )}
-              {stateIsError(data.invalid_state) && (
+              {stateIsError(data.invalid_status) && (
                 <div className="invalidError">
                   <span>
-                    {`Error: ${data.invalid_state}`}
+                    {`Error: ${data.invalid_status}`}
                   </span>
                   <Button
                     variant="danger-light"

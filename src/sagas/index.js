@@ -8,6 +8,7 @@ import {
 import axios from 'axios';
 import {
   AIRTABLE_APIKEY,
+  ZIPCODEAPI,
 } from '../constants';
 import { capitalizeFirstLetter, processErr } from '../utils';
 import * as types from '../actions/types';
@@ -53,7 +54,6 @@ function* workUserLogin(action) {
   try {
     const { params } = action;
     const results = yield call(userLogin, params);
-    console.log(results.data)
     yield put({ type: types.USER_LOGIN_SUCCEEDED, data: results.data });
   } catch (error) {
     trackErr(error);
@@ -139,6 +139,31 @@ function* watchGetBoard() {
   yield takeLatest(types.BOARD_GET_REQUESTED, workGetBoard);
 }
 
+function getExtraZipCodes(zipcode) {
+  return axios.get(
+    `https://www.zipcodeapi.com/rest/${ZIPCODEAPI}/radius.json/${zipcode}/20/mile?minimal`,
+  );
+}
+
+function* workGetExtraZipCodes(action) {
+  const zipcode = action.location;
+  if (!zipcode || typeof zipcode !== 'string' || zipcode.length !== 5) {
+    yield put({ type: types.SEARCH_GET_EXTRAZIPCODES_FAILED, error: 'Invalid Zip Code' });
+    throw new Error('Invalid Zip Code');
+  }
+  try {
+    const results = yield call(getExtraZipCodes, zipcode);
+    yield put({ type: types.SEARCH_GET_EXTRAZIPCODES_SUCCEEDED, data: results.data });
+  } catch (error) {
+    trackErr(error);
+    yield put({ type: types.SEARCH_GET_EXTRAZIPCODES_FAILED, error });
+  }
+}
+
+function* watchSearchSetZipCode() {
+  yield takeLatest(types.SEARCH_SET_LOCATION, workGetExtraZipCodes);
+}
+
 function requestSearchGetResults(params = {}) {
   // Temporary Airtable code.
   // TODO: replace with real API code.
@@ -173,8 +198,9 @@ function requestSearchGetResults(params = {}) {
 }
 
 function* workSearchGetResults(action) {
+  const { params } = action;
   try {
-    const results = yield call(requestSearchGetResults, action.params);
+    const results = yield call(requestSearchGetResults, params);
     yield put({ type: 'SEARCH_GET_RESULTS_SUCCEEDED', data: results.data });
     yield put({ type: 'PEOPLE_UPDATE', data: results.data });
   } catch (error) {
@@ -192,6 +218,7 @@ export default function* rootSaga() {
   yield fork(watchUserCreate);
   yield fork(watchUserLogin);
   yield fork(watchPersonPutInvalid);
+  yield fork(watchSearchSetZipCode);
   yield fork(watchSearchGetResults);
   yield fork(watchGetBoard);
 }

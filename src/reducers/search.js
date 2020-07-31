@@ -3,11 +3,13 @@ import * as types from '../actions/types';
 import { processErr } from '../utils';
 
 const defaultState = {
-  results_state: '',
+  results_status: '',
+  extraZipcodes_status:'',
   results: {},
   keywords: [],
   raise: 100000,
   location: '',
+  extraZipcodes: [],
 };
 
 export default function search(state = { ...defaultState }, action) {
@@ -46,9 +48,23 @@ export default function search(state = { ...defaultState }, action) {
       ...state,
       remote: action.remote,
     };
+    case types.SEARCH_GET_EXTRAZIPCODES_REQUEST: return {
+      ...state,
+      extraZipcodes_status: 'pending',
+    };
+    case types.SEARCH_GET_EXTRAZIPCODES_SUCCEEDED:
+      return {
+        ...state,
+        extraZipcodes: action.data.zip_codes,
+        extraZipcodes_status: 'succeeded',
+      };
+    case types.SEARCH_GET_EXTRAZIPCODES_FAILED: return {
+      ...state,
+      extraZipcodes_status: processErr(action.error),
+    };
     case types.SEARCH_GET_RESULTS_REQUESTED: return {
       ...state,
-      results_state: 'pending',
+      results_status: 'pending',
     };
     case types.SEARCH_GET_RESULTS_SUCCEEDED:
       if (action.data.records) {
@@ -59,15 +75,15 @@ export default function search(state = { ...defaultState }, action) {
       return {
         ...state,
         results,
-        results_state: 'succeeded',
+        results_status: 'succeeded',
       };
     case types.SEARCH_GET_RESULTS_FAILED: return {
       ...state,
-      results_state: processErr(action.error),
+      results_status: processErr(action.error),
     };
     case types.SEARCH_CLEAR_RESULTS: return {
       ...state,
-      results_state: '',
+      results_status: '',
       results: {},
     };
     default: return state;

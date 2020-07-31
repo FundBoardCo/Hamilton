@@ -4,11 +4,11 @@ import { processErr } from '../utils';
 
 const defaults = {
   email: '',
-  create_state: '',
-  login_state: '',
-  update_state: '',
-  delete_state: '',
-  reset_state: '',
+  create_status: '',
+  login_status: '',
+  update_status: '',
+  delete_status: '',
+  reset_status: '',
   token: '',
   password: '',
 };
@@ -21,31 +21,31 @@ export default function user(state = { ...defaults }, action) {
     };
     case types.USER_CREATE_REQUESTED: return {
       ...state,
-      create_state: 'pending',
+      create_status: 'pending',
       email: action.email,
     };
     case types.USER_CREATE_SUCCEEDED: return {
       ...state,
-      create_state: 'succeeded',
+      create_status: 'succeeded',
       token: action.data.token,
     };
     case types.USER_CREATE_FAILED: return {
       ...state,
-      create_state: processErr(action.error),
+      create_status: processErr(action.error),
     };
     case types.USER_LOGIN_REQUESTED: return {
       ...state,
-      login_state: 'pending',
+      login_status: 'pending',
       email: action.params.email,
     };
     case types.USER_LOGIN_SUCCEEDED: return {
       ...state,
-      login_state: 'succeeded',
+      login_status: 'succeeded',
       token: action.data.token,
     };
     case types.USER_LOGIN_FAILED: return {
       ...state,
-      login_state: processErr(action.error),
+      login_status: processErr(action.error),
     };
     case types.USER_LOGOUT: return {
       ...state,
@@ -54,40 +54,40 @@ export default function user(state = { ...defaults }, action) {
     };
     case types.USER_UPDATE_REQUESTED: return {
       ...state,
-      update_state: 'pending',
+      update_status: 'pending',
     };
     case types.USER_UPDATE_SUCCEEDED: return {
       ...state,
-      update_state: 'succeeded',
+      update_status: 'succeeded',
       email: action.email,
     };
     case types.USER_UPDATE_FAILED: return {
       ...state,
-      update_state: processErr(action.error),
+      update_status: processErr(action.error),
     };
     case types.USER_DELETE_REQUESTED: return {
       ...state,
-      delete_state: 'pending',
+      delete_status: 'pending',
     };
     case types.USER_DELETE_SUCCEEDED: return {
       ...state,
-      delete_state: 'succeeded',
+      delete_status: 'succeeded',
     };
     case types.USER_DELETE_FAILED: return {
       ...state,
-      delete_state: processErr(action.error),
+      delete_status: processErr(action.error),
     };
     case types.USER_RESETPASSWORD_REQUESTED: return {
       ...state,
-      reset_state: 'pending',
+      reset_status: 'pending',
     };
     case types.USER_RESETPASSWORD_SUCCEEDED: return {
       ...state,
-      reset_state: 'succeeded',
+      reset_status: 'succeeded',
     };
     case types.USER_RESETPASSWORD_FAILED: return {
       ...state,
-      reset_state: processErr(action.error),
+      reset_status: processErr(action.error),
     };
     default: return state;
   }

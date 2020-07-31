@@ -12,8 +12,8 @@ export default function Profile() {
   const {
     email,
   } = user;
-  const updateState = useSelector(state => state.update_state);
-  const deleteState = useSelector(state => state.delete_state);
+  const updateState = useSelector(state => state.update_status);
+  const deleteState = useSelector(state => state.delete_status);
 
   const [validated, setValidated] = useState(false);
   const [emailValue, setEmailValue] = useState(email);

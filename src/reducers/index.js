@@ -8,24 +8,24 @@ import people from './people';
 
 // TODO: update all of these to the real keys
 export const resetState = {
-  auth_state: null,
-  logout_state: null,
-  newUser_state: null,
-  search_state: null,
-  updateUser_state: null,
+  auth_status: null,
+  logout_status: null,
+  newUser_status: null,
+  search_status: null,
+  updateUser_status: null,
 };
 
 // These will be overwritten on rehydration.
 // TODO: update all of these to the real keys
 const initialState = {
   ...resetState,
-  auth_state: null,
-  logout_state: null,
-  newUser_state: null,
-  updateUser_state: null,
+  auth_status: null,
+  logout_status: null,
+  newUser_status: null,
+  updateUser_status: null,
   auth_user: null,
   search: {
-    results_state: null,
+    results_status: null,
     results: [],
   },
   updateUserModal_show: false,

@@ -12,7 +12,7 @@ export default function Search() {
   const searchRaise = useSelector(state => state.search.raise) || 100000;
   const searchLocation = useSelector(state => state.search.location) || '';
   const searchResults = useSelector(state => state.search.results) || [];
-  const searchState = useSelector(state => state.search.results_state) || '';
+  const searchState = useSelector(state => state.search.results_status) || '';
 
   const [detailsOpen, setDetailsOpen] = useState(false);
 

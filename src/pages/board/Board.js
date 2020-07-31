@@ -23,7 +23,7 @@ export default function Board() {
     csvPer['Potential Lead'] = people[i].isLead ? 'Yes' : '';
     csvPer['Open to Direct Outreach'] = people[i].isOpen ? 'Yes' : '';
     csvPer.Organization = people[i].primary_organization;
-    csvPer.Location = `${people[i].location_city}, ${people[i].location_state}`;
+    csvPer.Location = `${people[i].location_city}, ${people[i].location_status}`;
     csvPer.LinkedIn = people[i].linkedin;
     csvPer.Twitter = people[i].twitter;
     csvPer.CrunchBase = people[i].crunchbase;

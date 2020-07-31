@@ -5,6 +5,8 @@ import Col from 'react-bootstrap/Col';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import { useHistory } from 'react-router';
+import * as types from '../../actions/types';
+import { stateIsError } from '../../utils';
 
 export default function Location() {
   const searchKeywords = useSelector(state => state.search.keywords) || [];
@@ -12,6 +14,9 @@ export default function Location() {
 
   const searchLocation = useSelector(state => state.search.location) || '';
   const [locationValue, setLocationValue] = useState(searchLocation);
+
+  const extraZipcodes = useSelector(state => state.search.extraZipcodes) || '';
+  const extraZipcodes_status = useSelector(state => state.search.extraZipcodes_status);
 
   const storedRemote = useSelector(state => state.search.remote) || '';
   const [remoteValue, setRemoteValue] = useState(storedRemote);
@@ -35,11 +40,11 @@ export default function Location() {
 
   const getResults = () => {
     const params = {};
-    params.location = searchLocation;
+    params.location = [searchLocation, ...extraZipcodes].join();
     params.raise = searchRaise;
     params.keywords = searchKeywords;
     return dispatch({
-      type: 'SEARCH_GET_RESULTS_REQUESTED',
+      type: types.SEARCH_GET_RESULTS_REQUESTED,
       params,
     });
   };
@@ -67,6 +72,16 @@ export default function Location() {
     getResults();
     history.push('/search');
   };
+
+  let extraZipcodesText = extraZipcodes_status;
+
+  if (!searchLocation) extraZipcodesText = 'waiting for your zip code.';
+
+  if (!extraZipcodes_status || extraZipcodes_status === 'succeeded') {
+    extraZipcodesText = `${extraZipcodes.length} zip codes within 20 miles of ${searchLocation} found.`;
+  }
+
+  const extraZipcodesClass = stateIsError(extraZipcodes_status) ? 'text-warning' : 'text-info';
 
   return (
     <Row id="Location">
@@ -104,10 +119,13 @@ export default function Location() {
                 data-track="IntroSearchRemote"
               />
             </Form.Group>
+            <div className={`mb-2 ${extraZipcodesClass}`}>
+              {`Status: ${extraZipcodesText}`}
+            </div>
             <Button
               variant="secondary"
               className="btnNoMax"
-              disabled={!searchLocation}
+              disabled={!isValid || !searchLocation || extraZipcodes_status !== 'succeeded'}
               onClick={onSearchClick}
               data-track="IntroSearchSeeMatches"
             >

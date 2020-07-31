@@ -18,29 +18,29 @@ export default function board(state = { ids: [] }, action) {
     };
     case types.BOARD_CHANGE_REQUESTED: return {
       ...state,
-      board_state: 'pending',
+      board_status: 'pending',
     };
     case types.BOARD_CHANGE_SUCCEEDED: return {
       ...state,
-      board_state: 'succeeded',
+      board_status: 'succeeded',
       ids: action.data.ids,
     };
     case types.BOARD_CHANGE_FAILED: return {
       ...state,
-      board_state: processErr(action.error),
+      board_status: processErr(action.error),
     };
     case types.BOARD_GET_REQUESTED: return {
       ...state,
-      board_state: 'pending',
+      board_status: 'pending',
     };
     case types.BOARD_GET_SUCCEEDED: return {
       ...state,
-      board_state: 'succeeded',
+      board_status: 'succeeded',
       ids: action.data.ids,
     };
     case types.BOARD_GET_FAILED: return {
       ...state,
-      board_state: processErr(action.error),
+      board_status: processErr(action.error),
     };
     default: return state;
   }

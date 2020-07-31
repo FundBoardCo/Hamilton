@@ -7,6 +7,9 @@ export function processErr(err) {
       }
       return err.response.data.error;
     }
+    if (err.response.data.error_msg) {
+      return err.response.data.error_msg;
+    }
     return err.response.data;
   }
   if (err.message) return err.message;

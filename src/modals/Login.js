@@ -12,9 +12,9 @@ export default function Login() {
   const user = useSelector(state => state.user) || {};
   const {
     email,
-    create_state,
-    login_state,
-    reset_state,
+    create_status,
+    login_status,
+    reset_status,
   } = user;
 
   const openModal = useSelector(state => state.modal.openModal);
@@ -128,7 +128,7 @@ export default function Login() {
   if (mode === 'login') {
     // this isn't currently doing anything because the modal closes on login
     // TODO: delay closing the modal until login is successful
-    if (login_state === 'pending') {
+    if (login_status === 'pending') {
       btnProps.login.text = 'Loggin in...';
       btnProps.login.disabled = true;
     }
