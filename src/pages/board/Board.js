@@ -19,20 +19,20 @@ export default function Board() {
     // TODO change this for API data
     csvPer['Investor Name'] = `${people[i]['first name']} ${people[i]['last name']}`;
     csvPer.Title = people[i].primary_job_title;
-    csvPer.Priority = '';
-    csvPer['Potential Lead'] = people[i].isLead ? 'Yes' : '';
-    csvPer['Open to Direct Outreach'] = people[i].isOpen ? 'Yes' : '';
     csvPer.Organization = people[i].primary_organization;
-    csvPer.Location = `${people[i].location_city}, ${people[i].location_status}`;
-    csvPer.LinkedIn = people[i].linkedin;
-    csvPer.Twitter = people[i].twitter;
-    csvPer.CrunchBase = people[i].crunchbase;
+    csvPer.Priority = '';
     csvPer['Introed By'] = '';
     csvPer['Date of Intro'] = '';
     csvPer.Status = '';
     csvPer['Next Steps'] = '';
     csvPer.Notes = '';
     csvList.push(csvPer);
+    csvPer['Potential Lead'] = people[i].isLead ? 'Yes' : '';
+    csvPer['Open to Direct Outreach'] = people[i].isOpen ? 'Yes' : '';
+    csvPer.Location = `${people[i].location_city}, ${people[i].location_status}`;
+    csvPer.LinkedIn = people[i].linkedin;
+    csvPer.Twitter = people[i].twitter;
+    csvPer.CrunchBase = people[i].crunchbase;
   });
   const csv = Papa.unparse(Object.values(csvList));
   const csvData = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
