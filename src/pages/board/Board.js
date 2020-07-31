@@ -10,6 +10,7 @@ import Person from '../../components/people/Person';
 export default function Board() {
   const investors = useSelector(state => state.board.ids) || [];
   const people = useSelector(state => state.people);
+  const loggedIn = useSelector(state => state.user.token);
   const investorList = {};
   const csvList = [];
   investors.forEach(i => {
@@ -74,6 +75,7 @@ export default function Board() {
 
   return (
     <Row id="PageBoard" className="pageContainer">
+      {loggedIn && (
       <div className="boardDetailsBar">
         <div className="primaryDetails">
           <Button
@@ -115,6 +117,8 @@ export default function Board() {
           </Button>
         </div>
       </div>
+      )}
+      {loggedIn && (
       <div className="results">
         {Object.keys(investorList).map(k => {
           const personProps = { ...investorList[k] };
@@ -126,6 +130,10 @@ export default function Board() {
           );
         })}
       </div>
+      )}
+      {!loggedIn && (
+        <h1>To see your FundBoard, you need to log in first.</h1>
+      )}
     </Row>
   );
 }
