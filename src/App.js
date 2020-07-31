@@ -108,6 +108,8 @@ function App() {
                 <span>My FundBoard</span>
               </Nav.Link>
             )}
+            {loggedIn
+            && (
             <Nav.Link
               as={NavLink}
               href="/search"
@@ -119,6 +121,7 @@ function App() {
               <FontAwesomeIcon icon="search" />
               <span>Search</span>
             </Nav.Link>
+            )}
             {loggedIn
             && (
               <Nav.Link
@@ -156,9 +159,7 @@ function App() {
               <Route path="/intro" component={Intro} />
               <Route path="/introsearch" component={IntroSearch} />
               <Route path="/board" component={Board} />
-              <Route path="/search">
-                {loggedIn ? <Redirect to="/search" /> : <Redirect to="/introsearch" />}
-              </Route>
+              <Route path="/search" component={Search} />
               <Route path="/profile" component={Profile} />
               <Route component={NotFound} />
             </Switch>
