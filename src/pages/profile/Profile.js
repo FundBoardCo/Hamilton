@@ -3,16 +3,15 @@ import {useDispatch, useSelector} from 'react-redux';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Button from 'react-bootstrap/Button';
-import Person from '../../components/people/Person';
-import Form from "react-bootstrap/Form";
-import * as types from "../../actions/types";
+import Form from 'react-bootstrap/Form';
+import * as types from '../../actions/types';
 
 export default function Profile() {
+  const loggedIn = useSelector(state => state.user.token);
   const user = useSelector(state => state.user) || {};
   const {
     email,
   } = user;
-  console.log(user)
   const updateState = useSelector(state => state.update_state);
   const deleteState = useSelector(state => state.delete_state);
 
@@ -119,6 +118,7 @@ export default function Profile() {
 
   return (
     <Row id="PageProfile" className="pageContainer">
+      {loggedIn && (
       <Col xs={12} md={8} className="mr-auto ml-auto">
         <h1 className="text-center">My Profile</h1>
         <p className="text-center">You can edit the very minimal data we store about you here.</p>
@@ -201,6 +201,12 @@ export default function Profile() {
           </Button>
         </div>
       </Col>
+      )}
+      {!loggedIn && (
+        <Col xs={12} md={8} className="mr-auto ml-auto">
+          <h1>To see your profile, you need to log in first.</h1>
+        </Col>
+      )}
     </Row>
   );
 }
