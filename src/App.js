@@ -156,7 +156,9 @@ function App() {
               <Route path="/intro" component={Intro} />
               <Route path="/introsearch" component={IntroSearch} />
               <Route path="/board" component={Board} />
-              <Route path="/search" component={Search} />
+              <Route path="/search">
+                {loggedIn ? <Redirect to="/search" /> : <Redirect to="/introsearch" />}
+              </Route>
               <Route path="/profile" component={Profile} />
               <Route component={NotFound} />
             </Switch>
