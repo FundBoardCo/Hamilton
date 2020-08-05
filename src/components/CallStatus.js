@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import Alert from 'react-bootstrap/Alert';
 import Spinner from 'react-bootstrap/Spinner';
-import { processErr, stateIsError, capitalizeFirstLetter } from '../utils';
+import { processErr, statusIsError, capitalizeFirstLetter } from '../utils';
 
 export default function CallStatus(props) {
   const { status = '', type = '', hideSuccess = false, className = '' } = props;
@@ -20,7 +20,7 @@ export default function CallStatus(props) {
     variant = 'success';
     msg = props.successMsg || 'Succeeded';
     if (hideSuccess) hide = true;
-  } else if (stateIsError(status)) {
+  } else if (statusIsError(status)) {
     variant = 'danger';
     msg = processErr(status) || 'Error';
   }

@@ -10,7 +10,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Timeline } from 'react-twitter-widgets';
 import GreySquare from '../imgs/greySquare.jpg';
 import PersonStamp from '../components/people/PersonStamp';
-import { capitalizeFirstLetter, stateIsError } from '../utils';
+import { capitalizeFirstLetter, statusIsError } from '../utils';
 
 function ImgComp(params) {
   const { imgSrc = '', alt = '' } = params;
@@ -308,7 +308,7 @@ export default function Investor(props) {
                   Thank you. Your report has been recieved.
                 </div>
               )}
-              {stateIsError(data.invalid_status) && (
+              {statusIsError(data.invalid_status) && (
                 <div className="invalidError">
                   <span>
                     {`Error: ${data.invalid_status}`}

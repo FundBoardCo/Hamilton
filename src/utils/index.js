@@ -17,7 +17,7 @@ export function processErr(err) {
   return err;
 }
 
-export function stateIsError(state) {
+export function statusIsError(state) {
   return !!state && !['pending', 'succeeded'].includes(state);
 }
 

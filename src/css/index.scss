@@ -588,8 +588,10 @@ html#ov {
 
             .secondaryDetails {
               padding: $pad3;
-              background-color: $col-primary-light;
-              color: $col-text-light;
+              background-color: $col-primary-light7;
+              color: $col-primary-dark2;
+              border: $col-primary 2px solid;
+              border-top: none;
 
               p:last-child {
                 margin: 0;

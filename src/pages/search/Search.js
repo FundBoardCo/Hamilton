@@ -6,13 +6,14 @@ import Row from 'react-bootstrap/Row';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Spinner from 'react-bootstrap/Spinner';
 import Person from '../../components/people/Person';
+import { statusIsError } from '../../utils';
 
 export default function Search() {
   const searchKeywords = useSelector(state => state.search.keywords) || [];
   const searchRaise = useSelector(state => state.search.raise) || 100000;
   const searchLocation = useSelector(state => state.search.location) || '';
   const searchResults = useSelector(state => state.search.results) || [];
-  const searchState = useSelector(state => state.search.results_status) || '';
+  const searchStatus = useSelector(state => state.search.results_status) || '';
 
   const [detailsOpen, setDetailsOpen] = useState(false);
 
@@ -44,9 +45,6 @@ export default function Search() {
           >
             {`${Object.keys(searchResults).length} investors match`}
           </Button>
-          {searchState === 'pending' && !searchResults.length && (
-            <Spinner animation="border" variant="info" />
-          )}
           <Button
             variant="primary-light"
             className="btnTn inlineBtn"
@@ -70,7 +68,10 @@ export default function Search() {
         </div>
       </div>
       <div className="results">
-        {Object.keys(searchResults).map(k => {
+        {searchStatus === 'pending' && (
+          <Spinner animation="border" variant="info" />
+        )}
+        {searchStatus === 'succeeded' && Object.keys(searchResults).map(k => {
           const personProps = { ...searchResults[k] };
           personProps.uuid = k;
           const pKey = personProps.permalink || personProps.image_id;
@@ -78,6 +79,12 @@ export default function Search() {
             <Person key={pKey} {...personProps} />
           );
         })}
+        {statusIsError(searchStatus) && (
+          <div className="p-3 text-center text-danger">
+            Error:&nbsp;
+            {searchStatus}
+          </div>
+        )}
       </div>
     </Row>
   );

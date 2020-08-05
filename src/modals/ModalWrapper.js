@@ -4,6 +4,7 @@ import { useSelector } from 'react-redux';
 import Investor from './Investor';
 import SearchMenu from './SearchMenu';
 import Login from './Login';
+import AfterDownload from './AfterDownload';
 
 export default function ModalWrapper() {
   const loggedIn = useSelector(state => state.user.token);
@@ -25,6 +26,7 @@ export default function ModalWrapper() {
         : <Route path="/board" component={Login} />}
       { !loggedIn && <Route path="/profile" component={Login} /> }
       { openModal === 'login' && <Route path="/" component={Login} /> }
+      { openModal === 'afterDownload' && <Route path="/" component={AfterDownload} /> }
     </Switch>
   );
 }

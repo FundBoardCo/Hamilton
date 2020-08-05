@@ -10,8 +10,14 @@ import {
   AIRTABLE_APIKEY,
   ZIPCODEAPI,
 } from '../constants';
-import { capitalizeFirstLetter, processErr } from '../utils';
+import {
+  capitalizeFirstLetter,
+  processErr,
+  toQueryString,
+} from '../utils';
 import * as types from '../actions/types';
+
+const api = 'https://api.fundboard.co/';
 
 function trackErr(err) {
   window.heap.track('Error', { message: processErr(err) });
@@ -38,16 +44,11 @@ function* watchAirtableGetKeywords() {
 }
 
 function userLogin(data = {}) {
-  /*
   return axios({
     method: 'post',
-    url: 'END POINT GOES HERE',
-    headers: { AUTH GOES HERE },
+    url: `${api}login`,
     data,
   });
-   */
-  const { email, password } = data;
-  return { data: { email, token: password } };
 }
 
 function* workUserLogin(action) {
@@ -66,13 +67,11 @@ function* watchUserLogin() {
 }
 
 function userCreate(data = {}) {
-  /*
   return axios({
     method: 'post',
-    url: 'END POINT GOES HERE',
+    url: `${api}create`,
     data,
   });
-   */
 }
 
 function* workUserCreate(action) {
@@ -165,40 +164,12 @@ function* watchSearchSetZipCode() {
 }
 
 function requestSearchGetResults(params = {}) {
-  // Temporary Airtable code.
-  // TODO: replace with real API code.
-  // params should be an object with field: term key:value pairs.
-  let { keywords } = params;
-  const { raise, location } = params;
-
-  // change each keyword into a FIND formula
-  const formulas = [];
-  keywords = keywords.reduce((a, key) => {
-    const lKey = key.toLowerCase();
-    const uKey = capitalizeFirstLetter(key);
-    const lower = `${a}${a ? ', ' : ''}FIND("${lKey}", {description})>0`;
-    const upper = `${a}${a ? ', ' : ''}FIND("${uKey}", {description})>0`;
-    return `${lower}, ${upper}`;
-  }, '');
-  if (keywords && keywords.length) formulas.push(keywords);
-  if (raise) {
-    formulas.push(`AND({raise_min}<=${raise},{raise_max}>=${raise})`);
-  }
-  if (location) formulas.push(`FIND("${location}", {location_zipcode})>0`);
-
-  return axios.get('https://api.airtable.com/v0/appDqWxN1pcWrdjsn/Investors',
-    {
-      params: {
-        maxRecords: 100,
-        view: 'Grid view',
-        filterByFormula: `OR(${formulas.join(',')})`,
-      },
-      headers: { Authorization: `Bearer ${AIRTABLE_APIKEY}` },
-    });
+  return axios.get(`${api}search?${toQueryString(params)}`);
 }
 
 function* workSearchGetResults(action) {
   const { params } = action;
+  params.limit = params.limit || 100;
   try {
     const results = yield call(requestSearchGetResults, params);
     yield put({ type: 'SEARCH_GET_RESULTS_SUCCEEDED', data: results.data });

@@ -6,7 +6,7 @@ import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import { useHistory } from 'react-router';
 import * as types from '../../actions/types';
-import { stateIsError } from '../../utils';
+import { statusIsError } from '../../utils';
 
 export default function Location() {
   const searchKeywords = useSelector(state => state.search.keywords) || [];
@@ -81,7 +81,7 @@ export default function Location() {
     extraZipcodesText = `${extraZipcodes.length} zip codes within 20 miles of ${searchLocation} found.`;
   }
 
-  const extraZipcodesClass = stateIsError(extraZipcodes_status) ? 'text-warning' : 'text-info';
+  const extraZipcodesClass = statusIsError(extraZipcodes_status) ? 'text-warning' : 'text-info';
 
   return (
     <Row id="Location">

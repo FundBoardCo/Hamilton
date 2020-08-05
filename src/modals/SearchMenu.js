@@ -6,6 +6,7 @@ import Form from 'react-bootstrap/Form';
 import RangeSlider from 'react-bootstrap-range-slider';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Button from 'react-bootstrap/Button';
+import {statusIsError} from "../utils";
 
 const usdFormatter = new Intl.NumberFormat('en-US', {
   style: 'currency',
@@ -51,6 +52,9 @@ export default function SearchMenu() {
   const searchLocation = useSelector(state => state.search.location) || '';
   // use local state to handle invalid entries without recording them
   const [locationValue, setLocationValue] = useState(searchLocation);
+
+  const extraZipcodes = useSelector(state => state.search.extraZipcodes) || '';
+  const extraZipcodes_status = useSelector(state => state.search.extraZipcodes_status);
 
   const storedRemote = useSelector(state => state.search.remote) || '';
 
@@ -156,6 +160,16 @@ export default function SearchMenu() {
     if (!Array.isArray(airtableKeywords.data) && !airtableKeywords.state) getKeywords();
   });
 
+  let extraZipcodesText = extraZipcodes_status;
+
+  if (!searchLocation) extraZipcodesText = 'waiting for your zip code.';
+
+  if (!extraZipcodes_status || extraZipcodes_status === 'succeeded') {
+    extraZipcodesText = `${extraZipcodes.length} zip codes within 20 miles of ${searchLocation} found.`;
+  }
+
+  const extraZipcodesClass = statusIsError(extraZipcodes_status) ? 'text-warning' : 'text-info';
+
   return (
     <Modal
       size="lg"
@@ -178,6 +192,10 @@ export default function SearchMenu() {
           detailText={`${searchKeywords.length} selected`}
           subText="Choose up to 5 words that describe your startup"
         />
+        <div className="txs-2 text-info mb-2">
+          Selected:&nbsp;
+          {searchKeywords.join()}
+        </div>
         <div className="tilesWrapper mb-5">
           <div className="tiles">
             {wordsToShow.map(w => {
@@ -256,6 +274,9 @@ export default function SearchMenu() {
               Please enter a valid zip code.
             </Form.Control.Feedback>
           </Form.Group>
+          <div className={`mb-3 ${extraZipcodesClass}`}>
+            {`Status: ${extraZipcodesText}`}
+          </div>
           <Form.Group
             controlId="RemoteCheckbox"
             className="mb-4"

@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import Papa from 'papaparse';
 import FileSaver from 'file-saver';
 import Row from 'react-bootstrap/Row';
 import Button from 'react-bootstrap/Button';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Person from '../../components/people/Person';
+import * as types from "../../actions/types";
 
 export default function Board() {
   const investors = useSelector(state => state.board.ids) || [];
@@ -73,6 +74,13 @@ export default function Board() {
     FileSaver.saveAs(csvData, 'MyFundBoard.csv');
   };
 
+  const dispatch = useDispatch();
+
+  const onShowNextClick = () => dispatch({
+    type: types.MODAL_SET_OPEN,
+    modal: 'afterDownload',
+  });
+
   return (
     <Row id="PageBoard" className="pageContainer">
       {loggedIn && (
@@ -85,10 +93,25 @@ export default function Board() {
             data-track="BoardDetails"
           >
             {`My Fundboard: ${Object.keys(investors).length} investors`}
-            <FontAwesomeIcon icon="file-download" />
+            <div>
+              <FontAwesomeIcon icon="file-download" />
+              <span className="d-none d-lg-inline ml-2">Download</span>
+            </div>
           </Button>
         </div>
         <div className={`secondaryDetails ${detailsOpen ? '' : 'sr-only'}`}>
+          <div className="mb-2">
+            <Button
+              variant="link"
+              className="w-100 w-lg-auto btnResponsiveMax"
+              onClick={onShowNextClick}
+            >
+              <h3>
+                <FontAwesomeIcon icon="info-circle" className="mr-2" />
+                How do I use my FundBoard?
+              </h3>
+            </Button>
+          </div>
           <p>
             <strong>{`More than 3 keywords match: ${details.keywords}`}</strong>
           </p>
