@@ -29,6 +29,7 @@ export default function Search() {
             className="nav-link"
             onClick={onClickPrev}
             aria-disabled={stage === 0}
+            disabled={stage === 0}
             type="button"
             data-track="IntroSearchNavPrev"
           >
@@ -46,6 +47,7 @@ export default function Search() {
             className="nav-link"
             onClick={onClickNext}
             aria-disabled={stage >= INTROSEARCH_STAGES.length - 1}
+            disabled={stage >= INTROSEARCH_STAGES.length - 1}
             type="button"
             data-track="IntroSearchNavNext"
           >
