@@ -249,6 +249,9 @@ export default function Login() {
             status={login_status}
             dissmissAction={types.USER_LOGIN_DISSMISSED}
           />
+          <Status
+            status={reset_status}
+          />
           <div className="footerBtnWrapper">
             <Button
               className="mr-3 btnNoMax"
