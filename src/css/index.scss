@@ -478,6 +478,7 @@ html#ov {
 
         #PageSearch {
           margin-top: 74px;
+          position: relative;
 
           .searchDetailsBar {
             position: fixed;
@@ -559,6 +560,13 @@ html#ov {
 
           @media (max-width: $mediaMaxMd) {
             height: calc(100vh - #{$navPlusSearchBarSz2});
+          }
+
+          .searchAlert {
+            position: absolute;
+            z-index: 10;
+            left: 0;
+            right: 0;
           }
         }
 
