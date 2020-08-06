@@ -9,7 +9,6 @@ import {
 import { useSelector, useDispatch } from 'react-redux';
 import Navbar from 'react-bootstrap/Navbar';
 import Nav from 'react-bootstrap/Nav';
-import Button from 'react-bootstrap/Button'
 import { library } from '@fortawesome/fontawesome-svg-core';
 import { fab } from '@fortawesome/free-brands-svg-icons';
 import {
@@ -38,7 +37,6 @@ import {
   faSignInAlt,
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import * as types from './actions/types';
 import Logo from './imgs/FundBoard_Logo.svg';
 import ScrollToTop from './components/ScrollToTop';
 import Intro from './pages/start/Intro';
@@ -78,15 +76,9 @@ library.add(
 );
 
 function App() {
-  const loggedIn = useSelector(state => state.user.token);
-
-  const dispatch = useDispatch();
-
-  const setModal = modal => dispatch({
-    type: types.MODAL_SET_OPEN,
-    modal,
-  });
-
+  const loginStatus = useSelector(state => state.user.login_status);
+  const loggedIn = loginStatus === 'succeeded';
+  
   return (
     <Router>
       <ScrollToTop>
@@ -97,21 +89,16 @@ function App() {
             <span className="navVersion">Alpha 0.1</span>
           </a>
           <Nav className="ml-auto" defaultActiveKey={window.location.pathname}>
-            {loggedIn
-            && (
-              <Nav.Link
-                as={NavLink}
-                href="/board"
-                to="/board"
-                className="board"
-                data-track="navBoard"
-              >
-                <FontAwesomeIcon icon="list" />
-                <span>My FundBoard</span>
-              </Nav.Link>
-            )}
-            {loggedIn
-            && (
+            <Nav.Link
+              as={NavLink}
+              href="/board"
+              to="/board"
+              className="board"
+              data-track="navBoard"
+            >
+              <FontAwesomeIcon icon="list" />
+              <span>My FundBoard</span>
+            </Nav.Link>
             <Nav.Link
               as={NavLink}
               href="/search"
@@ -123,33 +110,17 @@ function App() {
               <FontAwesomeIcon icon="search" />
               <span>Search</span>
             </Nav.Link>
-            )}
-            {loggedIn
-            && (
-              <Nav.Link
-                as={NavLink}
-                href="/profile"
-                to="/profile"
-                className="profile"
-                activeClassName="profile"
-                data-track="navProfile"
-              >
-                <FontAwesomeIcon icon="cog" />
-                <span>My Profile</span>
-              </Nav.Link>
-            )}
-            {!loggedIn
-            && (
-              <Nav.Link
-                as={Button}
-                className="btn-link fauxLink"
-                data-track="navLogin"
-                onClick={() => setModal('login')}
-              >
-                <FontAwesomeIcon icon="sign-in-alt" />
-                <span>Log In</span>
-              </Nav.Link>
-            )}
+            <Nav.Link
+              as={NavLink}
+              href="/profile"
+              to="/profile"
+              className="profile"
+              activeClassName="profile"
+              data-track="navProfile"
+            >
+              <FontAwesomeIcon icon="cog" />
+              <span>My Profile</span>
+            </Nav.Link>
           </Nav>
         </Navbar>
         <main id="Main">
