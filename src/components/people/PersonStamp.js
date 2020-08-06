@@ -27,7 +27,7 @@ export default function PersonStamp(props) {
     <div
       className="personStamp"
     >
-      <a href={`https://www.crunchbase.com/person/${permalink}`} target="_blank" rel="noreferrer">
+      <a href={`https://www.crunchbase.com/person/${permalink}`} target="_blank" rel="noopener noreferrer">
         <div className="imageWrapper">
           <Suspense fallback={<Spinner animation="border" variant="info" role="status" size="sm" />}>
             <ImgComp imgSrc={image_url} alt={name} />
