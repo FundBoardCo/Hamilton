@@ -6,6 +6,7 @@ const defaults = {
   email: '',
   create_status: '',
   login_status: '',
+  loggedIn: false,
   update_status: '',
   delete_status: '',
   reset_status: '',
@@ -22,30 +23,42 @@ export default function user(state = { ...defaults }, action) {
     case types.USER_CREATE_REQUESTED: return {
       ...state,
       create_status: 'pending',
+      loggedIn: false,
       email: action.email,
     };
     case types.USER_CREATE_SUCCEEDED: return {
       ...state,
       create_status: 'succeeded',
+      loggedIn: true,
       token: action.data.token,
     };
     case types.USER_CREATE_FAILED: return {
       ...state,
       create_status: processErr(action.error),
     };
+    case types.USER_CREATE_FAILED_DISMISSED: return {
+      ...state,
+      create_status: '',
+    };
     case types.USER_LOGIN_REQUESTED: return {
       ...state,
       login_status: 'pending',
+      loggedIn: false,
       email: action.params.email,
     };
     case types.USER_LOGIN_SUCCEEDED: return {
       ...state,
       login_status: 'succeeded',
+      loggedIn: true,
       token: action.data.token,
     };
     case types.USER_LOGIN_FAILED: return {
       ...state,
       login_status: processErr(action.error),
+    };
+    case types.USER_LOGIN_FAILED_DISMISSED: return {
+      ...state,
+      login_status: '',
     };
     case types.USER_LOGOUT: return {
       ...state,
@@ -65,17 +78,26 @@ export default function user(state = { ...defaults }, action) {
       ...state,
       update_status: processErr(action.error),
     };
+    case types.USER_UPDATE_FAILED_DISMISSED: return {
+      ...state,
+      update_status: '',
+    };
     case types.USER_DELETE_REQUESTED: return {
       ...state,
       delete_status: 'pending',
     };
     case types.USER_DELETE_SUCCEEDED: return {
       ...state,
+      loggedIn: false,
       delete_status: 'succeeded',
     };
     case types.USER_DELETE_FAILED: return {
       ...state,
       delete_status: processErr(action.error),
+    };
+    case types.USER_DELETE_FAILED_DISMISSED: return {
+      ...state,
+      delete_status: '',
     };
     case types.USER_RESETPASSWORD_REQUESTED: return {
       ...state,
@@ -88,6 +110,10 @@ export default function user(state = { ...defaults }, action) {
     case types.USER_RESETPASSWORD_FAILED: return {
       ...state,
       reset_status: processErr(action.error),
+    };
+    case types.USER_RESETPASSWORD_FAILED_DISMISSED: return {
+      ...state,
+      reset_status: '',
     };
     default: return state;
   }

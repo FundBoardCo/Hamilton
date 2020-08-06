@@ -5,7 +5,12 @@ import Spinner from 'react-bootstrap/Spinner';
 import { processErr, statusIsError, capitalizeFirstLetter } from '../utils';
 
 export default function CallStatus(props) {
-  const { status = '', type = '', hideSuccess = false, className = '' } = props;
+  const {
+    status = '',
+    type = '',
+    hideSuccess = false,
+    className = '',
+  } = props;
   const typeTitle = type ? `${capitalizeFirstLetter(type)} ` : '';
   let variant;
   let showSpinner;
@@ -28,7 +33,7 @@ export default function CallStatus(props) {
   if (status && !hide) {
     return (
       <Alert variant={variant} className={className}>
-        {showSpinner && <Spinner animation="border" variant="info"role="status" size="sm" className="mr-2" />}
+        {showSpinner && <Spinner animation="border" variant="info" role="status" size="sm" className="mr-2" />}
         {`${typeTitle}${msg}`}
       </Alert>
     );

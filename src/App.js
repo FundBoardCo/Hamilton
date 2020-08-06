@@ -76,9 +76,8 @@ library.add(
 );
 
 function App() {
-  const loginStatus = useSelector(state => state.user.login_status);
-  const loggedIn = loginStatus === 'succeeded';
-  
+  const loggedIn = useSelector(state => state.user.loggedIn);
+
   return (
     <Router>
       <ScrollToTop>

@@ -7,8 +7,7 @@ import Login from './Login';
 import AfterDownload from './AfterDownload';
 
 export default function ModalWrapper() {
-  const loginStatus = useSelector(state => state.user.login_status);
-  const loggedIn = loginStatus === 'succeeded';
+  const loggedIn = useSelector(state => state.user.loggedIn);
   const openModal = useSelector(state => state.modal.openModal);
 
   return (

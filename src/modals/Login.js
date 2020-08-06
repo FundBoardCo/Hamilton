@@ -5,6 +5,7 @@ import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 import * as types from '../actions/types';
+import Status from '../components/DissmissibleStatus';
 
 let prevMode = '';
 
@@ -59,6 +60,7 @@ export default function Login() {
   };
 
   const handleSubmit = event => {
+    console.log('submit clicked')
     const form = event.currentTarget;
     event.preventDefault();
     event.stopPropagation();
@@ -236,6 +238,10 @@ export default function Login() {
               </Button>
             </div>
           )}
+          <Status
+            status={login_status}
+            dissmissAction={types.USER_LOGIN_FAILED_DISMISSED}
+          />
           <div className="footerBtnWrapper">
             <Button
               className="mr-3 btnNoMax"
