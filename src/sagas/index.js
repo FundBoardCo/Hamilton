@@ -11,10 +11,12 @@ import {
   ZIPCODEAPI,
 } from '../constants';
 import {
+  getSafeVar,
   processErr,
   toQueryString,
 } from '../utils';
 import * as types from '../actions/types';
+import {MODAL_SET_OPEN} from "../actions/types";
 
 const api = 'https://api.fundboard.co/';
 
@@ -27,6 +29,13 @@ cookies.forEach(c => {
 function trackErr(err) {
   window.heap.track('Error', { message: processErr(err) });
 }
+
+function isLoginErr(err) {
+  const status = getSafeVar(() => err.response.status);
+  return status === '401';
+}
+
+const loginErrProps = { type: types.MODAL_SET_OPEN, model: 'login' };
 
 function requestAirtableGetKeywords() {
   return axios.get('https://api.airtable.com/v0/app5hJojHQxyJ7ElS/Keywords', {
@@ -109,6 +118,7 @@ function* workUserUpdate(action) {
     yield put({ type: types.USER_UPDATE_SUCCEEDED, data: results.data });
   } catch (error) {
     trackErr(error);
+    if (isLoginErr(error)) yield put(loginErrProps);
     yield put({ type: types.USER_UPDATE_FAILED, error });
   }
 }
@@ -154,6 +164,7 @@ function* workGetBoard() {
     yield put({ type: types.BOARD_GET_SUCCEEDED, data: results.data });
   } catch (error) {
     trackErr(error);
+    if (isLoginErr(error)) yield put(loginErrProps);
     yield put({ type: types.BOARD_GET_FAILED, error });
   }
 }
