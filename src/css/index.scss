@@ -295,6 +295,10 @@ html#ov {
                   margin-left: 0.5em;
                 }
 
+                &:disabled {
+                  opacity: 0.2;
+                }
+
                 &:last-child {
                   text-align: right;
                   span {
