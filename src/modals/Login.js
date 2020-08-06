@@ -66,10 +66,8 @@ export default function Login() {
     if (form.checkValidity() !== false) {
       if (mode === 'login') {
         login();
-        closeModal();
       } else if (mode === 'create') {
         create();
-        closeModal();
       } else if (mode === 'reset') {
         reset();
         setMode('reseted');
@@ -163,8 +161,8 @@ export default function Login() {
   if (mode === 'reseted') {
     btnProps.login = {
       variant: 'text',
-      text: 'Cancel',
-      disabled: true,
+      text: 'Login',
+      onClick: onCancelResetClick,
     };
     btnProps.create = {
       variant: 'secondary',
