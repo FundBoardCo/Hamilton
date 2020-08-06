@@ -7,6 +7,7 @@ import Button from 'react-bootstrap/Button';
 import { useHistory } from 'react-router';
 import * as types from '../../actions/types';
 import { statusIsError } from '../../utils';
+import search from "../../reducers/search";
 
 export default function Location() {
   const searchKeywords = useSelector(state => state.search.keywords) || [];
@@ -22,7 +23,7 @@ export default function Location() {
   const [remoteValue, setRemoteValue] = useState(storedRemote);
 
   const [validated, setValidated] = useState(false);
-  const [isValid, setIsValid] = useState(false);
+  const [isValid, setIsValid] = useState(!!searchLocation);
 
   const dispatch = useDispatch();
 
@@ -40,7 +41,7 @@ export default function Location() {
 
   const getResults = () => {
     const params = {};
-    params.location = [searchLocation, ...extraZipcodes].join();
+    params.location = [searchLocation, ...extraZipcodes];
     params.raise = searchRaise;
     params.keywords = searchKeywords;
     return dispatch({

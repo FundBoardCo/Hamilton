@@ -6,7 +6,7 @@ import Form from 'react-bootstrap/Form';
 import RangeSlider from 'react-bootstrap-range-slider';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Button from 'react-bootstrap/Button';
-import {statusIsError} from "../utils";
+import { statusIsError } from '../utils';
 
 const usdFormatter = new Intl.NumberFormat('en-US', {
   style: 'currency',
@@ -129,7 +129,7 @@ export default function SearchMenu() {
     const params = {};
     params.keywords = searchKeywords;
     params.raise = searchRaise;
-    params.location = locationValue;
+    params.location = [searchLocation, ...extraZipcodes];
 
     return dispatch({
       type: 'SEARCH_GET_RESULTS_REQUESTED',
@@ -290,13 +290,14 @@ export default function SearchMenu() {
             />
           </Form.Group>
         </Form>
-        <div>
+        <div className="d-flex justify-content-end mt-auto">
           <Button
-            variant="danger"
-            className="btnNoMax w-100"
+            variant="link"
+            className="text-danger"
             onClick={resetSearch}
             data-track="ResetSearch"
           >
+            <FontAwesomeIcon icon="exclamation-triangle" className="mr-2" />
             Reset Search
           </Button>
         </div>
@@ -308,6 +309,7 @@ export default function SearchMenu() {
           onClick={closeAndSearch}
           data-track="SubmitSearch"
         >
+          <FontAwesomeIcon icon="search" className="mr-2" />
           Search
         </button>
       </Modal.Footer>
