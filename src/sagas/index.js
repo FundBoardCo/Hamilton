@@ -11,13 +11,18 @@ import {
   ZIPCODEAPI,
 } from '../constants';
 import {
-  capitalizeFirstLetter,
   processErr,
   toQueryString,
 } from '../utils';
 import * as types from '../actions/types';
 
 const api = 'https://api.fundboard.co/';
+
+//axios.defaults.withCredentials = true;
+const cookies = document.cookie.split(';');
+cookies.forEach(c => {
+  console.log(decodeURIComponent(c));
+});
 
 function trackErr(err) {
   window.heap.track('Error', { message: processErr(err) });
@@ -89,6 +94,29 @@ function* watchUserCreate() {
   yield takeLatest(types.USER_CREATE_REQUESTED, workUserCreate);
 }
 
+function userUpdate(data = {}) {
+  return axios({
+    method: 'post',
+    url: `${api}profile`,
+    data,
+  });
+}
+
+function* workUserUpdate(action) {
+  try {
+    const { params } = action;
+    const results = yield call(userUpdate, params);
+    yield put({ type: types.USER_UPDATE_SUCCEEDED, data: results.data });
+  } catch (error) {
+    trackErr(error);
+    yield put({ type: types.USER_UPDATE_FAILED, error });
+  }
+}
+
+function* watchUserUpdate() {
+  yield takeEvery(types.USER_UPDATE_REQUESTED, workUserUpdate);
+}
+
 function personPutInvalid(params = {}) {
   const data = {
     fields: { ...params },
@@ -117,11 +145,7 @@ function* watchPersonPutInvalid() {
 }
 
 function getBoard() {
-  /*
-  return axios.get('END POINT GOES HERE', {
-    headers: { Authorization: `AUTH GOES HERE' },
-  });
-   */
+  return axios.get(`${api}profile`);
 }
 
 function* workGetBoard() {
@@ -188,6 +212,7 @@ export default function* rootSaga() {
   yield fork(watchAirtableGetKeywords);
   yield fork(watchUserCreate);
   yield fork(watchUserLogin);
+  yield fork(watchUserUpdate);
   yield fork(watchPersonPutInvalid);
   yield fork(watchSearchSetZipCode);
   yield fork(watchSearchGetResults);

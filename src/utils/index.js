@@ -14,6 +14,7 @@ export function processErr(err) {
   }
   if (err.message) return err.message;
   if (typeof err === 'object') return JSON.stringify(err);
+  // TODO: detect 401 errors and inject a login link here if the user is logged out
   return err;
 }
 
