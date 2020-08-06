@@ -36,7 +36,7 @@ export default function user(state = { ...defaults }, action) {
       ...state,
       create_status: processErr(action.error),
     };
-    case types.USER_CREATE_FAILED_DISMISSED: return {
+    case types.USER_CREATE_DISSMISSED: return {
       ...state,
       create_status: '',
     };
@@ -56,7 +56,7 @@ export default function user(state = { ...defaults }, action) {
       ...state,
       login_status: processErr(action.error),
     };
-    case types.USER_LOGIN_FAILED_DISMISSED: return {
+    case types.USER_LOGIN_DISSMISSED: return {
       ...state,
       login_status: '',
     };
@@ -78,7 +78,7 @@ export default function user(state = { ...defaults }, action) {
       ...state,
       update_status: processErr(action.error),
     };
-    case types.USER_UPDATE_FAILED_DISMISSED: return {
+    case types.USER_UPDATE_DISSMISSED: return {
       ...state,
       update_status: '',
     };
@@ -95,7 +95,7 @@ export default function user(state = { ...defaults }, action) {
       ...state,
       delete_status: processErr(action.error),
     };
-    case types.USER_DELETE_FAILED_DISMISSED: return {
+    case types.USER_DELETE_DISSMISSED: return {
       ...state,
       delete_status: '',
     };
@@ -111,7 +111,7 @@ export default function user(state = { ...defaults }, action) {
       ...state,
       reset_status: processErr(action.error),
     };
-    case types.USER_RESETPASSWORD_FAILED_DISMISSED: return {
+    case types.USER_RESETPASSWORD_DISSMISSED: return {
       ...state,
       reset_status: '',
     };

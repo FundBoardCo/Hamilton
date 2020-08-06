@@ -1,34 +1,12 @@
 import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router';
-import PropTypes from 'prop-types';
 import Button from 'react-bootstrap/Button';
 import Row from 'react-bootstrap/Row';
-import Alert from 'react-bootstrap/Alert';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import Spinner from 'react-bootstrap/Spinner';
 import Person from '../../components/people/Person';
-import { statusIsError } from '../../utils';
-
-function SearchAlert(props) {
-  const [showAlert, setShowAlert] = useState(statusIsError(true));
-  const { message } = props;
-  if (showAlert) {
-    return (
-      <Alert
-        variant="danger"
-        className="searchAlert"
-        onClose={() => setShowAlert(false)}
-        dismissible
-      >
-        <Alert.Heading>There was an error.</Alert.Heading>
-        Error:&nbsp;
-        {message}
-      </Alert>
-    );
-  }
-  return null;
-}
+import DissmissibleStatus from '../../components/DissmissibleStatus';
+import * as types from '../../actions/types';
 
 export default function Search() {
   const searchKeywords = useSelector(state => state.search.keywords) || [];
@@ -89,13 +67,11 @@ export default function Search() {
           </p>
         </div>
       </div>
-      {statusIsError(searchStatus) && (
-        <SearchAlert message={searchStatus} />
-      )}
+      <DissmissibleStatus
+        status={searchStatus}
+        dissmissAction={types.SEARCH_GET_RESULTS_DISMISSED}
+      />
       <div className="results">
-        {searchStatus === 'pending' && (
-          <Spinner animation="border" variant="info" />
-        )}
         {Object.keys(searchResults).map(k => {
           const personProps = { ...searchResults[k] };
           personProps.uuid = k;
@@ -104,15 +80,20 @@ export default function Search() {
             <Person key={pKey} {...personProps} />
           );
         })}
+        {Object.keys(searchResults).length === 0 && (
+          <div className="p-2 text-info">
+            <div>No results found.</div>
+            <Button
+              variant="primary"
+              onClick={onEditClick}
+              data-track="NoResultsNewSearch"
+            >
+              New Search
+            </Button>
+          </div>
+        )}
       </div>
     </Row>
   );
 }
 
-SearchAlert.defaultProps = {
-  message: '',
-};
-
-SearchAlert.propTypes = {
-  message: PropTypes.string,
-};

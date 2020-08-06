@@ -81,6 +81,10 @@ export default function search(state = { ...defaultState }, action) {
       ...state,
       results_status: processErr(action.error),
     };
+    case types.SEARCH_GET_RESULTS_DISMISSED: return {
+      ...state,
+      results_status: '',
+    };
     case types.SEARCH_CLEAR_RESULTS: return {
       ...state,
       results_status: '',

@@ -60,7 +60,6 @@ export default function Login() {
   };
 
   const handleSubmit = event => {
-    console.log('submit clicked')
     const form = event.currentTarget;
     event.preventDefault();
     event.stopPropagation();
@@ -239,8 +238,16 @@ export default function Login() {
             </div>
           )}
           <Status
+            status={create_status}
+            dissmissAction={types.USER_CREATE_DISSMISSED}
+          />
+          <Status
             status={login_status}
-            dissmissAction={types.USER_LOGIN_FAILED_DISMISSED}
+            dissmissAction={types.USER_LOGIN_DISSMISSED}
+          />
+          <Status
+            status={login_status}
+            dissmissAction={types.USER_LOGIN_DISSMISSED}
           />
           <div className="footerBtnWrapper">
             <Button
