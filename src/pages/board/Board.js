@@ -6,7 +6,7 @@ import Row from 'react-bootstrap/Row';
 import Button from 'react-bootstrap/Button';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Person from '../../components/people/Person';
-import * as types from "../../actions/types";
+import * as types from '../../actions/types';
 
 export default function Board() {
   const investors = useSelector(state => state.board.ids) || [];
@@ -14,6 +14,25 @@ export default function Board() {
   const loggedIn = useSelector(state => state.user.token);
   const investorList = {};
   const csvList = [];
+
+  const firstLine = {};
+  firstLine['Investor Name'] = 'DELETE THIS ROW. It is just some helpful reminders.';
+  firstLine.Title = '';
+  firstLine.Organization = '';
+  firstLine.Priority = 'Rank investors in the order you will reach out to them.';
+  firstLine['Introed By'] = 'Fill in when someone has made an introduction.';
+  firstLine['Date of Intro'] = '';
+  firstLine.Status = 'Contacted, Meeting Scheduled, Pitched, Term Sheet, Signed, Funded';
+  firstLine['Next Steps'] = 'If you need to do something, list it here.';
+  firstLine.Notes = '';
+  firstLine['Potential Lead'] = 'Focus on getting leads first.';
+  firstLine['Open to Direct Outreach'] = 'This means they might respond if you send them an email.';
+  firstLine.Location = 'Investors are more likely to invest in their location, or near other startups they have funded.';
+  firstLine.LinkedIn = '';
+  firstLine.Twitter = '';
+  firstLine.CrunchBase = '';
+  csvList.push(firstLine);
+
   investors.forEach(i => {
     investorList[i] = people[i];
     const csvPer = {};
@@ -27,13 +46,13 @@ export default function Board() {
     csvPer.Status = '';
     csvPer['Next Steps'] = '';
     csvPer.Notes = '';
-    csvList.push(csvPer);
     csvPer['Potential Lead'] = people[i].isLead ? 'Yes' : '';
     csvPer['Open to Direct Outreach'] = people[i].isOpen ? 'Yes' : '';
     csvPer.Location = `${people[i].location_city}, ${people[i].location_status}`;
     csvPer.LinkedIn = people[i].linkedin;
     csvPer.Twitter = people[i].twitter;
     csvPer.CrunchBase = people[i].crunchbase;
+    csvList.push(csvPer);
   });
   const csv = Papa.unparse(Object.values(csvList));
   const csvData = new Blob([csv], { type: 'text/csv;charset=utf-8;' });

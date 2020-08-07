@@ -318,6 +318,8 @@ html#ov body {
   }
 
   .btn-outline-primary {
+    border-width: 1px;
+    border-style: solid;
     @include btn-colors($col-light, $col-primary, $col-primary-light2, $col-primary, $col-primary-light4);
   }
 
@@ -326,6 +328,8 @@ html#ov body {
   }
 
   .btn-outline-secondary {
+    border-width: 1px;
+    border-style: solid;
     @include btn-colors($col-light, $col-secondary, $col-secondary-light2, $col-secondary, $col-light);
   }
 
@@ -338,6 +342,8 @@ html#ov body {
   }
 
   .btn-outline-danger {
+    border-width: 1px;
+    border-style: solid;
     @include btn-colors($col-light, $col-danger, $col-danger-light2, $col-danger, $col-light);
   }
 
@@ -354,6 +360,8 @@ html#ov body {
   }
 
   .btn-outline-success {
+    border-width: 1px;
+    border-style: solid;
     @include btn-colors($col-light, $col-success, $col-success-light2, $col-success, $col-light);
   }
 
@@ -370,6 +378,8 @@ html#ov body {
   }
 
   .btn-outline-emp {
+    border-width: 1px;
+    border-style: solid;
     @include btn-colors($col-light, $col-emp, $col-emp-light2, $col-emp, $col-light);
   }
 

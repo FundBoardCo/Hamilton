@@ -16,11 +16,9 @@ import {
   toQueryString,
 } from '../utils';
 import * as types from '../actions/types';
-import {MODAL_SET_OPEN} from "../actions/types";
 
 const api = 'https://api.fundboard.co/';
 
-//axios.defaults.withCredentials = true;
 const cookies = document.cookie.split(';');
 cookies.forEach(c => {
   console.log(decodeURIComponent(c));
@@ -154,6 +152,38 @@ function* watchPersonPutInvalid() {
   yield takeEvery('PERSON_PUT_INVALID_REQUESTED', workPersonPutInvalid);
 }
 
+function sendFeedback(params = {}) {
+  const data = {
+    records: [
+      {
+        fields: { ...params },
+      },
+    ],
+    typecast: true,
+  };
+  return axios({
+    method: 'post',
+    url: 'https://api.airtable.com/v0/app7qe3RJry7GgvKw/Feedback',
+    headers: { Authorization: `Bearer ${AIRTABLE_APIKEY}` },
+    data,
+  });
+}
+
+function* workSendFeedback(action) {
+  const { params } = action;
+  try {
+    yield call(sendFeedback, params);
+    yield put({ type: types.FEEDBACK_SEND_SUCCEEDED });
+  } catch (error) {
+    trackErr(error);
+    yield put({ type: types.FEEDBACK_SEND_FAILED, error });
+  }
+}
+
+function* watchSendFeedback() {
+  yield takeEvery( types.FEEDBACK_SEND_REQUEST, workSendFeedback);
+}
+
 function getBoard() {
   return axios.get(`${api}profile`);
 }
@@ -228,4 +258,5 @@ export default function* rootSaga() {
   yield fork(watchSearchSetZipCode);
   yield fork(watchSearchGetResults);
   yield fork(watchGetBoard);
+  yield fork(watchSendFeedback);
 }

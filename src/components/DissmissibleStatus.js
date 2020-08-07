@@ -8,13 +8,14 @@ export default function DAlert(props) {
   const {
     title,
     message,
+    statusPrefix,
     status,
     dissmissAction,
     className,
+    show = true,
     showSuccess = true,
     showSpinner = true,
   } = props;
-  console.log(props)
 
   let variant = 'danger';
   if (status === 'succeeded') variant = 'success';
@@ -32,13 +33,14 @@ export default function DAlert(props) {
     }
   };
 
-  if (status && (status !== 'succeeded' || showSuccess)) {
+  if (show && status && (status !== 'succeeded' || showSuccess)) {
     return (
       <Alert
         variant={variant}
         className={className}
         onClose={onClickClose}
         dismissible
+        data-track={`DismissStatus-${status}-${dissmissAction}`}
       >
         {title && (
           <Alert.Heading>{title}</Alert.Heading>
@@ -46,7 +48,7 @@ export default function DAlert(props) {
         {showSpinner && status === 'pending' && (
           <Spinner animation="border" variant="info" role="status" size="sm" className="mr-2" />
         )}
-        {message || status}
+        {message || `${statusPrefix ? `${statusPrefix} ${status}` : `${status}`}`}
       </Alert>
     );
   }
@@ -56,9 +58,11 @@ export default function DAlert(props) {
 DAlert.defaultProps = {
   title: '',
   message: '',
+  statusPrefix: '',
   status: '',
   dissmissAction: '',
   className: '',
+  show: true,
   showSuccess: true,
   showSpinner: true,
 };
@@ -66,9 +70,11 @@ DAlert.defaultProps = {
 DAlert.propTypes = {
   title: PropTypes.string,
   message: PropTypes.string,
+  statusPrefix: PropTypes.string,
   status: PropTypes.string,
   dissmissAction: PropTypes.string,
   className: PropTypes.string,
+  show: PropTypes.bool,
   showSuccess: PropTypes.bool,
   showSpinner: PropTypes.bool,
 };

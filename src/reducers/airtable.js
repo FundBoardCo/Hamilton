@@ -1,8 +1,13 @@
 import { processErr, capitalizeFirstLetter } from '../utils';
 import * as types from '../actions/types';
 
-export default function airTable(state = {}, action) {
-  console.log(action)
+const defaultState = {
+  keywords: { state: null, data: [] },
+  feedback_status: '',
+};
+
+export default function airTable(state = { ...defaultState }, action) {
+  console.log(action);
   switch (action.type) {
     case types.AIRTABLE_GET_KEYWORDS_REQUESTED: return {
       ...state,
@@ -23,6 +28,22 @@ export default function airTable(state = {}, action) {
       keywords: {
         state: processErr(action.error),
       },
+    };
+    case types.FEEDBACK_SEND_REQUEST: return {
+      ...state,
+      feedback_status: 'pending',
+    };
+    case types.FEEDBACK_SEND_SUCCEEDED: return {
+      ...state,
+      feedback_status: 'succeeded',
+    };
+    case types.FEEDBACK_SEND_FAILED: return {
+      ...state,
+      feedback_status: processErr(action.error),
+    };
+    case types.FEEDBACK_SEND_DISMISSED: return {
+      ...state,
+      feedback_status: '',
     };
     default: return state;
   }

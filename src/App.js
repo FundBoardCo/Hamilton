@@ -6,7 +6,7 @@ import {
   Redirect,
   Switch,
 } from 'react-router-dom';
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
 import Navbar from 'react-bootstrap/Navbar';
 import Nav from 'react-bootstrap/Nav';
 import { library } from '@fortawesome/fontawesome-svg-core';
@@ -15,7 +15,9 @@ import {
   faBalanceScale,
   faCaretLeft,
   faCaretRight,
+  faCheck,
   faCog,
+  faCommentDots,
   faDoorOpen,
   faEdit,
   faEllipsisH,
@@ -35,6 +37,10 @@ import {
   faRocket,
   faSearch,
   faSignInAlt,
+  faThumbsDown,
+  faThumbsUp,
+  faTimes,
+  faQuestionCircle,
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Logo from './imgs/FundBoard_Logo.svg';
@@ -44,6 +50,7 @@ import IntroSearch from './pages/start/IntroSearch';
 import Board from './pages/board/Board';
 import Search from './pages/search/Search';
 import Profile from './pages/profile/Profile';
+import Talk from './pages/talk/Talk';
 import NotFound from './pages/NotFound';
 import Modal from './modals/ModalWrapper';
 
@@ -53,7 +60,9 @@ library.add(
   faBalanceScale,
   faCaretLeft,
   faCaretRight,
+  faCheck,
   faCog,
+  faCommentDots,
   faDoorOpen,
   faEdit,
   faFileDownload,
@@ -73,6 +82,10 @@ library.add(
   faRocket,
   faSearch,
   faSignInAlt,
+  faThumbsDown,
+  faThumbsUp,
+  faTimes,
+  faQuestionCircle,
 );
 
 function App() {
@@ -120,6 +133,17 @@ function App() {
               <FontAwesomeIcon icon="cog" />
               <span>My Profile</span>
             </Nav.Link>
+            <Nav.Link
+              as={NavLink}
+              href="/talk"
+              to="/talk"
+              className="talk"
+              activeClassName="talk"
+              data-track="navTalk"
+            >
+              <FontAwesomeIcon icon="comment-dots" />
+              <span>Talk to Us</span>
+            </Nav.Link>
           </Nav>
         </Navbar>
         <main id="Main">
@@ -133,6 +157,7 @@ function App() {
               <Route path="/board" component={Board} />
               <Route path="/search" component={Search} />
               <Route path="/profile" component={Profile} />
+              <Route path="/talk" component={Talk} />
               <Route component={NotFound} />
             </Switch>
           </div>

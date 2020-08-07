@@ -172,6 +172,8 @@ export default function Login() {
     };
   }
 
+  const cookiesEnabled = navigator.cookieEnabled;
+
   return (
     <Modal
       size="lg"
@@ -201,7 +203,7 @@ export default function Login() {
               placeholder="email address"
               value={emailValue}
               onChange={e => onEmailChange(e)}
-              data-track="LoginEmail-{mode}"
+              data-track={`LoginEmail-${mode}`}
             />
             <Form.Control.Feedback type="invalid">
               Please enter a valid email address.
@@ -217,9 +219,10 @@ export default function Login() {
                 value={password}
                 pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}"
                 onChange={e => onPasswordChange(e)}
-                data-track="LoginPassword-{mode}"
+                data-track={`LoginPassword-${mode}`}
               />
               <Form.Text className="text-muted">
+                {/* eslint-disable-next-line max-len */}
                 Enter a password with 8 or more characters, and at least one upper and lower case letter and number.
               </Form.Text>
               <Form.Control.Feedback type="invalid">
@@ -237,30 +240,36 @@ export default function Login() {
               </Button>
             </div>
           )}
+          {!cookiesEnabled && (
+            <div className="text-warning">
+              You need to enable cookies in order to log in successfully.
+            </div>
+          )}
           <Status
+            statusPrefix="Create account:"
             status={create_status}
             dissmissAction={types.USER_CREATE_DISSMISSED}
           />
           <Status
+            statusPrefix="Log in:"
             status={login_status}
             dissmissAction={types.USER_LOGIN_DISSMISSED}
           />
           <Status
-            status={login_status}
-            dissmissAction={types.USER_LOGIN_DISSMISSED}
-          />
-          <Status
+            statusPrefix="Reset password:"
             status={reset_status}
           />
           <div className="footerBtnWrapper">
             <Button
               className="mr-3 btnNoMax"
+              data-track={`LoginLoginBtn-${mode}`}
               {...btnProps.login}
             >
               {btnProps.login.text}
             </Button>
             <Button
               className="btnNoMax"
+              data-track={`LoginCreateBtn-${mode}`}
               {...btnProps.create}
             >
               {btnProps.create.text}

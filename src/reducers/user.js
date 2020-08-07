@@ -14,11 +14,20 @@ const defaults = {
   password: '',
 };
 
+const resets = {
+  create_status: '',
+  login_status: '',
+  update_status: '',
+  delete_status: '',
+  reset_status: '',
+};
+
 export default function user(state = { ...defaults }, action) {
   switch (action.type) {
     case REHYDRATE: return {
       ...state,
       ...action.payload.user,
+      ...resets,
     };
     case types.USER_CREATE_REQUESTED: return {
       ...state,

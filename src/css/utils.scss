@@ -36,6 +36,9 @@ html#ov body {
   }
 
   .btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
     border-radius: $pad3;
     max-width: $maxBtn;
     font-size: $h5;
@@ -111,6 +114,24 @@ html#ov body {
     line-height: 0.6em;
     padding: 0.5em 0.8em;
     max-width: none;
+  }
+
+  .input-group > .input-group-append > .btn {
+    border-radius: $pad1;
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+  }
+
+  .input-group > .input-group-prepend > .btn {
+    border-radius: $pad1;
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+  }
+
+  .input-group > .input-group-append > .btn,
+  .input-group > .input-group-prepend > .btn {
+    font-size: inherit;
+    padding: .375rem .75rem;
   }
 
   .iconDisc {

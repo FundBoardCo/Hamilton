@@ -4,7 +4,7 @@ import { processErr } from '../utils';
 
 const defaultState = {
   results_status: '',
-  extraZipcodes_status:'',
+  extraZipcodes_status: '',
   results: {},
   keywords: [],
   raise: 100000,
@@ -14,19 +14,6 @@ const defaultState = {
 
 export default function search(state = { ...defaultState }, action) {
   const results = {};
-  // TODO: remove this when we have real data
-  const fakeSearchData = {
-    isLead: true,
-    isOpen: true,
-    isImpact: true,
-    matches: {
-      keywords: ['B2B', 'AI', 'Automation', 'AR'],
-      raise: true,
-      location: true,
-      name: true,
-      org: true,
-    },
-  };
   switch (action.type) {
     case REHYDRATE: return {
       ...state,
@@ -69,7 +56,7 @@ export default function search(state = { ...defaultState }, action) {
     case types.SEARCH_GET_RESULTS_SUCCEEDED:
       if (action.data.records) {
         action.data.records.forEach(r => {
-          results[r.id] = { ...fakeSearchData, ...r.fields };
+          results[r.id] = { ...r.fields };
         });
       }
       return {
