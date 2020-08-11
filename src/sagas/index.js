@@ -60,9 +60,11 @@ function* watchAirtableGetKeywords() {
 }
 
 function getInfo(params) {
-  const { itemId } = params;
+  const { itemId, collection } = params;
+  let collectionId = '5f32059a4837a2f38d6d2de3'; // tips, the default;
+  if (collection === 'blog') collectionId = '5e8e265102dac128f49dd555';
   return webFlowAPI.item({
-    collectionId: '5e8e265102dac128f49dd555',
+    collectionId,
     itemId,
   });
 }
@@ -88,6 +90,8 @@ function userLogin(data = {}) {
     url: `${api}login`,
     data,
   });
+  // useful for faking login. TODO: remove
+  // return { data: { token: 'foo' } };
 }
 
 function* workUserLogin(action) {
