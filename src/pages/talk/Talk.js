@@ -74,8 +74,60 @@ export default function Talk() {
   return (
     <Row id="PageTalk" className="pageContainer">
       <Col xs={12} md={8} className="mr-auto ml-auto">
-        <h1 className="text-center">Talk to Us</h1>
-        <p className="text-center">You can get help, leave feedback, and find out more about FundBoard here.</p>
+        <div className="mb-4">
+          <h1 className="text-center">Talk to Us</h1>
+          <p className="text-center">You can get help, leave feedback, and find out more about FundBoard here.</p>
+        </div>
+        <h2>Learn More About FundBoard</h2>
+        <p>Curious about the people and motivation behind FundBoard?</p>
+        <ul>
+          <li>
+            You can start with &nbsp;
+            <a
+              href="https://www.fundboard.co"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              FundBoard.co
+            </a>
+          </li>
+          <li>
+            Then read our&nbsp;
+            <a
+              href="https://www.fundboard.co/our-take"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              blog.
+            </a>
+          </li>
+          <li>
+            And sign up for&nbsp;
+            <a
+              href="https://www.fundboard.co/say-hello"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              updates and news.
+            </a>
+          </li>
+          <li>
+            Or follow us on Twitter:&nbsp;
+            <a
+              href="https://twitter.com/teamfundboard"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              @FundBoard.
+            </a>
+          </li>
+        </ul>
+        <hr className="mb-4" />
+        <h2>Tell Us What You Think</h2>
+        <p>
+          You can contact us directly with the form below. We read every message and if you
+          include your email address, we'll do our best to get back to you as soon as we can.
+        </p>
         <Form
           noValidate
           validated={validated}
