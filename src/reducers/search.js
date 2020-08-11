@@ -1,6 +1,6 @@
 import { REHYDRATE } from 'redux-persist';
 import * as types from '../actions/types';
-import { processErr } from '../utils';
+import { getSafeVar, processErr } from '../utils';
 
 const defaultState = {
   results_status: '',
@@ -13,11 +13,12 @@ const defaultState = {
 };
 
 export default function search(state = { ...defaultState }, action) {
+  const rehydration = getSafeVar(() => action.payload.search, {});
   const results = {};
   switch (action.type) {
     case REHYDRATE: return {
       ...state,
-      ...action.payload.search,
+      ...rehydration,
     };
     case types.SEARCH_SET_KEYWORDS: return {
       ...state,

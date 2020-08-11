@@ -1,6 +1,6 @@
 import { REHYDRATE } from 'redux-persist';
 import * as types from '../actions/types';
-import { processErr } from '../utils';
+import { getSafeVar, processErr } from '../utils';
 
 export default function people(state = {}, action) {
   const records = {};
@@ -203,10 +203,11 @@ export default function people(state = {}, action) {
       },
     ],
   };
+  const rehydration = getSafeVar(() => action.payload.people, {});
   switch (action.type) {
     case REHYDRATE: return {
       ...state,
-      ...action.payload.people,
+      ...rehydration,
     };
     case types.PEOPLE_UPDATE:
       if (action.data.records) {

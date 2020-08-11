@@ -1,11 +1,13 @@
 import { REHYDRATE } from 'redux-persist';
 import * as types from '../actions/types';
+import { getSafeVar } from '../utils';
 
 export default function modal(state = { openModal: null }, action) {
+  const rehydration = getSafeVar(() => action.payload.modals, {});
   switch (action.type) {
     case REHYDRATE: return {
       ...state,
-      ...action.payload.modal,
+      ...rehydration,
     };
     case types.MODAL_SET_OPEN: return {
       ...state,
