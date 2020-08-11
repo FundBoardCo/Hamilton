@@ -12,13 +12,11 @@ export default function Keywords() {
 
   const dispatch = useDispatch();
 
-  const getKeywords = () => dispatch({
-    type: 'AIRTABLE_GET_KEYWORDS_REQUESTED',
-  });
-
   useEffect(() => {
-    if (!Array.isArray(airtableKeywords.data) && !airtableKeywords.state) getKeywords();
-  });
+    dispatch({
+      type: 'AIRTABLE_GET_KEYWORDS_REQUESTED',
+    });
+  }, [dispatch]);
 
   const setKeywords = keywords => dispatch({
     type: 'SEARCH_SET_KEYWORDS',
