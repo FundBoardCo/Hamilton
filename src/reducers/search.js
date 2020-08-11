@@ -35,7 +35,7 @@ export default function search(state = { ...defaultState }, action) {
       ...state,
       remote: action.remote,
     };
-    case types.SEARCH_GET_EXTRAZIPCODES_REQUEST: return {
+    case types.SEARCH_GET_EXTRAZIPCODES_REQUESTED: return {
       ...state,
       extraZipcodes_status: 'pending',
     };

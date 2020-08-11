@@ -36,6 +36,11 @@ export default function Profile() {
     email,
   });
 
+  const onShowLogin = () => dispatch({
+    type: types.MODAL_SET_OPEN,
+    modal: 'login',
+  });
+
   const onEmailChange = e => {
     setEmailValue(e.target.value);
   };
@@ -204,7 +209,16 @@ export default function Profile() {
       )}
       {!loggedIn && (
         <Col xs={12} md={8} className="mr-auto ml-auto">
-          <h1>To see your profile, you need to log in first.</h1>
+          <h1 className="text-center">To see your profile, you need to log in first.</h1>
+          <div className="d-flex justify-content-center">
+            <Button
+              variant="secondary"
+              className="btnResponsiveMax"
+              onClick={onShowLogin}
+            >
+              Login
+            </Button>
+          </div>
         </Col>
       )}
     </Row>

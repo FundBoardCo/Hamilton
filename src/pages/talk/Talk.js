@@ -29,7 +29,7 @@ export default function Talk() {
   const dispatch = useDispatch();
 
   const sendFeedback = () => dispatch({
-    type: types.FEEDBACK_SEND_REQUEST,
+    type: types.FEEDBACK_SEND_REQUESTED,
     params: {
       email: email || emailValue,
       thumbsup: thumbsUp,
