@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import Row from 'react-bootstrap/Row';
-
 import Col from 'react-bootstrap/Col';
 
 export default function Keywords() {
@@ -41,7 +40,9 @@ export default function Keywords() {
   return (
     <Row id="Keywords">
       <Col className="keywordsInner">
-        <h1 className="text-center">We Are</h1>
+        <h1 className="d-flex justify-content-center align-items-center">
+          We Are
+        </h1>
         <p className="text-center">Choose up to 5 keywords that describe your startup.</p>
         <div className="tilesWrapper">
           <div className="tiles">

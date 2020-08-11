@@ -29,7 +29,7 @@ export default function airTable(state = { ...defaultState }, action) {
         state: processErr(action.error),
       },
     };
-    case types.FEEDBACK_SEND_REQUEST: return {
+    case types.FEEDBACK_SEND_REQUESTED: return {
       ...state,
       feedback_status: 'pending',
     };

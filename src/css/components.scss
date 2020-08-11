@@ -756,4 +756,32 @@ html#ov body {
       }
     }
   }
+
+  .infoTip {
+    margin-left: 0.25em;
+      color: $col-primary-light6;
+      background: none;
+      border: 0 none;
+
+    &.open {
+      color: $col-secondary;
+    }
+  }
+
+  .infoTipBody {
+    background-color: $col-light;
+    border: 1px solid $col-secondary;
+
+    .arrow {
+      &:before,
+      &:after {
+      }
+      &:before {
+        border-bottom-color: $col-secondary;
+      }
+      &:after {
+
+      }
+    }
+  }
 }

@@ -8,6 +8,7 @@ import {
 import axios from 'axios';
 import {
   AIRTABLE_APIKEY,
+  WEBFLOW_APIKEY,
   ZIPCODEAPI,
 } from '../constants';
 import {
@@ -16,8 +17,11 @@ import {
   toQueryString,
 } from '../utils';
 import * as types from '../actions/types';
+import Webflow from 'webflow-api';
 
 const api = 'https://api.fundboard.co/';
+
+const webFlowAPI = new Webflow({ token: WEBFLOW_APIKEY });
 
 const cookies = document.cookie.split(';');
 cookies.forEach(c => {
@@ -55,12 +59,39 @@ function* watchAirtableGetKeywords() {
   yield takeLatest('AIRTABLE_GET_KEYWORDS_REQUESTED', workAirtableGetKeywords);
 }
 
+function getInfo(params) {
+  const { itemId, collection } = params;
+  let collectionId = '5f32059a4837a2f38d6d2de3'; // tips, the default;
+  if (collection === 'blog') collectionId = '5e8e265102dac128f49dd555';
+  return webFlowAPI.item({
+    collectionId,
+    itemId,
+  });
+}
+
+function* workGetInfo(action) {
+  const { params } = action;
+  try {
+    const data = yield call(getInfo, params);
+    yield put({ type: types.INFO_GET_SUCCEEDED, params, data });
+  } catch (error) {
+    trackErr(error);
+    yield put({ type: types.INFO_GET_FAILED, error });
+  }
+}
+
+function* watchGetInfo() {
+  yield takeEvery(types.INFO_GET_REQUESTED, workGetInfo);
+}
+
 function userLogin(data = {}) {
   return axios({
     method: 'post',
     url: `${api}login`,
     data,
   });
+  // useful for faking login. TODO: remove
+  // return { data: { token: 'foo' } };
 }
 
 function* workUserLogin(action) {
@@ -181,7 +212,7 @@ function* workSendFeedback(action) {
 }
 
 function* watchSendFeedback() {
-  yield takeEvery( types.FEEDBACK_SEND_REQUEST, workSendFeedback);
+  yield takeEvery(types.FEEDBACK_SEND_REQUESTED, workSendFeedback);
 }
 
 function getBoard() {
@@ -259,4 +290,5 @@ export default function* rootSaga() {
   yield fork(watchSearchGetResults);
   yield fork(watchGetBoard);
   yield fork(watchSendFeedback);
+  yield fork(watchGetInfo);
 }
