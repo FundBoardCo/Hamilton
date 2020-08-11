@@ -5,6 +5,7 @@ import FileSaver from 'file-saver';
 import Row from 'react-bootstrap/Row';
 import Button from 'react-bootstrap/Button';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import Col from 'react-bootstrap/Col';
 import Person from '../../components/people/Person';
 import * as types from '../../actions/types';
 
@@ -95,6 +96,11 @@ export default function Board() {
 
   const dispatch = useDispatch();
 
+  const onShowLogin = () => dispatch({
+    type: types.MODAL_SET_OPEN,
+    modal: 'login',
+  });
+
   const onShowNextClick = () => dispatch({
     type: types.MODAL_SET_OPEN,
     modal: 'afterDownload',
@@ -174,7 +180,18 @@ export default function Board() {
       </div>
       )}
       {!loggedIn && (
-        <h1>To see your FundBoard, you need to log in first.</h1>
+        <Col xs={12} md={8} className="mr-auto ml-auto">
+          <h1 className="text-center">To see your FundBoard, you need to log in first.</h1>
+          <div className="d-flex justify-content-center">
+            <Button
+              variant="secondary"
+              className="btnResponsiveMax"
+              onClick={onShowLogin}
+            >
+              Login
+            </Button>
+          </div>
+        </Col>
       )}
     </Row>
   );
