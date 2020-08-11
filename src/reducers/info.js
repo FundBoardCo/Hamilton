@@ -5,12 +5,15 @@ export default function info(state = {}, action) {
   switch (action.type) {
     case types.INFO_GET_REQUESTED: return {
       ...state,
-      [action.params.itemId]: { ...[action.params.itemId], status: 'pending' },
+      [action.params.itemId]: {
+        ...[action.params.itemId],
+        status: 'pending',
+      },
     };
     case types.INFO_GET_SUCCEEDED: return {
       ...state,
       [action.params.itemId]: {
-        status: 'success',
+        status: 'succeeded',
         data: action.data,
       },
     };
