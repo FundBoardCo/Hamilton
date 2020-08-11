@@ -11,6 +11,7 @@ export default function DAlert(props) {
     statusPrefix,
     status,
     dissmissAction,
+    dismissParams,
     className,
     show = true,
     showSuccess = true,
@@ -23,13 +24,14 @@ export default function DAlert(props) {
 
   const dispatch = useDispatch();
 
-  const dissmiss = type => dispatch({
+  const dissmiss = (type, params) => dispatch({
     type,
+    params,
   });
 
   const onClickClose = () => {
     if (dissmissAction) {
-      dissmiss(dissmissAction);
+      dissmiss(dissmissAction, dismissParams);
     }
   };
 
@@ -61,6 +63,7 @@ DAlert.defaultProps = {
   statusPrefix: '',
   status: '',
   dissmissAction: '',
+  dismissParams: {},
   className: '',
   show: true,
   showSuccess: true,
@@ -73,6 +76,7 @@ DAlert.propTypes = {
   statusPrefix: PropTypes.string,
   status: PropTypes.string,
   dissmissAction: PropTypes.string,
+  dismissParams: PropTypes.objectOf(PropTypes.string, PropTypes.number, PropTypes.bool),
   className: PropTypes.string,
   show: PropTypes.bool,
   showSuccess: PropTypes.bool,
