@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
-import InfoTip from '../../components/InfoTip';
 
 export default function Keywords() {
   const searchKeywords = useSelector(state => state.search.keywords) || [];
@@ -43,7 +42,6 @@ export default function Keywords() {
       <Col className="keywordsInner">
         <h1 className="d-flex justify-content-center align-items-center">
           We Are
-          <span className="h4"><InfoTip itemId="5e95d1884b115e792da15092" /></span>
         </h1>
         <p className="text-center">Choose up to 5 keywords that describe your startup.</p>
         <div className="tilesWrapper">
