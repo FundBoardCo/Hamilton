@@ -18,7 +18,6 @@ import {
   toQueryString,
 } from '../utils';
 import * as types from '../actions/types';
-import Webflow from 'webflow-api';
 
 const api = 'https://api.fundboard.co/';
 
