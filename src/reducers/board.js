@@ -29,6 +29,10 @@ export default function board(state = { ids: [] }, action) {
       ...state,
       board_status: processErr(action.error),
     };
+    case types.BOARD_CHANGE_DISMISSED: return {
+      ...state,
+      board_status: '',
+    };
     case types.BOARD_GET_REQUESTED: return {
       ...state,
       board_status: 'pending',
@@ -41,6 +45,10 @@ export default function board(state = { ids: [] }, action) {
     case types.BOARD_GET_FAILED: return {
       ...state,
       board_status: processErr(action.error),
+    };
+    case types.BOARD_GET_DISMISSED: return {
+      ...state,
+      board_status: '',
     };
     default: return state;
   }

@@ -1,6 +1,7 @@
 import { combineReducers } from 'redux';
 import airtable from './airtable';
 import board from './board';
+import info from './info';
 import search from './search';
 import user from './user';
 import modal from './modal';
@@ -35,6 +36,7 @@ export const rootReducer = combineReducers({
   initialState,
   airtable,
   board,
+  info,
   modal,
   people,
   search,
