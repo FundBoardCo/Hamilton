@@ -92,6 +92,7 @@ library.add(
 
 function App() {
   const loggedIn = useSelector(state => state.user.loggedIn);
+  const firstTime = useSelector(state => state.search.firstTime);
 
   const dispatch = useDispatch();
 
@@ -112,6 +113,18 @@ function App() {
             <span className="navVersion">Alpha 0.1</span>
           </a>
           <Nav className="ml-auto" defaultActiveKey={window.location.pathname}>
+            {!loggedIn
+            && (
+              <Button
+                variant="link"
+                className="login navbar-btn"
+                onClick={onShowLogin}
+                data-track="navLogin"
+              >
+                <FontAwesomeIcon icon="sign-in-alt" />
+                <span>Log In</span>
+              </Button>
+            )}
             {loggedIn
             && (
               <Nav.Link
@@ -125,7 +138,7 @@ function App() {
                 <span>My FundBoard</span>
               </Nav.Link>
             )}
-            {loggedIn
+            {firstTime
             && (
               <Nav.Link
                 as={NavLink}
@@ -152,18 +165,6 @@ function App() {
                 <FontAwesomeIcon icon="cog" />
                 <span>My Profile</span>
               </Nav.Link>
-            )}
-            {!loggedIn
-            && (
-              <Button
-                variant="link"
-                className="login navbar-btn"
-                onClick={onShowLogin}
-                data-track="navLogin"
-              >
-                <FontAwesomeIcon icon="sign-in-alt" />
-                <span>Log In</span>
-              </Button>
             )}
             <Nav.Link
               as={NavLink}

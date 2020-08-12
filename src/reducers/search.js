@@ -10,6 +10,7 @@ const defaultState = {
   raise: 100000,
   location: '',
   extraZipcodes: [],
+  firstTime: true,
 };
 
 export default function search(state = { ...defaultState }, action) {
@@ -53,6 +54,7 @@ export default function search(state = { ...defaultState }, action) {
     case types.SEARCH_GET_RESULTS_REQUESTED: return {
       ...state,
       results_status: 'pending',
+      firstTime: false,
     };
     case types.SEARCH_GET_RESULTS_SUCCEEDED:
       if (action.data.records) {
