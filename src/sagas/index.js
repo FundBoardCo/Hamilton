@@ -10,7 +10,7 @@ import Webflow from 'webflow-api';
 import {
   AIRTABLE_APIKEY,
   WEBFLOW_APIKEY,
-  ZIPCODEAPI,
+  ZIPCODECLIENTKEY,
 } from '../constants';
 import {
   getSafeVar,
@@ -236,7 +236,7 @@ function* watchGetBoard() {
 
 function getExtraZipCodes(zipcode) {
   return axios.get(
-    `https://www.zipcodeapi.com/rest/${ZIPCODEAPI}/radius.json/${zipcode}/20/mile?minimal`,
+    `https://www.zipcodeapi.com/rest/${ZIPCODECLIENTKEY}/radius.json/${zipcode}/20/mile?minimal`,
   );
 }
 
