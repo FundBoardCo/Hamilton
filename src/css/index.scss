@@ -18,8 +18,8 @@
 
 html#ov {
   // override bootstrap styles
-  height: 100%;
-  height: var(--apd-height);
+  //height: 100%;
+  height: var(--app-height);
 
   @media (min-width: $mediaLg) and (min-height: $mediaLg) {
     font-size: 20px; //increase all fonts on large screens
@@ -400,6 +400,7 @@ html#ov {
 
           #Raise {
             flex-grow: 1;
+            padding-bottom: $pad3;
 
             .raiseInner {
               display: flex;
@@ -562,11 +563,11 @@ html#ov {
           }
 
           @media (max-width: $mediaMaxSm) {
-            height: calc(100vh - #{$navPlusSearchBarSz1});
+            height: calc(var(--app-height) - #{$navPlusSearchBarSz1});
           }
 
           @media (max-width: $mediaMaxMd) {
-            height: calc(100vh - #{$navPlusSearchBarSz2});
+            height: calc(var(--app-height) - #{$navPlusSearchBarSz2});
           }
 
           .searchAlert {
@@ -657,11 +658,11 @@ html#ov {
           }
 
           @media (max-width: $mediaMaxSm) {
-            height: calc(100vh - #{$navPlusSearchBarSz1});
+            height: calc(var(--app-height) - #{$navPlusSearchBarSz1});
           }
 
           @media (max-width: $mediaMaxMd) {
-            height: calc(100vh - #{$navPlusSearchBarSz2});
+            height: calc(var(--app-height) - #{$navPlusSearchBarSz2});
           }
         }
       }

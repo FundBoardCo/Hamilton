@@ -38,7 +38,7 @@ export default function Keywords() {
   return (
     <Row id="Keywords">
       <Col className="keywordsInner">
-        <h1 className="d-flex justify-content-center align-items-center">
+        <h1 className="text-center">
           We Are
         </h1>
         <p className="text-center">Choose up to 5 keywords that describe your startup.</p>
