@@ -19,6 +19,7 @@
 html#ov {
   // override bootstrap styles
   height: 100%;
+  height: var(--apd-height);
 
   @media (min-width: $mediaLg) and (min-height: $mediaLg) {
     font-size: 20px; //increase all fonts on large screens

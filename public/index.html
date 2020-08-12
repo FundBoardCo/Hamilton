@@ -32,4 +32,9 @@
     <noscript>You need to enable JavaScript to run this app.</noscript>
     <div id="root"></div>
   </body>
+<script>
+  const appHeight = () => document.documentElement.style.setProperty('--app-height', `${window.innerHeight}px`);
+  window.addEventListener('resize', appHeight);
+  appHeight();
+</script>
 </html>
