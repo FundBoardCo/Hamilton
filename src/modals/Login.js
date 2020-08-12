@@ -103,14 +103,6 @@ export default function Login() {
 
   const location = useLocation();
 
-  const path = location.pathname.substring(1);
-
-  let modalTitleEnd = 'this page.';
-
-  if (path === 'board') modalTitleEnd = 'your FundBoard.';
-
-  if (path === 'profile') modalTitleEnd = 'your profile.';
-
   const btnProps = {
     login: {
       variant: 'secondary',
@@ -186,7 +178,7 @@ export default function Login() {
     >
       <Modal.Header closeButton>
         <Modal.Title>
-          <h2>{`Log in to see ${modalTitleEnd}`}</h2>
+          <h2>{mode === 'create' ? 'Create Account' : 'Log In'}</h2>
         </Modal.Title>
       </Modal.Header>
       <Modal.Body>
