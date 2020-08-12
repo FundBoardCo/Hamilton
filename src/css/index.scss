@@ -44,9 +44,13 @@ html#ov {
         align-items: center;
         min-height: $navSz1;
         padding: 0 $pad3;
-        order: 2; // nav on the bottom for mobile
         background-color: $col-structure;
         color: $col-text-light;
+        position: fixed;
+        left: 0;
+        bottom: 0;
+        right: 0;
+        z-index: 1;
 
         .navbar-nav {
           flex-grow: 1;
@@ -118,7 +122,7 @@ html#ov {
         }
 
         @media (min-width: $mediaLg) {
-          order: 1;
+          position: relative;
 
           .navLogo {
             display: block;
@@ -196,12 +200,12 @@ html#ov {
           flex-direction: column;
           flex-wrap: nowrap;
           flex-grow: 1;
-          height: calc(100vh - #{$navSz1});
+          height: calc(var(--app-height) - #{$navSz1});
           @include colPadding;
           padding-top: $pad3;
 
           @media (min-width: $mediaXs) {
-            height: calc(100vh - #{$navSz2});
+            height: calc(var(--app-height) - #{$navSz2});
           }
         }
 
@@ -493,6 +497,7 @@ html#ov {
             top: 0;
             left: 0;
             right: 0;
+            z-index: 10;
 
             .primaryDetails {
               display: flex;
