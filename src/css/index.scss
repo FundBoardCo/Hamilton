@@ -340,6 +340,7 @@ html#ov {
           }
 
           #Keywords {
+            flex-grow: 1;
 
             .keywordsInner {
               display: flex;
