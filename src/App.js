@@ -54,7 +54,7 @@ import Profile from './pages/profile/Profile';
 import Talk from './pages/talk/Talk';
 import NotFound from './pages/NotFound';
 import Modal from './modals/ModalWrapper';
-import * as types from "./actions/types";
+import * as types from './actions/types';
 
 // import common icons so they're accessible later.
 library.add(
