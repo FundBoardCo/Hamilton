@@ -1,4 +1,4 @@
-import React, { useRef, useEffect } from 'react';
+import React from 'react';
 import {
   BrowserRouter as Router,
   Route,
@@ -100,15 +100,12 @@ function App() {
     modal: 'login',
   });
 
-  const scrollInto = useRef(null);
-  useEffect(() => {
-    scrollInto.current.scrollIntoView();
-  });
+  window.scrollTo(0, 1);
 
   return (
     <Router>
       <ScrollToTop>
-        <Navbar className="nav" ref={scrollInto}>
+        <Navbar className="nav">
           <a href="/" className="navBrand">
             <img className="navLogo" src={Logo} alt="FundBoard Logo" />
             <span className="navName">FundBoard</span>
