@@ -101,7 +101,9 @@ function App() {
     modal: 'login',
   });
 
-  window.scrollTo(0, 1);
+  let indexRedirect = '/search';
+  if (firstTime) indexRedirect = '/intro';
+  if (loggedIn) indexRedirect = '/board';
 
   return (
     <Router>
@@ -138,7 +140,7 @@ function App() {
                 <span>My FundBoard</span>
               </Nav.Link>
             )}
-            {firstTime
+            {!firstTime
             && (
               <Nav.Link
                 as={NavLink}
@@ -183,7 +185,7 @@ function App() {
           <div className="container-xl">
             <Switch>
               <Route path="/" exact>
-                {loggedIn ? <Redirect to="/board" /> : <Redirect to="/intro" />}
+                <Redirect to={indexRedirect} />
               </Route>
               <Route path="/intro" component={Intro} />
               <Route path="/introsearch" component={IntroSearch} />
