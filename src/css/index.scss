@@ -27,6 +27,9 @@ html#ov {
 
   body {
     height: var(--app-height);
+    width: 100%;
+    position: fixed;
+    overflow: hidden;
     margin: 0;
     font-family: 'Nunito Sans', sans-serif;
     -webkit-font-smoothing: antialiased;
@@ -342,6 +345,7 @@ html#ov {
 
           #Keywords {
             flex-grow: 1;
+            padding-bottom: $pad3;
 
             .keywordsInner {
               display: flex;
@@ -453,6 +457,7 @@ html#ov {
 
           #Location {
             flex-grow: 1;
+            padding-bottom: $pad3;
 
             .locationInner {
               display: flex;
