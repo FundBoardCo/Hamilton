@@ -10,7 +10,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Timeline } from 'react-twitter-widgets';
 import GreySquare from '../imgs/greySquare.jpg';
 import PersonStamp from '../components/people/PersonStamp';
-import { capitalizeFirstLetter, statusIsError } from '../utils';
+import {capitalizeFirstLetter, getSafeVar, statusIsError} from '../utils';
 
 function ImgComp(params) {
   const { imgSrc = '', alt = '' } = params;
@@ -63,12 +63,12 @@ export default function Investor(props) {
 
   const people = useSelector(state => state.people);
   const data = people[investor] || {};
-  const twitterName = data.twitter.substr(data.twitter.lastIndexOf('/') + 1);
+  const twitterName = getSafeVar(() => data.twitter.substr(data.twitter.lastIndexOf('/') + 1), '');
 
-  const searchData = useSelector(state => state.search.results[investor]);
+  const searchData = useSelector(state => state.search.results[investor] || {});
 
-  const { matches } = searchData;
-  let percentageMatch = (matches.keywords && matches.keywords.length) || 0;
+  const { matches = {} } = searchData;
+  let percentageMatch = (Array.isArray(matches.keywords) && matches.keywords.length) || 0;
   if (matches.raise) percentageMatch += 1;
   if (matches.location) percentageMatch += 1;
   percentageMatch = Math.floor((percentageMatch / 7) * 100);
@@ -220,7 +220,7 @@ export default function Investor(props) {
         <div className="funded">
           <h2>Founders they&apos;ve funded</h2>
           <div className="founders">
-            {data.investments.map(i => {
+            {Array.isArray(data.investments) && data.investments.map(i => {
               const pProps = {
                 org_name: i.name,
                 logo_url: i.logo_url,
