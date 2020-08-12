@@ -26,7 +26,7 @@ html#ov {
   }
 
   body {
-    height: 100%;
+    height: var(--app-height);
     margin: 0;
     font-family: 'Nunito Sans', sans-serif;
     -webkit-font-smoothing: antialiased;
@@ -37,20 +37,16 @@ html#ov {
       display: flex;
       justify-content: center;
       flex-direction: column;
-      height: 100%;
+      height: var(--app-height);
 
       .nav {
         display: flex;
         align-items: center;
         min-height: $navSz1;
         padding: 0 $pad3;
+        order: 2; // nav on the bottom for mobile
         background-color: $col-structure;
         color: $col-text-light;
-        position: fixed;
-        left: 0;
-        bottom: 0;
-        right: 0;
-        z-index: 1;
 
         .navbar-nav {
           flex-grow: 1;
@@ -122,7 +118,7 @@ html#ov {
         }
 
         @media (min-width: $mediaLg) {
-          position: relative;
+          order: 1;
 
           .navLogo {
             display: block;
