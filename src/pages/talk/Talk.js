@@ -80,58 +80,60 @@ export default function Talk() {
         </div>
         <h2>Learn More About FundBoard</h2>
         <p>Curious about the people and motivation behind FundBoard?</p>
-        <ul>
-          <li>
-            You can start with &nbsp;
-            <a
-              href="https://www.fundboard.co"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              FundBoard.co
-            </a>
-          </li>
-          <li>
-            Then read our&nbsp;
-            <a
-              href="https://www.fundboard.co/our-take"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              blog.
-            </a>
-          </li>
-          <li>
-            And sign up for&nbsp;
-            <a
-              href="https://www.fundboard.co/say-hello"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              updates and news.
-            </a>
-          </li>
-          <li>
-            Or follow us on Twitter:&nbsp;
-            <a
-              href="https://twitter.com/teamfundboard"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              @FundBoard.
-            </a>
-          </li>
-        </ul>
+        <div className="mb-2">
+          You can start with &nbsp;
+          <a
+            href="https://www.fundboard.co"
+            target="_blank"
+            rel="noopener noreferrer"
+            data-track="TalkLink-FundBoard"
+          >
+            FundBoard.co
+          </a>
+        </div>
+        <div className="mb-2">
+          Then read our&nbsp;
+          <a
+            href="https://www.fundboard.co/our-take"
+            target="_blank"
+            rel="noopener noreferrer"
+            data-track="TalkLink-FundBoardBlog"
+          >
+            blog.
+          </a>
+        </div>
+        <div className="mb-2">
+          And sign up for&nbsp;
+          <a
+            href="https://www.fundboard.co/say-hello"
+            target="_blank"
+            rel="noopener noreferrer"
+            data-track="TalkLink-FundBoardContact"
+          >
+            updates and news.
+          </a>
+        </div>
+        <div className="mb-2">
+          Or follow us on Twitter:&nbsp;
+          <a
+            href="https://twitter.com/teamfundboard"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            @FundBoard.
+          </a>
+        </div>
         <hr className="mb-4" />
         <h2>Tell Us What You Think</h2>
         <p>
           You can contact us directly with the form below. We read every message and if you
-          include your email address, we'll do our best to get back to you as soon as we can.
+          include your email address, we&apos;ll do our best to get back to you as soon as we can.
         </p>
         <Form
           noValidate
           validated={validated}
           onSubmit={handleSubmit}
+          className="mb-4"
         >
           <Form.Group controlId="CommentInput">
             <Form.Label className="sr-only">Your feedback</Form.Label>
@@ -163,7 +165,7 @@ export default function Talk() {
                 <Button
                   variant="outline-primary"
                   onClick={onEmailOffClick}
-                  data-track="TalkE"
+                  data-track="TalkEmailInput-toggle"
                 >
                   {includeEmail && (
                     <FontAwesomeIcon icon="times" />
@@ -184,8 +186,9 @@ export default function Talk() {
           <div className="d-flex justify-content-between mb-4">
             <Button
               variant={thumbsUp ? 'secondary' : 'info'}
-              className="flex-grow-1"
+              className="flex-grow-1 mr-2"
               onClick={() => onThumbsClick(true)}
+              data-track="TalkThumbsUp"
             >
               <FontAwesomeIcon icon="thumbs-up" />
               <span className="sr-only">Give us a thumbs up.</span>
@@ -194,6 +197,7 @@ export default function Talk() {
               variant={thumbsUp ? 'info' : 'warning'}
               className="flex-grow-1"
               onClick={() => onThumbsClick(false)}
+              data-track="TalkThumbsDown"
             >
               <FontAwesomeIcon icon="thumbs-down" />
               <span className="sr-only">Give us a thumbs up.</span>
@@ -208,10 +212,34 @@ export default function Talk() {
             className="btnNoMax w-100"
             variant="primary"
             type="submit"
+            data-track="TalkSubmit"
           >
             Submit
           </Button>
         </Form>
+        <div className="mb-4">
+          <h3>More</h3>
+          <div className="mb-2">
+            <a
+              href="https://www.fundboard.co/terms-of-service"
+              target="_blank"
+              rel="noopener noreferrer"
+              data-track="TalkLink-terms"
+            >
+              Our terms of service
+            </a>
+          </div>
+          <div className="mb-2">
+            <a
+              href="https://www.fundboard.co/privacy-policy"
+              target="_blank"
+              rel="noopener noreferrer"
+              data-track="TalkLink-privacy"
+            >
+              Our privacy policy
+            </a>
+          </div>
+        </div>
       </Col>
     </Row>
   );
