@@ -53,13 +53,16 @@ html#ov {
           display: flex;
           justify-content: space-around;
 
-          a.nav-link,
-          .fauxLink {
-            flex-grow: 1;
+          a.nav-link {
             display: flex;
             justify-content: center;
             align-items: center;
             height: fit-content;
+          }
+
+          a.nav-link,
+          .btn.navbar-btn {
+            flex-grow: 1;
             color: inherit;
 
             span {
@@ -69,8 +72,10 @@ html#ov {
             }
 
             &:hover,
-            &:active {
-              opacity: 0.7;
+            &:active,
+            &.active {
+              opacity: 0.4;
+              text-decoration: none;
             }
 
             &:disabled,
@@ -78,10 +83,6 @@ html#ov {
             &[aria-disabled="true"] {
               opacity: 0.2;
             }
-          }
-
-          .fauxLink {
-            padding: 0.5rem;
           }
         }
 
@@ -146,7 +147,7 @@ html#ov {
             justify-content: flex-end;
 
             a.nav-link,
-            .fauxLink {
+            .btn.navbar-btn {
               flex-grow: 0;
               margin-right: 2em;
 

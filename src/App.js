@@ -6,9 +6,10 @@ import {
   Redirect,
   Switch,
 } from 'react-router-dom';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import Navbar from 'react-bootstrap/Navbar';
 import Nav from 'react-bootstrap/Nav';
+import Button from 'react-bootstrap/Button';
 import { library } from '@fortawesome/fontawesome-svg-core';
 import { fab } from '@fortawesome/free-brands-svg-icons';
 import {
@@ -53,6 +54,7 @@ import Profile from './pages/profile/Profile';
 import Talk from './pages/talk/Talk';
 import NotFound from './pages/NotFound';
 import Modal from './modals/ModalWrapper';
+import * as types from "./actions/types";
 
 // import common icons so they're accessible later.
 library.add(
@@ -91,6 +93,13 @@ library.add(
 function App() {
   const loggedIn = useSelector(state => state.user.loggedIn);
 
+  const dispatch = useDispatch();
+
+  const onShowLogin = () => dispatch({
+    type: types.MODAL_SET_OPEN,
+    modal: 'login',
+  });
+
   return (
     <Router>
       <ScrollToTop>
@@ -101,38 +110,59 @@ function App() {
             <span className="navVersion">Alpha 0.1</span>
           </a>
           <Nav className="ml-auto" defaultActiveKey={window.location.pathname}>
-            <Nav.Link
-              as={NavLink}
-              href="/board"
-              to="/board"
-              className="board"
-              data-track="navBoard"
-            >
-              <FontAwesomeIcon icon="list" />
-              <span>My FundBoard</span>
-            </Nav.Link>
-            <Nav.Link
-              as={NavLink}
-              href="/search"
-              to="/search"
-              className="search"
-              activeClassName="active"
-              data-track="navSearch"
-            >
-              <FontAwesomeIcon icon="search" />
-              <span>Search</span>
-            </Nav.Link>
-            <Nav.Link
-              as={NavLink}
-              href="/profile"
-              to="/profile"
-              className="profile"
-              activeClassName="profile"
-              data-track="navProfile"
-            >
-              <FontAwesomeIcon icon="cog" />
-              <span>My Profile</span>
-            </Nav.Link>
+            {loggedIn
+            && (
+              <Nav.Link
+                as={NavLink}
+                href="/board"
+                to="/board"
+                className="board"
+                data-track="navBoard"
+              >
+                <FontAwesomeIcon icon="list" />
+                <span>My FundBoard</span>
+              </Nav.Link>
+            )}
+            {loggedIn
+            && (
+              <Nav.Link
+                as={NavLink}
+                href="/search"
+                to="/search"
+                className="search"
+                activeClassName="active"
+                data-track="navSearch"
+              >
+                <FontAwesomeIcon icon="search" />
+                <span>Search</span>
+              </Nav.Link>
+            )}
+            {loggedIn
+            && (
+              <Nav.Link
+                as={NavLink}
+                href="/profile"
+                to="/profile"
+                className="profile"
+                activeClassName="profile"
+                data-track="navProfile"
+              >
+                <FontAwesomeIcon icon="cog" />
+                <span>My Profile</span>
+              </Nav.Link>
+            )}
+            {!loggedIn
+            && (
+              <Button
+                variant="link"
+                className="login navbar-btn"
+                onClick={onShowLogin}
+                data-track="navLogin"
+              >
+                <FontAwesomeIcon icon="sign-in-alt" />
+                <span>Log In</span>
+              </Button>
+            )}
             <Nav.Link
               as={NavLink}
               href="/talk"
