@@ -1,6 +1,6 @@
 {
-  "short_name": "React App",
-  "name": "Create React App Sample",
+  "short_name": "FundBoard",
+  "name": "FundBoard",
   "icons": [
     {
       "src": "favicon64.ico",
@@ -20,6 +20,9 @@
   ],
   "start_url": ".",
   "display": "standalone",
-  "theme_color": "#000000",
-  "background_color": "#ffffff"
+  "orientation": "portrait",
+  "description": "Startup Fundraising Made Better",
+  "theme_color": "#694494",
+  "background_color": "#ffffff",
+  "scope": "/"
 }
