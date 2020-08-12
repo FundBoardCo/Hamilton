@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
@@ -7,14 +7,13 @@ import Button from 'react-bootstrap/Button';
 import { useHistory } from 'react-router';
 import * as types from '../../actions/types';
 import { statusIsError } from '../../utils';
-import search from "../../reducers/search";
 
 export default function Location() {
   const searchKeywords = useSelector(state => state.search.keywords) || [];
   const searchRaise = useSelector(state => state.search.raise) || 100000;
 
   const searchLocation = useSelector(state => state.search.location) || '';
-  const [locationValue, setLocationValue] = useState(searchLocation);
+  const [locationValue, setLocationValue] = useState('');
 
   const extraZipcodes = useSelector(state => state.search.extraZipcodes) || '';
   const extraZipcodes_status = useSelector(state => state.search.extraZipcodes_status);
@@ -38,6 +37,13 @@ export default function Location() {
     type: 'SEARCH_SET_REMOTE',
     remote,
   });
+
+  useEffect(() => {
+    dispatch({
+      type: 'SEARCH_SET_LOCATION',
+      location: '',
+    });
+  }, [dispatch]);
 
   const getResults = () => {
     const params = {};
@@ -120,9 +126,11 @@ export default function Location() {
                 data-track="IntroSearchRemote"
               />
             </Form.Group>
-            <div className={`mb-2 ${extraZipcodesClass}`}>
-              {`Status: ${extraZipcodesText}`}
-            </div>
+            {searchLocation && (
+              <div className={`mb-2 ${extraZipcodesClass}`}>
+                {`Status: ${extraZipcodesText}`}
+              </div>
+            )}
             <Button
               variant="secondary"
               className="btnNoMax"

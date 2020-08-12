@@ -242,13 +242,13 @@ function getExtraZipCodes(zipcode) {
 
 function* workGetExtraZipCodes(action) {
   const zipcode = action.location;
-  if (!zipcode || typeof zipcode !== 'string' || zipcode.length !== 5) {
-    yield put({ type: types.SEARCH_GET_EXTRAZIPCODES_FAILED, error: 'Invalid Zip Code' });
-    throw new Error('Invalid Zip Code');
-  }
   try {
-    const results = yield call(getExtraZipCodes, zipcode);
-    yield put({ type: types.SEARCH_GET_EXTRAZIPCODES_SUCCEEDED, data: results.data });
+    if (!zipcode || typeof zipcode !== 'string' || zipcode.length !== 5) {
+      yield put({ type: types.SEARCH_GET_EXTRAZIPCODES_FAILED, error: 'Invalid Zip Code' });
+    } else {
+      const results = yield call(getExtraZipCodes, zipcode);
+      yield put({ type: types.SEARCH_GET_EXTRAZIPCODES_SUCCEEDED, data: results.data });
+    }
   } catch (error) {
     trackErr(error);
     yield put({ type: types.SEARCH_GET_EXTRAZIPCODES_FAILED, error });
