@@ -240,6 +240,7 @@ export default function Investor(props) {
               options={{
                 height: '400',
                 tweetLimit: '3',
+                chrome: 'noheader nofooter noborders transparent noscrollbar',
               }}
             />
           )}
