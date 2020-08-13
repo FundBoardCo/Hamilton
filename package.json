@@ -19,6 +19,7 @@
     "install": "^0.13.0",
     "install-peerdeps": "^2.0.2",
     "jquery": "^3.4.1",
+    "js-cookie": "^2.2.1",
     "moment": "^2.27.0",
     "node-sass": "^4.13.1",
     "npm": "^6.14.6",

@@ -7,6 +7,7 @@ import {
 } from 'redux-saga/effects';
 import axios from 'axios';
 import Webflow from 'webflow-api';
+import Cookies from 'js-cookie';
 import {
   AIRTABLE_APIKEY,
   WEBFLOW_APIKEY,
@@ -99,12 +100,16 @@ const fakeSearchResults = {
 
 const api = 'https://api.fundboard.co/';
 
+axios.defaults.withCredentials = true;
+
 const webFlowAPI = new Webflow({ token: WEBFLOW_APIKEY });
 
-const cookies = document.cookie.split(';');
-cookies.forEach(c => {
-  console.log(decodeURIComponent(c));
-});
+function listCookies() {
+  const cookies = document.cookie.split(';');
+  cookies.forEach(c => {
+    console.log(decodeURIComponent(c));
+  });
+}
 
 function trackErr(err) {
   window.heap.track('Error', { message: processErr(err) });
@@ -168,14 +173,14 @@ function userLogin(data = {}) {
     url: `${api}login`,
     data,
   });
-  // useful for faking login. TODO: remove
-  // return { data: { token: 'foo' } };
 }
 
 function* workUserLogin(action) {
   try {
     const { params } = action;
     const results = yield call(userLogin, params);
+    console.log(results)
+    console.log(Cookies.get())
     yield put({ type: types.USER_LOGIN_SUCCEEDED, data: results.data });
   } catch (error) {
     trackErr(error);
@@ -338,10 +343,20 @@ function* watchSearchSetZipCode() {
 }
 
 function getPeopleResults(ids) {
-  return axios.get(`${api}investors?${toQueryString(ids)}`);
+  //return axios.get(`${api}investors?${toQueryString(ids)}`);
+  return axios({
+    method: 'get',
+    url: `${api}investors?${toQueryString({ id: ids })}`,
+    headers: {
+      'Content-Type': 'application/json',
+      'access-control-expose-headers': 'WWW-Authenticate,Server-Authorization',
+      'Access-Control-Allow-Credentials': true,
+    },
+  });
 }
 
 function* workPeopleGetResults(action) {
+  listCookies();
   const { ids } = action;
   try {
     const results = yield call(getPeopleResults, ids);

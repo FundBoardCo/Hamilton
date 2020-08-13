@@ -12,7 +12,7 @@ import * as types from '../../actions/types';
 export default function Board() {
   const investors = useSelector(state => state.board.ids) || [];
   const people = useSelector(state => state.people);
-  const loggedIn = useSelector(state => state.user.token);
+  const loggedIn = useSelector(state => state.user.loggedIn);
   const investorList = {};
   const csvList = [];
 

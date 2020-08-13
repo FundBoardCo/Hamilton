@@ -7,7 +7,7 @@ import Form from 'react-bootstrap/Form';
 import * as types from '../../actions/types';
 
 export default function Profile() {
-  const loggedIn = useSelector(state => state.user.token);
+  const loggedIn = useSelector(state => state.user.loggedIn);
   const user = useSelector(state => state.user) || {};
   const {
     email,
