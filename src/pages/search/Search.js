@@ -12,7 +12,7 @@ export default function Search() {
   const searchKeywords = useSelector(state => state.search.keywords) || [];
   const searchRaise = useSelector(state => state.search.raise) || 100000;
   const searchLocation = useSelector(state => state.search.location) || '';
-  const searchResults = useSelector(state => state.search.results) || [];
+  const searchResults = useSelector(state => state.search.records) || [];
   const searchStatus = useSelector(state => state.search.results_status) || '';
 
   const [detailsOpen, setDetailsOpen] = useState(false);
@@ -75,9 +75,8 @@ export default function Search() {
         {Object.keys(searchResults).map(k => {
           const personProps = { ...searchResults[k] };
           personProps.uuid = k;
-          const pKey = personProps.permalink || personProps.image_id;
           return (
-            <Person key={pKey} {...personProps} />
+            <Person key={k} {...personProps} />
           );
         })}
         {Object.keys(searchResults).length === 0 && (

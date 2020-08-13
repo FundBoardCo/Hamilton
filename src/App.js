@@ -101,8 +101,7 @@ function App() {
     modal: 'login',
   });
 
-  let indexRedirect = '/search';
-  if (firstTime) indexRedirect = '/intro';
+  let indexRedirect = '/intro';
   if (loggedIn) indexRedirect = '/board';
 
   return (

@@ -58,7 +58,10 @@ html#ov body {
           width: 28px;
           height: 28px;
           flex-shrink: 0;
-          padding-right: $pad1;
+          margin-right: $pad1;
+          border-radius: $pad1;
+          border: 1px solid $col-primary-light7;
+          overflow: hidden;
           display: none;
         }
 
@@ -83,7 +86,7 @@ html#ov body {
 
         .details {
           .orgLogoWrapper {
-            padding-right: $pad2;
+            margin-right: $pad2;
             width: 38px;
             height: 38px;
           }

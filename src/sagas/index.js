@@ -13,12 +13,89 @@ import {
   ZIPCODECLIENTKEY,
 } from '../constants';
 import {
-  capitalizeFirstLetter,
   getSafeVar,
   processErr,
   toQueryString,
 } from '../utils';
 import * as types from '../actions/types';
+
+const fakeSearchResults = {
+  a581f00270e756a292132c57368f7fa9a: {
+    name: 'Adam Claypool',
+    permalink: 'adam-claypool',
+    image_id: 'https://crunchbase-production-res.cloudinary.com/image/upload/c_lpad,h_120,w_120,f_jpg/qkp5eobyvo6nld7wmwx7',
+    primary_job_title: 'Managing Principal',
+    primary_organization: {
+      value: 'Bridgepoint Merchant Banking',
+      image_url: 'https://res-1.cloudinary.com/crunchbase-production/image/upload/c_lpad,h_170,w_170,f_auto,b_white,q_auto:eco/v1470308956/fmly1xc4xcwkntryblqd.jpg',
+      permalink: 'bridgepoint-merchant-banking',
+      entity_def_id: 'organization',
+      homepage: 'https://www.bridgepointib.com',
+      linkedin: '',
+      twitter: '',
+    },
+    isLead: true,
+    isOpen: false,
+    isImpact: false,
+    matches: {
+      keywords: ['agriculture', 'SAAS'],
+      raise: true,
+      location: true,
+      name: false,
+      org: false,
+    },
+  },
+  a581f00270e756a292132c57368f7fa9a1: {
+    name: 'Adam Claypool',
+    permalink: 'adam-claypool',
+    image_id: 'https://crunchbase-production-res.cloudinary.com/image/upload/c_lpad,h_120,w_120,f_jpg/qkp5eobyvo6nld7wmwx7',
+    primary_job_title: 'Managing Principal',
+    primary_organization: {
+      value: 'Bridgepoint Merchant Banking',
+      image_url: 'https://res-1.cloudinary.com/crunchbase-production/image/upload/c_lpad,h_170,w_170,f_auto,b_white,q_auto:eco/v1470308956/fmly1xc4xcwkntryblqd.jpg',
+      permalink: 'bridgepoint-merchant-banking',
+      entity_def_id: 'organization',
+      homepage: 'https://www.bridgepointib.com',
+      linkedin: '',
+      twitter: '',
+    },
+    isLead: true,
+    isOpen: false,
+    isImpact: false,
+    matches: {
+      keywords: ['agriculture', 'SAAS'],
+      raise: true,
+      location: true,
+      name: false,
+      org: false,
+    },
+  },
+  a581f00270e756a292132c57368f7fa9a2: {
+    name: 'Adam Claypool',
+    permalink: 'adam-claypool',
+    image_id: 'https://crunchbase-production-res.cloudinary.com/image/upload/c_lpad,h_120,w_120,f_jpg/qkp5eobyvo6nld7wmwx7',
+    primary_job_title: 'Managing Principal',
+    primary_organization: {
+      value: 'Bridgepoint Merchant Banking',
+      image_url: 'https://res-1.cloudinary.com/crunchbase-production/image/upload/c_lpad,h_170,w_170,f_auto,b_white,q_auto:eco/v1470308956/fmly1xc4xcwkntryblqd.jpg',
+      permalink: 'bridgepoint-merchant-banking',
+      entity_def_id: 'organization',
+      homepage: 'https://www.bridgepointib.com',
+      linkedin: '',
+      twitter: '',
+    },
+    isLead: true,
+    isOpen: false,
+    isImpact: false,
+    matches: {
+      keywords: ['agriculture', 'SAAS'],
+      raise: true,
+      location: true,
+      name: false,
+      org: false,
+    },
+  },
+};
 
 const api = 'https://api.fundboard.co/';
 
@@ -260,37 +337,22 @@ function* watchSearchSetZipCode() {
   yield takeLatest(types.SEARCH_SET_LOCATION, workGetExtraZipCodes);
 }
 
-function requestAirtableSearchGetResults(params = {}) {
-  // Temporary Airtable code.
-  // TODO: replace with real API code.
-  // params should be an object with field: term key:value pairs.
-  let { keywords } = params;
-  const { raise, location } = params;
+function getPeopleResults(ids) {
+  return axios.get(`${api}investors?${toQueryString(ids)}`);
+}
 
-  // change each keyword into a FIND formula
-  const formulas = [];
-  keywords = keywords.reduce((a, key) => {
-    const lKey = key.toLowerCase();
-    const uKey = capitalizeFirstLetter(key);
-    const lower = `${a}${a ? ', ' : ''}FIND("${lKey}", {description})>0`;
-    const upper = `${a}${a ? ', ' : ''}FIND("${uKey}", {description})>0`;
-    return `${lower}, ${upper}`;
-  }, '');
-  if (keywords && keywords.length) formulas.push(keywords);
-  if (raise) {
-    formulas.push(`AND({raise_min}<=${raise},{raise_max}>=${raise})`);
+function* workPeopleGetResults(action) {
+  const { ids } = action;
+  try {
+    const results = yield call(getPeopleResults, ids);
+    yield put({ type: types.PEOPLE_GET_SUCCEEDED, data: results.data });
+  } catch (error) {
+    yield put({ type: types.PEOPLE_GET_FAILED, ids, error });
   }
-  if (location) formulas.push(`FIND("${location}", {location_zipcode})>0`);
+}
 
-  return axios.get('https://api.airtable.com/v0/appDqWxN1pcWrdjsn/Investors',
-    {
-      params: {
-        maxRecords: 100,
-        view: 'Grid view',
-        filterByFormula: `OR(${formulas.join(',')})`,
-      },
-      headers: { Authorization: `Bearer ${AIRTABLE_APIKEY}` },
-    });
+function* watchPeopleGetResults() {
+  yield takeEvery(types.PEOPLE_GET_REQUEST, workPeopleGetResults);
 }
 
 function requestSearchGetResults(params = {}) {
@@ -301,8 +363,9 @@ function* workSearchGetResults(action) {
   const { params } = action;
   params.limit = params.limit || 100;
   try {
-    //const results = yield call(requestSearchGetResults, params);
-    const results = yield call(requestAirtableSearchGetResults, params);
+    const results = yield call(requestSearchGetResults, params);
+    // fake code TODO: remove
+    results.data = { ...fakeSearchResults };
     yield put({ type: 'SEARCH_GET_RESULTS_SUCCEEDED', data: results.data });
     yield put({ type: 'PEOPLE_UPDATE', data: results.data });
   } catch (error) {
@@ -321,6 +384,7 @@ export default function* rootSaga() {
   yield fork(watchUserLogin);
   yield fork(watchUserUpdate);
   yield fork(watchPersonPutInvalid);
+  yield fork(watchPeopleGetResults);
   yield fork(watchSearchSetZipCode);
   yield fork(watchSearchGetResults);
   yield fork(watchGetBoard);

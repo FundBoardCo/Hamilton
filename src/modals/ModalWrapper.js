@@ -18,11 +18,11 @@ export default function ModalWrapper() {
         component={SearchMenu}
       />
       <Route
-        path="/search/:investor"
+        path="/search/:uuid"
         component={Investor}
       />
       { loggedIn
-        ? <Route path="/board/:investor" component={Investor} />
+        ? <Route path="/board/:uuid" component={Investor} />
         : <Route path="/board" component={Login} />}
       { !loggedIn && <Route path="/profile" component={Login} /> }
       { openModal === 'login' && <Route path="/" component={Login} /> }

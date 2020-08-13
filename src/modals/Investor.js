@@ -1,4 +1,4 @@
-import React, { Suspense, useState } from 'react';
+import React, { Suspense, useEffect, useState } from 'react';
 import { useHistory, useLocation } from 'react-router';
 import { useSelector, useDispatch } from 'react-redux';
 import Modal from 'react-bootstrap/Modal';
@@ -10,7 +10,8 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Timeline } from 'react-twitter-widgets';
 import GreySquare from '../imgs/greySquare.jpg';
 import PersonStamp from '../components/people/PersonStamp';
-import {capitalizeFirstLetter, getSafeVar, statusIsError} from '../utils';
+import { capitalizeFirstLetter, getSafeVar, statusIsError } from '../utils';
+import * as types from '../actions/types';
 
 function ImgComp(params) {
   const { imgSrc = '', alt = '' } = params;
@@ -59,13 +60,13 @@ const usdFormatter = new Intl.NumberFormat('en-US', {
 export default function Investor(props) {
   const { match } = props;
   const { params } = match;
-  const { investor } = params;
+  const { uuid } = params;
 
   const people = useSelector(state => state.people);
-  const data = people[investor] || {};
+  const data = people[uuid] || {};
   const twitterName = getSafeVar(() => data.twitter.substr(data.twitter.lastIndexOf('/') + 1), '');
 
-  const searchData = useSelector(state => state.search.results[investor] || {});
+  const searchData = useSelector(state => state.search.results[uuid] || {});
 
   const { matches = {} } = searchData;
   let percentageMatch = (Array.isArray(matches.keywords) && matches.keywords.length) || 0;
@@ -77,7 +78,7 @@ export default function Investor(props) {
 
   const investors = useSelector(state => state.board.ids) || [];
 
-  const isOnBoard = investors.includes(investor);
+  const isOnBoard = investors.includes(uuid);
 
   const [invalidOpen, setInvalidOpen] = useState(false);
 
@@ -93,14 +94,21 @@ export default function Investor(props) {
 
   const dispatch = useDispatch();
 
+  useEffect(() => {
+    dispatch({
+      type: types.PEOPLE_GET_REQUEST,
+      ids: [uuid],
+    });
+  }, [dispatch, uuid]);
+
   const addInvestor = () => dispatch({
     type: 'BOARD_ADD',
-    id: investor,
+    id: uuid,
   });
 
   const removeInvestor = () => dispatch({
     type: 'BOARD_REMOVE',
-    id: investor,
+    id: uuid,
   });
 
   const toggleInvestor = () => {
@@ -114,7 +122,7 @@ export default function Investor(props) {
   const reportInvalid = reason => dispatch({
     type: 'PERSON_PUT_INVALID_REQUESTED',
     params: {
-      uuid: investor,
+      uuid,
       reason,
     },
   });
@@ -122,7 +130,7 @@ export default function Investor(props) {
   const clearInvalid = () => dispatch({
     type: 'PERSON_CLEAR_INVALID',
     params: {
-      uuid: investor,
+      uuid,
     },
   });
 
