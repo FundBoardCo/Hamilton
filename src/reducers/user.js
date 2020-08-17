@@ -39,6 +39,7 @@ export default function user(state = { ...defaults }, action) {
       ...state,
       create_status: 'succeeded',
       loggedIn: true,
+      token: action.data.token,
     };
     case types.USER_CREATE_FAILED: return {
       ...state,
@@ -58,6 +59,7 @@ export default function user(state = { ...defaults }, action) {
       ...state,
       login_status: 'succeeded',
       loggedIn: true,
+      token: action.data.token,
     };
     case types.USER_LOGIN_FAILED: return {
       ...state,

@@ -2,12 +2,12 @@ import {
   put,
   call,
   fork,
+  select,
   takeEvery,
   takeLatest,
 } from 'redux-saga/effects';
 import axios from 'axios';
 import Webflow from 'webflow-api';
-import Cookies from 'js-cookie';
 import {
   AIRTABLE_APIKEY,
   WEBFLOW_APIKEY,
@@ -20,96 +20,13 @@ import {
 } from '../utils';
 import * as types from '../actions/types';
 
-const fakeSearchResults = {
-  a581f00270e756a292132c57368f7fa9a: {
-    name: 'Adam Claypool',
-    permalink: 'adam-claypool',
-    image_id: 'https://crunchbase-production-res.cloudinary.com/image/upload/c_lpad,h_120,w_120,f_jpg/qkp5eobyvo6nld7wmwx7',
-    primary_job_title: 'Managing Principal',
-    primary_organization: {
-      value: 'Bridgepoint Merchant Banking',
-      image_url: 'https://res-1.cloudinary.com/crunchbase-production/image/upload/c_lpad,h_170,w_170,f_auto,b_white,q_auto:eco/v1470308956/fmly1xc4xcwkntryblqd.jpg',
-      permalink: 'bridgepoint-merchant-banking',
-      entity_def_id: 'organization',
-      homepage: 'https://www.bridgepointib.com',
-      linkedin: '',
-      twitter: '',
-    },
-    isLead: true,
-    isOpen: false,
-    isImpact: false,
-    matches: {
-      keywords: ['agriculture', 'SAAS'],
-      raise: true,
-      location: true,
-      name: false,
-      org: false,
-    },
-  },
-  a581f00270e756a292132c57368f7fa9a1: {
-    name: 'Adam Claypool',
-    permalink: 'adam-claypool',
-    image_id: 'https://crunchbase-production-res.cloudinary.com/image/upload/c_lpad,h_120,w_120,f_jpg/qkp5eobyvo6nld7wmwx7',
-    primary_job_title: 'Managing Principal',
-    primary_organization: {
-      value: 'Bridgepoint Merchant Banking',
-      image_url: 'https://res-1.cloudinary.com/crunchbase-production/image/upload/c_lpad,h_170,w_170,f_auto,b_white,q_auto:eco/v1470308956/fmly1xc4xcwkntryblqd.jpg',
-      permalink: 'bridgepoint-merchant-banking',
-      entity_def_id: 'organization',
-      homepage: 'https://www.bridgepointib.com',
-      linkedin: '',
-      twitter: '',
-    },
-    isLead: true,
-    isOpen: false,
-    isImpact: false,
-    matches: {
-      keywords: ['agriculture', 'SAAS'],
-      raise: true,
-      location: true,
-      name: false,
-      org: false,
-    },
-  },
-  a581f00270e756a292132c57368f7fa9a2: {
-    name: 'Adam Claypool',
-    permalink: 'adam-claypool',
-    image_id: 'https://crunchbase-production-res.cloudinary.com/image/upload/c_lpad,h_120,w_120,f_jpg/qkp5eobyvo6nld7wmwx7',
-    primary_job_title: 'Managing Principal',
-    primary_organization: {
-      value: 'Bridgepoint Merchant Banking',
-      image_url: 'https://res-1.cloudinary.com/crunchbase-production/image/upload/c_lpad,h_170,w_170,f_auto,b_white,q_auto:eco/v1470308956/fmly1xc4xcwkntryblqd.jpg',
-      permalink: 'bridgepoint-merchant-banking',
-      entity_def_id: 'organization',
-      homepage: 'https://www.bridgepointib.com',
-      linkedin: '',
-      twitter: '',
-    },
-    isLead: true,
-    isOpen: false,
-    isImpact: false,
-    matches: {
-      keywords: ['agriculture', 'SAAS'],
-      raise: true,
-      location: true,
-      name: false,
-      org: false,
-    },
-  },
-};
-
 const api = 'https://api.fundboard.co/';
 
 axios.defaults.withCredentials = true;
 
 const webFlowAPI = new Webflow({ token: WEBFLOW_APIKEY });
 
-function listCookies() {
-  const cookies = document.cookie.split(';');
-  cookies.forEach(c => {
-    console.log(decodeURIComponent(c));
-  });
-}
+const getToken = state => state.user.token;
 
 function trackErr(err) {
   window.heap.track('Error', { message: processErr(err) });
@@ -179,8 +96,6 @@ function* workUserLogin(action) {
   try {
     const { params } = action;
     const results = yield call(userLogin, params);
-    console.log(results)
-    console.log(Cookies.get())
     yield put({ type: types.USER_LOGIN_SUCCEEDED, data: results.data });
   } catch (error) {
     trackErr(error);
@@ -342,27 +257,27 @@ function* watchSearchSetZipCode() {
   yield takeLatest(types.SEARCH_SET_LOCATION, workGetExtraZipCodes);
 }
 
-function getPeopleResults(ids) {
-  //return axios.get(`${api}investors?${toQueryString(ids)}`);
+function getPeopleResults(params) {
+  const { ids, token } = params;
+  // return axios.get(`${api}investors?${toQueryString(ids)}`
   return axios({
     method: 'get',
-    url: `${api}investors?${toQueryString({ id: ids })}`,
+    url: `${api}investors?${toQueryString({ ids })}`,
     headers: {
-      'Content-Type': 'application/json',
-      'access-control-expose-headers': 'WWW-Authenticate,Server-Authorization',
-      'Access-Control-Allow-Credentials': true,
+      Authorization: token,
     },
   });
 }
 
 function* workPeopleGetResults(action) {
-  listCookies();
-  const { ids } = action;
+  const params = { ids: action.ids };
   try {
-    const results = yield call(getPeopleResults, ids);
-    yield put({ type: types.PEOPLE_GET_SUCCEEDED, data: results.data });
+    const token = yield select(getToken);
+    params.token = token;
+    const results = yield call(getPeopleResults, params);
+    yield put({ type: types.PEOPLE_GET_SUCCEEDED, params, data: results.data });
   } catch (error) {
-    yield put({ type: types.PEOPLE_GET_FAILED, ids, error });
+    yield put({ type: types.PEOPLE_GET_FAILED, params, error });
   }
 }
 
@@ -379,8 +294,6 @@ function* workSearchGetResults(action) {
   params.limit = params.limit || 100;
   try {
     const results = yield call(requestSearchGetResults, params);
-    // fake code TODO: remove
-    results.data = { ...fakeSearchResults };
     yield put({ type: 'SEARCH_GET_RESULTS_SUCCEEDED', data: results.data });
     yield put({ type: 'PEOPLE_UPDATE', data: results.data });
   } catch (error) {

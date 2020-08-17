@@ -4,8 +4,12 @@ import { getSafeVar, processErr } from '../utils';
 
 export default function people(state = {}, action) {
   const records = {};
-  const { params = {} } = action;
-  const { uuid, reason } = params;
+  const { params = {}, data } = action;
+  const {
+    uuid,
+    ids,
+    reason,
+  } = params;
   const rehydration = getSafeVar(() => action.payload.people, {});
 
   switch (action.type) {
@@ -13,24 +17,56 @@ export default function people(state = {}, action) {
       ...state,
       ...rehydration,
     };
-    case types.PEOPLE_GET_REQUEST: {
+    case types.PEOPLE_GET_REQUEST:
+      if (ids) {
+        ids.forEach(i => {
+          records[i] = { ...state[i], status: 'pending' };
+        });
+      }
       return {
         ...state,
-        [uuid]: {
-          ...state[uuid],
-          status: 'pending',
-        },
+        ...records,
       };
-    }
-    case types.PEOPLE_GET_SUCCEEDED: {
+    case types.PEOPLE_GET_SUCCEEDED:
+      if (ids && data && Array.isArray(data)) {
+        ids.forEach(i => {
+          records[i] = {
+            ...state[i],
+            status: 'succeeded',
+          };
+        });
+        data.forEach(r => {
+          records[r.uuid] = {
+            ...records[r.uuid],
+            ...r,
+          };
+        });
+      }
       return {
         ...state,
-        [uuid]: {
-          ...state[uuid],
-          status: 'succeeded',
-        },
+        ...records,
       };
-    }
+    case types.PEOPLE_GET_FAILED:
+      if (ids) {
+        const err = processErr(action.error);
+        ids.forEach(i => {
+          records[i] = { ...state[i], status: err };
+        });
+      }
+      return {
+        ...state,
+        ...records,
+      };
+    case types.PEOPLE_GET_DISMISS:
+      if (ids) {
+        ids.forEach(i => {
+          records[i] = { ...state[i], status: '' };
+        });
+      }
+      return {
+        ...state,
+        ...records,
+      };
     case types.PEOPLE_UPDATE:
       // used with search for partial data
       return {

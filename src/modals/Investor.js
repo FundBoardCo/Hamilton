@@ -61,10 +61,38 @@ export default function Investor(props) {
   const { match } = props;
   const { params } = match;
   const { uuid } = params;
+  console.log(props)
 
   const people = useSelector(state => state.people);
+  console.log(people)
   const data = people[uuid] || {};
-  const twitterName = getSafeVar(() => data.twitter.substr(data.twitter.lastIndexOf('/') + 1), '');
+  console.log(data)
+  const {
+    status,
+    name,
+    image_id = '',
+    primary_job_title = '',
+    primary_organization = {},
+    description,
+    permalink,
+    linkedin,
+    twitter,
+    raise_min,
+    raise_max,
+    location_city,
+    location_state,
+    investments = [],
+    is_lead_investor = false,
+    is_open = false,
+    is_impact = false,
+    isBoard = false,
+    invalid,
+    invalid_status,
+  } = data;
+
+  const primary_organization_logo = primary_organization.image_url || '';
+  const primary_organization_name = primary_organization.value || '';
+  const twitterName = getSafeVar(() => twitter.substr(twitter.lastIndexOf('/') + 1), '');
 
   const searchData = useSelector(state => state.search.results[uuid] || {});
 
@@ -73,8 +101,6 @@ export default function Investor(props) {
   if (matches.raise) percentageMatch += 1;
   if (matches.location) percentageMatch += 1;
   percentageMatch = Math.floor((percentageMatch / 7) * 100);
-
-  const name = `${data['first name']} ${data['last name']}`;
 
   const investors = useSelector(state => state.board.ids) || [];
 
@@ -160,7 +186,7 @@ export default function Investor(props) {
           <div className="thumbCol">
             <div className="thumb">
               <Suspense fallback={<Spinner animation="border" variant="info" role="status" size="sm" />}>
-                <ImgComp imgSrc={data.image_id} alt={name} />
+                <ImgComp imgSrc={image_id} alt={name} />
               </Suspense>
             </div>
           </div>
@@ -169,13 +195,13 @@ export default function Investor(props) {
             <div className="orgDetails">
               <div className="orgLogoWrapper">
                 <Suspense fallback={<Spinner animation="border" variant="info" role="status" size="sm" />}>
-                  <ImgComp imgSrc={data.logo} alt={data.primary_organization} />
+                  <ImgComp imgSrc={primary_organization_logo} alt={primary_organization_name} />
                 </Suspense>
               </div>
               <div>
-                {`${data.primary_job_title}${data.primary_job_title && ','}`}
-                {`${data.primary_job_title ? '\xa0' : ''}`}
-                {data.primary_organization}
+                {`${primary_job_title}${primary_job_title && ','}`}
+                {`${primary_job_title ? '\xa0' : ''}`}
+                {primary_organization_name}
               </div>
             </div>
           </div>
@@ -183,7 +209,7 @@ export default function Investor(props) {
         <div className="crunchBaseAttribution mb-2">
           Sourced from CrunchBase.&nbsp;
           <a
-            href={data.crunchbase}
+            href={`https://www.crunchbase.com/person/${permalink}`}
             target="_blank"
             rel="noopener noreferrer"
             data-track={`${path}InvestorCrunchBase`}
@@ -191,9 +217,9 @@ export default function Investor(props) {
             Click to view profile.
           </a>
         </div>
-        {data.description && (
+        {description && (
           <div className="description mb-3">
-            {data.description}
+            {description}
           </div>
         )}
         <div className="matches">
@@ -214,13 +240,13 @@ export default function Investor(props) {
             {matches.raise && (
               <MatchBullet
                 faIcon="rocket"
-                text={`They invest between ${usdFormatter.format(data.raiseMin)} and ${usdFormatter.format(data.raiseMax)}.`}
+                text={`They invest between ${usdFormatter.format(raise_min)} and ${usdFormatter.format(raise_max)}.`}
               />
             )}
             {matches.location && (
               <MatchBullet
                 faIcon="map-marker-alt"
-                text={`They are located in ${data.location_city}, ${data.location_state}`}
+                text={`They are located in ${location_city}, ${location_state}`}
               />
             )}
           </ul>
@@ -228,7 +254,7 @@ export default function Investor(props) {
         <div className="funded">
           <h2>Founders they&apos;ve funded</h2>
           <div className="founders">
-            {Array.isArray(data.investments) && data.investments.map(i => {
+            {Array.isArray(investments) && investments.map(i => {
               const pProps = {
                 org_name: i.name,
                 logo_url: i.logo_url,
@@ -252,12 +278,12 @@ export default function Investor(props) {
             />
           )}
         </div>
-        {data.linkedin && (
+        {linkedin && (
           <div className="mb-4 h3 text-linkedin d-flex">
             <FontAwesomeIcon icon={['fab', 'linkedin']} />
             &nbsp;
             <a
-              href={data.linkedin}
+              href={linkedin}
               className="text-linkedin"
               target="_blank"
               rel="noopener noreferrer"
@@ -333,7 +359,7 @@ export default function Investor(props) {
           )}
           {data.invalid && (
             <div className="p-3 text-center h4 text-danger">
-              Thank you. Your report has been recieved.
+              Thank you. Your report has been received.
             </div>
           )}
         </div>

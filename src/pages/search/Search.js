@@ -13,6 +13,7 @@ export default function Search() {
   const searchRaise = useSelector(state => state.search.raise) || 100000;
   const searchLocation = useSelector(state => state.search.location) || '';
   const searchResults = useSelector(state => state.search.records) || [];
+  console.log(searchResults)
   const searchStatus = useSelector(state => state.search.results_status) || '';
 
   const [detailsOpen, setDetailsOpen] = useState(false);
@@ -74,7 +75,7 @@ export default function Search() {
       <div className="results">
         {Object.keys(searchResults).map(k => {
           const personProps = { ...searchResults[k] };
-          personProps.uuid = k;
+          //personProps.uuid = k;
           return (
             <Person key={k} {...personProps} />
           );
