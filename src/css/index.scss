@@ -265,6 +265,11 @@ html#ov {
           flex-wrap: nowrap;
           flex-grow: 1;
           flex-direction: column;
+          height: calc(var(--app-height) - #{$navSz1});
+
+          @media (min-width: $mediaXs) {
+            height: calc(var(--app-height) - #{$navSz2});
+          }
 
           .nav {
             position: fixed;
