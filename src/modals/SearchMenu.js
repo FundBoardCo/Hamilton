@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useHistory } from 'react-router';
 import { useSelector, useDispatch } from 'react-redux';
+import SelectSearch from 'react-select-search';
 import Modal from 'react-bootstrap/Modal';
 import Form from 'react-bootstrap/Form';
 import RangeSlider from 'react-bootstrap-range-slider';
@@ -43,7 +44,8 @@ function SectionTitle(params) {
 
 export default function SearchMenu() {
   const airtableKeywords = useSelector(state => state.airtable.keywords) || {};
-  const wordsToShow = Array.isArray(airtableKeywords.data) ? airtableKeywords.data : [];
+  let wordsToShow = Array.isArray(airtableKeywords.data) ? airtableKeywords.data : [];
+  wordsToShow = wordsToShow.map(w => ({ name: w, value: w }));
 
   const searchKeywords = useSelector(state => state.search.keywords) || [];
 
@@ -90,6 +92,17 @@ export default function SearchMenu() {
     type: 'SEARCH_SET_REMOTE',
     remote,
   });
+
+  const onSelectChange = v => {
+    console.log(v);
+    if (v.length < 6) {
+      setKeywords(v);
+      setShowTileWarning(false);
+    }
+    if (v.length > 5) {
+      setShowTileWarning(true);
+    }
+  };
 
   const onTileClick = (word, active) => {
     if (active) {
@@ -196,24 +209,21 @@ export default function SearchMenu() {
           Selected:&nbsp;
           {searchKeywords.join()}
         </div>
-        <div className="tilesWrapper mb-5">
-          <div className="tiles">
-            {wordsToShow.map(w => {
-              const active = searchKeywords.includes(w);
-              return (
-                <button
-                  className={`tile ${active ? 'active' : ''}`}
-                  onClick={() => onTileClick(w, active)}
-                  key={w}
-                  tabIndex={0}
-                  type="button"
-                  data-track={`tile-${w}`}
-                >
-                  {w}
-                </button>
-              );
-            })}
-          </div>
+        <div className="mb-4">
+          <SelectSearch
+            options={wordsToShow}
+            value={searchKeywords}
+            name="keywords"
+            placeholder="Choose up to 5 keywords"
+            multiple
+            search
+            autoComplete="on"
+            printOptions="always"
+            onChange={onSelectChange}
+            closeOnSelect={false}
+          />
+        </div>
+        <div>
           {showTileWarning && (
             <button
               id="TileWarning"
