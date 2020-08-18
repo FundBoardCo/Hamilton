@@ -482,6 +482,15 @@ html#ov body {
 
     &.modal-searchMenu {
       .modal-dialog {
+
+        @media (min-width: $mediaMd) {
+          width: calc(45vw + 20px);
+        }
+
+        @media (min-width: $mediaLg) {
+          width: calc(35vw + 20px);
+        }
+
         .modal-content {
           .modal-body {
             position: relative;
