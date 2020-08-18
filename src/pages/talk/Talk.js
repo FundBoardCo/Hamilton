@@ -217,6 +217,7 @@ export default function Talk() {
             Submit
           </Button>
         </Form>
+        <hr className="mb-4" />
         <div className="mb-4">
           <h3>More</h3>
           <div className="mb-2">

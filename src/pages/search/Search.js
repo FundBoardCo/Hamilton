@@ -70,6 +70,7 @@ export default function Search() {
       </div>
       <DissmissibleStatus
         status={searchStatus}
+        showSuccess={false}
         dissmissAction={types.SEARCH_GET_RESULTS_DISMISSED}
       />
       <div className="results">

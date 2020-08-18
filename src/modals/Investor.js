@@ -12,6 +12,7 @@ import GreySquare from '../imgs/greySquare.jpg';
 import PersonStamp from '../components/people/PersonStamp';
 import { capitalizeFirstLetter, getSafeVar, statusIsError } from '../utils';
 import * as types from '../actions/types';
+import DissmissibleStatus from '../components/DissmissibleStatus';
 
 function ImgComp(params) {
   const { imgSrc = '', alt = '' } = params;
@@ -206,17 +207,25 @@ export default function Investor(props) {
             </div>
           </div>
         </div>
-        <div className="crunchBaseAttribution mb-2">
-          Sourced from CrunchBase.&nbsp;
-          <a
-            href={`https://www.crunchbase.com/person/${permalink}`}
-            target="_blank"
-            rel="noopener noreferrer"
-            data-track={`${path}InvestorCrunchBase`}
-          >
-            Click to view profile.
-          </a>
-        </div>
+        <DissmissibleStatus
+          status={status}
+          showSuccess={false}
+          dissmissAction={types.PEOPLE_GET_DISMISS}
+          dismissParams={{ ids: [uuid] }}
+        />
+        {permalink && (
+          <div className="crunchBaseAttribution mb-2">
+            Sourced from CrunchBase.&nbsp;
+            <a
+              href={`https://www.crunchbase.com/person/${permalink}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              data-track={`${path}InvestorCrunchBase`}
+            >
+              Click to view profile.
+            </a>
+          </div>
+        )}
         {description && (
           <div className="description mb-3">
             {description}
@@ -251,19 +260,21 @@ export default function Investor(props) {
             )}
           </ul>
         </div>
-        <div className="funded">
-          <h2>Founders they&apos;ve funded</h2>
-          <div className="founders">
-            {Array.isArray(investments) && investments.map(i => {
-              const pProps = {
-                org_name: i.name,
-                logo_url: i.logo_url,
-                ...i.founders[0],
-              };
-              return <PersonStamp key={i.id} {...pProps} />;
-            })}
+        {Array.isArray(investments) && investments.length > 0 && (
+          <div className="funded">
+            <h2>Founders they&apos;ve funded</h2>
+            <div className="founders">
+              {Array.isArray(investments) && investments.map(i => {
+                const pProps = {
+                  org_name: i.name,
+                  logo_url: i.logo_url,
+                  ...i.founders[0],
+                };
+                return <PersonStamp key={i.id} {...pProps} />;
+              })}
+            </div>
           </div>
-        </div>
+        )}
         <div className="twitterFeed">
           {twitterName && (
             <Timeline

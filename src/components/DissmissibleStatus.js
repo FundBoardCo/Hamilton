@@ -3,7 +3,6 @@ import Alert from 'react-bootstrap/Alert';
 import PropTypes from 'prop-types';
 import { useDispatch } from 'react-redux';
 import Spinner from 'react-bootstrap/Spinner';
-import {processErr} from "../utils";
 
 export default function DAlert(props) {
   const {
