@@ -170,7 +170,7 @@ export default function Profile() {
               </div>
             )}
             <Button
-              className="btnNoMax"
+              className="btnMobile100"
               type="submit"
               {...btnProps.update}
             >
@@ -184,7 +184,7 @@ export default function Profile() {
           <p>Click the button below to log out of your account.</p>
           <div className="d-flex flex-grow-1 justify-content-end">
             <Button
-              className="btnNoMax"
+              className="btnMobile100"
               onClick={onLogoutClick}
               {...btnProps.logout}
             >
@@ -198,7 +198,7 @@ export default function Profile() {
         <p><em>There is no way to recover a deleted account, be certain before proceeding.</em></p>
         <div className="d-flex flex-grow-1 justify-content-end">
           <Button
-            className="btnNoMax"
+            className="btnMobile100"
             onClick={onDeleteClick}
             {...btnProps.delete}
           >

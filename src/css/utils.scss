@@ -97,6 +97,15 @@ html#ov body {
     }
   }
 
+  .btnMobile100 {
+    max-width: none;
+    width: 100%;
+
+    @media (min-width: $mediaLg) {
+      width: auto;
+    }
+  }
+
   .btn.iconBtn {
     // for buttons that are only icons
     // use font size to control the size

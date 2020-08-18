@@ -18,7 +18,6 @@
 
 html#ov {
   // override bootstrap styles
-  //height: 100%;
   height: var(--app-height);
 
   @media (min-width: $mediaLg) and (min-height: $mediaLg) {
@@ -199,13 +198,8 @@ html#ov {
           flex-direction: column;
           flex-wrap: nowrap;
           flex-grow: 1;
-          height: calc(var(--app-height) - #{$navSz1});
           @include colPadding;
           padding-top: $pad3;
-
-          @media (min-width: $mediaXs) {
-            height: calc(var(--app-height) - #{$navSz2});
-          }
         }
 
         #PageIntro {
@@ -568,14 +562,6 @@ html#ov {
             }
           }
 
-          @media (max-width: $mediaMaxSm) {
-            height: calc(var(--app-height) - #{$navPlusSearchBarSz1});
-          }
-
-          @media (max-width: $mediaMaxMd) {
-            height: calc(var(--app-height) - #{$navPlusSearchBarSz2});
-          }
-
           .searchAlert {
             position: absolute;
             z-index: 10;
@@ -585,7 +571,7 @@ html#ov {
         }
 
         #PageBoard {
-          margin-top: 74px;
+          margin-top: 44px;
 
           .boardDetailsBar {
             position: fixed;
@@ -610,23 +596,13 @@ html#ov {
 
             .secondaryDetails {
               padding: $pad3;
-              background-color: $col-primary-light7;
+              background-color: $col-light;
               color: $col-primary-dark2;
               border: $col-primary 2px solid;
               border-top: none;
 
               p:last-child {
                 margin: 0;
-              }
-            }
-          }
-
-          @media (min-width: $mediaXs) {
-            .boardDetailsBar {
-              .primaryDetails {
-                .primaryDetailsLink {
-                  font-size: $h3;
-                }
               }
             }
           }
@@ -648,6 +624,7 @@ html#ov {
 
                 .primaryDetailsLink {
                   color: $col-text !important;
+                  font-size: $h3;
                 }
               }
 
@@ -662,14 +639,14 @@ html#ov {
               overflow: auto;
             }
           }
+        }
 
-          @media (max-width: $mediaMaxSm) {
-            height: calc(var(--app-height) - #{$navPlusSearchBarSz1});
-          }
+        #PageProfile {
+          margin-bottom: $pad4;
+        }
 
-          @media (max-width: $mediaMaxMd) {
-            height: calc(var(--app-height) - #{$navPlusSearchBarSz2});
-          }
+        #PageTalk {
+          margin-bottom: $pad4;
         }
       }
 

@@ -80,49 +80,51 @@ export default function Talk() {
         </div>
         <h2>Learn More About FundBoard</h2>
         <p>Curious about the people and motivation behind FundBoard?</p>
-        <div className="mb-2">
-          You can start with &nbsp;
-          <a
-            href="https://www.fundboard.co"
-            target="_blank"
-            rel="noopener noreferrer"
-            data-track="TalkLink-FundBoard"
-          >
-            FundBoard.co
-          </a>
-        </div>
-        <div className="mb-2">
-          Then read our&nbsp;
-          <a
-            href="https://www.fundboard.co/our-take"
-            target="_blank"
-            rel="noopener noreferrer"
-            data-track="TalkLink-FundBoardBlog"
-          >
-            blog.
-          </a>
-        </div>
-        <div className="mb-2">
-          And sign up for&nbsp;
-          <a
-            href="https://www.fundboard.co/say-hello"
-            target="_blank"
-            rel="noopener noreferrer"
-            data-track="TalkLink-FundBoardContact"
-          >
-            updates and news.
-          </a>
-        </div>
-        <div className="mb-2">
-          Or follow us on Twitter:&nbsp;
-          <a
-            href="https://twitter.com/teamfundboard"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            @FundBoard.
-          </a>
-        </div>
+        <ul>
+          <li className="mb-2">
+            You can start with &nbsp;
+            <a
+              href="https://www.fundboard.co"
+              target="_blank"
+              rel="noopener noreferrer"
+              data-track="TalkLink-FundBoard"
+            >
+              FundBoard.co
+            </a>
+          </li>
+          <li className="mb-2">
+            Then read our&nbsp;
+            <a
+              href="https://www.fundboard.co/our-take"
+              target="_blank"
+              rel="noopener noreferrer"
+              data-track="TalkLink-FundBoardBlog"
+            >
+              blog.
+            </a>
+          </li>
+          <li className="mb-2">
+            And sign up for&nbsp;
+            <a
+              href="https://www.fundboard.co/say-hello"
+              target="_blank"
+              rel="noopener noreferrer"
+              data-track="TalkLink-FundBoardContact"
+            >
+              updates and news.
+            </a>
+          </li>
+          <li className="mb-2">
+            Or follow us on Twitter:&nbsp;
+            <a
+              href="https://twitter.com/teamfundboard"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              @FundBoard.
+            </a>
+          </li>
+        </ul>
         <hr className="mb-4" />
         <h2>Tell Us What You Think</h2>
         <p>

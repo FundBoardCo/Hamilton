@@ -17,7 +17,7 @@ export default function Board() {
   const csvList = [];
 
   const firstLine = {};
-  firstLine['Investor Name'] = 'DELETE THIS ROW. It is just some helpful reminders.';
+  firstLine['Investor Name'] = 'DELETE THIS ROW. These are just some helpful reminders.';
   firstLine.Title = '';
   firstLine.Organization = '';
   firstLine.Priority = 'Rank investors in the order you will reach out to them.';
@@ -27,8 +27,8 @@ export default function Board() {
   firstLine['Next Steps'] = 'If you need to do something, list it here.';
   firstLine.Notes = '';
   firstLine['Potential Lead'] = 'Focus on getting leads first.';
-  firstLine['Open to Direct Outreach'] = 'This means they might respond if you send them an email.';
-  firstLine.Location = 'Investors are more likely to invest in their location, or near other startups they have funded.';
+  firstLine['Open to Direct Outreach'] = 'Have they publicly said they will respond to unsolicited emails?';
+  firstLine.Location = 'Some investors are more likely to invest near their location, or other startups they have funded.';
   firstLine.LinkedIn = '';
   firstLine.Twitter = '';
   firstLine.CrunchBase = '';
@@ -40,7 +40,6 @@ export default function Board() {
     const location = [];
     if (person.location_city) location.push(person.location_city);
     if (person.location_state) location.push(person.location_state);
-    console.log(person)
     investorList[i] = { ...person };
     const csvPer = {};
     // TODO change this for API data
@@ -162,14 +161,16 @@ export default function Board() {
           <p>
             <strong>{`Impact funds: ${details.impact}`}</strong>
           </p>
-          <Button
-            variant="primary"
-            className="w-100 w-lg-auto btnResponsiveMax"
-            onClick={onCSVClick}
-          >
-            <FontAwesomeIcon icon="file-download" className="mr-2" />
-            Download (CSV)
-          </Button>
+          <div className="d-flex justify-content-end">
+            <Button
+              variant="secondary"
+              className="w-100 w-lg-auto btnResponsiveMax"
+              onClick={onCSVClick}
+            >
+              <FontAwesomeIcon icon="file-download" className="mr-2" />
+              Download (CSV)
+            </Button>
+          </div>
         </div>
       </div>
       )}
