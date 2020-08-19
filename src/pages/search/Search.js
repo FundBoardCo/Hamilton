@@ -53,7 +53,7 @@ export default function Search() {
             data-track="EditSearch"
           >
             <FontAwesomeIcon icon="edit" />
-            edit
+            New Search
           </Button>
         </div>
         <div className={`secondaryDetails ${detailsOpen ? '' : 'sr-only'}`}>
