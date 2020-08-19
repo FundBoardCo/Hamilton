@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useHistory, useLocation } from 'react-router';
+import { useHistory } from 'react-router';
 import { useSelector, useDispatch } from 'react-redux';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
@@ -23,6 +23,7 @@ export default function Login() {
   const [mode, setMode] = useState('login');
 
   const [validated, setValidated] = useState(false);
+  const [started, setStarted] = useState(false);
 
   const [emailValue, setEmailValue] = useState(email);
   const [password, setPassword] = useState('');
@@ -78,30 +79,38 @@ export default function Login() {
 
   const onEmailChange = e => {
     setEmailValue(e.target.value);
+    setStarted(true);
   };
 
   const onPasswordChange = e => {
     setPassword(e.target.value);
+    setStarted(true);
   };
 
-  const onLoginClick = () => {
+  const onLoginClick = event => {
+    event.preventDefault();
+    event.stopPropagation();
     setMode('login');
   };
 
-  const onCreateClick = () => {
+  const onCreateClick = event => {
+    event.preventDefault();
+    event.stopPropagation();
     setMode('create');
   };
 
-  const onResetClick = () => {
+  const onResetClick = event => {
+    event.preventDefault();
+    event.stopPropagation();
     prevMode = mode;
     setMode('reset');
   };
 
-  const onCancelResetClick = () => {
+  const onCancelResetClick = event => {
+    event.preventDefault();
+    event.stopPropagation();
     setMode(prevMode);
   };
-
-  const location = useLocation();
 
   const btnProps = {
     login: {
@@ -112,6 +121,7 @@ export default function Login() {
     create: {
       variant: 'text',
       text: 'Create account',
+      type: 'button',
       onClick: onCreateClick,
     },
   };
@@ -129,6 +139,7 @@ export default function Login() {
     btnProps.login = {
       variant: 'text',
       text: 'Cancel',
+      type: 'button',
       onClick: onLoginClick,
     };
     btnProps.create = {
@@ -142,6 +153,7 @@ export default function Login() {
     btnProps.login = {
       variant: 'text',
       text: 'Cancel',
+      type: 'button',
       onClick: onCancelResetClick,
     };
     btnProps.create = {
@@ -155,11 +167,13 @@ export default function Login() {
     btnProps.login = {
       variant: 'text',
       text: 'Login',
+      type: 'button',
       onClick: onCancelResetClick,
     };
     btnProps.create = {
       variant: 'secondary',
       text: 'Email sent',
+      type: 'button',
       disabled: true,
     };
   }
@@ -184,7 +198,7 @@ export default function Login() {
       <Modal.Body>
         <Form
           noValidate
-          validated={validated}
+          validated={started && validated}
           onSubmit={handleSubmit}
         >
           <Form.Group controlId="EmailInput">
