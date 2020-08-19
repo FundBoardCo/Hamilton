@@ -20,7 +20,6 @@ export default function Talk() {
   const [comment, setComment] = useState('');
 
   const [emailValue, setEmailValue] = useState(email);
-  const [includeEmail, setIncludeEmail] = useState(false);
 
   const [thumbsUp, setThumbsUp] = useState(true);
 
@@ -31,7 +30,7 @@ export default function Talk() {
   const sendFeedback = () => dispatch({
     type: types.FEEDBACK_SEND_REQUESTED,
     params: {
-      email: email || emailValue,
+      email: emailValue,
       thumbsup: thumbsUp,
       comment,
       date: moment().format(),
@@ -68,7 +67,7 @@ export default function Talk() {
   };
 
   const onEmailOffClick = () => {
-    setIncludeEmail(!includeEmail);
+    setEmailValue('');
   };
 
   return (
@@ -158,8 +157,7 @@ export default function Talk() {
               <Form.Control
                 type="email"
                 placeholder="email address"
-                value={includeEmail ? emailValue : ''}
-                disabled={!includeEmail}
+                value={emailValue}
                 onChange={e => onEmailChange(e)}
                 data-track="TalkEmailInput"
               />
@@ -169,26 +167,23 @@ export default function Talk() {
                   onClick={onEmailOffClick}
                   data-track="TalkEmailInput-toggle"
                 >
-                  {includeEmail && (
+                  <span>
                     <FontAwesomeIcon icon="times" />
-                  )}
-                  {!includeEmail && (
-                    <FontAwesomeIcon icon="check" />
-                  )}
+                  </span>
                 </Button>
               </InputGroup.Append>
             </InputGroup>
-            <Form.Text>
-              If you want us to reply to a question, include your email address.
-            </Form.Text>
             <Form.Control.Feedback type="invalid">
               Please enter a valid email address.
             </Form.Control.Feedback>
           </Form.Group>
-          <div className="d-flex justify-content-between mb-4">
+          <div className="d-flex mb-4 align-items-center">
+            <span className="mr-auto">
+              Let us know how we&apos;re doing:
+            </span>
             <Button
-              variant={thumbsUp ? 'secondary' : 'info'}
-              className="flex-grow-1 mr-2"
+              variant="secondary"
+              className={`${thumbsUp ? '' : 'op-1'} mr-2`}
               onClick={() => onThumbsClick(true)}
               data-track="TalkThumbsUp"
             >
@@ -196,8 +191,8 @@ export default function Talk() {
               <span className="sr-only">Give us a thumbs up.</span>
             </Button>
             <Button
-              variant={thumbsUp ? 'info' : 'warning'}
-              className="flex-grow-1"
+              variant="danger"
+              className={thumbsUp ? 'op-1' : ''}
               onClick={() => onThumbsClick(false)}
               data-track="TalkThumbsDown"
             >

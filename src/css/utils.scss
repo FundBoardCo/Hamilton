@@ -386,4 +386,8 @@ html#ov body {
   .hidden {
     @include hidden();
   }
+
+  .op-1 {
+    opacity: 30%;
+  }
 }
