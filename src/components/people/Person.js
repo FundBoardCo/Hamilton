@@ -1,4 +1,4 @@
-import React, { Suspense, useEffect } from 'react';
+import React, { Suspense } from 'react';
 import PropTypes from 'prop-types';
 import { useSelector, useDispatch } from 'react-redux';
 import { useHistory, useLocation } from 'react-router';
@@ -120,11 +120,13 @@ export default function Person(props) {
           </h1>
         </div>
         <div className="d-flex details">
-          <div className="orgLogoWrapper">
-            <Suspense fallback={<Spinner animation="border" variant="info" role="status" size="sm" />}>
-              <ImgComp imgSrc={primary_organization_logo} alt={primary_organization_name} />
-            </Suspense>
-          </div>
+          {primary_organization_logo && (
+            <div className="orgLogoWrapper">
+              <Suspense fallback={<Spinner animation="border" variant="info" role="status" size="sm" />}>
+                <ImgComp imgSrc={primary_organization_logo} alt={primary_organization_name} />
+              </Suspense>
+            </div>
+          )}
           <div className="orgText">
             <div>
               {`${primary_job_title}${primary_job_title && ','}`}
