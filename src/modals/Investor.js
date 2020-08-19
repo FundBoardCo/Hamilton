@@ -304,7 +304,7 @@ export default function Investor(props) {
             />
           )}
         </div>
-        <div className={`invalidWrapper ${invalidOpen ? 'open' : ''}`}>
+        <div className="invalidWrapper">
           {!data.invalid && (
             <div className="openLinkWrapper">
               <FontAwesomeIcon icon="exclamation-triangle" />
@@ -323,21 +323,21 @@ export default function Investor(props) {
               {!data.invalid_status && (
                 <div>
                   <Button
-                    variant="danger-light"
+                    variant="link"
                     onClick={() => reportInvalid('NameTitleOrg')}
                     data-track={`${path}InvestorInvalid-NameTitleOrg`}
                   >
                     The name, title, or their organization is outdated
                   </Button>
                   <Button
-                    variant="danger-light"
+                    variant="link"
                     onClick={() => reportInvalid('Criteria')}
                     data-track={`${path}InvestorInvalid-Criteria`}
                   >
                     They shouldn&apos;t be in my search results.
                   </Button>
                   <Button
-                    variant="danger-light"
+                    variant="link"
                     onClick={() => reportInvalid('Other')}
                     data-track={`${path}InvestorInvalid-Other`}
                   >
@@ -369,7 +369,7 @@ export default function Investor(props) {
             </div>
           )}
           {data.invalid && (
-            <div className="p-3 text-center h4 text-danger">
+            <div className="p-3 text-center h4 text-info">
               Thank you. Your report has been received.
             </div>
           )}

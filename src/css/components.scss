@@ -407,20 +407,16 @@ html#ov body {
               padding: $pad2;
               margin: -$pad2;
 
-              &.open {
-                border: 1px solid $col-danger-light2;
-                border-radius: $pad2;
-              }
-
               .openLinkWrapper {
                 margin-bottom: $pad4;
-                color: $col-danger;
-                font-size: $h3;
+                color: $col-info;
+                font-size: $h4;
                 display: flex;
                 align-items: flex-start;
 
                 .btn.btn-link {
                   font-weight: 700;
+                  color: $col-info;
                 }
               }
 
@@ -428,14 +424,11 @@ html#ov body {
                 display: flex;
                 flex-direction: column;
                 align-items: flex-start;
-                color: $col-danger;
-                padding: 0 $pad2 $pad2 $pad2;
+                padding-bottom: $pad2;
 
                 .btn {
-                  flex-grow: 1;
+                  color: $col-info;
                   font-size: $h5;
-                  width: 100%;
-                  max-width: none;
                   margin-bottom: $pad2;
                 }
               }
@@ -449,12 +442,8 @@ html#ov body {
 
               @media (min-width: $mediaLg) {
 
-                .openLinkWrapper {
-                  align-items: center;
-                }
-
                 .invalidBtns {
-                  padding: 0 $pad4 $pad4 $pad4;
+                  padding-bottom: $pad4;
                 }
               }
             }
