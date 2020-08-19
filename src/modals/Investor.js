@@ -231,6 +231,21 @@ export default function Investor(props) {
             {description}
           </div>
         )}
+        {linkedin && (
+          <div className="mb-4 h3 text-linkedin d-flex">
+            <FontAwesomeIcon icon={['fab', 'linkedin']} />
+            &nbsp;
+            <a
+              href={linkedin}
+              className="text-linkedin"
+              target="_blank"
+              rel="noopener noreferrer"
+              data-track={`${path}InvestorLinkedIn`}
+            >
+              LinkedIn Profile
+            </a>
+          </div>
+        )}
         <div className="matches">
           <h2>{`${percentageMatch}% Match`}</h2>
           <ul>
@@ -289,21 +304,6 @@ export default function Investor(props) {
             />
           )}
         </div>
-        {linkedin && (
-          <div className="mb-4 h3 text-linkedin d-flex">
-            <FontAwesomeIcon icon={['fab', 'linkedin']} />
-            &nbsp;
-            <a
-              href={linkedin}
-              className="text-linkedin"
-              target="_blank"
-              rel="noopener noreferrer"
-              data-track={`${path}InvestorLinkedIn`}
-            >
-              LinkedIn Profile
-            </a>
-          </div>
-        )}
         <div className={`invalidWrapper ${invalidOpen ? 'open' : ''}`}>
           {!data.invalid && (
             <div className="openLinkWrapper">
