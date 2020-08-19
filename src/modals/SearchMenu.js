@@ -141,16 +141,6 @@ export default function SearchMenu() {
     });
   };
 
-  const resetSearch = () => {
-    setKeywords([]);
-    setRaise(100000);
-    setLocation('');
-
-    return dispatch({
-      type: 'SEARCH_CLEAR_RESULTS',
-    });
-  };
-
   const closeModal = () => {
     history.goBack();
   };
@@ -302,17 +292,6 @@ export default function SearchMenu() {
             />
           </Form.Group>
         </Form>
-        <div className="d-flex justify-content-end mt-auto">
-          <Button
-            variant="link"
-            className="text-danger"
-            onClick={resetSearch}
-            data-track="ResetSearch"
-          >
-            <FontAwesomeIcon icon="exclamation-triangle" className="mr-2" />
-            Reset Search
-          </Button>
-        </div>
       </Modal.Body>
       <Modal.Footer>
         <button
