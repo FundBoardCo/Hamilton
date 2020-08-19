@@ -9,7 +9,7 @@ import moment from 'moment';
 import platform from 'platform';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import * as types from '../../actions/types';
-import Status from '../../components/DissmissibleStatus';
+import Status from '../../components/DismissibleStatus';
 
 export default function Talk() {
   const feedbackStatus = useSelector(state => state.airtable.feedback_status);

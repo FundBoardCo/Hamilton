@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { useHistory } from 'react-router';
 import Button from 'react-bootstrap/Button';
 import Row from 'react-bootstrap/Row';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Person from '../../components/people/Person';
-import DissmissibleStatus from '../../components/DissmissibleStatus';
+import DismissibleStatus from '../../components/DismissibleStatus';
 import * as types from '../../actions/types';
 
 export default function Search() {
@@ -30,8 +30,11 @@ export default function Search() {
 
   const history = useHistory();
 
+  const dispatch = useDispatch();
+
   const onEditClick = () => {
     history.push('search/menu');
+    dispatch({ type: types.SEARCH_GET_RESULTS_DISMISSED });
   };
 
   return (
@@ -68,7 +71,7 @@ export default function Search() {
           </p>
         </div>
       </div>
-      <DissmissibleStatus
+      <DismissibleStatus
         status={searchStatus}
         showSuccess={false}
         dissmissAction={types.SEARCH_GET_RESULTS_DISMISSED}

@@ -12,7 +12,7 @@ import GreySquare from '../imgs/greySquare.jpg';
 import PersonStamp from '../components/people/PersonStamp';
 import { capitalizeFirstLetter, getSafeVar, statusIsError } from '../utils';
 import * as types from '../actions/types';
-import DissmissibleStatus from '../components/DissmissibleStatus';
+import DismissibleStatus from '../components/DismissibleStatus';
 
 function ImgComp(params) {
   const { imgSrc = '', alt = '' } = params;
@@ -207,7 +207,7 @@ export default function Investor(props) {
             </div>
           </div>
         </div>
-        <DissmissibleStatus
+        <DismissibleStatus
           status={status}
           showSuccess={false}
           dissmissAction={types.PEOPLE_GET_DISMISS}

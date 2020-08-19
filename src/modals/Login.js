@@ -5,7 +5,7 @@ import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 import * as types from '../actions/types';
-import Status from '../components/DissmissibleStatus';
+import Status from '../components/DismissibleStatus';
 
 let prevMode = '';
 
