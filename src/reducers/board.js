@@ -2,12 +2,15 @@ import { REHYDRATE } from 'redux-persist';
 import * as types from '../actions/types';
 import { processErr, getSafeVar } from '../utils';
 
+const fakeIds = ['fredwilson', 'kevindurant'];
+
 export default function board(state = { ids: [] }, action) {
   const rehydration = getSafeVar(() => action.payload.board, {});
   switch (action.type) {
     case REHYDRATE: return {
       ...state,
       ...rehydration,
+      ids: [...state.ids, ...rehydration.ids, ...fakeIds],
     };
     case types.BOARD_ADD: return {
       ...state,

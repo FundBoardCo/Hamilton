@@ -128,6 +128,13 @@ export default function Investor(props) {
     });
   }, [dispatch, uuid]);
 
+  useEffect(() => {
+    dispatch({
+      type: types.PEOPLE_GET_INVESTMENTS_REQUEST,
+      id: uuid,
+    });
+  }, [dispatch, uuid]);
+
   const addInvestor = () => dispatch({
     type: 'BOARD_ADD',
     id: uuid,
@@ -300,6 +307,7 @@ export default function Investor(props) {
               options={{
                 height: '400',
                 tweetLimit: '3',
+                chrome: 'noheader nofooter transparent',
               }}
             />
           )}

@@ -12,6 +12,7 @@ import * as types from '../../actions/types';
 
 function ImgComp(params) {
   const { imgSrc = '', alt = '' } = params;
+  console.log(imgSrc)
   const { src } = useImage({
     srcList: imgSrc || GreySquare,
   });
@@ -31,6 +32,8 @@ export default function Person(props) {
     isImpact = false,
     isBoard = false,
   } = props;
+  console.log(props)
+  console.log(image_id)
   const primary_organization_logo = primary_organization.image_url || '';
   const primary_organization_name = primary_organization.value || '';
   const matchForPercentage = { ...matches };
@@ -184,11 +187,13 @@ Person.propTypes = {
   uuid: PropTypes.string,
   image_id: PropTypes.string,
   primary_job_title: PropTypes.string,
-  primary_organization: PropTypes.objectOf(PropTypes.string),
+  primary_organization: PropTypes.objectOf(PropTypes.oneOfType([PropTypes.string, PropTypes.bool])),
   matches: PropTypes.shape({
-    properties: PropTypes.objectOf(
-      PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.string), PropTypes.bool]),
-    ),
+    keywords: PropTypes.arrayOf(PropTypes.string),
+    raise: PropTypes.bool,
+    location: PropTypes.bool,
+    name: PropTypes.bool,
+    org: PropTypes.bool,
   }),
   isLead: PropTypes.bool,
   isOpen: PropTypes.bool,

@@ -77,7 +77,16 @@ DAlert.propTypes = {
   statusPrefix: PropTypes.string,
   status: PropTypes.string,
   dissmissAction: PropTypes.string,
-  dismissParams: PropTypes.objectOf(PropTypes.string, PropTypes.number, PropTypes.bool),
+  dismissParams: PropTypes.shape({
+    properties: PropTypes.objectOf(
+      PropTypes.oneOfType([
+        PropTypes.string,
+        PropTypes.number,
+        PropTypes.arrayOf(PropTypes.string),
+        PropTypes.bool,
+      ]),
+    ),
+  }),
   className: PropTypes.string,
   show: PropTypes.bool,
   showSuccess: PropTypes.bool,

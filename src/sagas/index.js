@@ -259,7 +259,6 @@ function* watchSearchSetZipCode() {
 
 function getPeopleResults(params) {
   const { ids, token } = params;
-  // return axios.get(`${api}investors?${toQueryString(ids)}`
   return axios({
     method: 'get',
     url: `${api}investors?${toQueryString({ ids })}`,
@@ -272,8 +271,7 @@ function getPeopleResults(params) {
 function* workPeopleGetResults(action) {
   const params = { ids: action.ids };
   try {
-    const token = yield select(getToken);
-    params.token = token;
+    params.token = yield select(getToken);
     const results = yield call(getPeopleResults, params);
     yield put({ type: types.PEOPLE_GET_SUCCEEDED, params, data: results.data });
   } catch (error) {
@@ -283,6 +281,32 @@ function* workPeopleGetResults(action) {
 
 function* watchPeopleGetResults() {
   yield takeEvery(types.PEOPLE_GET_REQUEST, workPeopleGetResults);
+}
+
+function getPeopleInvestments(params) {
+  const { ids, token } = params;
+  return axios({
+    method: 'get',
+    url: `${api}investments?${toQueryString({ ids })}`,
+    headers: {
+      Authorization: token,
+    },
+  });
+}
+
+function* workPeopleGetInvestments(action) {
+  const params = { id: action.id };
+  try {
+    params.token = yield select(getToken);
+    const results = yield call(getPeopleInvestments, params);
+    yield put({ type: types.PEOPLE_GET_INVESTMENTS_SUCCEEDED, params, data: results.data });
+  } catch (error) {
+    yield put({ type: types.PEOPLE_GET_INVESTMENTS_FAILED, params, error });
+  }
+}
+
+function* watchPeopleGetInvestments() {
+  yield takeEvery(types.PEOPLE_GET_INVESTMENTS_REQUEST, workPeopleGetInvestments);
 }
 
 function requestSearchGetResults(params = {}) {
@@ -313,6 +337,7 @@ export default function* rootSaga() {
   yield fork(watchUserUpdate);
   yield fork(watchPersonPutInvalid);
   yield fork(watchPeopleGetResults);
+  yield fork(watchPeopleGetInvestments);
   yield fork(watchSearchSetZipCode);
   yield fork(watchSearchGetResults);
   yield fork(watchGetBoard);
