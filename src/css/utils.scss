@@ -154,6 +154,13 @@ html#ov body {
     font-size: 0.75em;
     color: $col-text-light;
     border-radius: 50%;
+
+    .iconDiscOverlay {
+      // 2nd icon to overlay the first one.
+      position: absolute;
+      width: 2em;
+      height: 2em;
+    }
   }
 
   .input-radius {

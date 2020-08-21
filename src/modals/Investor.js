@@ -27,27 +27,31 @@ const matchData = [
     key: 'isLead',
     faIcon: 'flag',
     text: 'They lead funding rounds.',
+    bool: true,
   },
   {
     key: 'isOpen',
     faIcon: 'door-open',
     text: 'They are open to direct outreach.',
+    bool: true,
   },
   {
     key: 'isImpact',
     faIcon: 'balance-scale',
     text: 'Their organization is an impact fund.',
+    bool: true,
   },
 ];
 
 function MatchBullet(params) {
-  const { faIcon, text } = params;
+  const { faIcon, text, bool } = params;
   return (
     <li>
-      <div className="iconDisc bg-primary">
+      <div className={`iconDisc ${bool ? 'bg-primary' : 'bg-warning-light3'}`}>
         <FontAwesomeIcon icon={faIcon} />
+        {!bool && <FontAwesomeIcon icon="ban" className="iconDiscOverlay text-warning" />}
       </div>
-      <span>{text}</span>
+      <span className={bool ? 'text-primary' : 'text-warning'}>{text}</span>
     </li>
   );
 }
@@ -98,6 +102,10 @@ export default function Investor(props) {
   const searchData = useSelector(state => state.search.results[uuid] || {});
 
   const { matches = {} } = searchData;
+  // TODO: test code, remove
+  matches.keywords = ['test', 'foo', 'bar'];
+  matches.raise = Math.random() >= 0.5;
+  matches.location = Math.random() >= 0.5;
   let percentageMatch = (Array.isArray(matches.keywords) && matches.keywords.length) || 0;
   if (matches.raise) percentageMatch += 1;
   if (matches.location) percentageMatch += 1;
@@ -262,24 +270,21 @@ export default function Investor(props) {
               }
               return null;
             })}
-            {Array.isArray(matches.keywords) && matches.keywords.length && (
-              <MatchBullet
-                faIcon="key"
-                text={`Their matching interests: ${matches.keywords.join(', ')}.`}
-              />
-            )}
-            {matches.raise && (
-              <MatchBullet
-                faIcon="rocket"
-                text={`They invest between ${usdFormatter.format(raise_min)} and ${usdFormatter.format(raise_max)}.`}
-              />
-            )}
-            {matches.location && (
-              <MatchBullet
-                faIcon="map-marker-alt"
-                text={`They are located in ${location_city}, ${location_state}`}
-              />
-            )}
+            <MatchBullet
+              faIcon="key"
+              bool={matches.keywords.length > 0}
+              text={`Their matching interests: ${matches.keywords.join(', ')}.`}
+            />
+            <MatchBullet
+              faIcon="rocket"
+              bool={matches.raise}
+              text={`They invest between ${usdFormatter.format(raise_min)} and ${usdFormatter.format(raise_max)}.`}
+            />
+            <MatchBullet
+              faIcon="map-marker-alt"
+              bool={matches.location}
+              text={`They are located in ${location_city}, ${location_state}`}
+            />
           </ul>
         </div>
         {Array.isArray(investments) && investments.length > 0 && (

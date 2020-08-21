@@ -14,6 +14,7 @@ import { library } from '@fortawesome/fontawesome-svg-core';
 import { fab } from '@fortawesome/free-brands-svg-icons';
 import {
   faBalanceScale,
+  faBan,
   faCaretLeft,
   faCaretRight,
   faCheck,
@@ -60,6 +61,7 @@ import * as types from './actions/types';
 library.add(
   fab,
   faBalanceScale,
+  faBan,
   faCaretLeft,
   faCaretRight,
   faCheck,
