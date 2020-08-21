@@ -232,6 +232,25 @@ export default function people(state = {}, action) {
         ...state,
         ...records,
       };
+    case types.PEOPLE_GET_INVESTMENTS_REQUEST:
+      return {
+        ...state,
+        [action.id]: { ...state[action.id], investmentsStatus: 'pending' },
+      };
+    case types.PEOPLE_GET_INVESTMENTS_SUCCEEDED:
+      return {
+        ...state,
+        [action.id]: {
+          ...state[action.id],
+          investmentsStatus: 'succeeded',
+          investments: action.data,
+        },
+      };
+    case types.PEOPLE_GET_INVESTMENTS_FAILED:
+      return {
+        ...state,
+        [action.id]: { ...state[action.id], investmentsStatus: processErr(action.error) },
+      };
     case types.PEOPLE_UPDATE:
       // used with search for partial data
       return {
