@@ -1,18 +1,18 @@
 import React, { useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { useHistory } from 'react-router';
 import Button from 'react-bootstrap/Button';
 import Row from 'react-bootstrap/Row';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Person from '../../components/people/Person';
-import DissmissibleStatus from '../../components/DissmissibleStatus';
+import DismissibleStatus from '../../components/DismissibleStatus';
 import * as types from '../../actions/types';
 
 export default function Search() {
   const searchKeywords = useSelector(state => state.search.keywords) || [];
   const searchRaise = useSelector(state => state.search.raise) || 100000;
   const searchLocation = useSelector(state => state.search.location) || '';
-  const searchResults = useSelector(state => state.search.results) || [];
+  const searchResults = useSelector(state => state.search.records) || [];
   const searchStatus = useSelector(state => state.search.results_status) || '';
 
   const [detailsOpen, setDetailsOpen] = useState(false);
@@ -29,8 +29,11 @@ export default function Search() {
 
   const history = useHistory();
 
+  const dispatch = useDispatch();
+
   const onEditClick = () => {
     history.push('search/menu');
+    dispatch({ type: types.SEARCH_GET_RESULTS_DISMISSED });
   };
 
   return (
@@ -52,7 +55,7 @@ export default function Search() {
             data-track="EditSearch"
           >
             <FontAwesomeIcon icon="edit" />
-            edit
+            New Search
           </Button>
         </div>
         <div className={`secondaryDetails ${detailsOpen ? '' : 'sr-only'}`}>
@@ -67,17 +70,17 @@ export default function Search() {
           </p>
         </div>
       </div>
-      <DissmissibleStatus
+      <DismissibleStatus
         status={searchStatus}
+        showSuccess={false}
         dissmissAction={types.SEARCH_GET_RESULTS_DISMISSED}
       />
       <div className="results">
         {Object.keys(searchResults).map(k => {
           const personProps = { ...searchResults[k] };
-          personProps.uuid = k;
-          const pKey = personProps.permalink || personProps.image_id;
+          //personProps.uuid = k;
           return (
-            <Person key={pKey} {...personProps} />
+            <Person key={k} {...personProps} />
           );
         })}
         {Object.keys(searchResults).length === 0 && (

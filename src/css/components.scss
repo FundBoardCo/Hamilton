@@ -58,7 +58,10 @@ html#ov body {
           width: 28px;
           height: 28px;
           flex-shrink: 0;
-          padding-right: $pad1;
+          margin-right: $pad1;
+          border-radius: $pad1;
+          border: 1px solid $col-primary-light7;
+          overflow: hidden;
           display: none;
         }
 
@@ -83,7 +86,7 @@ html#ov body {
 
         .details {
           .orgLogoWrapper {
-            padding-right: $pad2;
+            margin-right: $pad2;
             width: 38px;
             height: 38px;
           }
@@ -404,20 +407,16 @@ html#ov body {
               padding: $pad2;
               margin: -$pad2;
 
-              &.open {
-                border: 1px solid $col-danger-light2;
-                border-radius: $pad2;
-              }
-
               .openLinkWrapper {
                 margin-bottom: $pad4;
-                color: $col-danger;
-                font-size: $h3;
+                color: $col-info;
+                font-size: $h4;
                 display: flex;
                 align-items: flex-start;
 
                 .btn.btn-link {
                   font-weight: 700;
+                  color: $col-info;
                 }
               }
 
@@ -425,14 +424,11 @@ html#ov body {
                 display: flex;
                 flex-direction: column;
                 align-items: flex-start;
-                color: $col-danger;
-                padding: 0 $pad2 $pad2 $pad2;
+                padding-bottom: $pad2;
 
                 .btn {
-                  flex-grow: 1;
+                  color: $col-info;
                   font-size: $h5;
-                  width: 100%;
-                  max-width: none;
                   margin-bottom: $pad2;
                 }
               }
@@ -446,12 +442,8 @@ html#ov body {
 
               @media (min-width: $mediaLg) {
 
-                .openLinkWrapper {
-                  align-items: center;
-                }
-
                 .invalidBtns {
-                  padding: 0 $pad4 $pad4 $pad4;
+                  padding-bottom: $pad4;
                 }
               }
             }
@@ -479,6 +471,15 @@ html#ov body {
 
     &.modal-searchMenu {
       .modal-dialog {
+
+        @media (min-width: $mediaMd) {
+          width: calc(45vw + 20px);
+        }
+
+        @media (min-width: $mediaLg) {
+          width: calc(35vw + 20px);
+        }
+
         .modal-content {
           .modal-body {
             position: relative;
@@ -681,7 +682,7 @@ html#ov body {
     .sliderMax {
       position: absolute;
       top: 0;
-      right:0;
+      right: 0;
     }
 
     .range-slider__wrap {
@@ -691,10 +692,12 @@ html#ov body {
         background: $col-light;
         border: 2px solid $col-primary;
       }
+
       input[type=range].range-slider.range-slider--primary::-moz-range-thumb {
         background: $col-light;
         border: 2px solid $col-primary;
       }
+
       input[type=range].range-slider.range-slider--primary::-ms-thumb {
         background: $col-light;
         border: 2px solid $col-primary;
@@ -703,18 +706,23 @@ html#ov body {
       input[type=range].range-slider:not(.disabled):focus::-webkit-slider-thumb {
         box-shadow: 0 0 0 0.1rem $col-primary;
       }
+
       input[type=range].range-slider:not(.disabled):focus::-moz-range-thumb {
         box-shadow: 0 0 0 0.1rem $col-primary;
       }
+
       input[type=range].range-slider:not(.disabled):focus::-ms-thumb {
         box-shadow: 0 0 0 0.1rem $col-primary;
       }
+
       input[type=range].range-slider:not(.disabled):active::-webkit-slider-thumb {
         box-shadow: 0 0 0 0.2rem $col-primary;
       }
+
       input[type=range].range-slider:not(.disabled):active::-moz-range-thumb {
         box-shadow: 0 0 0 0.2rem $col-primary;
       }
+
       input[type=range].range-slider:not(.disabled):active::-ms-thumb {
         box-shadow: 0 0 0 0.2rem $col-primary;
       }
@@ -759,9 +767,9 @@ html#ov body {
 
   .infoTip {
     margin-left: 0.25em;
-      color: $col-primary-light6;
-      background: none;
-      border: 0 none;
+    color: $col-primary-light6;
+    background: none;
+    border: 0 none;
 
     &.open {
       color: $col-secondary;
@@ -776,12 +784,20 @@ html#ov body {
       &:before,
       &:after {
       }
+
       &:before {
         border-bottom-color: $col-secondary;
       }
+
       &:after {
 
       }
+    }
+  }
+  form {
+    .form-check-input.is-valid ~ .form-check-label,
+    &.was-validated .form-check-input:valid ~ .form-check-label {
+      color: inherit;
     }
   }
 }

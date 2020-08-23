@@ -2,6 +2,7 @@ import {
   put,
   call,
   fork,
+  select,
   takeEvery,
   takeLatest,
 } from 'redux-saga/effects';
@@ -13,7 +14,6 @@ import {
   ZIPCODECLIENTKEY,
 } from '../constants';
 import {
-  capitalizeFirstLetter,
   getSafeVar,
   processErr,
   toQueryString,
@@ -22,12 +22,13 @@ import * as types from '../actions/types';
 
 const api = 'https://api.fundboard.co/';
 
+axios.defaults.withCredentials = true;
+
 const webFlowAPI = new Webflow({ token: WEBFLOW_APIKEY });
 
-const cookies = document.cookie.split(';');
-cookies.forEach(c => {
-  console.log(decodeURIComponent(c));
-});
+const getToken = state => state.user.token;
+const getEmail = state => state.user.email;
+const getBoard = state => state.board.ids;
 
 function trackErr(err) {
   window.heap.track('Error', { message: processErr(err) });
@@ -91,8 +92,6 @@ function userLogin(data = {}) {
     url: `${api}login`,
     data,
   });
-  // useful for faking login. TODO: remove
-  // return { data: { token: 'foo' } };
 }
 
 function* workUserLogin(action) {
@@ -100,6 +99,11 @@ function* workUserLogin(action) {
     const { params } = action;
     const results = yield call(userLogin, params);
     yield put({ type: types.USER_LOGIN_SUCCEEDED, data: results.data });
+    const board = yield select(getBoard);
+    if (Array.isArray(board) && board.length) {
+      const uParams = { investors: [...board] };
+      yield put({ type: types.USER_UPDATE_REQUESTED, params: uParams });
+    }
   } catch (error) {
     trackErr(error);
     yield put({ type: types.USER_LOGIN_FAILED, error });
@@ -133,17 +137,27 @@ function* watchUserCreate() {
   yield takeLatest(types.USER_CREATE_REQUESTED, workUserCreate);
 }
 
-function userUpdate(data = {}) {
+function userUpdate(params) {
+  const { token } = params;
+  const data = { ...params };
+  delete data.token;
   return axios({
     method: 'post',
     url: `${api}profile`,
     data,
+    headers: {
+      Authorization: token,
+    },
   });
 }
 
 function* workUserUpdate(action) {
   try {
     const { params } = action;
+    params.token = yield select(getToken);
+    // if email is not being changed, send current email so API doesn't error
+    const email = yield select(getEmail);
+    params.email = params.email || email;
     const results = yield call(userUpdate, params);
     yield put({ type: types.USER_UPDATE_SUCCEEDED, data: results.data });
   } catch (error) {
@@ -155,6 +169,81 @@ function* workUserUpdate(action) {
 
 function* watchUserUpdate() {
   yield takeEvery(types.USER_UPDATE_REQUESTED, workUserUpdate);
+}
+
+function getUserProfile(token) {
+  return axios({
+    method: 'get',
+    url: `${api}profile`,
+    headers: {
+      Authorization: token,
+    },
+  });
+}
+
+function* workUserGetProfile() {
+  try {
+    const token = yield select(getToken);
+    const results = yield call(getUserProfile, token);
+    yield put({ type: types.USER_GET_PROFILE_SUCCEEDED, data: results.data });
+  } catch (error) {
+    trackErr(error);
+    if (isLoginErr(error)) yield put(loginErrProps);
+    yield put({ type: types.USER_GET_PROFILE_FAILED, error });
+  }
+}
+
+function* watchUserGetProfile() {
+  yield takeLatest(types.USER_GET_PROFILE_REQUESTED, workUserGetProfile);
+}
+
+function userDelete(token) {
+  return axios({
+    method: 'post',
+    url: `${api}profile/delete`,
+    headers: {
+      Authorization: token,
+    },
+  });
+}
+
+function* workUserDelete() {
+  try {
+    const token = yield select(getToken);
+    yield call(userDelete, token);
+    yield put({ type: types.USER_DELETE_SUCCEEDED });
+  } catch (error) {
+    trackErr(error);
+    if (isLoginErr(error)) yield put(loginErrProps);
+    yield put({ type: types.USER_DELETE_FAILED, error });
+  }
+}
+
+function* watchUserDelete() {
+  yield takeEvery(types.USER_DELETE_REQUESTED, workUserDelete);
+}
+
+function userReset(email) {
+  return axios({
+    method: 'post',
+    url: `${api}recover`,
+    data: { email },
+  });
+}
+
+function* workUserReset(action) {
+  try {
+    const { email } = action;
+    yield call(userReset, email);
+    yield put({ type: types.USER_RESETPASSWORD_SUCCEEDED });
+  } catch (error) {
+    trackErr(error);
+    yield put({ type: types.USER_RESETPASSWORD_FAILED, error });
+  }
+}
+
+function* watchUserReset() {
+  yield takeEvery(types.USER_RESETPASSWORD_REQUESTED, workUserReset);
 }
 
 function personPutInvalid(params = {}) {
@@ -216,28 +305,49 @@ function* watchSendFeedback() {
   yield takeEvery(types.FEEDBACK_SEND_REQUESTED, workSendFeedback);
 }
 
-function getBoard() {
-  return axios.get(`${api}profile`);
-}
-
-function* workGetBoard() {
+function* workBoardRemove(action) {
+  const token = yield select(getToken);
+  const board = yield select(getBoard)
+  const { id } = action;
+  const params = {
+    investors: board.filter(i => i !== id),
+  };
   try {
-    const results = yield call(getBoard);
-    yield put({ type: types.BOARD_GET_SUCCEEDED, data: results.data });
+    if (token) {
+      yield put({ type: types.USER_UPDATE_REQUESTED, params });
+    }
   } catch (error) {
     trackErr(error);
-    if (isLoginErr(error)) yield put(loginErrProps);
-    yield put({ type: types.BOARD_GET_FAILED, error });
   }
 }
 
-function* watchGetBoard() {
-  yield takeLatest(types.BOARD_GET_REQUESTED, workGetBoard);
+function* watchBoardRemove() {
+  yield takeLatest(types.BOARD_ADD, workBoardRemove);
+}
+
+function* workBoardAdd(action) {
+  const token = yield select(getToken);
+  const board = yield select(getBoard)
+  const { id } = action;
+  const params = {
+    investors: [...new Set([...board, id])],
+  };
+  try {
+    if (token) {
+      yield put({ type: types.USER_UPDATE_REQUESTED, params });
+    }
+  } catch (error) {
+    trackErr(error);
+  }
+}
+
+function* watchBoardAdd() {
+  yield takeLatest(types.BOARD_ADD, workBoardAdd);
 }
 
 function getExtraZipCodes(zipcode) {
   return axios.get(
-    `https://www.zipcodeapi.com/rest/${ZIPCODECLIENTKEY}/radius.json/${zipcode}/20/mile?minimal`,
+    `https://www.zipcodeapi.com/rest/${ZIPCODECLIENTKEY}/radius.json/${zipcode}/15/mile?minimal`,
   );
 }
 
@@ -260,37 +370,82 @@ function* watchSearchSetZipCode() {
   yield takeLatest(types.SEARCH_SET_LOCATION, workGetExtraZipCodes);
 }
 
-function requestAirtableSearchGetResults(params = {}) {
-  // Temporary Airtable code.
-  // TODO: replace with real API code.
-  // params should be an object with field: term key:value pairs.
-  let { keywords } = params;
-  const { raise, location } = params;
+function getCityZipCodes(params) {
+  let { city, state } = params;
+  city = city.toLowerCase();
+  state = state.toLowerCase();
+  return axios.get(
+    `https://www.zipcodeapi.com/rest/${ZIPCODECLIENTKEY}/city-zips.json/${city}/${state}`,
+  );
+}
 
-  // change each keyword into a FIND formula
-  const formulas = [];
-  keywords = keywords.reduce((a, key) => {
-    const lKey = key.toLowerCase();
-    const uKey = capitalizeFirstLetter(key);
-    const lower = `${a}${a ? ', ' : ''}FIND("${lKey}", {description})>0`;
-    const upper = `${a}${a ? ', ' : ''}FIND("${uKey}", {description})>0`;
-    return `${lower}, ${upper}`;
-  }, '');
-  if (keywords && keywords.length) formulas.push(keywords);
-  if (raise) {
-    formulas.push(`AND({raise_min}<=${raise},{raise_max}>=${raise})`);
+function* workGetCityZipCodes(action) {
+  const { params } = action;
+  try {
+    if (!params.city || !params.state) throw new Error('Missing city or state.');
+    const results = yield call(getCityZipCodes, params);
+    yield put({ type: types.SEARCH_GET_CITYZIPCODES_SUCCEEDED, data: results.data });
+  } catch (error) {
+    trackErr(error);
+    yield put({ type: types.SEARCH_GET_CITYZIPCODES_FAILED, error });
   }
-  if (location) formulas.push(`FIND("${location}", {location_zipcode})>0`);
+}
 
-  return axios.get('https://api.airtable.com/v0/appDqWxN1pcWrdjsn/Investors',
-    {
-      params: {
-        maxRecords: 100,
-        view: 'Grid view',
-        filterByFormula: `OR(${formulas.join(',')})`,
-      },
-      headers: { Authorization: `Bearer ${AIRTABLE_APIKEY}` },
-    });
+function* watchSearchGetCityZipCodes() {
+  yield takeLatest(types.SEARCH_GET_CITYZIPCODES_REQUESTED, workGetCityZipCodes);
+}
+
+function getPeopleResults(params) {
+  const { ids, token } = params;
+  return axios({
+    method: 'get',
+    url: `${api}investors?${toQueryString({ ids })}`,
+    headers: {
+      Authorization: token,
+    },
+  });
+}
+
+function* workPeopleGetResults(action) {
+  const params = { ids: action.ids };
+  try {
+    params.token = yield select(getToken);
+    const results = yield call(getPeopleResults, params);
+    yield put({ type: types.PEOPLE_GET_SUCCEEDED, params, data: results.data });
+  } catch (error) {
+    yield put({ type: types.PEOPLE_GET_FAILED, params, error });
+  }
+}
+
+function* watchPeopleGetResults() {
+  yield takeEvery(types.PEOPLE_GET_REQUEST, workPeopleGetResults);
+}
+
+function getPeopleInvestments(params) {
+  const { ids, token } = params;
+  return axios({
+    method: 'get',
+    url: `${api}investments?${toQueryString({ ids })}`,
+    headers: {
+      Authorization: token,
+    },
+  });
+}
+
+function* workPeopleGetInvestments(action) {
+  const { id } = action;
+  const params = { id };
+  try {
+    params.token = yield select(getToken);
+    const results = yield call(getPeopleInvestments, params);
+    yield put({ type: types.PEOPLE_GET_INVESTMENTS_SUCCEEDED, params, id, data: results.data });
+  } catch (error) {
+    yield put({ type: types.PEOPLE_GET_INVESTMENTS_FAILED, id, params, error });
+  }
+}
+
+function* watchPeopleGetInvestments() {
+  yield takeEvery(types.PEOPLE_GET_INVESTMENTS_REQUEST, workPeopleGetInvestments);
 }
 
 function requestSearchGetResults(params = {}) {
@@ -301,8 +456,7 @@ function* workSearchGetResults(action) {
   const { params } = action;
   params.limit = params.limit || 100;
   try {
-    //const results = yield call(requestSearchGetResults, params);
-    const results = yield call(requestAirtableSearchGetResults, params);
+    const results = yield call(requestSearchGetResults, params);
     yield put({ type: 'SEARCH_GET_RESULTS_SUCCEEDED', data: results.data });
     yield put({ type: 'PEOPLE_UPDATE', data: results.data });
   } catch (error) {
@@ -317,13 +471,20 @@ function* watchSearchGetResults() {
 
 export default function* rootSaga() {
   yield fork(watchAirtableGetKeywords);
+  yield fork(watchBoardAdd);
+  yield fork(watchBoardRemove);
   yield fork(watchUserCreate);
   yield fork(watchUserLogin);
   yield fork(watchUserUpdate);
+  yield fork(watchUserDelete);
+  yield fork(watchUserReset);
+  yield fork(watchUserGetProfile);
   yield fork(watchPersonPutInvalid);
+  yield fork(watchPeopleGetResults);
+  yield fork(watchPeopleGetInvestments);
   yield fork(watchSearchSetZipCode);
+  yield fork(watchSearchGetCityZipCodes);
   yield fork(watchSearchGetResults);
-  yield fork(watchGetBoard);
   yield fork(watchSendFeedback);
   yield fork(watchGetInfo);
 }

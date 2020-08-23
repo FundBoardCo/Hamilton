@@ -10,14 +10,14 @@ import Person from '../../components/people/Person';
 import * as types from '../../actions/types';
 
 export default function Board() {
-  const investors = useSelector(state => state.board.ids) || [];
+  const investorIds = useSelector(state => state.board.ids) || [];
   const people = useSelector(state => state.people);
-  const loggedIn = useSelector(state => state.user.token);
+  const loggedIn = useSelector(state => state.user.loggedIn);
   const investorList = {};
   const csvList = [];
 
   const firstLine = {};
-  firstLine['Investor Name'] = 'DELETE THIS ROW. It is just some helpful reminders.';
+  firstLine['Investor Name'] = 'DELETE THIS ROW. These are just some helpful reminders.';
   firstLine.Title = '';
   firstLine.Organization = '';
   firstLine.Priority = 'Rank investors in the order you will reach out to them.';
@@ -27,38 +27,44 @@ export default function Board() {
   firstLine['Next Steps'] = 'If you need to do something, list it here.';
   firstLine.Notes = '';
   firstLine['Potential Lead'] = 'Focus on getting leads first.';
-  firstLine['Open to Direct Outreach'] = 'This means they might respond if you send them an email.';
-  firstLine.Location = 'Investors are more likely to invest in their location, or near other startups they have funded.';
+  firstLine['Open to Direct Outreach'] = 'Have they publicly said they will respond to unsolicited emails?';
+  firstLine.Location = 'Some investors are more likely to invest near their location, or other startups they have funded.';
   firstLine.LinkedIn = '';
   firstLine.Twitter = '';
   firstLine.CrunchBase = '';
   csvList.push(firstLine);
 
-  investors.forEach(i => {
-    investorList[i] = people[i];
+  investorIds.forEach(i => {
+    const person = people[i] ? { ...people[i] } : {};
+    const org = person.primary_organization || {};
+    const location = [];
+    if (person.location_city) location.push(person.location_city);
+    if (person.location_state) location.push(person.location_state);
+    investorList[i] = { ...person };
     const csvPer = {};
     // TODO change this for API data
-    csvPer['Investor Name'] = `${people[i]['first name']} ${people[i]['last name']}`;
-    csvPer.Title = people[i].primary_job_title;
-    csvPer.Organization = people[i].primary_organization;
+    csvPer['Investor Name'] = person.name || '';
+    csvPer.Title = person.primary_job_title || '';
+    csvPer.Organization = org.value || '';
     csvPer.Priority = '';
     csvPer['Introed By'] = '';
     csvPer['Date of Intro'] = '';
     csvPer.Status = '';
     csvPer['Next Steps'] = '';
     csvPer.Notes = '';
-    csvPer['Potential Lead'] = people[i].isLead ? 'Yes' : '';
-    csvPer['Open to Direct Outreach'] = people[i].isOpen ? 'Yes' : '';
-    csvPer.Location = `${people[i].location_city}, ${people[i].location_status}`;
-    csvPer.LinkedIn = people[i].linkedin;
-    csvPer.Twitter = people[i].twitter;
-    csvPer.CrunchBase = people[i].crunchbase;
+    csvPer['Potential Lead'] = person.is_lead_investor ? 'Yes' : '';
+    csvPer['Open to Direct Outreach'] = person.is_open ? 'Yes' : '';
+    csvPer.Location = location.join(', ');
+    csvPer.LinkedIn = person.linkedin || '';
+    csvPer.Twitter = person.twitter || '';
+    csvPer.CrunchBase = person.permalink ? `https://www.crunchbase.com/person/${person.permalink}` : '';
     csvList.push(csvPer);
   });
+
   const csv = Papa.unparse(Object.values(csvList));
   const csvData = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
 
-  const details = investors.reduce((ac, cv) => {
+  const details = investorIds.reduce((ac, cv) => {
     const newVal = { ...ac };
     const {
       matches,
@@ -117,7 +123,7 @@ export default function Board() {
             onClick={onDetailClick}
             data-track="BoardDetails"
           >
-            {`My Fundboard: ${Object.keys(investors).length} investors`}
+            {`My Fundboard: ${investorIds.length} investors`}
             <div>
               <FontAwesomeIcon icon="file-download" />
               <span className="d-none d-lg-inline ml-2">Download</span>
@@ -155,14 +161,16 @@ export default function Board() {
           <p>
             <strong>{`Impact funds: ${details.impact}`}</strong>
           </p>
-          <Button
-            variant="primary"
-            className="w-100 w-lg-auto btnResponsiveMax"
-            onClick={onCSVClick}
-          >
-            <FontAwesomeIcon icon="file-download" className="mr-2" />
-            Download (CSV)
-          </Button>
+          <div className="d-flex justify-content-end">
+            <Button
+              variant="secondary"
+              className="w-100 w-lg-auto btnResponsiveMax"
+              onClick={onCSVClick}
+            >
+              <FontAwesomeIcon icon="file-download" className="mr-2" />
+              Download (CSV)
+            </Button>
+          </div>
         </div>
       </div>
       )}
@@ -172,9 +180,8 @@ export default function Board() {
           const personProps = { ...investorList[k] };
           personProps.uuid = k;
           personProps.isBoard = true;
-          const pKey = personProps.permalink || personProps.image_id;
           return (
-            <Person key={pKey} {...personProps} />
+            <Person key={k} {...personProps} />
           );
         })}
       </div>

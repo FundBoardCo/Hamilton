@@ -9,7 +9,7 @@ import moment from 'moment';
 import platform from 'platform';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import * as types from '../../actions/types';
-import Status from '../../components/DissmissibleStatus';
+import Status from '../../components/DismissibleStatus';
 
 export default function Talk() {
   const feedbackStatus = useSelector(state => state.airtable.feedback_status);
@@ -20,7 +20,6 @@ export default function Talk() {
   const [comment, setComment] = useState('');
 
   const [emailValue, setEmailValue] = useState(email);
-  const [includeEmail, setIncludeEmail] = useState(false);
 
   const [thumbsUp, setThumbsUp] = useState(true);
 
@@ -31,7 +30,7 @@ export default function Talk() {
   const sendFeedback = () => dispatch({
     type: types.FEEDBACK_SEND_REQUESTED,
     params: {
-      email: email || emailValue,
+      email: emailValue,
       thumbsup: thumbsUp,
       comment,
       date: moment().format(),
@@ -68,7 +67,7 @@ export default function Talk() {
   };
 
   const onEmailOffClick = () => {
-    setIncludeEmail(!includeEmail);
+    setEmailValue('');
   };
 
   return (
@@ -80,49 +79,51 @@ export default function Talk() {
         </div>
         <h2>Learn More About FundBoard</h2>
         <p>Curious about the people and motivation behind FundBoard?</p>
-        <div className="mb-2">
-          You can start with &nbsp;
-          <a
-            href="https://www.fundboard.co"
-            target="_blank"
-            rel="noopener noreferrer"
-            data-track="TalkLink-FundBoard"
-          >
-            FundBoard.co
-          </a>
-        </div>
-        <div className="mb-2">
-          Then read our&nbsp;
-          <a
-            href="https://www.fundboard.co/our-take"
-            target="_blank"
-            rel="noopener noreferrer"
-            data-track="TalkLink-FundBoardBlog"
-          >
-            blog.
-          </a>
-        </div>
-        <div className="mb-2">
-          And sign up for&nbsp;
-          <a
-            href="https://www.fundboard.co/say-hello"
-            target="_blank"
-            rel="noopener noreferrer"
-            data-track="TalkLink-FundBoardContact"
-          >
-            updates and news.
-          </a>
-        </div>
-        <div className="mb-2">
-          Or follow us on Twitter:&nbsp;
-          <a
-            href="https://twitter.com/teamfundboard"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            @FundBoard.
-          </a>
-        </div>
+        <ul>
+          <li className="mb-2">
+            You can start with &nbsp;
+            <a
+              href="https://www.fundboard.co"
+              target="_blank"
+              rel="noopener noreferrer"
+              data-track="TalkLink-FundBoard"
+            >
+              FundBoard.co
+            </a>
+          </li>
+          <li className="mb-2">
+            Then read our&nbsp;
+            <a
+              href="https://www.fundboard.co/our-take"
+              target="_blank"
+              rel="noopener noreferrer"
+              data-track="TalkLink-FundBoardBlog"
+            >
+              blog.
+            </a>
+          </li>
+          <li className="mb-2">
+            And sign up for&nbsp;
+            <a
+              href="https://www.fundboard.co/say-hello"
+              target="_blank"
+              rel="noopener noreferrer"
+              data-track="TalkLink-FundBoardContact"
+            >
+              updates and news.
+            </a>
+          </li>
+          <li className="mb-2">
+            Or follow us on Twitter:&nbsp;
+            <a
+              href="https://twitter.com/teamfundboard"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              @FundBoard.
+            </a>
+          </li>
+        </ul>
         <hr className="mb-4" />
         <h2>Tell Us What You Think</h2>
         <p>
@@ -156,8 +157,7 @@ export default function Talk() {
               <Form.Control
                 type="email"
                 placeholder="email address"
-                value={includeEmail ? emailValue : ''}
-                disabled={!includeEmail}
+                value={emailValue}
                 onChange={e => onEmailChange(e)}
                 data-track="TalkEmailInput"
               />
@@ -167,26 +167,23 @@ export default function Talk() {
                   onClick={onEmailOffClick}
                   data-track="TalkEmailInput-toggle"
                 >
-                  {includeEmail && (
+                  <span>
                     <FontAwesomeIcon icon="times" />
-                  )}
-                  {!includeEmail && (
-                    <FontAwesomeIcon icon="check" />
-                  )}
+                  </span>
                 </Button>
               </InputGroup.Append>
             </InputGroup>
-            <Form.Text>
-              If you want us to reply to a question, include your email address.
-            </Form.Text>
             <Form.Control.Feedback type="invalid">
               Please enter a valid email address.
             </Form.Control.Feedback>
           </Form.Group>
-          <div className="d-flex justify-content-between mb-4">
+          <div className="d-flex mb-4 align-items-center">
+            <span className="mr-auto">
+              Let us know how we&apos;re doing:
+            </span>
             <Button
-              variant={thumbsUp ? 'secondary' : 'info'}
-              className="flex-grow-1 mr-2"
+              variant="secondary"
+              className={`${thumbsUp ? '' : 'op-1'} mr-2`}
               onClick={() => onThumbsClick(true)}
               data-track="TalkThumbsUp"
             >
@@ -194,8 +191,8 @@ export default function Talk() {
               <span className="sr-only">Give us a thumbs up.</span>
             </Button>
             <Button
-              variant={thumbsUp ? 'info' : 'warning'}
-              className="flex-grow-1"
+              variant="danger"
+              className={thumbsUp ? 'op-1' : ''}
               onClick={() => onThumbsClick(false)}
               data-track="TalkThumbsDown"
             >
@@ -217,6 +214,7 @@ export default function Talk() {
             Submit
           </Button>
         </Form>
+        <hr className="mb-4" />
         <div className="mb-4">
           <h3>More</h3>
           <div className="mb-2">

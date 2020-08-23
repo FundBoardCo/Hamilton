@@ -2,7 +2,7 @@ import React, {useEffect} from 'react';
 import {useDispatch, useSelector} from 'react-redux';
 import Modal from 'react-bootstrap/Modal';
 import * as types from '../actions/types';
-import DissmissibleStatus from '../components/DissmissibleStatus';
+import DismissibleStatus from '../components/DismissibleStatus';
 
 export default function AfterDownload() {
   const itemId = '5f32b22bf8e8020679adebfc';
@@ -41,7 +41,7 @@ export default function AfterDownload() {
         </Modal.Title>
       </Modal.Header>
       <Modal.Body>
-        <DissmissibleStatus
+        <DismissibleStatus
           status={status}
           showSuccess={false}
           dissmissAction={types.SEARCH_GET_RESULTS_DISMISSED}

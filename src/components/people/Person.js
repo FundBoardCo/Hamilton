@@ -8,6 +8,7 @@ import { useImage } from 'react-image';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import GreySquare from '../../imgs/greySquare.jpg';
 import { capitalizeFirstLetter } from '../../utils';
+import * as types from '../../actions/types';
 
 function ImgComp(params) {
   const { imgSrc = '', alt = '' } = params;
@@ -18,22 +19,20 @@ function ImgComp(params) {
 }
 
 export default function Person(props) {
-  // temp for airtable data
-  // TODO: replace with name from real API
-  const name = `${props['first name']} ${props['last name']}`;
   const {
     uuid,
-    image_id,
-    primary_job_title,
-    primary_organization,
-    matches,
-    // isLead,
-    // isOpen,
-    // isImpact,
-    isBoard,
+    name,
+    image_url = '',
+    primary_job_title = '',
+    primary_organization = {},
+    matches = {},
+    // isLead = false,
+    // isOpen = false,
+    // isImpact = false,
+    isBoard = false,
   } = props;
-  // TODO: replace with data from real API
-  const primary_organization_logo = ''; // placeholder
+  const primary_organization_logo = primary_organization.image_url || '';
+  const primary_organization_name = primary_organization.name || '';
   const matchForPercentage = { ...matches };
   let percentageMatch = (matchForPercentage.keywords && matchForPercentage.keywords.length) || 0;
   if (matchForPercentage.raise) percentageMatch += 1;
@@ -57,12 +56,12 @@ export default function Person(props) {
   const dispatch = useDispatch();
 
   const addInvestor = () => dispatch({
-    type: 'BOARD_ADD',
+    type: types.BOARD_ADD,
     id: uuid,
   });
 
   const removeInvestor = () => dispatch({
-    type: 'BOARD_REMOVE',
+    type: types.BOARD_REMOVE,
     id: uuid,
   });
 
@@ -105,7 +104,7 @@ export default function Person(props) {
         data-track={`${path}PersonThumb`}
       >
         <Suspense fallback={<Spinner animation="border" variant="info" role="status" size="sm" />}>
-          <ImgComp imgSrc={image_id} alt={name} />
+          <ImgComp imgSrc={image_url} alt={name} />
         </Suspense>
       </button>
       <div className="content">
@@ -121,16 +120,18 @@ export default function Person(props) {
           </h1>
         </div>
         <div className="d-flex details">
-          <div className="orgLogoWrapper">
-            <Suspense fallback={<Spinner animation="border" variant="info" role="status" size="sm" />}>
-              <ImgComp imgSrc={primary_organization_logo} alt={name} />
-            </Suspense>
-          </div>
+          {primary_organization_logo && (
+            <div className="orgLogoWrapper">
+              <Suspense fallback={<Spinner animation="border" variant="info" role="status" size="sm" />}>
+                <ImgComp imgSrc={primary_organization_logo} alt={primary_organization_name} />
+              </Suspense>
+            </div>
+          )}
           <div className="orgText">
             <div>
               {`${primary_job_title}${primary_job_title && ','}`}
               {`${primary_job_title ? '\xa0' : ''}`}
-              {primary_organization}
+              {primary_organization_name}
             </div>
           </div>
         </div>
@@ -155,9 +156,18 @@ export default function Person(props) {
 
 Person.defaultProps = {
   uuid: 'not found',
-  image_id: '',
+  name: '',
+  image_url: '',
   primary_job_title: '',
-  primary_organization: '',
+  primary_organization: {
+    name: '',
+    image_url: '',
+    permalink: '',
+    entity_def_id: '',
+    homepage: '',
+    linkedin: '',
+    twitter: '',
+  },
   matches: {
     keywords: ['one', 'two'],
     raise: true,
@@ -173,13 +183,16 @@ Person.defaultProps = {
 
 Person.propTypes = {
   uuid: PropTypes.string,
-  image_id: PropTypes.string,
+  name: PropTypes.string,
+  image_url: PropTypes.string,
   primary_job_title: PropTypes.string,
-  primary_organization: PropTypes.string,
+  primary_organization: PropTypes.objectOf(PropTypes.oneOfType([PropTypes.string, PropTypes.bool])),
   matches: PropTypes.shape({
-    properties: PropTypes.objectOf(
-      PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.string), PropTypes.bool]),
-    ),
+    keywords: PropTypes.arrayOf(PropTypes.string),
+    raise: PropTypes.bool,
+    location: PropTypes.bool,
+    name: PropTypes.bool,
+    org: PropTypes.bool,
   }),
   // isLead: PropTypes.bool,
   // isOpen: PropTypes.bool,
