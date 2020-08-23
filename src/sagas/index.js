@@ -237,7 +237,7 @@ function* watchGetBoard() {
 
 function getExtraZipCodes(zipcode) {
   return axios.get(
-    `https://www.zipcodeapi.com/rest/${ZIPCODECLIENTKEY}/radius.json/${zipcode}/20/mile?minimal`,
+    `https://www.zipcodeapi.com/rest/${ZIPCODECLIENTKEY}/radius.json/${zipcode}/10/mile?minimal`,
   );
 }
 

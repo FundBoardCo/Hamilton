@@ -11,6 +11,8 @@ import * as types from '../../actions/types';
 
 export default function Board() {
   const investors = useSelector(state => state.board.ids) || [];
+  // TODO: use user.investors here.
+  // TODO: figure out howt to merge non-logged in board
   const people = useSelector(state => state.people);
   const loggedIn = useSelector(state => state.user.token);
   const investorList = {};

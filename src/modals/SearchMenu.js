@@ -165,7 +165,7 @@ export default function SearchMenu() {
   if (!searchLocation) extraZipcodesText = 'waiting for your zip code.';
 
   if (!extraZipcodes_status || extraZipcodes_status === 'succeeded') {
-    extraZipcodesText = `${extraZipcodes.length} zip codes within 20 miles of ${searchLocation} found.`;
+    extraZipcodesText = `${extraZipcodes.length} zip codes within 10 miles of ${searchLocation} found.`;
   }
 
   const extraZipcodesClass = statusIsError(extraZipcodes_status) ? 'text-warning' : 'text-info';
