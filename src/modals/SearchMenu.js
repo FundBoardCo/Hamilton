@@ -103,6 +103,10 @@ export default function SearchMenu() {
     }
   };
 
+  const onRemoveKeyword = w => {
+    setKeywords(searchKeywords.filter(kw => kw !== w));
+  };
+
   const onRaiseChange = val => {
     setRaise(val);
   };
@@ -134,16 +138,6 @@ export default function SearchMenu() {
     return dispatch({
       type: 'SEARCH_GET_RESULTS_REQUESTED',
       params,
-    });
-  };
-
-  const resetSearch = () => {
-    setKeywords([]);
-    setRaise(100000);
-    setLocation('');
-
-    return dispatch({
-      type: 'SEARCH_CLEAR_RESULTS',
     });
   };
 
@@ -192,9 +186,17 @@ export default function SearchMenu() {
           detailText={`${searchKeywords.length} selected`}
           subText="Choose up to 5 words that describe your startup"
         />
-        <div className="txs-2 text-info mb-2">
-          Selected:&nbsp;
-          {searchKeywords.join()}
+        <div className="txs-2 text-info mb-2 d-flex flex-wrap">
+          <span>Selected:&nbsp;</span>
+          {searchKeywords.map(w => (
+            <Button
+              variant="link"
+              className="text-info mr-2"
+              onClick={() => onRemoveKeyword(w)}
+            >
+              {`${w} (x)`}
+            </Button>
+          ))}
         </div>
         <div className="tilesWrapper mb-5">
           <div className="tiles">
@@ -290,17 +292,6 @@ export default function SearchMenu() {
             />
           </Form.Group>
         </Form>
-        <div className="d-flex justify-content-end mt-auto">
-          <Button
-            variant="link"
-            className="text-danger"
-            onClick={resetSearch}
-            data-track="ResetSearch"
-          >
-            <FontAwesomeIcon icon="exclamation-triangle" className="mr-2" />
-            Reset Search
-          </Button>
-        </div>
       </Modal.Body>
       <Modal.Footer>
         <button

@@ -14,6 +14,7 @@ import { library } from '@fortawesome/fontawesome-svg-core';
 import { fab } from '@fortawesome/free-brands-svg-icons';
 import {
   faBalanceScale,
+  faBan,
   faCaretLeft,
   faCaretRight,
   faCheck,
@@ -60,6 +61,7 @@ import * as types from './actions/types';
 library.add(
   fab,
   faBalanceScale,
+  faBan,
   faCaretLeft,
   faCaretRight,
   faCheck,
@@ -101,10 +103,6 @@ function App() {
     modal: 'login',
   });
 
-  let indexRedirect = '/search';
-  if (firstTime) indexRedirect = '/intro';
-  if (loggedIn) indexRedirect = '/board';
-
   return (
     <Router>
       <ScrollToTop>
@@ -115,31 +113,16 @@ function App() {
             <span className="navVersion">Alpha 0.1</span>
           </a>
           <Nav className="ml-auto" defaultActiveKey={window.location.pathname}>
-            {!loggedIn
-            && (
-              <Button
-                variant="link"
-                className="login navbar-btn"
-                onClick={onShowLogin}
-                data-track="navLogin"
-              >
-                <FontAwesomeIcon icon="sign-in-alt" />
-                <span>Log In</span>
-              </Button>
-            )}
-            {loggedIn
-            && (
-              <Nav.Link
-                as={NavLink}
-                href="/board"
-                to="/board"
-                className="board"
-                data-track="navBoard"
-              >
-                <FontAwesomeIcon icon="list" />
-                <span>My FundBoard</span>
-              </Nav.Link>
-            )}
+            <Nav.Link
+              as={NavLink}
+              href="/board"
+              to="/board"
+              className="board"
+              data-track="navBoard"
+            >
+              <FontAwesomeIcon icon="list" />
+              <span>My FundBoard</span>
+            </Nav.Link>
             {!firstTime
             && (
               <Nav.Link
@@ -179,14 +162,24 @@ function App() {
               <FontAwesomeIcon icon="comment-dots" />
               <span>Talk to Us</span>
             </Nav.Link>
+            {!loggedIn
+            && (
+              <Button
+                variant="link"
+                className="login navbar-btn"
+                onClick={onShowLogin}
+                data-track="navLogin"
+              >
+                <FontAwesomeIcon icon="sign-in-alt" />
+                <span>Log In</span>
+              </Button>
+            )}
           </Nav>
         </Navbar>
         <main id="Main">
           <div className="container-xl">
             <Switch>
-              <Route path="/" exact>
-                <Redirect to={indexRedirect} />
-              </Route>
+              <Route path="/" exact component={Intro} />
               <Route path="/intro" component={Intro} />
               <Route path="/introsearch" component={IntroSearch} />
               <Route path="/board" component={Board} />

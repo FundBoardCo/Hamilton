@@ -1,4 +1,4 @@
-import React, { Suspense, useState } from 'react';
+import React, { Suspense, useEffect, useState } from 'react';
 import { useHistory, useLocation } from 'react-router';
 import { useSelector, useDispatch } from 'react-redux';
 import Modal from 'react-bootstrap/Modal';
@@ -10,7 +10,9 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Timeline } from 'react-twitter-widgets';
 import GreySquare from '../imgs/greySquare.jpg';
 import PersonStamp from '../components/people/PersonStamp';
-import {capitalizeFirstLetter, getSafeVar, statusIsError} from '../utils';
+import { capitalizeFirstLetter, getSafeVar, statusIsError } from '../utils';
+import * as types from '../actions/types';
+import DismissibleStatus from '../components/DismissibleStatus';
 
 function ImgComp(params) {
   const { imgSrc = '', alt = '' } = params;
@@ -25,27 +27,31 @@ const matchData = [
     key: 'isLead',
     faIcon: 'flag',
     text: 'They lead funding rounds.',
+    bool: true,
   },
   {
     key: 'isOpen',
     faIcon: 'door-open',
     text: 'They are open to direct outreach.',
+    bool: true,
   },
   {
     key: 'isImpact',
     faIcon: 'balance-scale',
     text: 'Their organization is an impact fund.',
+    bool: true,
   },
 ];
 
 function MatchBullet(params) {
-  const { faIcon, text } = params;
+  const { faIcon, text, bool } = params;
   return (
     <li>
-      <div className="iconDisc bg-primary">
+      <div className={`iconDisc ${bool ? 'bg-primary' : 'bg-warning-light3'}`}>
         <FontAwesomeIcon icon={faIcon} />
+        {!bool && <FontAwesomeIcon icon="ban" className="iconDiscOverlay text-warning" />}
       </div>
-      <span>{text}</span>
+      <span className={bool ? 'text-primary' : 'text-warning'}>{text}</span>
     </li>
   );
 }
@@ -59,25 +65,67 @@ const usdFormatter = new Intl.NumberFormat('en-US', {
 export default function Investor(props) {
   const { match } = props;
   const { params } = match;
-  const { investor } = params;
+  const { uuid } = params;
 
   const people = useSelector(state => state.people);
-  const data = people[investor] || {};
-  const twitterName = getSafeVar(() => data.twitter.substr(data.twitter.lastIndexOf('/') + 1), '');
+  const data = people[uuid] || {};
+  console.log(data)
+  const {
+    status,
+    name,
+    image_url = '',
+    primary_job_title = '',
+    primary_organization = {},
+    description,
+    permalink,
+    linkedin,
+    twitter,
+    raise_min,
+    raise_max,
+    location_city,
+    location_state,
+    investments = [],
+    is_lead_investor = false,
+    is_open = false,
+    is_impact = false,
+    isBoard = false,
+    invalid,
+    invalid_status,
+  } = data;
 
-  const searchData = useSelector(state => state.search.results[investor] || {});
+  const primary_organization_logo = primary_organization.image_url || '';
+  const primary_organization_name = primary_organization.name || '';
+  const twitterName = getSafeVar(() => twitter.substr(twitter.lastIndexOf('/') + 1), '');
 
-  const { matches = {} } = searchData;
+  const searchData = useSelector(state => state.search.results[uuid] || {});
+
+  const searchKeywords = useSelector(state => state.search.keywords);
+  const searchRaise = useSelector(state => state.search.raise);
+  const searchLocation = useSelector(state => state.search.location);
+  const extraZipCodes = useSelector(state => state.search.extraZipcodes);
+  const cityZipCodes = useSelector(state => state.search.cityZipCodes.zipCodes);
+  const searchZipCodes = [searchLocation, ...extraZipCodes];
+  const investorString = Object.values(data).join(' ').toLowerCase();
+  const overlappingZips = cityZipCodes.filter(z => searchZipCodes.includes(z));
+
+  const matches = {
+    keywords: [],
+    raise: searchRaise >= raise_min && searchRaise <= raise_max,
+    location: overlappingZips.length > 0,
+  };
+  // TODO: manually determine matches here, it is not in search data
+  searchKeywords.forEach(k => {
+    if (investorString.includes(k.toLowerCase())) matches.keywords.push(k);
+  });
+
   let percentageMatch = (Array.isArray(matches.keywords) && matches.keywords.length) || 0;
   if (matches.raise) percentageMatch += 1;
   if (matches.location) percentageMatch += 1;
   percentageMatch = Math.floor((percentageMatch / 7) * 100);
 
-  const name = `${data['first name']} ${data['last name']}`;
-
   const investors = useSelector(state => state.board.ids) || [];
 
-  const isOnBoard = investors.includes(investor);
+  const isOnBoard = investors.includes(uuid);
 
   const [invalidOpen, setInvalidOpen] = useState(false);
 
@@ -93,14 +141,35 @@ export default function Investor(props) {
 
   const dispatch = useDispatch();
 
+  useEffect(() => {
+    dispatch({
+      type: types.PEOPLE_GET_REQUEST,
+      ids: [uuid],
+    });
+  }, [dispatch, uuid]);
+
+  useEffect(() => {
+    dispatch({
+      type: types.PEOPLE_GET_INVESTMENTS_REQUEST,
+      id: uuid,
+    });
+  }, [dispatch, uuid]);
+
+  useEffect(() => {
+    dispatch({
+      type: types.SEARCH_GET_CITYZIPCODES_REQUESTED,
+      params: { city: location_city, state: location_state },
+    });
+  }, [dispatch, location_city, location_state]);
+
   const addInvestor = () => dispatch({
     type: 'BOARD_ADD',
-    id: investor,
+    id: uuid,
   });
 
   const removeInvestor = () => dispatch({
     type: 'BOARD_REMOVE',
-    id: investor,
+    id: uuid,
   });
 
   const toggleInvestor = () => {
@@ -114,7 +183,7 @@ export default function Investor(props) {
   const reportInvalid = reason => dispatch({
     type: 'PERSON_PUT_INVALID_REQUESTED',
     params: {
-      uuid: investor,
+      uuid,
       reason,
     },
   });
@@ -122,7 +191,7 @@ export default function Investor(props) {
   const clearInvalid = () => dispatch({
     type: 'PERSON_CLEAR_INVALID',
     params: {
-      uuid: investor,
+      uuid,
     },
   });
 
@@ -131,6 +200,9 @@ export default function Investor(props) {
     bgCol: isOnBoard ? 'bg-warning' : 'bg-secondary',
     track: isOnBoard ? 'remove' : 'add',
   };
+
+  let locationText = location_state ? `${location_city}, ${location_state}` : location_state;
+  locationText = locationText ? `They are located in ${locationText}.` : 'No location available.';
 
   return (
     <Modal
@@ -152,7 +224,7 @@ export default function Investor(props) {
           <div className="thumbCol">
             <div className="thumb">
               <Suspense fallback={<Spinner animation="border" variant="info" role="status" size="sm" />}>
-                <ImgComp imgSrc={data.image_id} alt={name} />
+                <ImgComp imgSrc={image_url} alt={name} />
               </Suspense>
             </div>
           </div>
@@ -161,31 +233,54 @@ export default function Investor(props) {
             <div className="orgDetails">
               <div className="orgLogoWrapper">
                 <Suspense fallback={<Spinner animation="border" variant="info" role="status" size="sm" />}>
-                  <ImgComp imgSrc={data.logo} alt={data.primary_organization} />
+                  <ImgComp imgSrc={primary_organization_logo} alt={primary_organization_name} />
                 </Suspense>
               </div>
               <div>
-                {`${data.primary_job_title}${data.primary_job_title && ','}`}
-                {`${data.primary_job_title ? '\xa0' : ''}`}
-                {data.primary_organization}
+                {`${primary_job_title}${primary_job_title && ','}`}
+                {`${primary_job_title ? '\xa0' : ''}`}
+                {primary_organization_name}
               </div>
             </div>
           </div>
         </div>
-        <div className="crunchBaseAttribution mb-2">
-          Sourced from CrunchBase.&nbsp;
-          <a
-            href={data.crunchbase}
-            target="_blank"
-            rel="noopener noreferrer"
-            data-track={`${path}InvestorCrunchBase`}
-          >
-            Click to view profile.
-          </a>
-        </div>
-        {data.description && (
+        <DismissibleStatus
+          status={status}
+          showSuccess={false}
+          dissmissAction={types.PEOPLE_GET_DISMISS}
+          dismissParams={{ ids: [uuid] }}
+        />
+        {permalink && (
+          <div className="crunchBaseAttribution mb-2">
+            Sourced from CrunchBase.&nbsp;
+            <a
+              href={`https://www.crunchbase.com/person/${permalink}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              data-track={`${path}InvestorCrunchBase`}
+            >
+              Click to view profile.
+            </a>
+          </div>
+        )}
+        {description && (
           <div className="description mb-3">
-            {data.description}
+            {description}
+          </div>
+        )}
+        {linkedin && (
+          <div className="mb-4 h3 text-linkedin d-flex">
+            <FontAwesomeIcon icon={['fab', 'linkedin']} />
+            &nbsp;
+            <a
+              href={linkedin}
+              className="text-linkedin"
+              target="_blank"
+              rel="noopener noreferrer"
+              data-track={`${path}InvestorLinkedIn`}
+            >
+              LinkedIn Profile
+            </a>
           </div>
         )}
         <div className="matches">
@@ -197,39 +292,40 @@ export default function Investor(props) {
               }
               return null;
             })}
-            {Array.isArray(matches.keywords) && matches.keywords.length && (
-              <MatchBullet
-                faIcon="key"
-                text={`Their matching interests: ${matches.keywords.join(', ')}.`}
-              />
-            )}
-            {matches.raise && (
-              <MatchBullet
-                faIcon="rocket"
-                text={`They invest between ${usdFormatter.format(data.raiseMin)} and ${usdFormatter.format(data.raiseMax)}.`}
-              />
-            )}
-            {matches.location && (
-              <MatchBullet
-                faIcon="map-marker-alt"
-                text={`They are located in ${data.location_city}, ${data.location_state}`}
-              />
-            )}
+            <MatchBullet
+              faIcon="key"
+              bool={matches.keywords.length > 0}
+              text={`Their matching interests: ${matches.keywords.length ? matches.keywords.join(', ') : 'none'}.`}
+            />
+            <MatchBullet
+              faIcon="rocket"
+              bool={matches.raise}
+              text={`They invest between ${usdFormatter.format(raise_min)} and ${usdFormatter.format(raise_max)}.`}
+            />
+            <MatchBullet
+              faIcon="map-marker-alt"
+              bool={matches.location}
+              text={locationText}
+            />
           </ul>
         </div>
-        <div className="funded">
-          <h2>Founders they&apos;ve funded</h2>
-          <div className="founders">
-            {Array.isArray(data.investments) && data.investments.map(i => {
-              const pProps = {
-                org_name: i.name,
-                logo_url: i.logo_url,
-                ...i.founders[0],
-              };
-              return <PersonStamp key={i.id} {...pProps} />;
-            })}
+        {Array.isArray(investments) && investments.length > 0 && (
+          <div className="funded">
+            <h2>Founders they&apos;ve funded</h2>
+            <div className="founders">
+              {Array.isArray(investments) && investments.map(i => {
+                if (!i.founders || !i.founders[0]) return null;
+                const founder = (i.founders && i.founders[0]) || {};
+                const pProps = {
+                  org_name: i.name,
+                  logo_url: i.image_url,
+                  ...founder,
+                };
+                return <PersonStamp key={i.id} {...pProps} />;
+              })}
+            </div>
           </div>
-        </div>
+        )}
         <div className="twitterFeed">
           {twitterName && (
             <Timeline
@@ -245,22 +341,7 @@ export default function Investor(props) {
             />
           )}
         </div>
-        {data.linkedin && (
-          <div className="mb-4 h3 text-linkedin d-flex">
-            <FontAwesomeIcon icon={['fab', 'linkedin']} />
-            &nbsp;
-            <a
-              href={data.linkedin}
-              className="text-linkedin"
-              target="_blank"
-              rel="noopener noreferrer"
-              data-track={`${path}InvestorLinkedIn`}
-            >
-              LinkedIn Profile
-            </a>
-          </div>
-        )}
-        <div className={`invalidWrapper ${invalidOpen ? 'open' : ''}`}>
+        <div className="invalidWrapper">
           {!data.invalid && (
             <div className="openLinkWrapper">
               <FontAwesomeIcon icon="exclamation-triangle" />
@@ -279,21 +360,21 @@ export default function Investor(props) {
               {!data.invalid_status && (
                 <div>
                   <Button
-                    variant="danger-light"
+                    variant="link"
                     onClick={() => reportInvalid('NameTitleOrg')}
                     data-track={`${path}InvestorInvalid-NameTitleOrg`}
                   >
                     The name, title, or their organization is outdated
                   </Button>
                   <Button
-                    variant="danger-light"
+                    variant="link"
                     onClick={() => reportInvalid('Criteria')}
                     data-track={`${path}InvestorInvalid-Criteria`}
                   >
                     They shouldn&apos;t be in my search results.
                   </Button>
                   <Button
-                    variant="danger-light"
+                    variant="link"
                     onClick={() => reportInvalid('Other')}
                     data-track={`${path}InvestorInvalid-Other`}
                   >
@@ -325,8 +406,8 @@ export default function Investor(props) {
             </div>
           )}
           {data.invalid && (
-            <div className="p-3 text-center h4 text-danger">
-              Thank you. Your report has been recieved.
+            <div className="p-3 text-center h4 text-info">
+              Thank you. Your report has been received.
             </div>
           )}
         </div>

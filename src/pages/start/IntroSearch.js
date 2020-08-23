@@ -36,7 +36,7 @@ export default function Search() {
             <FontAwesomeIcon icon="caret-left" />
             {stage !== 0 && (
               <span>
-                {`Back to ${INTROSEARCH_STAGES[stage - 1]}`}
+                {`Back: ${INTROSEARCH_STAGES[stage - 1]}`}
               </span>
             )}
           </button>
@@ -53,7 +53,7 @@ export default function Search() {
           >
             {stage < INTROSEARCH_STAGES.length - 1 && (
               <span>
-                {`Forward to ${INTROSEARCH_STAGES[stage + 1]}`}
+                {`Next: ${INTROSEARCH_STAGES[stage + 1]}`}
               </span>
             )}
             <FontAwesomeIcon icon="caret-right" />

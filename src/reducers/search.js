@@ -5,6 +5,7 @@ import { getSafeVar, processErr } from '../utils';
 const defaultState = {
   results_status: '',
   extraZipcodes_status: '',
+  cityZipCodes: { zipCodes: [] },
   results: {},
   keywords: [],
   raise: 100000,
@@ -13,26 +14,17 @@ const defaultState = {
   firstTime: true,
 };
 
+const resetState = {
+  cityZipCodes: { zipCodes: [] },
+};
+
 export default function search(state = { ...defaultState }, action) {
   const rehydration = getSafeVar(() => action.payload.search, {});
-  const results = {};
-  // TODO: remove this when we have real data
-  const fakeSearchData = {
-    isLead: true,
-    isOpen: true,
-    isImpact: true,
-    matches: {
-      keywords: ['B2B', 'AI', 'Automation', 'AR'],
-      raise: true,
-      location: true,
-      name: true,
-      org: true,
-    },
-  };
   switch (action.type) {
     case REHYDRATE: return {
       ...state,
       ...rehydration,
+      ...resetState,
     };
     case types.SEARCH_SET_KEYWORDS: return {
       ...state,
@@ -64,20 +56,40 @@ export default function search(state = { ...defaultState }, action) {
       ...state,
       extraZipcodes_status: processErr(action.error),
     };
+    case types.SEARCH_GET_CITYZIPCODES_REQUESTED: return {
+      ...state,
+      cityZipCodes: {
+        status: 'pending',
+        city: action.params && action.params.city,
+        state: action.params && action.params.state,
+        zipCodes: [],
+      },
+    };
+    case types.SEARCH_GET_CITYZIPCODES_SUCCEEDED:
+      return {
+        ...state,
+        cityZipCodes: {
+          ...state.cityZipCodes,
+          status: 'succeeded',
+          zipCodes: [...action.data.zip_codes],
+        },
+      };
+    case types.SEARCH_GET_CITYZIPCODES_FAILED: return {
+      ...state,
+      cityZipCodes: {
+        ...state.cityZipCodes,
+        status: processErr(action.error),
+      },
+    };
     case types.SEARCH_GET_RESULTS_REQUESTED: return {
       ...state,
       results_status: 'pending',
       firstTime: false,
     };
     case types.SEARCH_GET_RESULTS_SUCCEEDED:
-      if (action.data.records) {
-        action.data.records.forEach(r => {
-          results[r.id] = { ...fakeSearchData, ...r.fields };
-        });
-      }
       return {
         ...state,
-        results,
+        records: action.data,
         results_status: 'succeeded',
       };
     case types.SEARCH_GET_RESULTS_FAILED: return {
