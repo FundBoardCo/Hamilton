@@ -12,7 +12,6 @@ import * as types from '../../actions/types';
 
 function ImgComp(params) {
   const { imgSrc = '', alt = '' } = params;
-  console.log(imgSrc)
   const { src } = useImage({
     srcList: imgSrc || GreySquare,
   });
@@ -23,19 +22,17 @@ export default function Person(props) {
   const {
     uuid,
     name,
-    image_id = '',
+    image_url = '',
     primary_job_title = '',
     primary_organization = {},
     matches = {},
-    isLead = false,
-    isOpen = false,
-    isImpact = false,
+    // isLead = false,
+    // isOpen = false,
+    // isImpact = false,
     isBoard = false,
   } = props;
-  console.log(props)
-  console.log(image_id)
   const primary_organization_logo = primary_organization.image_url || '';
-  const primary_organization_name = primary_organization.value || '';
+  const primary_organization_name = primary_organization.name || '';
   const matchForPercentage = { ...matches };
   let percentageMatch = (matchForPercentage.keywords && matchForPercentage.keywords.length) || 0;
   if (matchForPercentage.raise) percentageMatch += 1;
@@ -107,7 +104,7 @@ export default function Person(props) {
         data-track={`${path}PersonThumb`}
       >
         <Suspense fallback={<Spinner animation="border" variant="info" role="status" size="sm" />}>
-          <ImgComp imgSrc={image_id} alt={name} />
+          <ImgComp imgSrc={image_url} alt={name} />
         </Suspense>
       </button>
       <div className="content">
@@ -159,10 +156,11 @@ export default function Person(props) {
 
 Person.defaultProps = {
   uuid: 'not found',
-  image_id: '',
+  name: '',
+  image_url: '',
   primary_job_title: '',
   primary_organization: {
-    value: '',
+    name: '',
     image_url: '',
     permalink: '',
     entity_def_id: '',
@@ -177,15 +175,16 @@ Person.defaultProps = {
     name: false,
     org: false,
   },
-  isLead: false,
-  isOpen: false,
-  isImpact: false,
+  // isLead: false,
+  // isOpen: false,
+  // isImpact: false,
   isBoard: false,
 };
 
 Person.propTypes = {
   uuid: PropTypes.string,
-  image_id: PropTypes.string,
+  name: PropTypes.string,
+  image_url: PropTypes.string,
   primary_job_title: PropTypes.string,
   primary_organization: PropTypes.objectOf(PropTypes.oneOfType([PropTypes.string, PropTypes.bool])),
   matches: PropTypes.shape({
@@ -195,8 +194,8 @@ Person.propTypes = {
     name: PropTypes.bool,
     org: PropTypes.bool,
   }),
-  isLead: PropTypes.bool,
-  isOpen: PropTypes.bool,
-  isImpact: PropTypes.bool,
+  // isLead: PropTypes.bool,
+  // isOpen: PropTypes.bool,
+  // isImpact: PropTypes.bool,
   isBoard: PropTypes.bool,
 };

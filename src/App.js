@@ -113,31 +113,16 @@ function App() {
             <span className="navVersion">Alpha 0.1</span>
           </a>
           <Nav className="ml-auto" defaultActiveKey={window.location.pathname}>
-            {!loggedIn
-            && (
-              <Button
-                variant="link"
-                className="login navbar-btn"
-                onClick={onShowLogin}
-                data-track="navLogin"
-              >
-                <FontAwesomeIcon icon="sign-in-alt" />
-                <span>Log In</span>
-              </Button>
-            )}
-            {loggedIn
-            && (
-              <Nav.Link
-                as={NavLink}
-                href="/board"
-                to="/board"
-                className="board"
-                data-track="navBoard"
-              >
-                <FontAwesomeIcon icon="list" />
-                <span>My FundBoard</span>
-              </Nav.Link>
-            )}
+            <Nav.Link
+              as={NavLink}
+              href="/board"
+              to="/board"
+              className="board"
+              data-track="navBoard"
+            >
+              <FontAwesomeIcon icon="list" />
+              <span>My FundBoard</span>
+            </Nav.Link>
             {!firstTime
             && (
               <Nav.Link
@@ -177,6 +162,18 @@ function App() {
               <FontAwesomeIcon icon="comment-dots" />
               <span>Talk to Us</span>
             </Nav.Link>
+            {!loggedIn
+            && (
+              <Button
+                variant="link"
+                className="login navbar-btn"
+                onClick={onShowLogin}
+                data-track="navLogin"
+              >
+                <FontAwesomeIcon icon="sign-in-alt" />
+                <span>Log In</span>
+              </Button>
+            )}
           </Nav>
         </Navbar>
         <main id="Main">

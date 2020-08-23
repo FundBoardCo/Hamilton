@@ -5,6 +5,7 @@ import Col from 'react-bootstrap/Col';
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import * as types from '../../actions/types';
+import DismissibleStatus from '../../components/DismissibleStatus';
 
 export default function Profile() {
   const loggedIn = useSelector(state => state.user.loggedIn);
@@ -12,8 +13,8 @@ export default function Profile() {
   const {
     email,
   } = user;
-  const updateState = useSelector(state => state.update_status);
-  const deleteState = useSelector(state => state.delete_status);
+  const updateStatus = useSelector(state => state.user.update_status);
+  const deleteStatus = useSelector(state => state.user.delete_status);
 
   const [validated, setValidated] = useState(false);
   const [emailValue, setEmailValue] = useState(email);
@@ -99,21 +100,21 @@ export default function Profile() {
     };
   }
 
-  if (updateState === 'pending') {
+  if (updateStatus === 'pending') {
     btnProps.update = {
       text: 'updating...',
       disabled: true,
     };
   }
 
-  if (deleteState === 'pending') {
+  if (deleteStatus === 'pending') {
     btnProps.delete = {
       text: 'deleting...',
       disabled: true,
     };
   }
 
-  if (deleteState === 'succeeded') {
+  if (deleteStatus === 'succeeded') {
     btnProps.delete = {
       variant: 'success',
       text: 'Account deleted',
@@ -163,12 +164,11 @@ export default function Profile() {
               Please enter a valid password.
             </Form.Control.Feedback>
           </Form.Group>
+          <DismissibleStatus
+            status={updateStatus}
+            dissmissAction={types.USER_UPDATE_DISSMISSED}
+          />
           <div className="d-flex flex-grow-1 justify-content-end">
-            {updateState === 'succeeded' && (
-              <div className="mr-auto text-success">
-                Information updated.
-              </div>
-            )}
             <Button
               className="btnMobile100"
               type="submit"
@@ -196,6 +196,10 @@ export default function Profile() {
         <h2 className="text-center">Delete Account</h2>
         <p>Click the button below to permanently delete your account.</p>
         <p><em>There is no way to recover a deleted account, be certain before proceeding.</em></p>
+        <DismissibleStatus
+          status={deleteStatus}
+          dissmissAction={types.USER_UPDATE_DISSMISSED}
+        />
         <div className="d-flex flex-grow-1 justify-content-end">
           <Button
             className="btnMobile100"

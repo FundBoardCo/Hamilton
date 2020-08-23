@@ -7,10 +7,12 @@ const defaults = {
   create_status: '',
   login_status: '',
   loggedIn: false,
+  token: null,
   update_status: '',
   delete_status: '',
   reset_status: '',
   password: '',
+  investors: [],
 };
 
 const resets = {
@@ -74,6 +76,23 @@ export default function user(state = { ...defaults }, action) {
       ...defaults,
       // if needed, delete any cookies here
     };
+    case types.USER_GET_PROFILE_REQUESTED: return {
+      ...state,
+      get_status: 'pending',
+    };
+    case types.USER_GET_PROFILE_SUCCEEDED: return {
+      ...state,
+      get_status: 'succeeded',
+      investors: getSafeVar(() => action.data.investors, []),
+    };
+    case types.USER_GET_PROFILE_FAILED: return {
+      ...state,
+      get_status: processErr(action.error),
+    };
+    case types.USER_GET_PROFILE_DISMISSED: return {
+      ...state,
+      get_status: '',
+    };
     case types.USER_UPDATE_REQUESTED: return {
       ...state,
       update_status: 'pending',
@@ -82,6 +101,7 @@ export default function user(state = { ...defaults }, action) {
       ...state,
       update_status: 'succeeded',
       email: action.email,
+      investors: action.investors,
     };
     case types.USER_UPDATE_FAILED: return {
       ...state,
@@ -98,6 +118,7 @@ export default function user(state = { ...defaults }, action) {
     case types.USER_DELETE_SUCCEEDED: return {
       ...state,
       loggedIn: false,
+      token: null,
       delete_status: 'succeeded',
     };
     case types.USER_DELETE_FAILED: return {

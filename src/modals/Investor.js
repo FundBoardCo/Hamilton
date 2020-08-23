@@ -66,16 +66,14 @@ export default function Investor(props) {
   const { match } = props;
   const { params } = match;
   const { uuid } = params;
-  console.log(props)
 
   const people = useSelector(state => state.people);
-  console.log(people)
   const data = people[uuid] || {};
   console.log(data)
   const {
     status,
     name,
-    image_id = '',
+    image_url = '',
     primary_job_title = '',
     primary_organization = {},
     description,
@@ -96,16 +94,30 @@ export default function Investor(props) {
   } = data;
 
   const primary_organization_logo = primary_organization.image_url || '';
-  const primary_organization_name = primary_organization.value || '';
+  const primary_organization_name = primary_organization.name || '';
   const twitterName = getSafeVar(() => twitter.substr(twitter.lastIndexOf('/') + 1), '');
 
   const searchData = useSelector(state => state.search.results[uuid] || {});
 
-  const { matches = {} } = searchData;
-  // TODO: test code, remove
-  matches.keywords = ['test', 'foo', 'bar'];
-  matches.raise = Math.random() >= 0.5;
-  matches.location = Math.random() >= 0.5;
+  const searchKeywords = useSelector(state => state.search.keywords);
+  const searchRaise = useSelector(state => state.search.raise);
+  const searchLocation = useSelector(state => state.search.location);
+  const extraZipCodes = useSelector(state => state.search.extraZipcodes);
+  const cityZipCodes = useSelector(state => state.search.cityZipCodes.zipCodes);
+  const searchZipCodes = [searchLocation, ...extraZipCodes];
+  const investorString = Object.values(data).join(' ').toLowerCase();
+  const overlappingZips = cityZipCodes.filter(z => searchZipCodes.includes(z));
+
+  const matches = {
+    keywords: [],
+    raise: searchRaise >= raise_min && searchRaise <= raise_max,
+    location: overlappingZips.length > 0,
+  };
+  // TODO: manually determine matches here, it is not in search data
+  searchKeywords.forEach(k => {
+    if (investorString.includes(k.toLowerCase())) matches.keywords.push(k);
+  });
+
   let percentageMatch = (Array.isArray(matches.keywords) && matches.keywords.length) || 0;
   if (matches.raise) percentageMatch += 1;
   if (matches.location) percentageMatch += 1;
@@ -142,6 +154,13 @@ export default function Investor(props) {
       id: uuid,
     });
   }, [dispatch, uuid]);
+
+  useEffect(() => {
+    dispatch({
+      type: types.SEARCH_GET_CITYZIPCODES_REQUESTED,
+      params: { city: location_city, state: location_state },
+    });
+  }, [dispatch, location_city, location_state]);
 
   const addInvestor = () => dispatch({
     type: 'BOARD_ADD',
@@ -182,6 +201,9 @@ export default function Investor(props) {
     track: isOnBoard ? 'remove' : 'add',
   };
 
+  let locationText = location_state ? `${location_city}, ${location_state}` : location_state;
+  locationText = locationText ? `They are located in ${locationText}.` : 'No location available.';
+
   return (
     <Modal
       size="lg"
@@ -202,7 +224,7 @@ export default function Investor(props) {
           <div className="thumbCol">
             <div className="thumb">
               <Suspense fallback={<Spinner animation="border" variant="info" role="status" size="sm" />}>
-                <ImgComp imgSrc={image_id} alt={name} />
+                <ImgComp imgSrc={image_url} alt={name} />
               </Suspense>
             </div>
           </div>
@@ -273,7 +295,7 @@ export default function Investor(props) {
             <MatchBullet
               faIcon="key"
               bool={matches.keywords.length > 0}
-              text={`Their matching interests: ${matches.keywords.join(', ')}.`}
+              text={`Their matching interests: ${matches.keywords.length ? matches.keywords.join(', ') : 'none'}.`}
             />
             <MatchBullet
               faIcon="rocket"
@@ -283,7 +305,7 @@ export default function Investor(props) {
             <MatchBullet
               faIcon="map-marker-alt"
               bool={matches.location}
-              text={`They are located in ${location_city}, ${location_state}`}
+              text={locationText}
             />
           </ul>
         </div>
@@ -292,10 +314,12 @@ export default function Investor(props) {
             <h2>Founders they&apos;ve funded</h2>
             <div className="founders">
               {Array.isArray(investments) && investments.map(i => {
+                if (!i.founders || !i.founders[0]) return null;
+                const founder = (i.founders && i.founders[0]) || {};
                 const pProps = {
                   org_name: i.name,
-                  logo_url: i.logo_url,
-                  ...i.founders[0],
+                  logo_url: i.image_url,
+                  ...founder,
                 };
                 return <PersonStamp key={i.id} {...pProps} />;
               })}
