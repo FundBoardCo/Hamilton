@@ -422,10 +422,10 @@ function* watchPeopleGetResults() {
 }
 
 function getPeopleInvestments(params) {
-  const { ids, token } = params;
+  const { id, token } = params;
   return axios({
     method: 'get',
-    url: `${api}investments?${toQueryString({ ids })}`,
+    url: `${api}investments?${toQueryString({ id })}`,
     headers: {
       Authorization: token,
     },
@@ -438,9 +438,19 @@ function* workPeopleGetInvestments(action) {
   try {
     params.token = yield select(getToken);
     const results = yield call(getPeopleInvestments, params);
-    yield put({ type: types.PEOPLE_GET_INVESTMENTS_SUCCEEDED, params, id, data: results.data });
+    yield put({
+      type: types.PEOPLE_GET_INVESTMENTS_SUCCEEDED,
+      params,
+      id,
+      data: results.data,
+    });
   } catch (error) {
-    yield put({ type: types.PEOPLE_GET_INVESTMENTS_FAILED, id, params, error });
+    yield put({
+      type: types.PEOPLE_GET_INVESTMENTS_FAILED,
+      id,
+      params,
+      error,
+    });
   }
 }
 

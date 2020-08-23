@@ -73,6 +73,7 @@ export default function people(state = {}, action) {
         [action.id]: {
           ...state[action.id],
           investmentsStatus: 'pending',
+          investments: [],
         },
       };
     case types.PEOPLE_GET_INVESTMENTS_SUCCEEDED:
