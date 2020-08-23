@@ -47,7 +47,7 @@ export default function Board() {
     // TODO change this for API data
     csvPer['Investor Name'] = person.name || '';
     csvPer.Title = person.primary_job_title || '';
-    csvPer.Organization = org.value || '';
+    csvPer.Organization = org.name || '';
     csvPer.Priority = '';
     csvPer['Introed By'] = '';
     csvPer['Date of Intro'] = '';

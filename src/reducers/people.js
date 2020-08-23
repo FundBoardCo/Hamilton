@@ -93,9 +93,17 @@ export default function people(state = {}, action) {
       };
     case types.PEOPLE_UPDATE:
       // used with search for partial data
+      if (Array.isArray(data)) {
+        data.forEach(r => {
+          records[r.uuid] = {
+            ...state[r.uuid],
+            ...r,
+          };
+        });
+      }
       return {
         ...state,
-        records: { ...state.records, ...action.data },
+        ...records,
       };
     case types.PERSON_PUT_INVALID_REQUESTED:
       return {
