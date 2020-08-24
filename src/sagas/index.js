@@ -22,8 +22,6 @@ import * as types from '../actions/types';
 
 const api = 'https://api.fundboard.co/';
 
-axios.defaults.withCredentials = true;
-
 const webFlowAPI = new Webflow({ token: WEBFLOW_APIKEY });
 
 const getToken = state => state.user.token;
