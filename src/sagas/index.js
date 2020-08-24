@@ -24,8 +24,11 @@ const api = 'https://api.fundboard.co/';
 
 const webFlowAPI = new Webflow({ token: WEBFLOW_APIKEY });
 
+axios.defaults.withCredentials = true;
+
 const getToken = state => state.user.token;
 const getEmail = state => state.user.email;
+const getInvestors = state => state.user.investors;
 const getBoard = state => state.board.ids;
 
 function trackErr(err) {
@@ -97,6 +100,9 @@ function* workUserLogin(action) {
     const { params } = action;
     const results = yield call(userLogin, params);
     yield put({ type: types.USER_LOGIN_SUCCEEDED, data: results.data });
+    yield put({ type: types.USER_GET_PROFILE_REQUESTED });
+    const investors = yield select(getInvestors);
+    yield put({ type: types.BOARD_MERGE, ids: [...investors] });
     const board = yield select(getBoard);
     if (Array.isArray(board) && board.length) {
       const uParams = { investors: [...board] };
@@ -183,7 +189,9 @@ function* workUserGetProfile() {
   try {
     const token = yield select(getToken);
     const results = yield call(getUserProfile, token);
+    const ids = getSafeVar(() => results.data.investors, []);
     yield put({ type: types.USER_GET_PROFILE_SUCCEEDED, data: results.data });
+    yield put({ type: types.BOARD_MERGE, ids });
   } catch (error) {
     trackErr(error);
     if (isLoginErr(error)) yield put(loginErrProps);

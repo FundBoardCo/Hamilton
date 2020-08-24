@@ -18,6 +18,10 @@ export default function board(state = { ids: [] }, action) {
       ...state,
       ids: state.ids.filter(i => i !== action.id),
     };
+    case types.BOARD_MERGE: return {
+      ...state,
+      ids: [...new Set([...state.ids, action.ids])],
+    };
     default: return state;
   }
 }
