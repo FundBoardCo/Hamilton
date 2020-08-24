@@ -234,18 +234,22 @@ export default function Investor(props) {
           <div className="d-flex flex-column">
             <h1>{name}</h1>
             <div className="orgDetails">
-              <div className="orgLogoWrapper">
-                <Suspense fallback={<Spinner animation="border" variant="info" role="status" size="sm" />}>
-                  <ErrorBoundary>
-                    <ImgComp imgSrc={primary_organization_logo} alt={primary_organization_name} />
-                  </ErrorBoundary>
-                </Suspense>
-              </div>
-              <div>
-                {`${primary_job_title}${primary_job_title && ','}`}
-                {`${primary_job_title ? '\xa0' : ''}`}
-                {primary_organization_name}
-              </div>
+              {primary_organization_logo && (
+                <div className="orgLogoWrapper">
+                  <Suspense fallback={<Spinner animation="border" variant="info" role="status" size="sm" />}>
+                    <ErrorBoundary>
+                      <ImgComp imgSrc={primary_organization_logo} alt={primary_organization_name} />
+                    </ErrorBoundary>
+                  </Suspense>
+                </div>
+              )}
+              {(primary_job_title || primary_organization_name) && (
+                <div>
+                  {`${primary_job_title}${primary_job_title && ','}`}
+                  {`${primary_job_title ? '\xa0' : ''}`}
+                  {primary_organization_name}
+                </div>
+              )}
             </div>
           </div>
         </div>

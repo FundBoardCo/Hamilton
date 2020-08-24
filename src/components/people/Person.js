@@ -134,11 +134,13 @@ export default function Person(props) {
             </div>
           )}
           <div className="orgText">
-            <div>
-              {`${primary_job_title}${primary_job_title && ','}`}
-              {`${primary_job_title ? '\xa0' : ''}`}
-              {primary_organization_name}
-            </div>
+            {primary_job_title && (
+              <div>
+                {`${primary_job_title}${primary_job_title && ','}`}
+                {`${primary_job_title ? '\xa0' : ''}`}
+                {primary_organization_name}
+              </div>
+            )}
           </div>
         </div>
       </div>
