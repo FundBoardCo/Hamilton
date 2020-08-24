@@ -16,6 +16,9 @@ const defaultState = {
 
 const resetState = {
   cityZipCodes: { zipCodes: [] },
+  keywords: [],
+  raise: 100000,
+  location: '',
 };
 
 export default function search(state = { ...defaultState }, action) {
