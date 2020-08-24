@@ -20,7 +20,7 @@ export default function Intro() {
           Build your FundBoard
         </a>
         <p className="txSm tx-lg-tx text-center">
-          <i>If you&apos;re not raising right now, you can stil prep with a Fundboard,</i>
+          <i>If you&apos;re not raising right now, you can still prep with a Fundboard,</i>
           <br />
           <a
             href="https://fundboard.co"
