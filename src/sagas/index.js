@@ -24,8 +24,6 @@ const api = 'https://api.fundboard.co/';
 
 const webFlowAPI = new Webflow({ token: WEBFLOW_APIKEY });
 
-axios.defaults.withCredentials = true;
-
 const getToken = state => state.user.token;
 const getEmail = state => state.user.email;
 const getInvestors = state => state.user.investors;
