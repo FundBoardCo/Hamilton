@@ -2,10 +2,13 @@ import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
+import DismissibleStatus from '../../components/DismissibleStatus';
+import * as types from '../../actions/types';
 
 export default function Keywords() {
   const searchKeywords = useSelector(state => state.search.keywords) || [];
   const airtableKeywords = useSelector(state => state.airtable.keywords) || {};
+  const airtabelKeywordsStatus = airtableKeywords.status;
   const wordsToShow = Array.isArray(airtableKeywords.data) ? airtableKeywords.data : [];
 
   const [showTileWarning, setShowTileWarning] = useState(false);
@@ -42,6 +45,11 @@ export default function Keywords() {
           We Are
         </h1>
         <p className="text-center">Choose up to 5 keywords that describe your startup.</p>
+        <DismissibleStatus
+          status={airtabelKeywordsStatus}
+          showSuccess={false}
+          dissmissAction={types.AIRTABLE_GET_KEYWORDS_DISMISSED}
+        />
         <div className="tilesWrapper">
           <div className="tiles">
             {wordsToShow.map(w => {

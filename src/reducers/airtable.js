@@ -12,21 +12,20 @@ export default function airTable(state = { ...defaultState }, action) {
     case types.AIRTABLE_GET_KEYWORDS_REQUESTED: return {
       ...state,
       keywords: {
-        state: 'pending',
+        status: 'pending',
       },
     };
     case types.AIRTABLE_GET_KEYWORDS_SUCCEEDED: return {
       ...state,
       keywords: {
-        state: 'succeeded',
+        status: 'succeeded',
         data: action.data.records.map(r => capitalizeFirstLetter(r.fields.Keyword)).sort(),
       },
-
     };
     case types.AIRTABLE_GET_KEYWORDS_FAILED: return {
       ...state,
       keywords: {
-        state: processErr(action.error),
+        status: processErr(action.error),
       },
     };
     case types.FEEDBACK_SEND_REQUESTED: return {
