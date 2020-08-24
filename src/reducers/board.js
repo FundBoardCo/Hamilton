@@ -4,11 +4,12 @@ import { getSafeVar } from '../utils';
 
 export default function board(state = { ids: [] }, action) {
   const rehydration = getSafeVar(() => action.payload.board, {});
+  const rIds = getSafeVar(() => rehydration.board.ids, []);
   switch (action.type) {
     case REHYDRATE: return {
       ...state,
       ...rehydration,
-      ids: [...state.ids, ...rehydration.ids],
+      ids: [...state.ids, ...rIds],
     };
     case types.BOARD_ADD: return {
       ...state,
