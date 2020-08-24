@@ -81,6 +81,12 @@ html#ov {
               text-decoration: none;
             }
 
+            &:focus {
+              font-weight: 700;
+              outline: none;
+              text-decoration: none;
+            }
+
             &:disabled,
             &.disabled,
             &[aria-disabled="true"] {
@@ -297,6 +303,11 @@ html#ov {
 
                 span {
                   margin-left: 0.5em;
+                }
+
+                &:focus {
+                  font-weight: 700;
+                  outline: none;
                 }
 
                 &:disabled {
