@@ -197,7 +197,7 @@ export default function Talk() {
               data-track="TalkThumbsDown"
             >
               <FontAwesomeIcon icon="thumbs-down" />
-              <span className="sr-only">Give us a thumbs up.</span>
+              <span className="sr-only">Give us a thumbs down.</span>
             </Button>
           </div>
           <Status
