@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import Spinner from 'react-bootstrap/Spinner';
 import { useImage } from 'react-image';
 import GreySquare from '../../imgs/greySquare.jpg';
+import ErrorBoundary from '../ErrorBoundary';
 
 function ImgComp(params) {
   const { imgSrc = '', alt = '' } = params;
@@ -30,11 +31,15 @@ export default function PersonStamp(props) {
       <a href={`https://www.crunchbase.com/person/${permalink}`} target="_blank" rel="noopener noreferrer">
         <div className="imageWrapper">
           <Suspense fallback={<Spinner animation="border" variant="info" role="status" size="sm" />}>
-            <ImgComp imgSrc={image_url} alt={name} />
+            <ErrorBoundary>
+              <ImgComp imgSrc={image_url} alt={name} />
+            </ErrorBoundary>
           </Suspense>
           <div className="orgLogoWrapper">
             <Suspense fallback={<Spinner animation="border" variant="info" role="status" size="sm" />}>
-              <ImgComp imgSrc={logo_url} alt={org_name} />
+              <ErrorBoundary>
+                <ImgComp imgSrc={logo_url} alt={org_name} />
+              </ErrorBoundary>
             </Suspense>
           </div>
         </div>

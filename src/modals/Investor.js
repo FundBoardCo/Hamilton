@@ -13,6 +13,7 @@ import PersonStamp from '../components/people/PersonStamp';
 import { capitalizeFirstLetter, getSafeVar, statusIsError } from '../utils';
 import * as types from '../actions/types';
 import DismissibleStatus from '../components/DismissibleStatus';
+import ErrorBoundary from '../components/ErrorBoundary';
 
 function ImgComp(params) {
   const { imgSrc = '', alt = '' } = params;
@@ -224,7 +225,9 @@ export default function Investor(props) {
           <div className="thumbCol">
             <div className="thumb">
               <Suspense fallback={<Spinner animation="border" variant="info" role="status" size="sm" />}>
-                <ImgComp imgSrc={image_url} alt={name} />
+                <ErrorBoundary>
+                  <ImgComp imgSrc={image_url} alt={name} />
+                </ErrorBoundary>
               </Suspense>
             </div>
           </div>
@@ -233,7 +236,9 @@ export default function Investor(props) {
             <div className="orgDetails">
               <div className="orgLogoWrapper">
                 <Suspense fallback={<Spinner animation="border" variant="info" role="status" size="sm" />}>
-                  <ImgComp imgSrc={primary_organization_logo} alt={primary_organization_name} />
+                  <ErrorBoundary>
+                    <ImgComp imgSrc={primary_organization_logo} alt={primary_organization_name} />
+                  </ErrorBoundary>
                 </Suspense>
               </div>
               <div>

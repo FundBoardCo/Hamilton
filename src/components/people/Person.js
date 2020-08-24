@@ -9,9 +9,11 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import GreySquare from '../../imgs/greySquare.jpg';
 import { capitalizeFirstLetter } from '../../utils';
 import * as types from '../../actions/types';
+import ErrorBoundary from '../ErrorBoundary';
 
 function ImgComp(params) {
   const { imgSrc = '', alt = '' } = params;
+  console.log(params)
   const { src } = useImage({
     srcList: imgSrc || GreySquare,
   });
@@ -104,7 +106,9 @@ export default function Person(props) {
         data-track={`${path}PersonThumb`}
       >
         <Suspense fallback={<Spinner animation="border" variant="info" role="status" size="sm" />}>
-          <ImgComp imgSrc={image_url} alt={name} />
+          <ErrorBoundary>
+            <ImgComp imgSrc={image_url} alt={name} />
+          </ErrorBoundary>
         </Suspense>
       </button>
       <div className="content">
@@ -123,7 +127,9 @@ export default function Person(props) {
           {primary_organization_logo && (
             <div className="orgLogoWrapper">
               <Suspense fallback={<Spinner animation="border" variant="info" role="status" size="sm" />}>
-                <ImgComp imgSrc={primary_organization_logo} alt={primary_organization_name} />
+                <ErrorBoundary>
+                  <ImgComp imgSrc={primary_organization_logo} alt={primary_organization_name} />
+                </ErrorBoundary>
               </Suspense>
             </div>
           )}
