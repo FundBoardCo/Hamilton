@@ -6,7 +6,7 @@ const defaultState = {
   results_status: '',
   extraZipcodes_status: '',
   cityZipCodes: { zipCodes: [] },
-  results: {},
+  results: [],
   keywords: [],
   raise: 100000,
   location: '',
@@ -84,12 +84,13 @@ export default function search(state = { ...defaultState }, action) {
     case types.SEARCH_GET_RESULTS_REQUESTED: return {
       ...state,
       results_status: 'pending',
+      results: [],
       firstTime: false,
     };
     case types.SEARCH_GET_RESULTS_SUCCEEDED:
       return {
         ...state,
-        records: action.data,
+        results: action.data,
         results_status: 'succeeded',
       };
     case types.SEARCH_GET_RESULTS_FAILED: return {
@@ -103,7 +104,7 @@ export default function search(state = { ...defaultState }, action) {
     case types.SEARCH_CLEAR_RESULTS: return {
       ...state,
       results_status: '',
-      results: {},
+      results: [],
     };
     default: return state;
   }
