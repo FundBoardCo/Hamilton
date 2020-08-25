@@ -13,7 +13,6 @@ import ErrorBoundary from '../ErrorBoundary';
 
 function ImgComp(params) {
   const { imgSrc = '', alt = '' } = params;
-  console.log(params)
   const { src } = useImage({
     srcList: imgSrc || GreySquare,
   });
@@ -27,18 +26,37 @@ export default function Person(props) {
     image_url = '',
     primary_job_title = '',
     primary_organization = {},
-    matches = {},
+    description = '',
+    location_city,
+    location_state,
+    raise_min,
+    raise_max,
     // isLead = false,
     // isOpen = false,
     // isImpact = false,
     isBoard = false,
   } = props;
+
   const primary_organization_logo = primary_organization.image_url || '';
   const primary_organization_name = primary_organization.name || '';
-  const matchForPercentage = { ...matches };
-  let percentageMatch = (matchForPercentage.keywords && matchForPercentage.keywords.length) || 0;
-  if (matchForPercentage.raise) percentageMatch += 1;
-  if (matchForPercentage.location) percentageMatch += 1;
+
+  const searchKeywords = useSelector(state => state.search.keywords);
+  const searchRaise = useSelector(state => state.search.raise);
+  const extraLocations = useSelector(state => state.search.extraLocations);
+
+  const matches = {
+    keywords: [],
+    raise: searchRaise >= raise_min && searchRaise <= raise_max,
+    location:
+      extraLocations.filter(l => l.city === location_city && l.state === location_state).length > 0,
+  };
+  searchKeywords.forEach(k => {
+    if (description && description.includes(k.toLowerCase())) matches.keywords.push(k);
+  });
+
+  let percentageMatch = (Array.isArray(matches.keywords) && matches.keywords.length) || 0;
+  if (matches.raise) percentageMatch += 1;
+  if (matches.location) percentageMatch += 1;
   percentageMatch = Math.floor((percentageMatch / 7) * 100);
 
   const investors = useSelector(state => state.board.ids) || [];

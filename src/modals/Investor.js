@@ -100,23 +100,19 @@ export default function Investor(props) {
 
   const searchData = useSelector(state => state.search.results[uuid] || {});
 
+  const investorString = Object.values(data).join(' ').toLowerCase();
   const searchKeywords = useSelector(state => state.search.keywords);
   const searchRaise = useSelector(state => state.search.raise);
-  const searchLocation = useSelector(state => state.search.location);
-  const extraZipCodes = useSelector(state => state.search.extraZipcodes);
-  const cityZipCodes = useSelector(state => state.search.cityZipCodes.zipCodes);
-  const searchZipCodes = [searchLocation, ...extraZipCodes];
-  const investorString = Object.values(data).join(' ').toLowerCase();
-  const overlappingZips = cityZipCodes.filter(z => searchZipCodes.includes(z));
+  const extraLocations = useSelector(state => state.search.extraLocations);
 
   const matches = {
     keywords: [],
     raise: searchRaise >= raise_min && searchRaise <= raise_max,
-    location: overlappingZips.length > 0,
+    location:
+      extraLocations.filter(l => l.city === location_city && l.state === location_state).length > 0,
   };
-  // TODO: manually determine matches here, it is not in search data
   searchKeywords.forEach(k => {
-    if (investorString.includes(k.toLowerCase())) matches.keywords.push(k);
+    if (investorString && investorString.includes(k.toLowerCase())) matches.keywords.push(k);
   });
 
   let percentageMatch = (Array.isArray(matches.keywords) && matches.keywords.length) || 0;

@@ -11,14 +11,12 @@ const defaultState = {
   raise: 100000,
   location: '',
   extraZipcodes: [],
+  extraLocations: [],
   firstTime: true,
 };
 
 const resetState = {
   cityZipCodes: { zipCodes: [] },
-  keywords: [],
-  raise: 100000,
-  location: '',
 };
 
 export default function search(state = { ...defaultState }, action) {
@@ -52,7 +50,8 @@ export default function search(state = { ...defaultState }, action) {
     case types.SEARCH_GET_EXTRAZIPCODES_SUCCEEDED:
       return {
         ...state,
-        extraZipcodes: action.data.zip_codes,
+        extraLocations: action.data.zip_codes,
+        extraZipcodes: action.data.zip_codes.map(z => z.zip_code),
         extraZipcodes_status: 'succeeded',
       };
     case types.SEARCH_GET_EXTRAZIPCODES_FAILED: return {
