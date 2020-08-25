@@ -54,10 +54,10 @@ export default function Person(props) {
     if (description && description.includes(k.toLowerCase())) matches.keywords.push(k);
   });
 
-  let percentageMatch = (Array.isArray(matches.keywords) && matches.keywords.length) || 0;
+  let percentageMatch = matches.keywords.length ? matches.keywords.length / 5 : 0;
   if (matches.raise) percentageMatch += 1;
   if (matches.location) percentageMatch += 1;
-  percentageMatch = Math.floor((percentageMatch / 7) * 100);
+  percentageMatch = Math.floor((percentageMatch / 3) * 100);
 
   const investors = useSelector(state => state.board.ids) || [];
   const isOnBoard = investors.includes(uuid);
