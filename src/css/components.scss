@@ -496,7 +496,7 @@ html#ov body {
                 margin-bottom: $pad1;
 
                 h2 {
-                  font-size: $h4;
+                  font-size: $h5;
                   margin: 0;
                 }
 
@@ -507,6 +507,7 @@ html#ov body {
                 }
 
                 .detail {
+                  font-size: 0.8em;
                   margin-left: auto;
                   color: $col-primary;
                 }
@@ -515,6 +516,18 @@ html#ov body {
               p {
                 font-size: $txMd;
                 font-style: italic;
+              }
+
+              @media (min-width: $mediaXs) {
+                .title {
+                  h2 {
+                    font-size: $h4;
+                  }
+
+                  .detail {
+                    font-size: 1em;
+                  }
+                }
               }
             }
 

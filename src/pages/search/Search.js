@@ -54,8 +54,9 @@ export default function Search() {
             onClick={onEditClick}
             data-track="EditSearch"
           >
-            <FontAwesomeIcon icon="edit" />
-            New Search
+            <FontAwesomeIcon icon="edit" className="mr-2"/>
+            <span className="d-none d-md-inline">New </span>
+            Search
           </Button>
         </div>
         <div className={`secondaryDetails ${detailsOpen ? '' : 'sr-only'}`}>
@@ -78,7 +79,6 @@ export default function Search() {
       <div className="results">
         {Object.keys(searchResults).map(k => {
           const personProps = { ...searchResults[k] };
-          //personProps.uuid = k;
           return (
             <Person key={k} {...personProps} />
           );
