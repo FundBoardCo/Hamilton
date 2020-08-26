@@ -255,6 +255,8 @@ html#ov body {
     &.modal-investor {
       .modal-dialog {
         .modal-content {
+          height:100%;
+          
           .modal-header {
             position: absolute;
             right: 0;
