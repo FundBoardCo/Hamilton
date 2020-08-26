@@ -100,7 +100,6 @@ export default function Investor(props) {
 
   const searchData = useSelector(state => state.search.results[uuid] || {});
 
-  const investorString = Object.values(data).join(' ').toLowerCase();
   const searchKeywords = useSelector(state => state.search.keywords);
   const searchRaise = useSelector(state => state.search.raise);
   const extraLocations = useSelector(state => state.search.extraLocations);
@@ -112,10 +111,18 @@ export default function Investor(props) {
       extraLocations.filter(l => l.city === location_city && l.state === location_state).length > 0,
   };
   searchKeywords.forEach(k => {
-    if (investorString && investorString.includes(k.toLowerCase())) matches.keywords.push(k);
+    if (description && description.includes(k.toLowerCase())) matches.keywords.push(k);
   });
 
-  let percentageMatch = matches.keywords.length ? matches.keywords.length / 5 : 0;
+  let percentageMatch;
+  switch (matches.keywords.length) {
+    case 5: percentageMatch = 1; break;
+    case 4: percentageMatch= 0.95; break;
+    case 3: percentageMatch = 0.85; break;
+    case 2: percentageMatch = 0.75; break;
+    case 1: percentageMatch = 0.6; break;
+    default: percentageMatch = 0;
+  }
   if (matches.raise) percentageMatch += 1;
   if (matches.location) percentageMatch += 1;
   percentageMatch = Math.floor((percentageMatch / 3) * 100);
