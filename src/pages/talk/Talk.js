@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
@@ -9,7 +9,7 @@ import moment from 'moment';
 import platform from 'platform';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import * as types from '../../actions/types';
-import Status from '../../components/DismissibleStatus';
+import DismissibleStatus from '../../components/DismissibleStatus';
 
 export default function Talk() {
   const feedbackStatus = useSelector(state => state.airtable.feedback_status);
@@ -26,6 +26,12 @@ export default function Talk() {
   const [showStatus, setShowStatus] = useState(false);
 
   const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch({
+      type: types.FEEDBACK_SEND_DISMISSED,
+    });
+  }, [dispatch]);
 
   const sendFeedback = () => dispatch({
     type: types.FEEDBACK_SEND_REQUESTED,
@@ -147,7 +153,7 @@ export default function Talk() {
               <span className="sr-only">Give us a thumbs down.</span>
             </Button>
           </div>
-          <Status
+          <DismissibleStatus
             status={feedbackStatus}
             show={showStatus}
             dissmissAction={types.FEEDBACK_SEND_DISMISSED}

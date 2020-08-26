@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
@@ -22,6 +22,12 @@ export default function Profile() {
   const [deletePressed, setDeletePressed] = useState(false);
 
   const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch({
+      type: types.USER_UPDATE_DISSMISSED,
+    });
+  }, [dispatch]);
 
   const updateAccount = params => dispatch({
     type: types.USER_UPDATE_REQUESTED,

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useHistory } from 'react-router';
 import Button from 'react-bootstrap/Button';
@@ -30,6 +30,12 @@ export default function Search() {
   const history = useHistory();
 
   const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch({
+      type: types.SEARCH_GET_RESULTS_DISMISSED,
+    });
+  }, [dispatch]);
 
   const onEditClick = () => {
     history.push('search/menu');
