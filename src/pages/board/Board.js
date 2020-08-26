@@ -119,60 +119,17 @@ export default function Board() {
       {loggedIn && (
       <div className="boardDetailsBar">
         <div className="primaryDetails">
+
+            {`My Fundboard: ${investorIds.length} investors`}
           <Button
-            className="primaryDetailsLink"
-            variant="text-light"
-            onClick={onDetailClick}
+            className="btn-primary primaryDetailsLink"
+            variant="text"
+            onClick={onCSVClick}
             data-track="BoardDetails"
           >
-            {`My Fundboard: ${investorIds.length} investors`}
-            <div>
               <FontAwesomeIcon icon="file-download" />
               <span className="d-none d-lg-inline ml-2">Download</span>
-            </div>
           </Button>
-        </div>
-        <div className={`secondaryDetails ${detailsOpen ? '' : 'sr-only'}`}>
-          <div className="mb-2">
-            <Button
-              variant="link"
-              className="w-100 w-lg-auto btnResponsiveMax"
-              onClick={onShowNextClick}
-            >
-              <h3>
-                <FontAwesomeIcon icon="info-circle" className="mr-2" />
-                How do I use my FundBoard?
-              </h3>
-            </Button>
-          </div>
-          <p>
-            <strong>{`More than 3 keywords match: ${details.keywords}`}</strong>
-          </p>
-          <p>
-            <strong>{`Raise amount matches: ${details.raise}`}</strong>
-          </p>
-          <p>
-            <strong>{`Invests in your location: ${details.location}`}</strong>
-          </p>
-          <p>
-            <strong>{`Lead investors: ${details.leads}`}</strong>
-          </p>
-          <p>
-            <strong>{`Open to direct outreach: ${details.open}`}</strong>
-          </p>
-          <p>
-            <strong>{`Impact funds: ${details.impact}`}</strong>
-          </p>
-          <div className="d-flex justify-content-end">
-            <Button
-              variant="secondary"
-              className="w-100 w-lg-auto btnResponsiveMax"
-              onClick={onCSVClick}
-            >
-              <FontAwesomeIcon icon="file-download" className="mr-2" />
-              Download (CSV)
-            </Button>
-          </div>
         </div>
       </div>
       )}

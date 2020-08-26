@@ -598,15 +598,14 @@ html#ov {
             .primaryDetails {
               background-color: $col-structure;
               padding: $pad2 $pad3;
+              font-size: $h5;
+              font-weight: 700;
+              display: flex;
+              justify-content: space-between;
+              align-items: center;
 
               .primaryDetailsLink {
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-                width: 100%;
-                color: $col-text-light;
                 font-size: $h5;
-                font-weight: 700;
               }
             }
 
@@ -637,9 +636,9 @@ html#ov {
                 background-color: transparent !important;
                 color: $col-text;
                 border-bottom: 2px solid $col-primary;
+                font-size: $h3;
 
                 .primaryDetailsLink {
-                  color: $col-text !important;
                   font-size: $h3;
                 }
               }
