@@ -3,12 +3,11 @@ import * as types from '../actions/types';
 import { getSafeVar } from '../utils';
 
 export default function board(state = { ids: [] }, action) {
-  const rehydration = getSafeVar(() => action.payload.board, {});
+  const rehydratedIds = getSafeVar(() => action.payload.board.ids, []);
   switch (action.type) {
     case REHYDRATE: return {
       ...state,
-      ...rehydration,
-      ids: [...state.ids, ...rehydration.ids],
+      ids: [...state.ids, ...rehydratedIds],
     };
     case types.BOARD_ADD: return {
       ...state,
