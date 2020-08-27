@@ -125,10 +125,11 @@ export default function Board() {
             className="btn-primary primaryDetailsLink"
             variant="text"
             onClick={onCSVClick}
+            disabled={investorIds.length === 0}
             data-track="BoardDetails"
           >
-              <FontAwesomeIcon icon="file-download" />
-              <span className="d-none d-lg-inline ml-2">Download</span>
+            <FontAwesomeIcon icon="file-download" />
+            <span className="d-none d-lg-inline ml-2">Download</span>
           </Button>
         </div>
       </div>
