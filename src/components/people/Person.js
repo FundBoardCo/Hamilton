@@ -37,6 +37,8 @@ export default function Person(props) {
     isBoard = false,
   } = props;
 
+  let { matches, percentageMatch } = props;
+
   const primary_organization_logo = primary_organization.image_url || '';
   const primary_organization_name = primary_organization.name || '';
 
@@ -44,28 +46,42 @@ export default function Person(props) {
   const searchRaise = useSelector(state => state.search.raise);
   const extraLocations = useSelector(state => state.search.extraLocations);
 
-  const matches = {
-    keywords: [],
-    raise: searchRaise >= raise_min && searchRaise <= raise_max,
-    location:
-      extraLocations.filter(l => l.city === location_city && l.state === location_state).length > 0,
-  };
-  searchKeywords.forEach(k => {
-    if (description && description.includes(k.toLowerCase())) matches.keywords.push(k);
-  });
+  if (!matches || !percentageMatch) {
 
-  let percentageMatch;
-  switch (matches.keywords.length) {
-    case 5: percentageMatch = 1; break;
-    case 4: percentageMatch= 0.95; break;
-    case 3: percentageMatch = 0.85; break;
-    case 2: percentageMatch = 0.75; break;
-    case 1: percentageMatch = 0.6; break;
-    default: percentageMatch = 0;
+    matches = {
+      keywords: [],
+      raise: searchRaise >= raise_min && searchRaise <= raise_max,
+      location:
+        extraLocations.filter(l => l.city === location_city
+          && l.state === location_state).length > 0,
+    };
+    searchKeywords.forEach(k => {
+      if (description && description.includes(k.toLowerCase())) matches.keywords.push(k);
+    });
+
+    switch (matches.keywords.length) {
+      case 5:
+        percentageMatch = 1;
+        break;
+      case 4:
+        percentageMatch = 0.95;
+        break;
+      case 3:
+        percentageMatch = 0.85;
+        break;
+      case 2:
+        percentageMatch = 0.75;
+        break;
+      case 1:
+        percentageMatch = 0.6;
+        break;
+      default:
+        percentageMatch = 0;
+    }
+    if (matches.raise) percentageMatch += 1;
+    if (matches.location) percentageMatch += 1;
+    percentageMatch = Math.floor((percentageMatch / 3) * 100);
   }
-  if (matches.raise) percentageMatch += 1;
-  if (matches.location) percentageMatch += 1;
-  percentageMatch = Math.floor((percentageMatch / 3) * 100);
 
   const investors = useSelector(state => state.board.ids) || [];
   const isOnBoard = investors.includes(uuid);
@@ -194,6 +210,7 @@ Person.defaultProps = {
   image_url: '',
   primary_job_title: '',
   primary_organization: {
+    id: '',
     name: '',
     image_url: '',
     permalink: '',
@@ -202,13 +219,19 @@ Person.defaultProps = {
     linkedin: '',
     twitter: '',
   },
+  description: '',
+  location_city: '',
+  location_state: '',
+  raise_min: 0,
+  raise_max: 0,
   matches: {
     keywords: ['one', 'two'],
-    raise: true,
+    raise: false,
     location: false,
     name: false,
     org: false,
   },
+  percentageMatch: 0,
   // isLead: false,
   // isOpen: false,
   // isImpact: false,
@@ -220,7 +243,16 @@ Person.propTypes = {
   name: PropTypes.string,
   image_url: PropTypes.string,
   primary_job_title: PropTypes.string,
-  primary_organization: PropTypes.objectOf(PropTypes.oneOfType([PropTypes.string, PropTypes.bool])),
+  primary_organization: PropTypes.objectOf(PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.bool,
+    PropTypes.number,
+  ])),
+  description: PropTypes.string,
+  location_city: PropTypes.string,
+  location_state: PropTypes.string,
+  raise_min: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
+  raise_max: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
   matches: PropTypes.shape({
     keywords: PropTypes.arrayOf(PropTypes.string),
     raise: PropTypes.bool,
@@ -228,6 +260,7 @@ Person.propTypes = {
     name: PropTypes.bool,
     org: PropTypes.bool,
   }),
+  percentageMatch: PropTypes.number,
   // isLead: PropTypes.bool,
   // isOpen: PropTypes.bool,
   // isImpact: PropTypes.bool,

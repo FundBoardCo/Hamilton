@@ -20,7 +20,7 @@ const persistConfig = {
 const searchConfig = {
   key: 'search',
   storage,
-  blacklist: [],
+  blacklist: ['results'],
 };
 
 const rootReducer = combineReducers({

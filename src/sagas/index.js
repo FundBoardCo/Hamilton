@@ -468,11 +468,11 @@ function requestSearchGetResults(params = {}) {
 
 function* workSearchGetResults(action) {
   const { params } = action;
-  params.limit = params.limit || 100;
+  params.limit = params.limit || 3000;
   try {
     const results = yield call(requestSearchGetResults, params);
     yield put({ type: 'SEARCH_GET_RESULTS_SUCCEEDED', data: results.data });
-    yield put({ type: 'PEOPLE_UPDATE', data: results.data });
+    // yield put({ type: 'PEOPLE_UPDATE', data: results.data });
   } catch (error) {
     trackErr(error);
     yield put({ type: 'SEARCH_GET_RESULTS_FAILED', error });

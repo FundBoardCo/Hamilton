@@ -19,6 +19,8 @@ const resetState = {
   cityZipCodes: { zipCodes: [] },
 };
 
+let parsedResults = [];
+
 export default function search(state = { ...defaultState }, action) {
   const rehydration = getSafeVar(() => action.payload.search, {});
   switch (action.type) {
@@ -90,9 +92,37 @@ export default function search(state = { ...defaultState }, action) {
       firstTime: false,
     };
     case types.SEARCH_GET_RESULTS_SUCCEEDED:
+      parsedResults = action.data.map(i => {
+        const { keywords = [], raise, extraLocations } = state;
+        const matches = {
+          keywords: [],
+          raise: raise >= i.raise_min && raise <= i.raise_max,
+          location: extraLocations.filter(l => l.city === i.location_city
+            && l.state === i.location_state).length > 0,
+        };
+        keywords.forEach(k => {
+          if (i.description && i.description.includes(k.toLowerCase())) matches.keywords.push(k);
+        });
+
+        let percentageMatch;
+        switch (matches.keywords.length) {
+          case 5: percentageMatch = 1; break;
+          case 4: percentageMatch = 0.95; break;
+          case 3: percentageMatch = 0.85; break;
+          case 2: percentageMatch = 0.75; break;
+          case 1: percentageMatch = 0.6; break;
+          default: percentageMatch = 0;
+        }
+        if (matches.raise) percentageMatch += 1;
+        if (matches.location) percentageMatch += 1;
+        percentageMatch = Math.floor((percentageMatch / 3) * 100);
+        return { ...i, matches, percentageMatch };
+      });
+      parsedResults.sort((a, b) => b.percentageMatch - a.percentageMatch);
+
       return {
         ...state,
-        results: action.data,
+        results: [...parsedResults],
         results_status: 'succeeded',
       };
     case types.SEARCH_GET_RESULTS_FAILED: return {

@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useHistory } from 'react-router';
 import Button from 'react-bootstrap/Button';
@@ -16,6 +16,7 @@ export default function Search() {
   const searchStatus = useSelector(state => state.search.results_status) || '';
 
   const [detailsOpen, setDetailsOpen] = useState(false);
+  const [page, setPage] = useState(1);
 
   const usdFormatter = new Intl.NumberFormat('en-US', {
     style: 'currency',
@@ -41,6 +42,13 @@ export default function Search() {
     history.push('search/menu');
     dispatch({ type: types.SEARCH_GET_RESULTS_DISMISSED });
   };
+
+  const nextPage = () => {
+    setPage(page + 1);
+  };
+
+  const resultKeys = Object.keys(searchResults);
+  const lastIndexShown = resultKeys.length < page * 100 ? resultKeys.length : page * 100;
 
   return (
     <Row id="PageSearch" className="pageContainer">
@@ -83,12 +91,27 @@ export default function Search() {
         dissmissAction={types.SEARCH_GET_RESULTS_DISMISSED}
       />
       <div className="results">
-        {Object.keys(searchResults).map(k => {
+        {resultKeys.map((k, i) => {
           const personProps = { ...searchResults[k] };
+          if (i >= page * 100) return null;
           return (
             <Person key={k} {...personProps} />
           );
         })}
+        <div className="d-flex mt-4 mb-5">
+          {resultKeys.length > 0 && (
+            <span>{`1 to ${lastIndexShown}`}</span>
+          )}
+          {resultKeys.length > page * 100 && (
+            <Button
+              variant="info"
+              className="ml-auto"
+              onClick={nextPage}
+            >
+              Load more
+            </Button>
+          )}
+        </div>
         {Object.keys(searchResults).length === 0 && (
           <div className="p-2 text-info">
             <div>No results found.</div>

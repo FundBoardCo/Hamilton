@@ -7,6 +7,7 @@ import RangeSlider from 'react-bootstrap-range-slider';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Button from 'react-bootstrap/Button';
 import { statusIsError } from '../utils';
+import * as types from "../actions/types";
 
 const usdFormatter = new Intl.NumberFormat('en-US', {
   style: 'currency',
@@ -66,10 +67,6 @@ export default function SearchMenu() {
   const dispatch = useDispatch();
 
   const history = useHistory();
-
-  const getKeywords = () => dispatch({
-    type: 'AIRTABLE_GET_KEYWORDS_REQUESTED',
-  });
 
   const setKeywords = keywords => dispatch({
     type: 'SEARCH_SET_KEYWORDS',
@@ -151,11 +148,13 @@ export default function SearchMenu() {
   };
 
   useEffect(() => {
-    if ((!Array.isArray(airtableKeywords.data) && !airtableKeywords.state)
-    || (Array.isArray(airtableKeywords.data) && !airtableKeywords.data.length)) {
-      getKeywords();
+    if (!Array.isArray(airtableKeywords.data)
+      || (Array.isArray(airtableKeywords.data) && !airtableKeywords.data.length)) {
+      dispatch({
+        type: types.AIRTABLE_GET_KEYWORDS_REQUESTED,
+      });
     }
-  }, [getKeywords, airtableKeywords]);
+  }, [airtableKeywords.data, dispatch]);
 
   let extraZipcodesText = extraZipcodes_status;
 
