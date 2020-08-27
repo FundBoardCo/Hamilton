@@ -1,15 +1,37 @@
-import { createStore, applyMiddleware } from 'redux';
+import {createStore, applyMiddleware, combineReducers} from 'redux';
 import { persistStore, persistReducer } from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
 import createSagaMiddleware from 'redux-saga';
-import { rootReducer, resetState } from './reducers';
+import airtable from './reducers/airtable';
+import board from './reducers/board';
+import info from './reducers/info';
+import search from './reducers/search';
+import user from './reducers/user';
+import modal from './reducers/modal';
+import people from './reducers/people';
 import rootSaga from './sagas';
 
 const persistConfig = {
   key: 'root',
   storage,
-  blacklist: Object.keys(resetState),
+  blacklist: ['search'],
 };
+
+const searchConfig = {
+  key: 'search',
+  storage,
+  blacklist: [],
+};
+
+const rootReducer = combineReducers({
+  airtable,
+  board,
+  info,
+  modal,
+  people,
+  search: persistReducer(searchConfig, search),
+  user,
+});
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
 
