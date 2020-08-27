@@ -151,8 +151,11 @@ export default function SearchMenu() {
   };
 
   useEffect(() => {
-    if (!Array.isArray(airtableKeywords.data) && !airtableKeywords.state) getKeywords();
-  });
+    if ((!Array.isArray(airtableKeywords.data) && !airtableKeywords.state)
+    || (Array.isArray(airtableKeywords.data) && !airtableKeywords.data.length)) {
+      getKeywords();
+    }
+  }, [getKeywords, airtableKeywords]);
 
   let extraZipcodesText = extraZipcodes_status;
 
@@ -193,6 +196,7 @@ export default function SearchMenu() {
               variant="link"
               className="text-info mr-2"
               onClick={() => onRemoveKeyword(w)}
+              key={w}
             >
               {`${w} (x)`}
             </Button>
