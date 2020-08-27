@@ -3,7 +3,6 @@ import {
   BrowserRouter as Router,
   Route,
   NavLink,
-  Redirect,
   Switch,
 } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
