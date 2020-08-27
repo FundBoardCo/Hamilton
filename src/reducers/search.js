@@ -88,7 +88,7 @@ export default function search(state = { ...defaultState }, action) {
     case types.SEARCH_GET_RESULTS_REQUESTED: return {
       ...state,
       results_status: 'pending',
-      results: [],
+      // results: [],
       firstTime: false,
     };
     case types.SEARCH_GET_RESULTS_SUCCEEDED:

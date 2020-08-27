@@ -47,7 +47,6 @@ export default function Person(props) {
   const extraLocations = useSelector(state => state.search.extraLocations);
 
   if (!matches || !percentageMatch) {
-
     matches = {
       keywords: [],
       raise: searchRaise >= raise_min && searchRaise <= raise_max,
@@ -102,6 +101,7 @@ export default function Person(props) {
   const addInvestor = () => dispatch({
     type: types.BOARD_ADD,
     id: uuid,
+    data: { ...props},
   });
 
   const removeInvestor = () => dispatch({
@@ -161,7 +161,7 @@ export default function Person(props) {
               type="button"
               data-track={`${path}PersonShow`}
             >
-              {name}
+              {name || uuid}
             </button>
           </h1>
         </div>

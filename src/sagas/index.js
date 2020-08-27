@@ -332,7 +332,7 @@ function* watchBoardRemove() {
 function* workBoardAdd(action) {
   const token = yield select(getToken);
   const board = yield select(getBoard)
-  const { id } = action;
+  const { id, data } = action;
   const params = {
     investors: [...new Set([...board, id])],
   };
@@ -340,6 +340,7 @@ function* workBoardAdd(action) {
     if (token) {
       yield put({ type: types.USER_UPDATE_REQUESTED, params });
     }
+    yield put({ type: 'PEOPLE_UPDATE', data: [data] });
   } catch (error) {
     trackErr(error);
   }
@@ -472,7 +473,6 @@ function* workSearchGetResults(action) {
   try {
     const results = yield call(requestSearchGetResults, params);
     yield put({ type: 'SEARCH_GET_RESULTS_SUCCEEDED', data: results.data });
-    // yield put({ type: 'PEOPLE_UPDATE', data: results.data });
   } catch (error) {
     trackErr(error);
     yield put({ type: 'SEARCH_GET_RESULTS_FAILED', error });

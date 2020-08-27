@@ -15,7 +15,7 @@ const defaults = {
   investors: [],
 };
 
-const resets = {
+export const userResets = {
   create_status: '',
   login_status: '',
   update_status: '',
@@ -29,7 +29,7 @@ export default function user(state = { ...defaults }, action) {
     case REHYDRATE: return {
       ...state,
       ...rehydration,
-      ...resets,
+      ...userResets,
     };
     case types.USER_CREATE_REQUESTED: return {
       ...state,

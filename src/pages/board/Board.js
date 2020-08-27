@@ -119,8 +119,7 @@ export default function Board() {
       {loggedIn && (
       <div className="boardDetailsBar">
         <div className="primaryDetails">
-
-            {`My Fundboard: ${investorIds.length} investors`}
+          {`My Fundboard: ${investorIds.length} investors`}
           <Button
             className="btn-primary primaryDetailsLink"
             variant="text"
@@ -137,6 +136,7 @@ export default function Board() {
       {loggedIn && (
       <div className="results">
         {Object.keys(investorList).map(k => {
+          console.log(k)
           const personProps = { ...investorList[k] };
           personProps.uuid = k;
           personProps.isBoard = true;
