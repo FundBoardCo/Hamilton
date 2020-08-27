@@ -117,7 +117,7 @@ export default function Investor(props) {
   let percentageMatch;
   switch (matches.keywords.length) {
     case 5: percentageMatch = 1; break;
-    case 4: percentageMatch= 0.95; break;
+    case 4: percentageMatch = 0.95; break;
     case 3: percentageMatch = 0.85; break;
     case 2: percentageMatch = 0.75; break;
     case 1: percentageMatch = 0.6; break;
@@ -333,7 +333,7 @@ export default function Investor(props) {
                   logo_url: i.image_url,
                   ...founder,
                 };
-                return <PersonStamp key={i.id} {...pProps} />;
+                return <PersonStamp key={i.uuid} {...pProps} />;
               })}
             </div>
           </div>
