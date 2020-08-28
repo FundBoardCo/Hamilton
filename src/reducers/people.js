@@ -11,7 +11,7 @@ export default function people(state = {}, action) {
     reason,
   } = params;
   // The id param is singular for the API, but represents an array of ids.
-  const ids = Array.isArray(id)? id : [id];
+  const ids = Array.isArray(id) ? id : [id];
   const rehydration = getSafeVar(() => action.payload.people, {});
 
   switch (action.type) {
