@@ -103,7 +103,6 @@ export default function Investor(props) {
   const extraLocations = useSelector(state => state.search.extraLocations);
 
   const searchData = useSelector(state => state.search.results[uuid] || {});
-  console.log(searchData)
   let { matches, percentageMatch } = searchData;
 
   if (!matches || !percentageMatch) {
@@ -173,13 +172,6 @@ export default function Investor(props) {
       id: uuid,
     });
   }, [dispatch, uuid]);
-
-  useEffect(() => {
-    dispatch({
-      type: types.SEARCH_GET_CITYZIPCODES_REQUESTED,
-      params: { city: location_city, state: location_state },
-    });
-  }, [dispatch, location_city, location_state]);
 
   const addInvestor = () => dispatch({
     type: 'BOARD_ADD',

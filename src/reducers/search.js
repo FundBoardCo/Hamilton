@@ -5,7 +5,6 @@ import { getSafeVar, processErr } from '../utils';
 const defaultState = {
   results_status: '',
   extraZipcodes_status: '',
-  cityZipCodes: { zipCodes: [] },
   results: [],
   keywords: [],
   raise: 100000,
@@ -13,10 +12,6 @@ const defaultState = {
   extraZipcodes: [],
   extraLocations: [],
   firstTime: true,
-};
-
-const resetState = {
-  cityZipCodes: { zipCodes: [] },
 };
 
 let parsedResults = [];
@@ -27,7 +22,6 @@ export default function search(state = { ...defaultState }, action) {
     case REHYDRATE: return {
       ...state,
       ...rehydration,
-      ...resetState,
     };
     case types.SEARCH_SET_KEYWORDS: return {
       ...state,
@@ -59,31 +53,6 @@ export default function search(state = { ...defaultState }, action) {
     case types.SEARCH_GET_EXTRAZIPCODES_FAILED: return {
       ...state,
       extraZipcodes_status: processErr(action.error),
-    };
-    case types.SEARCH_GET_CITYZIPCODES_REQUESTED: return {
-      ...state,
-      cityZipCodes: {
-        status: 'pending',
-        city: action.params && action.params.city,
-        state: action.params && action.params.state,
-        zipCodes: [],
-      },
-    };
-    case types.SEARCH_GET_CITYZIPCODES_SUCCEEDED:
-      return {
-        ...state,
-        cityZipCodes: {
-          ...state.cityZipCodes,
-          status: 'succeeded',
-          zipCodes: [...action.data.zip_codes],
-        },
-      };
-    case types.SEARCH_GET_CITYZIPCODES_FAILED: return {
-      ...state,
-      cityZipCodes: {
-        ...state.cityZipCodes,
-        status: processErr(action.error),
-      },
     };
     case types.SEARCH_GET_RESULTS_REQUESTED: return {
       ...state,

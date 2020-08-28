@@ -375,31 +375,6 @@ function* watchSearchSetZipCode() {
   yield takeLatest(types.SEARCH_SET_LOCATION, workGetExtraZipCodes);
 }
 
-function getCityZipCodes(params) {
-  let { city, state } = params;
-  city = city.toLowerCase();
-  state = state.toLowerCase();
-  return axios.get(
-    `https://www.zipcodeapi.com/rest/${ZIPCODECLIENTKEY}/city-zips.json/${city}/${state}`,
-  );
-}
-
-function* workGetCityZipCodes(action) {
-  const { params } = action;
-  try {
-    if (!params.city || !params.state) throw new Error('Missing city or state.');
-    const results = yield call(getCityZipCodes, params);
-    yield put({ type: types.SEARCH_GET_CITYZIPCODES_SUCCEEDED, data: results.data });
-  } catch (error) {
-    trackErr(error);
-    yield put({ type: types.SEARCH_GET_CITYZIPCODES_FAILED, error });
-  }
-}
-
-function* watchSearchGetCityZipCodes() {
-  yield takeLatest(types.SEARCH_GET_CITYZIPCODES_REQUESTED, workGetCityZipCodes);
-}
-
 function getPeopleResults(params) {
   const { ids, token } = params;
   return axios({
@@ -497,7 +472,6 @@ export default function* rootSaga() {
   yield fork(watchPeopleGetResults);
   yield fork(watchPeopleGetInvestments);
   yield fork(watchSearchSetZipCode);
-  yield fork(watchSearchGetCityZipCodes);
   yield fork(watchSearchGetResults);
   yield fork(watchSendFeedback);
   yield fork(watchGetInfo);
