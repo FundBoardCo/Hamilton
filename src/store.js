@@ -20,7 +20,7 @@ const persistConfig = {
 const airtableConfig = {
   key: 'airtable',
   storage,
-  blacklist: [],
+  blacklist: ['feedback_status'],
 };
 
 const boardConfig = {
@@ -38,7 +38,7 @@ const peopleConfig = {
 const searchConfig = {
   key: 'search',
   storage,
-  blacklist: ['results'],
+  blacklist: ['results', 'results_status', 'extraZipcodes_status'],
 };
 const userConfig = {
   key: 'user',
