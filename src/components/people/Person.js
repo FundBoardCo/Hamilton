@@ -46,41 +46,40 @@ export default function Person(props) {
   const searchRaise = useSelector(state => state.search.raise);
   const extraLocations = useSelector(state => state.search.extraLocations);
 
-  if (!matches || !percentageMatch) {
-    matches = {
-      keywords: [],
-      raise: searchRaise >= raise_min && searchRaise <= raise_max,
-      location:
-        extraLocations.filter(l => l.city === location_city
-          && l.state === location_state).length > 0,
-    };
-    searchKeywords.forEach(k => {
-      if (description && description.includes(k.toLowerCase())) matches.keywords.push(k);
-    });
+  // For now, always recalculate. TODO figure out something better.
+  matches = {
+    keywords: [],
+    raise: searchRaise >= raise_min && searchRaise <= raise_max,
+    location:
+      extraLocations.filter(l => l.city === location_city
+        && l.state === location_state).length > 0,
+  };
+  searchKeywords.forEach(k => {
+    if (description && description.includes(k.toLowerCase())) matches.keywords.push(k);
+  });
 
-    switch (matches.keywords.length) {
-      case 5:
-        percentageMatch = 1;
-        break;
-      case 4:
-        percentageMatch = 0.95;
-        break;
-      case 3:
-        percentageMatch = 0.85;
-        break;
-      case 2:
-        percentageMatch = 0.75;
-        break;
-      case 1:
-        percentageMatch = 0.6;
-        break;
-      default:
-        percentageMatch = 0;
-    }
-    if (matches.raise) percentageMatch += 1;
-    if (matches.location) percentageMatch += 1;
-    percentageMatch = Math.floor((percentageMatch / 3) * 100);
+  switch (matches.keywords.length) {
+    case 5:
+      percentageMatch = 1;
+      break;
+    case 4:
+      percentageMatch = 0.95;
+      break;
+    case 3:
+      percentageMatch = 0.85;
+      break;
+    case 2:
+      percentageMatch = 0.75;
+      break;
+    case 1:
+      percentageMatch = 0.6;
+      break;
+    default:
+      percentageMatch = 0;
   }
+  if (matches.raise) percentageMatch += 1;
+  if (matches.location) percentageMatch += 1;
+  percentageMatch = Math.floor((percentageMatch / 3) * 100);
 
   const investors = useSelector(state => state.board.ids) || [];
   const isOnBoard = investors.includes(uuid);
