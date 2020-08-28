@@ -29,18 +29,6 @@ const boardConfig = {
   blacklist: [],
 };
 
-const infoConfig = {
-  key: 'info',
-  storage,
-  blacklist: [],
-};
-
-const modalConfig = {
-  key: 'modal',
-  storage,
-  blacklist: [],
-};
-
 const peopleConfig = {
   key: 'people',
   storage,
@@ -61,8 +49,8 @@ const userConfig = {
 const rootReducer = combineReducers({
   airtable: persistReducer(airtableConfig, airtable),
   board: persistReducer(boardConfig, board),
-  info: persistReducer(infoConfig, info),
-  modal: persistReducer(modalConfig, modal),
+  info,
+  modal,
   people: persistReducer(peopleConfig, people),
   search: persistReducer(searchConfig, search),
   user: persistReducer(userConfig, user),
