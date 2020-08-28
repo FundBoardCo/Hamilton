@@ -376,10 +376,10 @@ function* watchSearchSetZipCode() {
 }
 
 function getPeopleResults(params) {
-  const { ids, token } = params;
+  const { id, token } = params;
   return axios({
     method: 'get',
-    url: `${api}investors?${toQueryString({ ids })}`,
+    url: `${api}investors?${toQueryString({ id })}`,
     headers: {
       Authorization: token,
     },
@@ -387,7 +387,7 @@ function getPeopleResults(params) {
 }
 
 function* workPeopleGetResults(action) {
-  const params = { ids: action.ids };
+  const params = { id: action.id };
   try {
     params.token = yield select(getToken);
     const results = yield call(getPeopleResults, params);
