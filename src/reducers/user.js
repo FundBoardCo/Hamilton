@@ -6,7 +6,6 @@ const defaults = {
   email: '',
   create_status: '',
   login_status: '',
-  loggedIn: false,
   token: null,
   update_status: '',
   delete_status: '',
@@ -34,13 +33,12 @@ export default function user(state = { ...defaults }, action) {
     case types.USER_CREATE_REQUESTED: return {
       ...state,
       create_status: 'pending',
-      loggedIn: false,
+      token: null,
       email: action.email,
     };
     case types.USER_CREATE_SUCCEEDED: return {
       ...state,
       create_status: 'succeeded',
-      loggedIn: true,
       token: action.data.token,
     };
     case types.USER_CREATE_FAILED: return {
@@ -54,13 +52,11 @@ export default function user(state = { ...defaults }, action) {
     case types.USER_LOGIN_REQUESTED: return {
       ...state,
       login_status: 'pending',
-      loggedIn: false,
       email: action.params.email,
     };
     case types.USER_LOGIN_SUCCEEDED: return {
       ...state,
       login_status: 'succeeded',
-      loggedIn: true,
       token: action.data.token,
     };
     case types.USER_LOGIN_FAILED: return {
@@ -117,7 +113,6 @@ export default function user(state = { ...defaults }, action) {
     };
     case types.USER_DELETE_SUCCEEDED: return {
       ...state,
-      loggedIn: false,
       token: null,
       delete_status: 'succeeded',
     };

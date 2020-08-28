@@ -8,7 +8,7 @@ import * as types from '../../actions/types';
 import DismissibleStatus from '../../components/DismissibleStatus';
 
 export default function Profile() {
-  const loggedIn = useSelector(state => state.user.loggedIn);
+  const loggedIn = useSelector(state => state.user.token);
   const user = useSelector(state => state.user) || {};
   const {
     email,
