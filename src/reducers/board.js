@@ -21,7 +21,7 @@ export default function board(state = { ids: [] }, action) {
     };
     case types.BOARD_MERGE: return {
       ...state,
-      ids: [...new Set([...state.ids, action.ids])],
+      ids: [...new Set([...state.ids, ...action.ids])],
     };
     default: return state;
   }
