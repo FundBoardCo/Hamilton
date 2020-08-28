@@ -3,7 +3,9 @@ import * as types from '../actions/types';
 import { getSafeVar } from '../utils';
 
 export default function board(state = { ids: [] }, action) {
-  const rehydratedIds = getSafeVar(() => action.payload.board.ids, []);
+  let rehydratedIds = getSafeVar(() => action.payload.board.ids, []);
+  // remove any bad ids. TODO: make sure no bad ids get in.
+  rehydratedIds = rehydratedIds.filter(i => i && typeof i === 'string');
   switch (action.type) {
     case REHYDRATE: return {
       ...state,
