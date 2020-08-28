@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import Papa from 'papaparse';
 import FileSaver from 'file-saver';
@@ -14,7 +14,17 @@ export default function Board() {
   // TODO: use user.investors here.
   // TODO: figure out howt to merge non-logged in board
   const people = useSelector(state => state.people);
-  const loggedIn = useSelector(state => state.user.loggedIn);
+  const loggedIn = useSelector(state => state.user.token);
+
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch({
+      type: types.PEOPLE_GET_REQUEST,
+      id: investorIds,
+    });
+  }, [investorIds, dispatch]);
+
   const investorList = {};
   const csvList = [];
 
@@ -101,8 +111,6 @@ export default function Board() {
   const onCSVClick = () => {
     FileSaver.saveAs(csvData, 'MyFundBoard.csv');
   };
-
-  const dispatch = useDispatch();
 
   const onShowLogin = () => dispatch({
     type: types.MODAL_SET_OPEN,
