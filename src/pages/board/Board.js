@@ -16,6 +16,13 @@ export default function Board() {
   const people = useSelector(state => state.people);
   const loggedIn = useSelector(state => state.user.token);
 
+  // TODO: this currently doesn't do anything, because none of the fetched people have match data
+  investorIds.sort((a, b) => {
+    const matchA = (people[a] && people[a].percentageMatch) || 0;
+    const matchB = (people[b] && people[b].percentageMatch) || 0;
+    return matchB - matchA;
+  });
+
   const dispatch = useDispatch();
 
   useEffect(() => {
