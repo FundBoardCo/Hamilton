@@ -141,6 +141,20 @@ export default function Investor(props) {
     percentageMatch = Math.floor((percentageMatch / 3) * 100);
   }
 
+  const parsedInvestors = {};
+  investments.forEach(i => {
+    if (Array.isArray(i.founders) && i.founders[0]) {
+      const founder = i.founders[0];
+      parsedInvestors[founder.permalink] = {
+        ...founder,
+        org_name: i.name,
+        org_permalink: i.startup_permalink,
+        logo_url: i.image_url,
+        amount: i.amount,
+      };
+    }
+  });
+
   const investors = useSelector(state => state.board.ids) || [];
 
   const isOnBoard = investors.includes(uuid);
@@ -332,16 +346,9 @@ export default function Investor(props) {
           <div className="funded">
             <h2>Founders they&apos;ve funded</h2>
             <div className="founders">
-              {Array.isArray(investments) && investments.map(i => {
-                if (!i.founders || !i.founders[0]) return null;
-                const founder = (i.founders && i.founders[0]) || {};
-                const pProps = {
-                  org_name: i.name,
-                  logo_url: i.image_url,
-                  ...founder,
-                };
-                return <PersonStamp key={i.uuid} {...pProps} />;
-              })}
+              {Object.keys(parsedInvestors).map(k => (
+                <PersonStamp key={k} {...parsedInvestors[k]} />
+              ))}
             </div>
           </div>
         )}
