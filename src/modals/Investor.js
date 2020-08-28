@@ -147,7 +147,8 @@ export default function Investor(props) {
       const founder = i.founders[0];
       parsedInvestors[founder.permalink] = {
         ...founder,
-        org_name: i.name,
+        date: i.date,
+        org_name: i.startup_name,
         org_permalink: i.startup_permalink,
         logo_url: i.image_url,
         amount: i.amount,
