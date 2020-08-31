@@ -79,7 +79,8 @@ export default function user(state = { ...defaults }, action) {
     case types.USER_GET_PROFILE_SUCCEEDED: return {
       ...state,
       get_status: 'succeeded',
-      investors: getSafeVar(() => action.data.investors, []),
+      email: getSafeVar(() => action.data.profile.email, ''),
+      investors: getSafeVar(() => action.data.following, []),
     };
     case types.USER_GET_PROFILE_FAILED: return {
       ...state,
@@ -96,8 +97,6 @@ export default function user(state = { ...defaults }, action) {
     case types.USER_UPDATE_SUCCEEDED: return {
       ...state,
       update_status: 'succeeded',
-      email: action.email,
-      investors: action.investors,
     };
     case types.USER_UPDATE_FAILED: return {
       ...state,

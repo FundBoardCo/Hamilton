@@ -94,6 +94,9 @@ library.add(
 function App() {
   const loggedIn = useSelector(state => state.user.token);
   const firstTime = useSelector(state => state.search.firstTime);
+  const investors = useSelector(state => state.user.investors);
+  console.log(investors)
+  const showSearch = (firstTime && Array.isArray(investors) && !investors.length);
 
   const dispatch = useDispatch();
 
@@ -122,7 +125,7 @@ function App() {
               <FontAwesomeIcon icon="list" />
               <span>My FundBoard</span>
             </Nav.Link>
-            {!firstTime
+            {!showSearch
             && (
               <Nav.Link
                 as={NavLink}

@@ -99,8 +99,6 @@ function* workUserLogin(action) {
     const results = yield call(userLogin, params);
     yield put({ type: types.USER_LOGIN_SUCCEEDED, data: results.data });
     yield put({ type: types.USER_GET_PROFILE_REQUESTED });
-    const investors = yield select(getInvestors);
-    yield put({ type: types.BOARD_MERGE, ids: [...investors] });
     const board = yield select(getBoard);
     if (Array.isArray(board) && board.length) {
       const uParams = { investors: [...board] };
@@ -156,10 +154,11 @@ function userUpdate(params) {
 function* workUserUpdate(action) {
   try {
     const { params } = action;
+    if (params.investors) {
+      params.following = params.investors;
+      delete params.investors;
+    }
     params.token = yield select(getToken);
-    // if email is not being changed, send current email so API doesn't error
-    const email = yield select(getEmail);
-    params.email = params.email || email;
     const results = yield call(userUpdate, params);
     yield put({ type: types.USER_UPDATE_SUCCEEDED, data: results.data });
   } catch (error) {
@@ -187,9 +186,12 @@ function* workUserGetProfile() {
   try {
     const token = yield select(getToken);
     const results = yield call(getUserProfile, token);
-    const ids = getSafeVar(() => results.data.investors, []);
+    const ids = getSafeVar(() => results.data.following, []);
+    console.log(ids)
     yield put({ type: types.USER_GET_PROFILE_SUCCEEDED, data: results.data });
-    yield put({ type: types.BOARD_MERGE, ids });
+    if (ids.length) {
+      yield put({ type: types.BOARD_MERGE, ids });
+    }
   } catch (error) {
     trackErr(error);
     if (isLoginErr(error)) yield put(loginErrProps);
@@ -311,6 +313,7 @@ function* watchSendFeedback() {
 
 function* workBoardRemove(action) {
   const token = yield select(getToken);
+  console.log(token)
   const board = yield select(getBoard)
   const { id } = action;
   const params = {
@@ -326,7 +329,7 @@ function* workBoardRemove(action) {
 }
 
 function* watchBoardRemove() {
-  yield takeLatest(types.BOARD_ADD, workBoardRemove);
+  yield takeLatest(types.BOARD_REMOVE, workBoardRemove);
 }
 
 function* workBoardAdd(action) {
