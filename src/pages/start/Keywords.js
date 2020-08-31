@@ -4,6 +4,7 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import DismissibleStatus from '../../components/DismissibleStatus';
 import * as types from '../../actions/types';
+import Button from "react-bootstrap/Button";
 
 export default function Keywords() {
   const searchKeywords = useSelector(state => state.search.keywords) || [];
@@ -25,6 +26,10 @@ export default function Keywords() {
     type: 'SEARCH_SET_KEYWORDS',
     keywords,
   });
+
+  const onRemoveKeyword = w => {
+    setKeywords(searchKeywords.filter(kw => kw !== w));
+  };
 
   const onTileClick = (word, active) => {
     if (active) {
@@ -50,6 +55,19 @@ export default function Keywords() {
           showSuccess={false}
           dissmissAction={types.AIRTABLE_GET_KEYWORDS_DISMISSED}
         />
+        <div className="text-info mb-3 d-flex flex-wrap align-items-center">
+          <span>Selected:&nbsp;</span>
+          {searchKeywords.map(w => (
+            <Button
+              variant="link"
+              className="text-info mr-2"
+              onClick={() => onRemoveKeyword(w)}
+              key={w}
+            >
+              {`${w} (x)`}
+            </Button>
+          ))}
+        </div>
         <div className="tilesWrapper">
           <div className="tiles">
             {wordsToShow.map(w => {
