@@ -30,6 +30,7 @@ $col-info-light4: scale_color($col-info, $lightness: 50%);
 $col-info-light5: scale_color($col-info, $lightness: 60%);
 $col-info-dark: scale_color($col-info, $lightness: -20%);
 $col-info-dark2: scale_color($col-info, $lightness: -30%);
+$col-info-op1: scale_color($col-info, $alpha: -10%);
 
 $col-success: #154D4A;
 $col-success-light: scale_color($col-success, $lightness: 20%);

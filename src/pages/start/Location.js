@@ -131,15 +131,17 @@ export default function Location() {
                 {`Status: ${extraZipcodesText}`}
               </div>
             )}
-            <Button
-              variant="secondary"
-              className="btnNoMax"
-              disabled={!isValid || !searchLocation || extraZipcodes_status !== 'succeeded'}
-              onClick={onSearchClick}
-              data-track="IntroSearchSeeMatches"
-            >
-              See My Matches
-            </Button>
+            <div className="d-flex">
+              <Button
+                variant="secondary"
+                className="btnNoMax ml-auto"
+                disabled={!isValid || !searchLocation || extraZipcodes_status !== 'succeeded'}
+                onClick={onSearchClick}
+                data-track="IntroSearchSeeMatches"
+              >
+                See My Matches
+              </Button>
+            </div>
           </Form>
         </div>
       </Col>

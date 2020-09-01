@@ -11,7 +11,7 @@ export default function Search() {
   const [stage, setStage] = useState(0);
 
   const onClickPrev = () => {
-    if (stage > 0) setStage(stage -1);
+    if (stage > 0) setStage(stage - 1);
   };
 
   const onClickNext = () => {

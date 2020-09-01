@@ -13,9 +13,13 @@
 @mixin link {
   text-decoration: underline;
   color: $col-primary;
+  outline: 0;
 
-  &:hover {
-    color: $col-primary-dark2;
+  &:hover,
+  &:active,
+  &:focus {
+    color: $col-primary-dark3;
+    text-decoration: none;
   }
 }
 

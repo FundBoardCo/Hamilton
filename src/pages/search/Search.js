@@ -32,7 +32,7 @@ export default function Search() {
 
   const dispatch = useDispatch();
 
-  useEffect(() => {
+  useEffect(() => function cleanUp() {
     dispatch({
       type: types.SEARCH_GET_RESULTS_DISMISSED,
     });
@@ -112,7 +112,7 @@ export default function Search() {
             </Button>
           )}
         </div>
-        {Object.keys(searchResults).length === 0 && (
+        {Object.keys(searchResults).length === 0 && searchStatus !== 'pending' && (
           <div className="p-2 text-info">
             <div>No results found.</div>
             <Button
