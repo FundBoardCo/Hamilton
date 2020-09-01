@@ -187,7 +187,6 @@ function* workUserGetProfile() {
     const token = yield select(getToken);
     const results = yield call(getUserProfile, token);
     const ids = getSafeVar(() => results.data.following, []);
-    console.log(ids)
     yield put({ type: types.USER_GET_PROFILE_SUCCEEDED, data: results.data });
     if (ids.length) {
       yield put({ type: types.BOARD_MERGE, ids });
@@ -313,8 +312,7 @@ function* watchSendFeedback() {
 
 function* workBoardRemove(action) {
   const token = yield select(getToken);
-  console.log(token)
-  const board = yield select(getBoard)
+  const board = yield select(getBoard);
   const { id } = action;
   const params = {
     investors: board.filter(i => i !== id),
@@ -334,7 +332,7 @@ function* watchBoardRemove() {
 
 function* workBoardAdd(action) {
   const token = yield select(getToken);
-  const board = yield select(getBoard)
+  const board = yield select(getBoard);
   const { id, data } = action;
   const params = {
     investors: [...new Set([...board, id])],
