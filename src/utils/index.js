@@ -47,3 +47,54 @@ export function getSafeVar(fn, defaultVal) {
     return defaultVal; // will be undefined if not passed in, which is intentional.
   }
 }
+
+export function calcMatch(opts) {
+  const {
+    keywords = [],
+    raise,
+    location,
+    extraLocations,
+    raise_min = 0,
+    raise_max = 0,
+    location_city,
+    location_state,
+    description,
+  } = opts;
+  const searchedCity = extraLocations.filter(l => l.zip_code === location)[0];
+  const matches = {
+    keywords: [],
+    raise: raise >= raise_min && raise <= raise_max,
+    location: extraLocations.filter(l => l.city === location_city
+      && l.state === location_state).length > 0,
+  };
+  keywords.forEach(k => {
+    if (description && description.includes(k.toLowerCase())) matches.keywords.push(k);
+  });
+
+  let percentageMatch;
+  switch (matches.keywords.length) {
+    case 5: percentageMatch = 1; break;
+    case 4: percentageMatch = 0.946; break;
+    case 3: percentageMatch = 0.835; break;
+    case 2: percentageMatch = 0.724; break;
+    case 1: percentageMatch = 0.63; break;
+    default: percentageMatch = 0;
+  }
+  const raiseDiff = raise - raise_min;
+  let raiseAdd = 0;
+  if (matches.raise && raiseDiff <= 10000000) raiseAdd = 0.612;
+  if (matches.raise && raiseDiff <= 5000000) raiseAdd = 0.763;
+  if (matches.raise && raiseDiff <= 2000000) raiseAdd = 0.874;
+  if (matches.raise && raiseDiff <= 1000000) raiseAdd = 0.985;
+  if (matches.raise && raiseDiff <= 500000) raiseAdd = 1;
+
+  percentageMatch += raiseAdd;
+  if (matches.location) {
+    percentageMatch += 0.69;
+    if (searchedCity.city.toLowerCase() === location_city.toLowerCase()) {
+      percentageMatch += 0.31;
+    }
+  }
+  percentageMatch = Math.floor((percentageMatch / 3) * 100);
+  return { matches, percentageMatch };
+}

@@ -7,7 +7,7 @@ import Spinner from 'react-bootstrap/Spinner';
 import { useImage } from 'react-image';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import GreySquare from '../../imgs/greySquare.jpg';
-import { capitalizeFirstLetter } from '../../utils';
+import { capitalizeFirstLetter, calcMatch } from '../../utils';
 import * as types from '../../actions/types';
 import ErrorBoundary from '../ErrorBoundary';
 
@@ -37,49 +37,23 @@ export default function Person(props) {
     isBoard = false,
   } = props;
 
-  let { matches, percentageMatch } = props;
-
   const primary_organization_logo = primary_organization.image_url || '';
   const primary_organization_name = primary_organization.name || '';
 
   const searchKeywords = useSelector(state => state.search.keywords);
   const searchRaise = useSelector(state => state.search.raise);
+  const searchLocation = useSelector(state => state.search.location);
   const extraLocations = useSelector(state => state.search.extraLocations);
 
-  // For now, always recalculate. TODO figure out something better.
-  matches = {
-    keywords: [],
-    raise: searchRaise >= raise_min && searchRaise <= raise_max,
-    location:
-      extraLocations.filter(l => l.city === location_city
-        && l.state === location_state).length > 0,
-  };
-  searchKeywords.forEach(k => {
-    if (description && description.includes(k.toLowerCase())) matches.keywords.push(k);
+  const calcedMatch = calcMatch({
+    ...props,
+    keywords: searchKeywords,
+    raise: searchRaise,
+    location: searchLocation,
+    extraLocations,
   });
 
-  switch (matches.keywords.length) {
-    case 5:
-      percentageMatch = 1;
-      break;
-    case 4:
-      percentageMatch = 0.95;
-      break;
-    case 3:
-      percentageMatch = 0.85;
-      break;
-    case 2:
-      percentageMatch = 0.75;
-      break;
-    case 1:
-      percentageMatch = 0.6;
-      break;
-    default:
-      percentageMatch = 0;
-  }
-  if (matches.raise) percentageMatch += 1;
-  if (matches.location) percentageMatch += 1;
-  percentageMatch = Math.floor((percentageMatch / 3) * 100);
+  const { percentageMatch, matches } = calcedMatch;
 
   const investors = useSelector(state => state.board.ids) || [];
   const isOnBoard = investors.includes(uuid);

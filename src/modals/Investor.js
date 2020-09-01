@@ -10,7 +10,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Timeline } from 'react-twitter-widgets';
 import GreySquare from '../imgs/greySquare.jpg';
 import PersonStamp from '../components/people/PersonStamp';
-import { capitalizeFirstLetter, getSafeVar, statusIsError } from '../utils';
+import { calcMatch, capitalizeFirstLetter, getSafeVar, statusIsError } from '../utils';
 import * as types from '../actions/types';
 import DismissibleStatus from '../components/DismissibleStatus';
 import ErrorBoundary from '../components/ErrorBoundary';
@@ -99,44 +99,21 @@ export default function Investor(props) {
 
   const searchKeywords = useSelector(state => state.search.keywords);
   const searchRaise = useSelector(state => state.search.raise);
+  const searchLocation = useSelector(state => state.search.location);
   const extraLocations = useSelector(state => state.search.extraLocations);
 
   const searchData = useSelector(state => state.search.results[uuid] || {});
-  let { matches, percentageMatch } = searchData;
-
-  // For now, always recalculate. TODO figure out something better.
-  matches = {
-    keywords: [],
-    raise: searchRaise >= raise_min && searchRaise <= raise_max,
-    location: extraLocations.filter(l => l.city === location_city
-      && l.state === location_state).length > 0,
-  };
-  searchKeywords.forEach(k => {
-    if (description && description.includes(k.toLowerCase())) matches.keywords.push(k);
+  const calcedMatch = calcMatch({
+    ...data,
+    keywords: searchKeywords,
+    raise: searchRaise,
+    location: searchLocation,
+    extraLocations,
   });
 
-  switch (matches.keywords.length) {
-    case 5:
-      percentageMatch = 1;
-      break;
-    case 4:
-      percentageMatch = 0.95;
-      break;
-    case 3:
-      percentageMatch = 0.85;
-      break;
-    case 2:
-      percentageMatch = 0.75;
-      break;
-    case 1:
-      percentageMatch = 0.6;
-      break;
-    default:
-      percentageMatch = 0;
-  }
-  if (matches.raise) percentageMatch += 1;
-  if (matches.location) percentageMatch += 1;
-  percentageMatch = Math.floor((percentageMatch / 3) * 100);
+  const { percentageMatch, matches } = calcedMatch;
+
+  const searchedCity = extraLocations.filter(l => l.zip_code === searchLocation);
 
   const parsedInvestors = {};
   investments.forEach(i => {
