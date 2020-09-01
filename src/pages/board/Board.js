@@ -140,8 +140,8 @@ export default function Board() {
         <div className="primaryDetails">
           {`My Fundboard: ${investorIds.length} investors`}
           <Button
-            className="btn-primary primaryDetailsLink"
-            variant="text"
+            className="primaryDetailsLink"
+            variant="none"
             onClick={onCSVClick}
             disabled={investorIds.length === 0}
             data-track="BoardDetails"

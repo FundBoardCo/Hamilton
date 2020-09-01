@@ -596,6 +596,7 @@ html#ov {
             right: 0;
 
             .primaryDetails {
+              color: $col-text-light;
               background-color: $col-structure;
               padding: $pad2 $pad3;
               font-size: $h5;
@@ -606,6 +607,9 @@ html#ov {
 
               .primaryDetailsLink {
                 font-size: $h5;
+                color: $col-text-light;
+                padding: 0;
+                background-color: transparent;
               }
             }
 
@@ -640,6 +644,7 @@ html#ov {
 
                 .primaryDetailsLink {
                   font-size: $h3;
+                  color: $col-text;
                 }
               }
 
