@@ -170,7 +170,7 @@ export default function Person(props) {
           <span className="sr-only">{addBtnProps.text}</span>
         </Button>
         <div className="percentageMatch">
-          {`${percentageMatch}%`}
+          {searchLocation && `${percentageMatch}%`}
         </div>
       </div>
     </div>

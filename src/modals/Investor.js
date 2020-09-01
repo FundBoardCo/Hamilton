@@ -113,8 +113,6 @@ export default function Investor(props) {
 
   const { percentageMatch, matches } = calcedMatch;
 
-  const searchedCity = extraLocations.filter(l => l.zip_code === searchLocation);
-
   const parsedInvestors = {};
   investments.forEach(i => {
     if (Array.isArray(i.founders) && i.founders[0]) {
@@ -292,7 +290,7 @@ export default function Investor(props) {
           </div>
         )}
         <div className="matches">
-          <h2>{`${percentageMatch}% Match`}</h2>
+          <h2>{searchLocation && `${percentageMatch}% Match`}</h2>
           <ul>
             {matchData.map(d => {
               if (searchData[d.key]) {
@@ -302,17 +300,17 @@ export default function Investor(props) {
             })}
             <MatchBullet
               faIcon="key"
-              bool={matches.keywords.length > 0}
+              bool={matches.keywords.length > 0 || !searchLocation}
               text={`Their matching interests: ${matches.keywords.length ? matches.keywords.join(', ') : 'none'}.`}
             />
             <MatchBullet
               faIcon="rocket"
-              bool={matches.raise}
+              bool={matches.raise || !searchLocation}
               text={`They invest ${usdFormatter.format(raise_min)} or more.`}
             />
             <MatchBullet
               faIcon="map-marker-alt"
-              bool={matches.location}
+              bool={matches.location || !searchLocation}
               text={locationText}
             />
           </ul>
