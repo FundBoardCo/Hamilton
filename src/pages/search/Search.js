@@ -98,21 +98,21 @@ export default function Search() {
             <Person key={k} {...personProps} />
           );
         })}
-        <div className="d-flex mt-4 mb-5">
-          {resultKeys.length > 0 && (
-            <span>{`1 to ${lastIndexShown}`}</span>
-          )}
-          {resultKeys.length > page * 100 && (
-            <Button
-              variant="info"
-              className="ml-auto"
-              onClick={nextPage}
-            >
-              Load more
-            </Button>
-          )}
-        </div>
-        {Object.keys(searchResults).length === 0 && searchStatus !== 'pending' && (
+        {resultKeys.length > 0 && (
+          <div className="d-flex mt-4 mb-5">
+            <span className="h5 text-primary">{`1 to ${lastIndexShown}`}</span>
+            {resultKeys.length > page * 100 && (
+              <Button
+                variant="info"
+                className="ml-auto"
+                onClick={nextPage}
+              >
+                Load more
+              </Button>
+            )}
+          </div>
+        )}
+        {Object.keys(searchResults).length === 0 && searchStatus === 'succcess' && (
           <div className="p-2 text-info">
             <div>No results found.</div>
             <Button
