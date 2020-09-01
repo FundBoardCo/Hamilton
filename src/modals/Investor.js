@@ -331,7 +331,7 @@ export default function Investor(props) {
             <MatchBullet
               faIcon="rocket"
               bool={matches.raise}
-              text={`They invest between ${usdFormatter.format(raise_min)} and ${usdFormatter.format(raise_max)}.`}
+              text={`They invest ${usdFormatter.format(raise_min)} or more.`}
             />
             <MatchBullet
               faIcon="map-marker-alt"
