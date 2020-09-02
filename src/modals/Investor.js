@@ -306,7 +306,7 @@ export default function Investor(props) {
             <MatchBullet
               faIcon="rocket"
               bool={matches.raise || !searchLocation}
-              text={`They invest ${usdFormatter.format(raise_min)} or more.`}
+              text={`They invest in rounds of ${usdFormatter.format(raise_min)} or more.`}
             />
             <MatchBullet
               faIcon="map-marker-alt"
