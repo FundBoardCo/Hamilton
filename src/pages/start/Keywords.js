@@ -55,7 +55,7 @@ export default function Keywords() {
           showSuccess={false}
           dissmissAction={types.AIRTABLE_GET_KEYWORDS_DISMISSED}
         />
-        <div className="text-info mb-3 d-flex flex-wrap align-items-center">
+        <div className="text-info mb-3 d-flex flex-wrap align-items-center flex-shrink-0">
           <span>Selected:&nbsp;</span>
           {searchKeywords.map(w => (
             <Button
