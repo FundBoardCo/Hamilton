@@ -144,7 +144,7 @@ export default function SearchMenu() {
 
   const closeAndSearch = () => {
     getResults();
-    history.goBack();
+    history.push('/search');
   };
 
   useEffect(() => {
