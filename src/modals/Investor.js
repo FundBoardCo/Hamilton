@@ -343,14 +343,14 @@ export default function Investor(props) {
         <div className="invalidWrapper">
           {!data.invalid && (
             <div className="openLinkWrapper">
-              <FontAwesomeIcon icon="exclamation-triangle" />
+              <FontAwesomeIcon icon="comment" />
               &nbsp;
               <Button
                 variant="link"
                 onClick={() => setInvalidOpen(!invalidOpen)}
                 data-track={`${path}InvestorToggleInvalid`}
               >
-                I think this profile is out of date.
+                If you think any of the data above is outdated, click here to let us know.
               </Button>
             </div>
           )}
@@ -363,7 +363,7 @@ export default function Investor(props) {
                     onClick={() => reportInvalid('NameTitleOrg')}
                     data-track={`${path}InvestorInvalid-NameTitleOrg`}
                   >
-                    The name, title, or their organization is outdated
+                    The name, title, or their organization is outdated.
                   </Button>
                   <Button
                     variant="link"
@@ -405,7 +405,7 @@ export default function Investor(props) {
             </div>
           )}
           {data.invalid && (
-            <div className="p-3 text-center h4 text-info">
+            <div className="p-3 text-center h4 text-primary">
               Thank you. Your report has been received.
             </div>
           )}

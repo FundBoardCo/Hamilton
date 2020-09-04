@@ -412,14 +412,14 @@ html#ov body {
 
               .openLinkWrapper {
                 margin-bottom: $pad4;
-                color: $col-info;
-                font-size: $h4;
+                color: $col-secondary-dark;
+                font-size: $h5;
                 display: flex;
                 align-items: flex-start;
 
                 .btn.btn-link {
                   font-weight: 700;
-                  color: $col-info;
+                  color: inherit;
                 }
               }
 
@@ -430,8 +430,7 @@ html#ov body {
                 padding-bottom: $pad2;
 
                 .btn {
-                  color: $col-info;
-                  font-size: $h5;
+                  color: $col-secondary;
                   margin-bottom: $pad2;
                 }
               }
