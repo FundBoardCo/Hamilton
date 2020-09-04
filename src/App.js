@@ -128,8 +128,8 @@ function App() {
             && (
               <Nav.Link
                 as={NavLink}
-                href="/search"
-                to="/search"
+                href="/search/menu"
+                to="/search/menu"
                 className="search"
                 activeClassName="active"
                 data-track="navSearch"

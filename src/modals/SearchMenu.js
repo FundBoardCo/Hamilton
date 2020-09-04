@@ -139,7 +139,7 @@ export default function SearchMenu() {
   };
 
   const closeModal = () => {
-    history.goBack();
+    history.push('/search');
   };
 
   const closeAndSearch = () => {
