@@ -6,24 +6,37 @@ html#ov body {
 
   .person {
     display: flex;
+    align-items: stretch;
     background-color: $col-light;
     border-radius: $pad4;
     overflow: hidden;
+    padding: 0;
     margin-bottom: $pad2;
+    width: 100%;
+    border: none;
+    outline: 0;
+    box-sizing: border-box;
+
+    &:hover,
+    &:active,
+    &.active {
+      color: inherit;
+      border: 1px solid $col-secondary;
+    }
 
     .thumb {
       width: $pad6;
+      height: $pad6;
       flex-shrink: 0;
       padding: 0;
       border: 0;
       border-right: 1px solid $col-primary-light4;
-
-      @media (min-width: $mediaXs) {
-        width: $pad6;
-      }
+      background-size: cover;
+      background-position: center;
 
       @media (min-width: $mediaLg) {
         width: $pad7;
+        height: $pad7;
       }
     }
 
@@ -35,20 +48,7 @@ html#ov body {
 
       h1 {
         font-size: $tx;
-
-        button {
-          color: inherit;
-          width: 100%;
-          text-align: left;
-          font-weight: 700;
-          border: none;
-          padding: 0;
-          background: none;
-
-          &:active {
-            color: inherit;
-          }
-        }
+        text-align: left;
       }
 
       .details {
@@ -103,10 +103,11 @@ html#ov body {
       display: flex;
       flex-direction: column;
       align-items: flex-end;
-      justify-content: flex-start;
+      justify-content: flex-end;
+      margin-top: auto;
       padding: $pad2;
 
-      .addBtn {
+      .iconBtn {
         font-size: $pad4;
       }
 
