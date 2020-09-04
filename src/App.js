@@ -104,7 +104,7 @@ function App() {
     modal: 'login',
   });
 
-  console.log(TESTENV)
+  console.log(process.env.REACT_APP_TESTENV)
 
   return (
     <Router>
