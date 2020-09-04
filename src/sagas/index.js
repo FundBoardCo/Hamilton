@@ -20,7 +20,7 @@ import {
 } from '../utils';
 import * as types from '../actions/types';
 
-const api = 'https://api.fundboard.co/';
+const api = `https://${process.env.REACT_APP_ENV === 'DEV' ? 'staging-' : ''}api.fundboard.co/`;
 
 const webFlowAPI = new Webflow({ token: WEBFLOW_APIKEY });
 

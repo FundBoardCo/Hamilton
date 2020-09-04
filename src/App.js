@@ -104,8 +104,6 @@ function App() {
     modal: 'login',
   });
 
-  console.log(process.env.REACT_APP_TESTENV)
-
   return (
     <Router>
       <ScrollToTop>
