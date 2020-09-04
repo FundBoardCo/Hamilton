@@ -89,12 +89,13 @@ export function calcMatch(opts) {
   if (matches.raise && raiseDiff <= 500000) raiseAdd = 1;
 
   percentageMatch += raiseAdd;
+  // count location as 0.5, so it's 40/40/20 on keywords/raise/location
   if (matches.location) {
-    percentageMatch += 0.69;
+    percentageMatch += 0.33;
     if (searchedCity.city.toLowerCase() === location_city.toLowerCase()) {
-      percentageMatch += 0.31;
+      percentageMatch += 0.17;
     }
   }
-  percentageMatch = Math.floor((percentageMatch / 3) * 100);
+  percentageMatch = Math.floor((percentageMatch / 2.5) * 100);
   return { matches, percentageMatch };
 }
