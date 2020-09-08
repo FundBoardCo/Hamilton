@@ -280,7 +280,7 @@ html#ov body {
                   height: $pad5;
                   overflow: hidden;
                   border-radius: $pad2;
-                  border: 1px solid $col-primary-light4;
+                  border: 1px solid $col-primary-light6;
 
                   img {
                     width: 100%;
@@ -326,9 +326,15 @@ html#ov body {
                 font-size: $txSm;
 
                 .orgLogoWrapper {
-                  width: $pad4;
+                  width: $pad3;
+                  height: $pad3;
                   flex-shrink: 0;
                   padding-right: $pad1;
+                  border: 1px solid $col-primary-light7;
+                  box-sizing: border-box;
+                  border-radius: $pad1;
+                  overflow: hidden;
+                  margin-right: $pad1;
 
                   img {
                     width: 100%;
@@ -338,6 +344,11 @@ html#ov body {
 
                 @media (min-width: $mediaXs) {
                   font-size: $txMd;
+
+                  .orgLogoWrapper {
+                    width: $pad4;
+                    height: $pad4;
+                  }
                 }
 
                 @media (min-width: $mediaMd) {
@@ -349,6 +360,9 @@ html#ov body {
 
                   .orgLogoWrapper {
                     width: $pad5;
+                    height: $pad5;
+                    border-radius: $pad2;
+                    margin-right: $pad2;
                   }
                 }
               }
@@ -641,7 +655,8 @@ html#ov body {
         width: $pad5;
         height: $pad5;
         border-radius: $pad2;
-        border: 1px solid $col-primary-light4;
+        border: 1px solid $col-primary-light6;
+        box-sizing: border-box;
         overflow: hidden;
         position: relative;
         margin-bottom: $pad1;
@@ -657,6 +672,8 @@ html#ov body {
           bottom: 0;
           width: $pad3;
           height: $pad3;
+          border: 1px solid $col-primary-light7;
+          box-sizing: border-box;
 
           img {
             position: absolute;
