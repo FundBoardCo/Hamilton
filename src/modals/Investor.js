@@ -218,7 +218,7 @@ export default function Investor(props) {
         </Modal.Title>
       </Modal.Header>
       <Modal.Body>
-        <div className="investorHeader mb-2">
+        <section className="investorHeader mb-4">
           <div className="thumbCol">
             <div className="thumb">
               <Suspense fallback={<Spinner animation="border" variant="info" role="status" size="sm" />}>
@@ -249,47 +249,48 @@ export default function Investor(props) {
               )}
             </div>
           </div>
-        </div>
+        </section>
         <DismissibleStatus
           status={status}
           showSuccess={false}
           dissmissAction={types.PEOPLE_GET_DISMISS}
           dismissParams={{ ids: [uuid] }}
         />
-        {permalink && (
-          <div className="crunchBaseAttribution mb-2">
-            Sourced from CrunchBase.&nbsp;
-            <a
-              href={`https://www.crunchbase.com/person/${permalink}`}
-              target="_blank"
-              rel="noopener noreferrer"
-              data-track={`${path}InvestorCrunchBase`}
-            >
-              Click to view profile.
-            </a>
-          </div>
-        )}
-        {description && (
-          <div className="description mb-3">
-            {description}
-          </div>
-        )}
-        {linkedin && (
-          <div className="mb-4 h3 text-linkedin d-flex">
-            <FontAwesomeIcon icon={['fab', 'linkedin']} />
-            &nbsp;
-            <a
-              href={linkedin}
-              className="text-linkedin"
-              target="_blank"
-              rel="noopener noreferrer"
-              data-track={`${path}InvestorLinkedIn`}
-            >
-              LinkedIn Profile
-            </a>
-          </div>
-        )}
-        <div className="matches">
+        <section className="mb-4">
+          {description && (
+            <div className="description mb-3">
+              {description}
+            </div>
+          )}
+          {permalink && (
+            <div className="crunchBaseAttribution mb-3">
+              <a
+                href={`https://www.crunchbase.com/person/${permalink}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                data-track={`${path}InvestorCrunchBase`}
+              >
+                Sourced from CrunchBase
+              </a>
+            </div>
+          )}
+          {linkedin && (
+            <div className="h4 text-linkedin d-flex">
+              <FontAwesomeIcon icon={['fab', 'linkedin']} />
+              &nbsp;
+              <a
+                href={linkedin}
+                className="text-linkedin"
+                target="_blank"
+                rel="noopener noreferrer"
+                data-track={`${path}InvestorLinkedIn`}
+              >
+                LinkedIn Profile
+              </a>
+            </div>
+          )}
+        </section>
+        <section className="matches mb-4">
           <h2>{searchLocation && `${percentageMatch}% Match`}</h2>
           <ul>
             {matchData.map(d => {
@@ -314,19 +315,32 @@ export default function Investor(props) {
               text={locationText}
             />
           </ul>
-        </div>
+        </section>
         {Array.isArray(investments) && investments.length > 0 && (
-          <div className="funded">
+          <section className="funded mb-4">
             <h2>Founders they&apos;ve funded</h2>
             <div className="founders">
               {Object.keys(parsedInvestors).map(k => (
                 <PersonStamp key={k} {...parsedInvestors[k]} />
               ))}
             </div>
-          </div>
+          </section>
         )}
-        <div className="twitterFeed">
-          {twitterName && (
+        {twitterName && (
+          <section className="twitterFeed">
+            <div className="h4 text-linkedin d-flex mb-2">
+              <FontAwesomeIcon icon={['fab', 'twitter']} />
+              &nbsp;
+              <a
+                href={`http://twitter.com/${twitterName}`}
+                className="text-linkedin"
+                target="_blank"
+                rel="noopener noreferrer"
+                data-track={`${path}InvestorTwitter`}
+              >
+                Twitter Feed
+              </a>
+            </div>
             <Timeline
               dataSource={{
                 sourceType: 'profile',
@@ -338,9 +352,9 @@ export default function Investor(props) {
                 chrome: 'noheader nofooter noborders transparent noscrollbar',
               }}
             />
-          )}
-        </div>
-        <div className="invalidWrapper">
+          </section>
+        )}
+        <section className="invalidWrapper">
           {!data.invalid && (
             <div className="openLinkWrapper">
               <FontAwesomeIcon icon="comment" />
@@ -409,7 +423,7 @@ export default function Investor(props) {
               Thank you. Your report has been received.
             </div>
           )}
-        </div>
+        </section>
       </Modal.Body>
       <Modal.Footer>
         <button
