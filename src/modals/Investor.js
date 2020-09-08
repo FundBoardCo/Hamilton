@@ -330,7 +330,7 @@ export default function Investor(props) {
         {twitterName && (
           <section className="twitterFeed">
             <div className="h4 text-linkedin d-flex mb-2">
-              <FontAwesomeIcon icon={['fab', 'twitter']} />
+              <FontAwesomeIcon icon={['fab', 'twitter-square']} />
               &nbsp;
               <a
                 href={`http://twitter.com/${twitterName}`}
