@@ -194,7 +194,7 @@ export default function Investor(props) {
   });
 
   const addBtnProps = {
-    text: isOnBoard ? 'Remove from my FundBoard' : 'Add to my FundBoard',
+    text: isOnBoard ? 'Remove from my FundBoard' : 'Save to my FundBoard',
     bgCol: isOnBoard ? 'bg-warning' : 'bg-secondary',
     track: isOnBoard ? 'remove' : 'add',
   };
