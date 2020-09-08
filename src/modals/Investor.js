@@ -201,6 +201,7 @@ export default function Investor(props) {
 
   let locationText = location_state ? `${location_city}, ${location_state}` : location_state;
   locationText = locationText ? `They are located in ${locationText}.` : 'No location available.';
+  locationText = `${locationText} Investors are more likely to invest locally.`
 
   return (
     <Modal
@@ -432,6 +433,8 @@ export default function Investor(props) {
           onClick={toggleInvestor}
           data-track={`${path}InvestorAdd-${addBtnProps.track}`}
         >
+          <FontAwesomeIcon icon="plus" />
+          &nbsp;
           {addBtnProps.text}
         </button>
       </Modal.Footer>

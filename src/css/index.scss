@@ -181,7 +181,7 @@ html#ov {
         margin: 0 auto; // center
         position: relative;
         overflow: auto;
-        background: linear-gradient($col-primary-light9, $col-primary-light6);
+        background: linear-gradient($col-primary-light9, $col-primary-light7);
 
         @media (min-width: $mediaLg) {
           order: 2;
