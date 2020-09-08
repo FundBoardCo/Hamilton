@@ -47,7 +47,8 @@ export default function search(state = { ...defaultState }, action) {
       return {
         ...state,
         extraLocations: action.data.zip_codes,
-        extraZipcodes: action.data.zip_codes.map(z => z.zip_code),
+        extraZipcodes: Array.isArray(action.data.zip_codes)
+          ? action.data.zip_codes.map(z => z.zip_code) : [],
         extraZipcodes_status: 'succeeded',
       };
     case types.SEARCH_GET_EXTRAZIPCODES_FAILED: return {
