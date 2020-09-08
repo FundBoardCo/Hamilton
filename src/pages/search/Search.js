@@ -14,6 +14,7 @@ export default function Search() {
   const searchLocation = useSelector(state => state.search.location) || '';
   const searchResults = useSelector(state => state.search.results) || [];
   const searchStatus = useSelector(state => state.search.results_status) || '';
+  const investorIds = useSelector(state => state.board.ids) || [];
 
   const [detailsOpen, setDetailsOpen] = useState(false);
   const [page, setPage] = useState(1);
@@ -84,6 +85,18 @@ export default function Search() {
             {`Location: ${searchLocation}`}
           </p>
         </div>
+      </div>
+      <div className="mb-3 txs-2 tx-md-tx3">
+        {resultKeys.length > 0 && (
+          <span>
+            {`You have ${investorIds.length} investors on your FundBoard. Click on an investor to learn more about them and save them to your board.`}
+          </span>
+        )}
+        {resultKeys.length === 0 && (
+          <span>
+            {`You have ${investorIds.length} investors on your FundBoard. Start a new search to find matching investors to save to your board.`}
+          </span>
+        )}
       </div>
       <DismissibleStatus
         status={searchStatus}
