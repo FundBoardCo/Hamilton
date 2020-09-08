@@ -25,8 +25,6 @@ const api = `https://${process.env.REACT_APP_ENV === 'DEV' ? 'staging-' : ''}api
 const webFlowAPI = new Webflow({ token: WEBFLOW_APIKEY });
 
 const getToken = state => state.user.token;
-const getEmail = state => state.user.email;
-const getInvestors = state => state.user.investors;
 const getBoard = state => state.board.ids;
 
 function trackErr(err) {
