@@ -88,6 +88,7 @@ $col-text: #20133C;
 $col-text-light: scale_color($col-structure, $lightness: 95%);
 
 $col-linkedin: #2867B2;
+$col-twitter: #1DA1F2;
 
 @mixin btn-colors($colP, $colD, $colL, $colT, $colTA) {
   background-color: $colP !important;
@@ -188,6 +189,10 @@ html#ov body {
 
   .text-linkedin {
     color: $col-linkedin !important;
+  }
+
+  .text-twitter {
+    color: $col-twitter !important;
   }
 
   .bg-primary {

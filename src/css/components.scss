@@ -473,12 +473,21 @@ html#ov body {
               height: 100%;
               color: $col-text-light;
               border: none;
-              font-size: $h4;
+              font-size: $tx;
+              font-weight: 700;
               display: flex;
               justify-content: center;
               align-items: center;
               margin: 0;
               padding: $pad3;
+
+              @media (min-width: $mediaXs) {
+                font-size: $h5;
+              }
+
+              @media (min-width: $mediaLg) {
+                font-size: $h4;
+              }
             }
           }
         }

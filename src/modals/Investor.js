@@ -95,6 +95,7 @@ export default function Investor(props) {
 
   const primary_organization_logo = primary_organization.image_url || '';
   const primary_organization_name = primary_organization.name || '';
+  const primary_organization_homepage = primary_organization.homepage || '';
   const twitterName = getSafeVar(() => twitter.substr(twitter.lastIndexOf('/') + 1), '');
 
   const searchKeywords = useSelector(state => state.search.keywords);
@@ -194,9 +195,10 @@ export default function Investor(props) {
   });
 
   const addBtnProps = {
-    text: isOnBoard ? 'Remove from my FundBoard' : 'Save to my FundBoard',
+    text: isOnBoard ? 'Remove from my Fundboard' : 'Save to my FundBoard',
     bgCol: isOnBoard ? 'bg-warning' : 'bg-secondary',
     track: isOnBoard ? 'remove' : 'add',
+    faIcon: isOnBoard ? 'minus' : 'plus',
   };
 
   let locationText = location_state ? `${location_city}, ${location_state}` : location_state;
@@ -231,7 +233,13 @@ export default function Investor(props) {
           </div>
           <div className="d-flex flex-column">
             <h1>{name}</h1>
-            <div className="orgDetails">
+            <a
+              className="orgDetails"
+              href={primary_organization_homepage}
+              target="_blank"
+              rel="noopener noreferrer"
+              data-track={`${path}InvestorHomepage`}
+            >
               {primary_organization_logo && (
                 <div className="orgLogoWrapper">
                   <Suspense fallback={<Spinner animation="border" variant="info" role="status" size="sm" />}>
@@ -248,7 +256,7 @@ export default function Investor(props) {
                   {primary_organization_name}
                 </div>
               )}
-            </div>
+            </a>
           </div>
         </section>
         <DismissibleStatus
@@ -329,12 +337,12 @@ export default function Investor(props) {
         )}
         {twitterName && (
           <section className="twitterFeed">
-            <div className="h4 text-linkedin d-flex mb-2">
+            <div className="h4 text-twitter d-flex mb-2">
               <FontAwesomeIcon icon={['fab', 'twitter-square']} />
               &nbsp;
               <a
                 href={`http://twitter.com/${twitterName}`}
-                className="text-linkedin"
+                className="text-twitter"
                 target="_blank"
                 rel="noopener noreferrer"
                 data-track={`${path}InvestorTwitter`}
@@ -433,8 +441,7 @@ export default function Investor(props) {
           onClick={toggleInvestor}
           data-track={`${path}InvestorAdd-${addBtnProps.track}`}
         >
-          <FontAwesomeIcon icon="plus" />
-          &nbsp;
+          <FontAwesomeIcon icon={addBtnProps.faIcon} className="mr-2" />
           {addBtnProps.text}
         </button>
       </Modal.Footer>
