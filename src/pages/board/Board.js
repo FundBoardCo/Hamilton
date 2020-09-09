@@ -13,6 +13,7 @@ export default function Board() {
   const investorIds = useSelector(state => state.board.ids) || [];
   const people = useSelector(state => state.people);
   const loggedIn = useSelector(state => state.user.token);
+  const showAdvice = useSelector(state => state.board.showAdvice);
 
   // TODO: this currently doesn't do anything, because none of the fetched people have match data
   investorIds.sort((a, b) => {
@@ -123,59 +124,87 @@ export default function Board() {
     FileSaver.saveAs(csvData, 'MyFundBoard.csv');
   };
 
-  const onShowLogin = () => dispatch({
-    type: types.MODAL_SET_OPEN,
-    modal: 'login',
-  });
-
   const onShowNextClick = () => dispatch({
     type: types.MODAL_SET_OPEN,
     modal: 'afterDownload',
   });
 
+  const onToggleShowAdvice = () => dispatch({
+    type: types.BOARD_SHOWADVICE,
+    showAdvice: !showAdvice,
+  });
+
   return (
     <Row id="PageBoard" className="pageContainer">
       {loggedIn && (
-      <div className="boardDetailsBar">
-        <div className="primaryDetails">
-          {`My Fundboard: ${investorIds.length} investors`}
-          <Button
-            className="primaryDetailsLink"
-            variant="none"
-            onClick={onCSVClick}
-            disabled={investorIds.length === 0}
-            data-track="BoardDetails"
-          >
-            <FontAwesomeIcon icon="file-download" />
-            <span className="d-none d-lg-inline ml-2">Download</span>
-          </Button>
+        <div>
+          <div className="boardDetailsBar">
+            <div className="primaryDetails">
+              {`My Fundboard: ${investorIds.length} investors`}
+              <Button
+                className="primaryDetailsLink"
+                variant="none"
+                onClick={onCSVClick}
+                disabled={investorIds.length === 0}
+                data-track="BoardDetails"
+              >
+                <FontAwesomeIcon icon="file-download" />
+                <span className="d-none d-lg-inline ml-2">Download</span>
+              </Button>
+            </div>
+          </div>
+          <div className="mb-3 txs-2 tx-md-tx3">
+            {showAdvice && (
+              <div>
+                <p>
+                  Use the information available for each investor on your FundBoard to find&nbsp;
+                  someone that can introduce you to them, or try to reach them directly.
+                </p>
+                <p>
+                  You should have 20 or more potential leads. If you need more, try adjusting&nbsp;
+                  the parameters in your&nbsp;
+                  <a href="/search">search.</a>
+                </p>
+                <p>
+                  Want more?&nbsp;
+                  <a
+                    href="https://www.fundboard.co/our-take/how-to-raise-with-your-fundboard"
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    We&apos;ve written a detailed guide to raising funds with your FundBoard.
+                  </a>
+                </p>
+              </div>
+            )}
+            <div className="d-flex">
+              <Button
+                variant="link"
+                className="ml-auto"
+                onClick={onToggleShowAdvice}
+              >
+                {showAdvice && <span>Hide</span>}
+                {!showAdvice && <span>Tips on using your FundBoard</span>}
+              </Button>
+            </div>
+          </div>
         </div>
-      </div>
       )}
       {loggedIn && (
-      <div className="results">
-        {Object.keys(investorList).map(k => {
-          const personProps = { ...investorList[k] };
-          personProps.uuid = k;
-          personProps.isBoard = true;
-          return (
-            <Person key={k} {...personProps} />
-          );
-        })}
-      </div>
+        <div className="results">
+          {Object.keys(investorList).map(k => {
+            const personProps = { ...investorList[k] };
+            personProps.uuid = k;
+            personProps.isBoard = true;
+            return (
+              <Person key={k} {...personProps} />
+            );
+          })}
+        </div>
       )}
       {!loggedIn && (
         <Col xs={12} md={8} className="mr-auto ml-auto">
           <h1 className="text-center">To see your FundBoard, you need to log in first.</h1>
-          <div className="d-flex justify-content-center">
-            <Button
-              variant="secondary"
-              className="btnResponsiveMax"
-              onClick={onShowLogin}
-            >
-              Login
-            </Button>
-          </div>
         </Col>
       )}
     </Row>

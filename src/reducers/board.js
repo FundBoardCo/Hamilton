@@ -8,6 +8,7 @@ export default function board(state = { ids: [] }, action) {
   rehydratedIds = rehydratedIds.filter(i => i && typeof i === 'string');
   switch (action.type) {
     case REHYDRATE: return {
+      showAdvice: true,
       ...state,
       ids: [...state.ids, ...rehydratedIds],
     };
@@ -22,6 +23,10 @@ export default function board(state = { ids: [] }, action) {
     case types.BOARD_MERGE: return {
       ...state,
       ids: [...new Set([...state.ids, ...action.ids])],
+    };
+    case types.BOARD_SHOWADVICE: return {
+      ...state,
+      showAdvice: action.showAdvice,
     };
     default: return state;
   }

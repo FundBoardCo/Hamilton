@@ -89,12 +89,14 @@ export default function Search() {
       <div className="mb-3 txs-2 tx-md-tx3">
         {resultKeys.length > 0 && (
           <span>
-            {`You have ${investorIds.length} investors on your FundBoard. Click on an investor to learn more about them and save them to your board.`}
+            {`You have ${investorIds.length} investors on your FundBoard. Click on an investor to learn more about them and save them to your `}
+            <a href="/board">board.</a>
           </span>
         )}
         {resultKeys.length === 0 && (
           <span>
-            {`You have ${investorIds.length} investors on your FundBoard. Start a new search to find matching investors to save to your board.`}
+            {`You have ${investorIds.length} investors on your FundBoard. Start a new search to find matching investors to save to your `}
+            <a href="/board">board.</a>
           </span>
         )}
       </div>
