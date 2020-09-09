@@ -1,5 +1,4 @@
 import React from 'react';
-import ReactGA from 'react-ga';
 import {
   BrowserRouter as Router,
   Route,
@@ -56,9 +55,6 @@ import Talk from './pages/talk/Talk';
 import NotFound from './pages/NotFound';
 import Modal from './modals/ModalWrapper';
 import * as types from './actions/types';
-
-ReactGA.initialize('UA-163041446-2');
-ReactGA.pageview(window.location.pathname + window.location.search);
 
 // import common icons so they're accessible later.
 library.add(
