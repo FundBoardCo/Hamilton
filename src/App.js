@@ -99,11 +99,6 @@ library.add(
   faQuestionCircle,
 );
 
-if (process.env.REACT_APP_ENV !== 'DEV') {
-  ReactGA.initialize('UA-163041446-2');
-  ReactGA.pageview(window.location.pathname + window.location.search);
-}
-
 function App() {
   const loggedIn = useSelector(state => state.user.token);
   const firstTime = useSelector(state => state.search.firstTime);
