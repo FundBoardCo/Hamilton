@@ -48,9 +48,26 @@ export function getSafeVar(fn, defaultVal) {
   }
 }
 
+export function convertKeyTags(text) {
+  if (typeof text !== 'string') throw new Error('A string must be submitted.');
+  let newText = text.replace(/\[fbkw]/g, '<i>');
+  newText = newText.replace(/\[\/fbkw]/g, '</i>');
+  return newText;
+}
+
+export function getMatchedKeywords(text, keywords) {
+  if (typeof text !== 'string') throw new Error('A string must be submitted.');
+  if (!Array.isArray(keywords)) throw new Error('An array of keywords must be submitted');
+  const k = text.toLowerCase().match(/\[fbkw](.*?)\[\/fbkw]/g).map(
+    v => v.replace(/\[\/?fbkw]/g, ''),
+  );
+  return [...new Set(k)];
+}
+
 export function calcMatch(opts) {
   const {
     keywords = [],
+    keywords_matched = 0,
     raise,
     location,
     extraLocations,
@@ -59,6 +76,8 @@ export function calcMatch(opts) {
     location_city,
     location_state,
     description,
+    median_distance,
+    keywords_rank,
   } = opts;
   const searchedCity = extraLocations.filter(l => l.zip_code === location)[0];
   const matches = {
@@ -67,28 +86,18 @@ export function calcMatch(opts) {
     location: extraLocations.filter(l => l.city === location_city
       && l.state === location_state).length > 0,
   };
-  keywords.forEach(k => {
-    if (description && description.includes(k.toLowerCase())) matches.keywords.push(k);
-  });
-
-  let percentageMatch;
-  switch (matches.keywords.length) {
-    case 5: percentageMatch = 1; break;
-    case 4: percentageMatch = 0.946; break;
-    case 3: percentageMatch = 0.835; break;
-    case 2: percentageMatch = 0.724; break;
-    case 1: percentageMatch = 0.63; break;
-    default: percentageMatch = 0;
+  if (Array.isArray(keywords)) {
+    keywords.forEach(k => {
+      if (description && description.includes(k.toLowerCase())) matches.keywords.push(k);
+    });
   }
-  const raiseDiff = raise - raise_min;
-  let raiseAdd = 0;
-  if (matches.raise && raiseDiff <= 10000000) raiseAdd = 0.612;
-  if (matches.raise && raiseDiff <= 5000000) raiseAdd = 0.763;
-  if (matches.raise && raiseDiff <= 2000000) raiseAdd = 0.874;
-  if (matches.raise && raiseDiff <= 1000000) raiseAdd = 0.985;
-  if (matches.raise && raiseDiff <= 500000) raiseAdd = 1;
 
-  percentageMatch += raiseAdd;
+  let percentageMatch = (keywords.length + keywords_rank) / 6;
+
+  const raiseDiff = 10000000 - median_distance;
+
+  if (raiseDiff > 0) percentageMatch += (raiseDiff / 10000000);
+
   // count location as 0.5, so it's 40/40/20 on keywords/raise/location
   if (matches.location) {
     percentageMatch += 0.33;

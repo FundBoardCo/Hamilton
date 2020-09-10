@@ -10,7 +10,14 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Timeline } from 'react-twitter-widgets';
 import GreySquare from '../imgs/greySquare.jpg';
 import PersonStamp from '../components/people/PersonStamp';
-import { calcMatch, capitalizeFirstLetter, getSafeVar, statusIsError } from '../utils';
+import {
+  calcMatch,
+  capitalizeFirstLetter,
+  getSafeVar,
+  statusIsError,
+  convertKeyTags,
+  getMatchedKeywords,
+} from '../utils';
 import * as types from '../actions/types';
 import DismissibleStatus from '../components/DismissibleStatus';
 import ErrorBoundary from '../components/ErrorBoundary';
@@ -68,8 +75,15 @@ export default function Investor(props) {
   const { params } = match;
   const { uuid } = params;
 
-  const people = useSelector(state => state.people);
-  const data = people[uuid] || {};
+  const location = useLocation();
+  const path = capitalizeFirstLetter(location.pathname.substring(1).split('/')[0]);
+
+  const searchResults = useSelector(state => state.search.results) || {};
+  const people = useSelector(state => state.people) || {};
+  const sData = searchResults[uuid] || {};
+  const pData = people[uuid] || {};
+  const data = { ...pData, ...sData };
+
   const {
     status,
     name,
@@ -81,13 +95,16 @@ export default function Investor(props) {
     linkedin,
     twitter,
     raise_min,
-    raise_max,
+    // raise_max,
+    keywords_matched,
+    keywords_rank,
+    median_distance,
     location_city,
     location_state,
     investments = [],
-    is_lead_investor = false,
-    is_open = false,
-    is_impact = false,
+    // is_lead_investor = false,
+    // is_open = false,
+    // is_impact = false,
     isBoard = false,
     invalid,
     invalid_status,
@@ -106,7 +123,8 @@ export default function Investor(props) {
   const searchData = useSelector(state => state.search.results[uuid] || {});
   const calcedMatch = calcMatch({
     ...data,
-    keywords: searchKeywords,
+    keywords: getMatchedKeywords(description, searchKeywords),
+    raiseDistance: median_distance,
     raise: searchRaise,
     location: searchLocation,
     extraLocations,
@@ -135,10 +153,6 @@ export default function Investor(props) {
 
   const [invalidOpen, setInvalidOpen] = useState(false);
 
-  const location = useLocation();
-
-  const path = capitalizeFirstLetter(location.pathname.substring(1));
-
   const history = useHistory();
 
   const closeModal = () => {
@@ -148,11 +162,13 @@ export default function Investor(props) {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    dispatch({
-      type: types.PEOPLE_GET_REQUEST,
-      id: uuid,
-    });
-  }, [dispatch, uuid]);
+    if (!Object.keys(data).length) {
+      dispatch({
+        type: types.PEOPLE_GET_REQUEST,
+        id: uuid,
+      });
+    }
+  }, [dispatch, data, uuid]);
 
   useEffect(() => {
     dispatch({
@@ -267,9 +283,10 @@ export default function Investor(props) {
         />
         <section className="mb-4">
           {description && (
-            <div className="description mb-3">
-              {description}
-            </div>
+            <div
+              className="description mb-3"
+              dangerouslySetInnerHTML={{ __html: convertKeyTags(description) }}
+            />
           )}
           {permalink && (
             <div className="crunchBaseAttribution mb-3">

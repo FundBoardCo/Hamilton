@@ -66,11 +66,11 @@ export default function search(state = { ...defaultState }, action) {
         const calcedMatch = calcMatch({ ...i, ...state });
         return { ...i, ...calcedMatch };
       });
-      parsedResults.sort((a, b) => b.percentageMatch - a.percentageMatch);
+      // parsedResults.sort((a, b) => b.percentageMatch - a.percentageMatch);
 
       return {
         ...state,
-        results: [...parsedResults],
+        results: parsedResults.reduce((acc, r) => ({ ...acc, [r.uuid]: r }), {}),
         results_status: 'succeeded',
       };
     case types.SEARCH_GET_RESULTS_FAILED: return {

@@ -24,15 +24,13 @@ export default function Person(props) {
     image_url = '',
     primary_job_title = '',
     primary_organization = {},
-    description = '',
-    location_city,
-    location_state,
-    raise_min,
-    raise_max,
     // isLead = false,
     // isOpen = false,
     // isImpact = false,
     isBoard = false,
+    keywords_matched,
+    keywords_rank,
+    median_distance,
   } = props;
 
   const primary_organization_logo = primary_organization.image_url || '';

@@ -40,7 +40,7 @@ const peopleConfig = {
 const searchConfig = {
   key: 'search',
   storage,
-  blacklist: ['results', 'results_status', 'extraZipcodes_status'],
+  blacklist: ['results_status', 'extraZipcodes_status'],
 };
 const userConfig = {
   key: 'user',
