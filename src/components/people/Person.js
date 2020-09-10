@@ -67,8 +67,6 @@ export default function Person(props) {
 
   const path = capitalizeFirstLetter(location.pathname.substring(1));
 
-  // TODO: add a "are you sure" step to removing if it's on the board page.
-
   return (
     <button
       className="person"
@@ -111,9 +109,11 @@ export default function Person(props) {
             <span className="sr-only">This investor is on your board.</span>
           </div>
         )}
-        <div className="percentageMatch">
-          {searchLocation && `${percentageMatch}%`}
-        </div>
+        {path !== 'Board' && (
+          <div className="percentageMatch">
+            {searchLocation && `${percentageMatch}%`}
+          </div>
+        )}
       </div>
     </button>
   );
