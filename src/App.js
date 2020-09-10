@@ -14,10 +14,13 @@ import { fab } from '@fortawesome/free-brands-svg-icons';
 import {
   faBalanceScale,
   faBan,
+  faBuilding,
   faCaretLeft,
   faCaretRight,
   faCheck,
+  faCheckCircle,
   faCog,
+  faComment,
   faCommentDots,
   faDoorOpen,
   faEdit,
@@ -32,6 +35,7 @@ import {
   faLink,
   faList,
   faMapMarkerAlt,
+  faMinus,
   faMinusCircle,
   faPlus,
   faPlusCircle,
@@ -61,10 +65,13 @@ library.add(
   fab,
   faBalanceScale,
   faBan,
+  faBuilding,
   faCaretLeft,
   faCaretRight,
   faCheck,
+  faCheckCircle,
   faCog,
+  faComment,
   faCommentDots,
   faDoorOpen,
   faEdit,
@@ -79,6 +86,7 @@ library.add(
   faLink,
   faList,
   faMapMarkerAlt,
+  faMinus,
   faMinusCircle,
   faPlus,
   faPlusCircle,
@@ -128,8 +136,8 @@ function App() {
             && (
               <Nav.Link
                 as={NavLink}
-                href="/search"
-                to="/search"
+                href="/search/menu"
+                to="/search/menu"
                 className="search"
                 activeClassName="active"
                 data-track="navSearch"

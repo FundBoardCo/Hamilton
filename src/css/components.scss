@@ -6,24 +6,38 @@ html#ov body {
 
   .person {
     display: flex;
+    align-items: stretch;
     background-color: $col-light;
     border-radius: $pad4;
     overflow: hidden;
+    padding: 0;
     margin-bottom: $pad2;
+    width: 100%;
+    border: none;
+    outline: 0;
+    box-sizing: border-box;
+    text-align: left;
+
+    &:hover,
+    &:active,
+    &.active {
+      color: inherit;
+      border: 1px solid $col-secondary;
+    }
 
     .thumb {
       width: $pad6;
+      height: $pad6;
       flex-shrink: 0;
       padding: 0;
       border: 0;
       border-right: 1px solid $col-primary-light4;
-
-      @media (min-width: $mediaXs) {
-        width: $pad6;
-      }
+      background-size: cover;
+      background-position: center;
 
       @media (min-width: $mediaLg) {
         width: $pad7;
+        height: $pad7;
       }
     }
 
@@ -35,20 +49,7 @@ html#ov body {
 
       h1 {
         font-size: $tx;
-
-        button {
-          color: inherit;
-          width: 100%;
-          text-align: left;
-          font-weight: 700;
-          border: none;
-          padding: 0;
-          background: none;
-
-          &:active {
-            color: inherit;
-          }
-        }
+        margin-bottom: 0;
       }
 
       .details {
@@ -103,10 +104,10 @@ html#ov body {
       display: flex;
       flex-direction: column;
       align-items: flex-end;
-      justify-content: flex-start;
+      justify-content: flex-end;
       padding: $pad2;
 
-      .addBtn {
+      .iconBtn {
         font-size: $pad4;
       }
 
@@ -279,7 +280,7 @@ html#ov body {
                   height: $pad5;
                   overflow: hidden;
                   border-radius: $pad2;
-                  border: 1px solid $col-primary-light4;
+                  border: 1px solid $col-primary-light6;
 
                   img {
                     width: 100%;
@@ -325,9 +326,15 @@ html#ov body {
                 font-size: $txSm;
 
                 .orgLogoWrapper {
-                  width: $pad4;
+                  width: $pad3;
+                  height: $pad3;
                   flex-shrink: 0;
                   padding-right: $pad1;
+                  border: 1px solid $col-primary-light7;
+                  box-sizing: border-box;
+                  border-radius: $pad1;
+                  overflow: hidden;
+                  margin-right: $pad1;
 
                   img {
                     width: 100%;
@@ -337,6 +344,11 @@ html#ov body {
 
                 @media (min-width: $mediaXs) {
                   font-size: $txMd;
+
+                  .orgLogoWrapper {
+                    width: $pad4;
+                    height: $pad4;
+                  }
                 }
 
                 @media (min-width: $mediaMd) {
@@ -348,6 +360,9 @@ html#ov body {
 
                   .orgLogoWrapper {
                     width: $pad5;
+                    height: $pad5;
+                    border-radius: $pad2;
+                    margin-right: $pad2;
                   }
                 }
               }
@@ -359,7 +374,7 @@ html#ov body {
             }
 
             .description {
-              max-height: 4.5em;
+              max-height: 9em;
               overflow-y: scroll;
             }
 
@@ -411,14 +426,14 @@ html#ov body {
 
               .openLinkWrapper {
                 margin-bottom: $pad4;
-                color: $col-info;
-                font-size: $h4;
+                color: $col-secondary-dark;
+                font-size: $h5;
                 display: flex;
                 align-items: flex-start;
 
                 .btn.btn-link {
                   font-weight: 700;
-                  color: $col-info;
+                  color: inherit;
                 }
               }
 
@@ -429,8 +444,7 @@ html#ov body {
                 padding-bottom: $pad2;
 
                 .btn {
-                  color: $col-info;
-                  font-size: $h5;
+                  color: $col-secondary;
                   margin-bottom: $pad2;
                 }
               }
@@ -459,12 +473,21 @@ html#ov body {
               height: 100%;
               color: $col-text-light;
               border: none;
-              font-size: $h4;
+              font-size: $tx;
+              font-weight: 700;
               display: flex;
               justify-content: center;
               align-items: center;
               margin: 0;
               padding: $pad3;
+
+              @media (min-width: $mediaXs) {
+                font-size: $h5;
+              }
+
+              @media (min-width: $mediaLg) {
+                font-size: $h4;
+              }
             }
           }
         }
@@ -641,7 +664,8 @@ html#ov body {
         width: $pad5;
         height: $pad5;
         border-radius: $pad2;
-        border: 1px solid $col-primary-light4;
+        border: 1px solid $col-primary-light6;
+        box-sizing: border-box;
         overflow: hidden;
         position: relative;
         margin-bottom: $pad1;
@@ -657,6 +681,8 @@ html#ov body {
           bottom: 0;
           width: $pad3;
           height: $pad3;
+          border: 1px solid $col-primary-light7;
+          box-sizing: border-box;
 
           img {
             position: absolute;

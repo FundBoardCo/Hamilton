@@ -1,14 +1,12 @@
 import React, { Suspense } from 'react';
 import PropTypes from 'prop-types';
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { useHistory, useLocation } from 'react-router';
-import Button from 'react-bootstrap/Button';
 import Spinner from 'react-bootstrap/Spinner';
 import { useImage } from 'react-image';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import GreySquare from '../../imgs/greySquare.jpg';
 import { capitalizeFirstLetter, calcMatch } from '../../utils';
-import * as types from '../../actions/types';
 import ErrorBoundary from '../ErrorBoundary';
 
 function ImgComp(params) {
@@ -53,7 +51,7 @@ export default function Person(props) {
     extraLocations,
   });
 
-  const { percentageMatch, matches } = calcedMatch;
+  const { percentageMatch } = calcedMatch;
 
   const investors = useSelector(state => state.board.ids) || [];
   const isOnBoard = investors.includes(uuid);
@@ -69,74 +67,19 @@ export default function Person(props) {
 
   const path = capitalizeFirstLetter(location.pathname.substring(1));
 
-  const dispatch = useDispatch();
-
-  const addInvestor = () => dispatch({
-    type: types.BOARD_ADD,
-    id: uuid,
-    data: { ...props},
-  });
-
-  const removeInvestor = () => dispatch({
-    type: types.BOARD_REMOVE,
-    id: uuid,
-  });
-
-  const toggleInvestor = () => {
-    if (isOnBoard) {
-      removeInvestor();
-    } else {
-      addInvestor();
-    }
-  };
-
   // TODO: add a "are you sure" step to removing if it's on the board page.
 
-  let addBtnProps = {
-    text: isOnBoard ? 'Remove from my FundBoard' : 'Add to my FundBoard',
-    variant: isOnBoard ? 'icon-warning' : 'icon-info',
-    faIcon: isOnBoard ? 'minus-circle' : 'plus-circle',
-    track: isOnBoard ? 'remove' : 'add',
-    action: toggleInvestor,
-  };
-
-  if (isBoard) {
-    addBtnProps = {
-      text: 'See Investor Details',
-      variant: 'icon-info',
-      faIcon: 'ellipsis-h',
-      track: 'details',
-      action: showPerson,
-    };
-  }
-
   return (
-    <div
+    <button
       className="person"
+      onClick={showPerson}
+      type="button"
+      data-track={`${path}Person`}
     >
-      <button
-        className="thumb"
-        onClick={showPerson}
-        type="button"
-        data-track={`${path}PersonThumb`}
-      >
-        <Suspense fallback={<Spinner animation="border" variant="info" role="status" size="sm" />}>
-          <ErrorBoundary>
-            <ImgComp imgSrc={image_url} alt={name} />
-          </ErrorBoundary>
-        </Suspense>
-      </button>
+      <div className="thumb" style={{ backgroundImage: `url(${image_url})` }} />
       <div className="content">
         <div>
-          <h1>
-            <button
-              onClick={showPerson}
-              type="button"
-              data-track={`${path}PersonShow`}
-            >
-              {name || uuid}
-            </button>
-          </h1>
+          <h1>{name || uuid}</h1>
         </div>
         <div className="d-flex details">
           {primary_organization_logo && (
@@ -160,20 +103,19 @@ export default function Person(props) {
         </div>
       </div>
       <div className="controls">
-        <Button
-          variant={addBtnProps.variant}
-          className="iconBtn addBtn"
-          onClick={addBtnProps.action}
-          data-track={`${path}PersonAdd-${addBtnProps.track}`}
-        >
-          <FontAwesomeIcon icon={addBtnProps.faIcon} />
-          <span className="sr-only">{addBtnProps.text}</span>
-        </Button>
+        {isOnBoard && path !== 'Board' && (
+          <div
+            className="iconBtn addBtn btn btn-icon-info"
+          >
+            <FontAwesomeIcon icon="check-circle" />
+            <span className="sr-only">This investor is on your board.</span>
+          </div>
+        )}
         <div className="percentageMatch">
           {searchLocation && `${percentageMatch}%`}
         </div>
       </div>
-    </div>
+    </button>
   );
 }
 
