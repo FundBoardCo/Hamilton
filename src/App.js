@@ -119,7 +119,7 @@ function App() {
           <a href="/" className="navBrand">
             <img className="navLogo" src={Logo} alt="FundBoard Logo" />
             <span className="navName">FundBoard</span>
-            <span className="navVersion">Alpha 0.1</span>
+            <span className="navVersion">Alpha 0.11</span>
           </a>
           <Nav className="ml-auto" defaultActiveKey={window.location.pathname}>
             <Nav.Link
