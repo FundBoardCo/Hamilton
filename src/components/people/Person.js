@@ -101,19 +101,15 @@ export default function Person(props) {
         </div>
       </div>
       <div className="controls">
-        {isOnBoard && path !== 'Board' && (
-          <div
-            className="iconBtn addBtn btn btn-icon-info"
-          >
-            <FontAwesomeIcon icon="check-circle" />
-            <span className="sr-only">This investor is on your board.</span>
-          </div>
-        )}
-        {path !== 'Board' && (
-          <div className="percentageMatch">
-            {searchLocation && `${percentageMatch}%`}
-          </div>
-        )}
+        <div
+          className="iconBtn addBtn btn btn-icon-info"
+        >
+          <FontAwesomeIcon icon={isOnBoard ? 'check-circle' : 'ellipsis-h'} />
+          <span className="sr-only">This investor is on your board.</span>
+        </div>
+        <div className="percentageMatch">
+          {path !== 'Board' && searchLocation && `${percentageMatch}%`}
+        </div>
       </div>
     </button>
   );
