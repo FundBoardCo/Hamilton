@@ -141,17 +141,28 @@ export default function Board() {
           <div className="boardDetailsBar">
             <div className="primaryDetails">
               {`My Fundboard: ${investorIds.length} investors`}
-              <Button
-                className="primaryDetailsLink"
-                variant="none"
-                onClick={onCSVClick}
-                disabled={investorIds.length === 0}
-                data-track="BoardDetails"
-              >
-                <FontAwesomeIcon icon="file-download" />
-                <span className="d-none d-lg-inline ml-2">Download</span>
-              </Button>
             </div>
+          </div>
+          <div className="d-flex justify-content-around justify-content-lg-end mb-2">
+            <Button
+              className="primaryDetailsLink txs-2 txs-lg-tx3 mr-2 btnNoMax"
+              variant="primary"
+              onClick={onToggleShowAdvice}
+              data-track="BoardGetFunded"
+            >
+              <FontAwesomeIcon icon="comment" />
+              <span className="ml-2">Get Intros and Get Funded</span>
+            </Button>
+            <Button
+              className="primaryDetailsLink txs-2 txs-lg-tx3"
+              variant="secondary"
+              onClick={onCSVClick}
+              disabled={investorIds.length === 0}
+              data-track="BoardDownload"
+            >
+              <FontAwesomeIcon icon="file-download" />
+              <span className="ml-2">Download CSV</span>
+            </Button>
           </div>
           <div className="mb-3 txs-2 tx-md-tx3">
             {showAdvice && (
@@ -159,6 +170,18 @@ export default function Board() {
                 <p>
                   Use the information available for each investor on your FundBoard to find&nbsp;
                   someone that can introduce you to them, or try to reach them directly.
+                </p>
+                <p>
+                  Track your progress by&nbsp;
+                  <Button
+                    className="inlineBtn"
+                    variant="link"
+                    onClick={onCSVClick}
+                    data-track="BoardDownloadText"
+                  >
+                    downloading this CSV,
+                  </Button>
+                  and saving it locally, or to a shareable platform like Google Sheets.
                 </p>
                 <p>
                   You should have 20 or more potential leads. If you need more, try adjusting&nbsp;
@@ -178,14 +201,15 @@ export default function Board() {
               </div>
             )}
             <div className="d-flex">
-              <Button
-                variant="link"
-                className="ml-auto"
-                onClick={onToggleShowAdvice}
-              >
-                {showAdvice && <span>Hide</span>}
-                {!showAdvice && <span>Tips on using your FundBoard</span>}
-              </Button>
+              {showAdvice && (
+                <Button
+                  variant="link"
+                  className="ml-auto"
+                  onClick={onToggleShowAdvice}
+                >
+                  Hide
+                </Button>
+              )}
             </div>
           </div>
         </div>
