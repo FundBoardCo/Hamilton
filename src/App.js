@@ -102,8 +102,6 @@ library.add(
 function App() {
   const loggedIn = useSelector(state => state.user.token);
   const firstTime = useSelector(state => state.search.firstTime);
-  const investors = useSelector(state => state.user.investors);
-  const showSearch = (firstTime && Array.isArray(investors) && !investors.length);
 
   const dispatch = useDispatch();
 
@@ -119,21 +117,22 @@ function App() {
           <a href="/" className="navBrand">
             <img className="navLogo" src={Logo} alt="FundBoard Logo" />
             <span className="navName">FundBoard</span>
-            <span className="navVersion">Alpha 0.11</span>
+            <span className="navVersion">Alpha 0.111</span>
           </a>
           <Nav className="ml-auto" defaultActiveKey={window.location.pathname}>
-            <Nav.Link
-              as={NavLink}
-              href="/board"
-              to="/board"
-              className="board"
-              data-track="navBoard"
-            >
-              <FontAwesomeIcon icon="list" />
-              <span>My FundBoard</span>
-            </Nav.Link>
-            {!showSearch
-            && (
+            {(!firstTime || loggedIn) && (
+              <Nav.Link
+                as={NavLink}
+                href="/board"
+                to="/board"
+                className="board"
+                data-track="navBoard"
+              >
+                <FontAwesomeIcon icon="list" />
+                <span>My FundBoard</span>
+              </Nav.Link>
+            )}
+            {(!firstTime || loggedIn) && (
               <Nav.Link
                 as={NavLink}
                 href="/search/menu"
@@ -146,8 +145,7 @@ function App() {
                 <span>Search</span>
               </Nav.Link>
             )}
-            {loggedIn
-            && (
+            {loggedIn && (
               <Nav.Link
                 as={NavLink}
                 href="/profile"
@@ -160,6 +158,7 @@ function App() {
                 <span>My Profile</span>
               </Nav.Link>
             )}
+            {(!firstTime || loggedIn) && (
             <Nav.Link
               as={NavLink}
               href="/talk"
@@ -171,8 +170,8 @@ function App() {
               <FontAwesomeIcon icon="comment-dots" />
               <span>Talk to Us</span>
             </Nav.Link>
-            {!loggedIn
-            && (
+            )}
+            {!loggedIn && (
               <Button
                 variant="link"
                 className="login navbar-btn"

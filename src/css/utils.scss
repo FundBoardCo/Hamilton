@@ -129,6 +129,13 @@ html#ov body {
     line-height: 0.6em;
     padding: 0.5em 0.8em;
     max-width: none;
+
+    &.btn-link,
+    &.btn-text {
+      font-size: inherit;
+      line-height: inherit;
+      padding: 0;
+    }
   }
 
   .input-group > .input-group-append > .btn {
@@ -324,7 +331,13 @@ html#ov body {
     }
   }
 
-  .tx-lg-tx3 {
+  .txs-md-tx3 {
+    @media (min-width: $mediaMd) {
+      font-size: $tx;
+    }
+  }
+
+  .txs-lg-tx3 {
     @media (min-width: $mediaLg) {
       font-size: $tx;
     }

@@ -67,8 +67,6 @@ export default function Person(props) {
 
   const path = capitalizeFirstLetter(location.pathname.substring(1));
 
-  // TODO: add a "are you sure" step to removing if it's on the board page.
-
   return (
     <button
       className="person"
@@ -103,16 +101,14 @@ export default function Person(props) {
         </div>
       </div>
       <div className="controls">
-        {isOnBoard && path !== 'Board' && (
-          <div
-            className="iconBtn addBtn btn btn-icon-info"
-          >
-            <FontAwesomeIcon icon="check-circle" />
-            <span className="sr-only">This investor is on your board.</span>
-          </div>
-        )}
+        <div
+          className="iconBtn addBtn btn btn-icon-info"
+        >
+          <FontAwesomeIcon icon={isOnBoard ? 'check-circle' : 'ellipsis-h'} />
+          <span className="sr-only">This investor is on your board.</span>
+        </div>
         <div className="percentageMatch">
-          {searchLocation && `${percentageMatch}%`}
+          {path !== 'Board' && searchLocation && `${percentageMatch}%`}
         </div>
       </div>
     </button>

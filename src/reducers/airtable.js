@@ -19,7 +19,7 @@ export default function airTable(state = { ...defaultState }, action) {
       ...state,
       keywords: {
         status: 'succeeded',
-        data: action.data.records.map(r => capitalizeFirstLetter(r.fields.Keyword)),
+        data: action.data.records.map(r => capitalizeFirstLetter(r.fields.Keyword)).sort(),
       },
     };
     case types.AIRTABLE_GET_KEYWORDS_FAILED: return {
