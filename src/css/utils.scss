@@ -331,6 +331,12 @@ html#ov body {
     }
   }
 
+  .txs-md-tx3 {
+    @media (min-width: $mediaMd) {
+      font-size: $tx;
+    }
+  }
+
   .txs-lg-tx3 {
     @media (min-width: $mediaLg) {
       font-size: $tx;

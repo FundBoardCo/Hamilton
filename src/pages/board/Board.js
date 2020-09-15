@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import Papa from 'papaparse';
 import FileSaver from 'file-saver';
@@ -10,13 +10,13 @@ import Person from '../../components/people/Person';
 import * as types from '../../actions/types';
 
 export default function Board() {
-  const investorIds = useSelector(state => state.board.ids) || [];
+  const investorIDs = useSelector(state => state.board.ids) || [];
   const people = useSelector(state => state.people);
   const loggedIn = useSelector(state => state.user.token);
-  const showAdvice = useSelector(state => state.board.showAdvice);
+  const showAdvice = useSelector(state => state.board.showAdvice) && investorIDs.length > 0;
 
   // TODO: this currently doesn't do anything, because none of the fetched people have match data
-  investorIds.sort((a, b) => {
+  investorIDs.sort((a, b) => {
     const matchA = (people[a] && people[a].percentageMatch) || 0;
     const matchB = (people[b] && people[b].percentageMatch) || 0;
     return matchB - matchA;
@@ -31,11 +31,13 @@ export default function Board() {
   }, [dispatch]);
 
   useEffect(() => {
-    dispatch({
-      type: types.PEOPLE_GET_REQUEST,
-      id: investorIds,
-    });
-  }, [investorIds, dispatch]);
+    if (investorIDs.length) {
+      dispatch({
+        type: types.PEOPLE_GET_REQUEST,
+        id: investorIDs,
+      });
+    }
+  }, [investorIDs, dispatch]);
 
   const investorList = {};
   const csvList = [];
@@ -58,7 +60,7 @@ export default function Board() {
   firstLine.CrunchBase = '';
   csvList.push(firstLine);
 
-  investorIds.forEach(i => {
+  investorIDs.forEach(i => {
     const person = people[i] ? { ...people[i] } : {};
     const org = person.primary_organization || {};
     const location = [];
@@ -88,46 +90,16 @@ export default function Board() {
   const csv = Papa.unparse(Object.values(csvList));
   const csvData = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
 
-  const details = investorIds.reduce((ac, cv) => {
-    const newVal = { ...ac };
-    const {
-      matches,
-      isLead,
-      isImpact,
-      isOpen,
-    } = investorList[cv];
-    if (matches) {
-      newVal.keywords += matches.keywords.length > 2 ? 1 : 0;
-      newVal.raise += matches.raise ? 1 : 0;
-      newVal.location += matches.location ? 1 : 0;
-      newVal.leads += isLead ? 1 : 0;
-      newVal.impact += isImpact ? 1 : 0;
-      newVal.open += isOpen ? 1 : 0;
-    }
-    return newVal;
-  }, {
-    keywords: 0,
-    raise: 0,
-    location: 0,
-    leads: 0,
-    impact: 0,
-    open: 0,
-  });
-
-  const [detailsOpen, setDetailsOpen] = useState(false);
-
-  const onDetailClick = () => {
-    setDetailsOpen(!detailsOpen);
-  };
-
   const onCSVClick = () => {
     FileSaver.saveAs(csvData, 'MyFundBoard.csv');
   };
 
+  /*
   const onShowNextClick = () => dispatch({
     type: types.MODAL_SET_OPEN,
     modal: 'afterDownload',
   });
+   */
 
   const onToggleShowAdvice = () => dispatch({
     type: types.BOARD_SHOWADVICE,
@@ -140,31 +112,33 @@ export default function Board() {
         <div>
           <div className="boardDetailsBar">
             <div className="primaryDetails">
-              {`My Fundboard: ${investorIds.length} investors`}
+              {`My Fundboard: ${investorIDs.length} investors`}
             </div>
           </div>
-          <div className="d-flex justify-content-around justify-content-lg-end mb-2">
-            <Button
-              className="primaryDetailsLink txs-2 txs-lg-tx3 mr-2 btnNoMax"
-              variant="primary"
-              onClick={onToggleShowAdvice}
-              data-track="BoardGetFunded"
-            >
-              <FontAwesomeIcon icon="comment" />
-              <span className="ml-2">Get Intros and Get Funded</span>
-            </Button>
-            <Button
-              className="primaryDetailsLink txs-2 txs-lg-tx3"
-              variant="secondary"
-              onClick={onCSVClick}
-              disabled={investorIds.length === 0}
-              data-track="BoardDownload"
-            >
-              <FontAwesomeIcon icon="file-download" />
-              <span className="ml-2">Download CSV</span>
-            </Button>
-          </div>
-          <div className="mb-3 txs-2 tx-md-tx3">
+          {investorIDs.length > 0 && (
+            <div className="d-flex justify-content-around justify-content-lg-end mb-2">
+              <Button
+                className="primaryDetailsLink txs-2 txs-lg-tx3 mr-2 btnNoMax"
+                variant="primary"
+                onClick={onToggleShowAdvice}
+                data-track="BoardGetFunded"
+              >
+                <FontAwesomeIcon icon="comment" />
+                <span className="ml-2">Get Intros and Get Funded</span>
+              </Button>
+              <Button
+                className="primaryDetailsLink txs-2 txs-lg-tx3"
+                variant="secondary"
+                onClick={onCSVClick}
+                disabled={investorIDs.length === 0}
+                data-track="BoardDownload"
+              >
+                <FontAwesomeIcon icon="file-download" />
+                <span className="ml-2">Download CSV</span>
+              </Button>
+            </div>
+          )}
+          <div className="mb-3 txs-2 txs-md-tx3">
             {showAdvice && (
               <div>
                 <p>
@@ -186,7 +160,7 @@ export default function Board() {
                 <p>
                   You should have 20 or more potential leads. If you need more, try adjusting&nbsp;
                   the parameters in your&nbsp;
-                  <a href="/search">search.</a>
+                  <a href="/search/menu">search.</a>
                 </p>
                 <p>
                   Want more?&nbsp;
@@ -207,7 +181,7 @@ export default function Board() {
                   className="ml-auto"
                   onClick={onToggleShowAdvice}
                 >
-                  Hide
+                  Hide Get Intros and Get Funded Advice
                 </Button>
               )}
             </div>
@@ -230,6 +204,16 @@ export default function Board() {
         <Col xs={12} md={8} className="mr-auto ml-auto">
           <h1 className="text-center">To see your FundBoard, you need to log in first.</h1>
         </Col>
+      )}
+      {investorIDs.length === 0 && (
+        <div>
+          <p>
+            You don't have any investors saved yet.
+          </p>
+          <div className="d-flex justify-content-center">
+            <a className="btn btn-secondary" href="/search/menu">Find My Investors</a>
+          </div>
+        </div>
       )}
     </Row>
   );
