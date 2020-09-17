@@ -6,7 +6,7 @@ import Spinner from 'react-bootstrap/Spinner';
 import { useImage } from 'react-image';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import GreySquare from '../../imgs/greySquare.jpg';
-import { capitalizeFirstLetter, calcMatch } from '../../utils';
+import { capitalizeFirstLetter } from '../../utils';
 import ErrorBoundary from '../ErrorBoundary';
 
 function ImgComp(params) {
@@ -28,28 +28,14 @@ export default function Person(props) {
     // isOpen = false,
     // isImpact = false,
     isBoard = false,
-    keywords_matched,
-    keywords_rank,
-    median_distance,
+    matches = {},
   } = props;
 
   const primary_organization_logo = primary_organization.image_url || '';
   const primary_organization_name = primary_organization.name || '';
 
-  const searchKeywords = useSelector(state => state.search.keywords);
-  const searchRaise = useSelector(state => state.search.raise);
-  const searchLocation = useSelector(state => state.search.location);
-  const extraLocations = useSelector(state => state.search.extraLocations);
-
-  const calcedMatch = calcMatch({
-    ...props,
-    keywords: searchKeywords,
-    raise: searchRaise,
-    location: searchLocation,
-    extraLocations,
-  });
-
-  const { percentageMatch } = calcedMatch;
+  let percentageMatch = matches.percentage_match || 0;
+  percentageMatch = `${Math.floor(percentageMatch * 100)}%`;
 
   const investors = useSelector(state => state.board.ids) || [];
   const isOnBoard = investors.includes(uuid);
@@ -106,7 +92,7 @@ export default function Person(props) {
           <span className="sr-only">This investor is on your board.</span>
         </div>
         <div className="percentageMatch">
-          {path !== 'Board' && searchLocation && `${percentageMatch}%`}
+          {percentageMatch}
         </div>
       </div>
     </button>

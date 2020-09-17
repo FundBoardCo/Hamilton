@@ -13,4 +13,4 @@ export const ZIPCODEAPPKEY = 'SpyunvdJlwQo1PV3zN9EvTeDNkuiWXOJ0QHazIZ2QDrTIHMNTW
 
 export const ZIPCODECLIENTKEY = 'js-IQnw1s8a35CYiI4clJrcM1yIvqTyyciNZfDHMIrhOY2ViLWXTjzYVzYEdkPjwRqD';
 
-export const ZIPDISTANCE = '40';
+export const ZIPDISTANCE = '20';

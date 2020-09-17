@@ -53,8 +53,6 @@ export function getSearchLocations(zipCode, locations) {
   if (!Array.isArray(locations)) throw new Error('Must provide locations object');
 
   let searchedCity = locations.filter(l => l.zip_code === zipCode)[0];
-  console.log(locations)
-  console.log(searchedCity)
   searchedCity = [`${searchedCity.city},${searchedCity.state}`];
   let searchedSecondaryCities = locations.filter(l => l.zip_code !== zipCode)
     .map(cs => `${cs.city},${cs.state}`);
@@ -76,49 +74,4 @@ export function getMatchedKeywords(text, keywords) {
     v => v.replace(/\[\/?fbkw]/g, ''),
   );
   return [...new Set(k)];
-}
-
-export function calcMatch(opts) {
-  const {
-    keywords = [],
-    keywords_matched = 0,
-    raise,
-    location,
-    extraLocations,
-    raise_min = 0,
-    raise_max = 0,
-    location_city,
-    location_state,
-    description,
-    median_distance,
-    keywords_rank,
-  } = opts;
-  const searchedCity = extraLocations.filter(l => l.zip_code === location)[0];
-  const matches = {
-    keywords: [],
-    raise: raise >= raise_min && raise <= raise_max,
-    location: extraLocations.filter(l => l.city === location_city
-      && l.state === location_state).length > 0,
-  };
-  if (Array.isArray(keywords)) {
-    keywords.forEach(k => {
-      if (description && description.includes(k.toLowerCase())) matches.keywords.push(k);
-    });
-  }
-
-  let percentageMatch = (keywords.length + keywords_rank) / 6;
-
-  const raiseDiff = 10000000 - median_distance;
-
-  if (raiseDiff > 0) percentageMatch += (raiseDiff / 10000000);
-
-  // count location as 0.5, so it's 40/40/20 on keywords/raise/location
-  if (matches.location) {
-    percentageMatch += 0.33;
-    if (searchedCity.city.toLowerCase() === location_city.toLowerCase()) {
-      percentageMatch += 0.17;
-    }
-  }
-  percentageMatch = Math.floor((percentageMatch / 2.5) * 100);
-  return { matches, percentageMatch };
 }

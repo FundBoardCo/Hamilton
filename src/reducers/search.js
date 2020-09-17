@@ -1,6 +1,6 @@
 import { REHYDRATE } from 'redux-persist';
 import * as types from '../actions/types';
-import {calcMatch, getSafeVar, processErr} from '../utils';
+import { getSafeVar, processErr } from '../utils';
 
 const defaultState = {
   results_status: '',
@@ -13,8 +13,6 @@ const defaultState = {
   extraLocations: [],
   firstTime: true,
 };
-
-let parsedResults = [];
 
 export default function search(state = { ...defaultState }, action) {
   const rehydration = getSafeVar(() => action.payload.search, {});
@@ -62,15 +60,9 @@ export default function search(state = { ...defaultState }, action) {
       firstTime: false,
     };
     case types.SEARCH_GET_RESULTS_SUCCEEDED:
-      parsedResults = action.data.map(i => {
-        const calcedMatch = calcMatch({ ...i, ...state });
-        return { ...i, ...calcedMatch };
-      });
-      // parsedResults.sort((a, b) => b.percentageMatch - a.percentageMatch);
-
       return {
         ...state,
-        results: parsedResults.reduce((acc, r) => ({ ...acc, [r.uuid]: r }), {}),
+        results: action.data.reduce((acc, r) => ({ ...acc, [r.uuid]: r }), {}),
         results_status: 'succeeded',
       };
     case types.SEARCH_GET_RESULTS_FAILED: return {

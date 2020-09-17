@@ -11,7 +11,6 @@ import { Timeline } from 'react-twitter-widgets';
 import GreySquare from '../imgs/greySquare.jpg';
 import PersonStamp from '../components/people/PersonStamp';
 import {
-  calcMatch,
   capitalizeFirstLetter,
   getSafeVar,
   statusIsError,
@@ -83,6 +82,7 @@ export default function Investor(props) {
   const sData = searchResults[uuid] || {};
   const pData = people[uuid] || {};
   const data = { ...pData, ...sData };
+  console.log(data)
 
   const {
     status,
@@ -95,10 +95,9 @@ export default function Investor(props) {
     linkedin,
     twitter,
     raise_min,
-    // raise_max,
-    keywords_matched,
-    keywords_rank,
-    median_distance,
+    raise_max,
+    raise_median,
+    matches,
     location_city,
     location_state,
     investments = [],
@@ -121,16 +120,14 @@ export default function Investor(props) {
   const extraLocations = useSelector(state => state.search.extraLocations);
 
   const searchData = useSelector(state => state.search.results[uuid] || {});
-  const calcedMatch = calcMatch({
-    ...data,
-    keywords: getMatchedKeywords(description, searchKeywords),
-    raiseDistance: median_distance,
-    raise: searchRaise,
-    location: searchLocation,
-    extraLocations,
-  });
 
-  const { percentageMatch, matches } = calcedMatch;
+  let percentageMatch;
+
+  if (!!matches && typeof matches === 'object' && Object.keys(matches).length) {
+    percentageMatch = matches.percentage_match || 0;
+    percentageMatch = `${Math.floor(percentageMatch * 100)}%`;
+    matches.raise = searchRaise >= raise_min && searchRaise <= raise_max;
+  }
 
   const parsedInvestors = {};
   investments.forEach(i => {
@@ -219,7 +216,7 @@ export default function Investor(props) {
 
   let locationText = location_state ? `${location_city}, ${location_state}` : location_state;
   locationText = locationText ? `They are located in ${locationText}.` : 'No location available.';
-  locationText = `${locationText} Investors are more likely to invest locally.`
+  locationText = `${locationText} Investors are more likely to invest locally.`;
 
   return (
     <Modal
@@ -316,32 +313,35 @@ export default function Investor(props) {
             </div>
           )}
         </section>
-        <section className="matches mb-4">
-          <h2>{searchLocation && `${percentageMatch}% Match`}</h2>
-          <ul>
-            {matchData.map(d => {
-              if (searchData[d.key]) {
-                return <MatchBullet {...d} />;
-              }
-              return null;
-            })}
-            <MatchBullet
-              faIcon="key"
-              bool={matches.keywords.length > 0 || !searchLocation}
-              text={`Their matching interests: ${matches.keywords.length ? matches.keywords.join(', ') : 'none'}.`}
-            />
-            <MatchBullet
-              faIcon="rocket"
-              bool={matches.raise || !searchLocation}
-              text={`They invest in rounds of ${usdFormatter.format(raise_min)} or more.`}
-            />
-            <MatchBullet
-              faIcon="map-marker-alt"
-              bool={matches.location || !searchLocation}
-              text={locationText}
-            />
-          </ul>
-        </section>
+        {searchLocation && !!matches && Object.keys(matches).length > 0 && (
+          <section className="matches mb-4">
+            <h2>{`${percentageMatch}% Match`}</h2>
+            <ul>
+              {matchData.map(d => {
+                if (searchData[d.key]) {
+                  return <MatchBullet {...d} />;
+                }
+                return null;
+              })}
+              <MatchBullet
+                faIcon="key"
+                bool={Array.isArray(matches.keywords) && matches.keywords.length > 0}
+                text={`Their matching interests: ${matches.keywords.length ? matches.keywords.join(', ') : 'none'}.`}
+              />
+              <MatchBullet
+                faIcon="rocket"
+                bool={matches.raise}
+                text={`They invest in rounds of ${usdFormatter.format(raise_min)} or more. 
+                The median size of rounds they participate in is ${usdFormatter.format(raise_median)}`}
+              />
+              <MatchBullet
+                faIcon="map-marker-alt"
+                bool={matches.location_tier}
+                text={locationText}
+              />
+            </ul>
+          </section>
+        )}
         {Array.isArray(investments) && investments.length > 0 && (
           <section className="funded mb-4">
             <h2>Founders they&apos;ve funded</h2>
