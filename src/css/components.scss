@@ -16,6 +16,7 @@ html#ov body {
     border: none;
     outline: 0;
     box-sizing: border-box;
+    border: 1px solid transparent;
     text-align: left;
 
     &:hover,
@@ -653,6 +654,13 @@ html#ov body {
           }
         }
       }
+    }
+  }
+
+  // modal-backdrop is a peer to root
+  .modal-backdrop {
+    &.show {
+      opacity: 0.8;
     }
   }
 
