@@ -91,7 +91,10 @@ export default function Investor(props) {
     isBoard = false,
     invalid,
     invalid_status,
+    validation,
   } = data;
+
+  console.log(data)
 
   const primary_organization_logo = primary_organization.image_url || '';
   const primary_organization_name = primary_organization.name || '';
@@ -203,7 +206,22 @@ export default function Investor(props) {
 
   let locationText = location_state ? `${location_city}, ${location_state}` : location_state;
   locationText = locationText ? `They are located in ${locationText}.` : 'No location available.';
-  locationText = `${locationText} Investors are more likely to invest locally.`
+  locationText = `${locationText} Investors are more likely to invest locally.`;
+
+  const validationProps = {
+    text: 'This investor has not been validated by FundBoard yet.',
+    classes: 'text-warning',
+  };
+
+  if (validation === 'verified') {
+    validationProps.text = 'This investor has been validated by FundBoard.';
+    validationProps.classes = 'text-primary';
+  }
+
+  if (validation === 'invalid') {
+    validationProps.text = 'This investor is no longer investing, or their data is otherwise invalid.';
+    validationProps.classes = 'text-danger';
+  }
 
   return (
     <Modal
@@ -265,6 +283,9 @@ export default function Investor(props) {
           dissmissAction={types.PEOPLE_GET_DISMISS}
           dismissParams={{ ids: [uuid] }}
         />
+        <section className="mb-2">
+          <span className={validationProps.classes}>{validationProps.text}</span>
+        </section>
         <section className="mb-4">
           {description && (
             <div className="description mb-3">

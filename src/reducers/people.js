@@ -1,6 +1,7 @@
 import { REHYDRATE } from 'redux-persist';
 import * as types from '../actions/types';
 import { getSafeVar, processErr } from '../utils';
+import { VERIFIEDIDS, INVALIDIDS } from '../constants';
 
 export default function people(state = {}, action) {
   const records = {};
@@ -41,6 +42,9 @@ export default function people(state = {}, action) {
           records[r.uuid] = {
             ...records[r.uuid],
             ...r,
+            validation: (VERIFIEDIDS.includes(r.permalink) && 'verified')
+              || (INVALIDIDS.includes(r.permalink) && 'invalid')
+              || null,
           };
         });
       }

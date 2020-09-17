@@ -1,6 +1,7 @@
 import { REHYDRATE } from 'redux-persist';
 import * as types from '../actions/types';
-import {calcMatch, getSafeVar, processErr} from '../utils';
+import { calcMatch, getSafeVar, processErr } from '../utils';
+import { VERIFIEDIDS, INVALIDIDS } from '../constants';
 
 const defaultState = {
   results_status: '',
@@ -62,10 +63,13 @@ export default function search(state = { ...defaultState }, action) {
       firstTime: false,
     };
     case types.SEARCH_GET_RESULTS_SUCCEEDED:
-      parsedResults = action.data.map(i => {
-        const calcedMatch = calcMatch({ ...i, ...state });
-        return { ...i, ...calcedMatch };
-      });
+      parsedResults = action.data
+        .filter(p => !INVALIDIDS.includes(p.permalink))
+        .map(i => {
+          const calcedMatch = calcMatch({ ...i, ...state });
+          const validation = VERIFIEDIDS.includes(i.permalink) ? 'verified' : null;
+          return { ...i, ...calcedMatch, validation };
+        });
       parsedResults.sort((a, b) => b.percentageMatch - a.percentageMatch);
 
       return {
