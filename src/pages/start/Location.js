@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
@@ -6,7 +6,8 @@ import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import { useHistory } from 'react-router';
 import * as types from '../../actions/types';
-import { statusIsError } from '../../utils';
+import { getSearchLocations, statusIsError } from '../../utils';
+import { ZIPDISTANCE } from '../../constants';
 
 export default function Location() {
   const searchKeywords = useSelector(state => state.search.keywords) || [];
@@ -15,8 +16,11 @@ export default function Location() {
   const searchLocation = useSelector(state => state.search.location) || '';
   const [locationValue, setLocationValue] = useState('');
 
-  const extraZipcodes = useSelector(state => state.search.extraZipcodes) || '';
+  const extraLocations = useSelector(state => state.search.extraLocations) || [];
   const extraZipcodes_status = useSelector(state => state.search.extraZipcodes_status);
+
+  const locations = searchLocation ? getSearchLocations(searchLocation, extraLocations) : {};
+  const { searchedCity = [], searchedSecondaryCities = [] } = locations;
 
   const storedRemote = useSelector(state => state.search.remote) || '';
   const [remoteValue, setRemoteValue] = useState(storedRemote);
@@ -47,7 +51,8 @@ export default function Location() {
 
   const getResults = () => {
     const params = {};
-    params.location = [searchLocation, ...extraZipcodes];
+    params.location = searchedCity;
+    params.secondaryLocation = searchedSecondaryCities;
     params.raise = searchRaise;
     params.keywords = searchKeywords;
     return dispatch({
@@ -82,10 +87,11 @@ export default function Location() {
 
   let extraZipcodesText = extraZipcodes_status;
 
-  if (!searchLocation) extraZipcodesText = 'waiting for your zip code.';
-
-  if (!extraZipcodes_status || extraZipcodes_status === 'succeeded') {
-    extraZipcodesText = `${extraZipcodes.length} zip codes within 10 miles of ${searchLocation} found.`;
+  if (!searchLocation) {
+    extraZipcodesText = 'waiting for your zip code.';
+  } else if (!extraZipcodes_status || extraZipcodes_status === 'succeeded') {
+    const numCities = locations.searchedSecondaryCities.length;
+    extraZipcodesText = `${numCities} cities within ${ZIPDISTANCE} miles of ${searchLocation} found.`;
   }
 
   const extraZipcodesClass = statusIsError(extraZipcodes_status) ? 'text-warning' : 'text-info';

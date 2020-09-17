@@ -48,6 +48,20 @@ export function getSafeVar(fn, defaultVal) {
   }
 }
 
+export function getSearchLocations(zipCode, locations) {
+  if (!zipCode) throw new Error('Must provid zip code');
+  if (!Array.isArray(locations)) throw new Error('Must provide locations object');
+
+  let searchedCity = locations.filter(l => l.zip_code === zipCode)[0];
+  console.log(locations)
+  console.log(searchedCity)
+  searchedCity = [`${searchedCity.city},${searchedCity.state}`];
+  let searchedSecondaryCities = locations.filter(l => l.zip_code !== zipCode)
+    .map(cs => `${cs.city},${cs.state}`);
+  searchedSecondaryCities = [...new Set(searchedSecondaryCities)];
+  return { searchedCity, searchedSecondaryCities };
+}
+
 export function convertKeyTags(text) {
   if (typeof text !== 'string') throw new Error('A string must be submitted.');
   let newText = text.replace(/\[fbkw]/g, '<i>');

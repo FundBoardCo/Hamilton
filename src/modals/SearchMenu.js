@@ -6,8 +6,9 @@ import Form from 'react-bootstrap/Form';
 import RangeSlider from 'react-bootstrap-range-slider';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Button from 'react-bootstrap/Button';
-import { statusIsError } from '../utils';
-import * as types from "../actions/types";
+import { statusIsError, getSearchLocations } from '../utils';
+import * as types from '../actions/types';
+import { ZIPDISTANCE } from '../constants';
 
 const usdFormatter = new Intl.NumberFormat('en-US', {
   style: 'currency',
@@ -54,8 +55,10 @@ export default function SearchMenu() {
   // use local state to handle invalid entries without recording them
   const [locationValue, setLocationValue] = useState(searchLocation);
 
-  const extraZipcodes = useSelector(state => state.search.extraZipcodes) || '';
+  const extraLocations = useSelector(state => state.search.extraLocations) || [];
   const extraZipcodes_status = useSelector(state => state.search.extraZipcodes_status);
+  const locations = searchLocation ? getSearchLocations(searchLocation, extraLocations) : {};
+  const { searchedCity = [], searchedSecondaryCities = [] } = locations;
 
   const storedRemote = useSelector(state => state.search.remote) || '';
 
@@ -130,7 +133,8 @@ export default function SearchMenu() {
     const params = {};
     params.keywords = searchKeywords;
     params.raise = searchRaise;
-    params.location = [searchLocation, ...extraZipcodes];
+    params.location = searchedCity;
+    params.secondaryLocation = searchedSecondaryCities;
 
     return dispatch({
       type: 'SEARCH_GET_RESULTS_REQUESTED',
@@ -158,10 +162,11 @@ export default function SearchMenu() {
 
   let extraZipcodesText = extraZipcodes_status;
 
-  if (!searchLocation) extraZipcodesText = 'waiting for your zip code.';
-
-  if (!extraZipcodes_status || extraZipcodes_status === 'succeeded') {
-    extraZipcodesText = `${extraZipcodes.length} zip codes within 10 miles of ${searchLocation} found.`;
+  if (!searchLocation) {
+    extraZipcodesText = 'waiting for your zip code.';
+  } else if (!extraZipcodes_status || extraZipcodes_status === 'succeeded') {
+    const numCities = searchedSecondaryCities.length;
+    extraZipcodesText = `${numCities} cities within ${ZIPDISTANCE} miles of ${searchLocation} found.`;
   }
 
   const extraZipcodesClass = statusIsError(extraZipcodes_status) ? 'text-warning' : 'text-info';

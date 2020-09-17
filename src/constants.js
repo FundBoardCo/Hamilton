@@ -12,3 +12,5 @@ export const WEBFLOW_APIKEY = '2e8fe02c04a1efed83d95be4a36ba6bf201fbdef86d7c3b44
 export const ZIPCODEAPPKEY = 'SpyunvdJlwQo1PV3zN9EvTeDNkuiWXOJ0QHazIZ2QDrTIHMNTW9AbITZGnUCVUrK';
 
 export const ZIPCODECLIENTKEY = 'js-IQnw1s8a35CYiI4clJrcM1yIvqTyyciNZfDHMIrhOY2ViLWXTjzYVzYEdkPjwRqD';
+
+export const ZIPDISTANCE = '40';

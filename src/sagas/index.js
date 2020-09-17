@@ -12,6 +12,7 @@ import {
   AIRTABLE_APIKEY,
   WEBFLOW_APIKEY,
   ZIPCODECLIENTKEY,
+  ZIPDISTANCE,
 } from '../constants';
 import {
   getSafeVar,
@@ -351,7 +352,7 @@ function* watchBoardAdd() {
 
 function getExtraZipCodes(zipcode) {
   return axios.get(
-    `https://www.zipcodeapi.com/rest/${ZIPCODECLIENTKEY}/radius.json/${zipcode}/10/mile`,
+    `https://www.zipcodeapi.com/rest/${ZIPCODECLIENTKEY}/radius.json/${zipcode}/${ZIPDISTANCE}/mile`,
   );
 }
 
@@ -438,7 +439,11 @@ function* watchPeopleGetInvestments() {
 }
 
 function requestSearchGetResults(params = {}) {
-  return axios.get(`${api}search?${toQueryString(params)}`);
+  return axios({
+    method: 'post',
+    url: `${api}search`,
+    data: { ...params },
+  });
 }
 
 function* workSearchGetResults(action) {
