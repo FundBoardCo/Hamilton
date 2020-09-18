@@ -16,7 +16,6 @@ export const ZIPCODECLIENTKEY = 'js-IQnw1s8a35CYiI4clJrcM1yIvqTyyciNZfDHMIrhOY2V
 // temp data until backend is ready TODO: delete when backend is ready
 
 export const VERIFIEDIDS = [
-  'ari-newman', // not really valid, just test data
   'payal-agrawal-divakaran',
   'graham-brooks',
   'maria-cirino',
@@ -4255,5 +4254,4 @@ export const INVALIDIDS = [
   'ben-kolpa',
   'alex-berzofsky',
   'somit-varma',
-  'peter-boyce-ii', // Not really invalid, this is test data
 ];
