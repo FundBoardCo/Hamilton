@@ -24,15 +24,11 @@ export default function Person(props) {
     image_url = '',
     primary_job_title = '',
     primary_organization = {},
-    description = '',
-    location_city,
-    location_state,
-    raise_min,
-    raise_max,
     // isLead = false,
     // isOpen = false,
     // isImpact = false,
     isBoard = false,
+    validation,
   } = props;
 
   const primary_organization_logo = primary_organization.image_url || '';
@@ -67,6 +63,18 @@ export default function Person(props) {
 
   const path = capitalizeFirstLetter(location.pathname.substring(1));
 
+  const validationProps = {};
+
+  if (validation === 'verified') {
+    validationProps.classes = 'text-secondary';
+    validationProps.faIcon = 'star';
+  }
+
+  if (validation === 'invalid') {
+    validationProps.classes = 'text-danger';
+    validationProps.faIcon = 'ban';
+  }
+
   return (
     <button
       className="person"
@@ -77,17 +85,16 @@ export default function Person(props) {
       <div className="thumb" style={{ backgroundImage: `url(${image_url})` }} />
       <div className="content">
         <div>
-          <h1>{name || uuid}</h1>
+          <h1>
+            {validationProps.faIcon && (
+            <FontAwesomeIcon icon={validationProps.faIcon} className={`mr-1 ${validationProps.classes}`} />
+            )}
+            {name || uuid}
+          </h1>
         </div>
         <div className="d-flex details">
           {primary_organization_logo && (
-            <div className="orgLogoWrapper">
-              <Suspense fallback={<Spinner animation="border" variant="info" role="status" size="sm" />}>
-                <ErrorBoundary>
-                  <ImgComp imgSrc={primary_organization_logo} alt={primary_organization_name} />
-                </ErrorBoundary>
-              </Suspense>
-            </div>
+            <div className="orgLogoWrapper" style={{ backgroundImage: `url(${primary_organization_logo})` }} />
           )}
           <div className="orgText">
             {primary_job_title && (
@@ -130,11 +137,6 @@ Person.defaultProps = {
     linkedin: '',
     twitter: '',
   },
-  description: '',
-  location_city: '',
-  location_state: '',
-  raise_min: 0,
-  raise_max: 0,
   matches: {
     keywords: ['one', 'two'],
     raise: false,
@@ -147,6 +149,7 @@ Person.defaultProps = {
   // isOpen: false,
   // isImpact: false,
   isBoard: false,
+  validation: null,
 };
 
 Person.propTypes = {
@@ -159,11 +162,6 @@ Person.propTypes = {
     PropTypes.bool,
     PropTypes.number,
   ])),
-  description: PropTypes.string,
-  location_city: PropTypes.string,
-  location_state: PropTypes.string,
-  raise_min: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
-  raise_max: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
   matches: PropTypes.shape({
     keywords: PropTypes.arrayOf(PropTypes.string),
     raise: PropTypes.bool,
@@ -176,4 +174,5 @@ Person.propTypes = {
   // isOpen: PropTypes.bool,
   // isImpact: PropTypes.bool,
   isBoard: PropTypes.bool,
+  validation: PropTypes.oneOfType([PropTypes.string, PropTypes.instanceOf(null)]),
 };

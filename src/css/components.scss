@@ -45,6 +45,7 @@ html#ov body {
     .content {
       display: flex;
       flex-direction: column;
+      justify-content: space-between;
       flex-grow: 1;
       padding: $pad2;
 
@@ -57,25 +58,41 @@ html#ov body {
         margin-top: auto;
 
         .orgLogoWrapper {
-          width: 28px;
-          height: 28px;
+          width: 20px;
+          height: 20px;
           flex-shrink: 0;
           margin-right: $pad1;
           border-radius: $pad1;
           border: 1px solid $col-primary-light7;
           overflow: hidden;
-          display: none;
+          background-size: cover;
+          background-repeat: no-repeat;
+          background-position: center;
         }
 
         .orgText {
+          display: flex;
+          align-items: center;
           font-size: $txSm;
         }
       }
 
       @media (min-width: $mediaXs) {
         .details {
+          .orgText {
+            font-size: 0.7rem;
+          }
+        }
+      }
+
+      @media (min-width: $mediaSm) {
+        .details {
           .orgLogoWrapper {
-            display: block;
+            width: 28px;
+            height: 28px;
+          }
+          .orgText {
+            font-size: $txMd;
           }
         }
       }
@@ -282,11 +299,6 @@ html#ov body {
                   overflow: hidden;
                   border-radius: $pad2;
                   border: 1px solid $col-primary-light6;
-
-                  img {
-                    width: 100%;
-                    height: auto;
-                  }
                 }
 
                 @media (min-width: $mediaXs) {
@@ -307,6 +319,7 @@ html#ov body {
 
               h1 {
                 font-size: $h5;
+                margin-bottom: 0;
 
                 @media (min-width: $mediaXs) {
                   font-size: $h4;
@@ -336,19 +349,27 @@ html#ov body {
                   border-radius: $pad1;
                   overflow: hidden;
                   margin-right: $pad1;
+                  background-size: cover;
+                  background-repeat: no-repeat;
+                  background-position: center;
+                }
 
-                  img {
-                    width: 100%;
-                    height: auto;
-                  }
+                .jobTitle {
+                  display: flex;
+                  align-items: center;
                 }
 
                 @media (min-width: $mediaXs) {
                   font-size: $txMd;
 
                   .orgLogoWrapper {
-                    width: $pad4;
-                    height: $pad4;
+                    width: 40px;
+                    height: 40px;
+                  }
+
+                  .jobTitle {
+                    flex-direction: column;
+                    align-items: start;
                   }
                 }
 

@@ -89,8 +89,6 @@ export default function Investor(props) {
     is_open = false,
     is_impact = false,
     isBoard = false,
-    invalid,
-    invalid_status,
     validation,
   } = data;
 
@@ -215,12 +213,14 @@ export default function Investor(props) {
 
   if (validation === 'verified') {
     validationProps.text = 'This investor has been validated by FundBoard.';
-    validationProps.classes = 'text-primary';
+    validationProps.classes = 'text-secondary';
+    validationProps.faIcon = 'star';
   }
 
   if (validation === 'invalid') {
     validationProps.text = 'This investor is no longer investing, or their data is otherwise invalid.';
     validationProps.classes = 'text-danger';
+    validationProps.faIcon = 'ban';
   }
 
   return (
@@ -259,19 +259,16 @@ export default function Investor(props) {
               data-track={`${path}InvestorHomepage`}
             >
               {primary_organization_logo && (
-                <div className="orgLogoWrapper">
-                  <Suspense fallback={<Spinner animation="border" variant="info" role="status" size="sm" />}>
-                    <ErrorBoundary>
-                      <ImgComp imgSrc={primary_organization_logo} alt={primary_organization_name} />
-                    </ErrorBoundary>
-                  </Suspense>
-                </div>
+                <div className="orgLogoWrapper" style={{ backgroundImage: `url(${primary_organization_logo})` }} />
               )}
               {(primary_job_title || primary_organization_name) && (
-                <div>
-                  {`${primary_job_title}${primary_job_title && ','}`}
-                  {`${primary_job_title ? '\xa0' : ''}`}
-                  {primary_organization_name}
+                <div className="jobTitle">
+                  <span style={{ marginRight: '0.25em' }}>
+                    {`${primary_job_title}${primary_job_title && ','}`}
+                  </span>
+                  <span>
+                    {primary_organization_name}
+                  </span>
                 </div>
               )}
             </a>
@@ -283,8 +280,17 @@ export default function Investor(props) {
           dissmissAction={types.PEOPLE_GET_DISMISS}
           dismissParams={{ ids: [uuid] }}
         />
-        <section className="mb-2">
-          <span className={validationProps.classes}>{validationProps.text}</span>
+        <section className={`mb-2 d-flex ${validationProps.classes}`}>
+          {validationProps.faIcon && (
+            <FontAwesomeIcon
+              icon={validationProps.faIcon}
+              className="mr-1"
+              style={{ marginTop: '0.2em' }}
+            />
+          )}
+          <span>
+            {validationProps.text}
+          </span>
         </section>
         <section className="mb-4">
           {description && (
