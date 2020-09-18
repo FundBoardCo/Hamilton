@@ -29,19 +29,8 @@ export default function PersonStamp(props) {
       className="personStamp"
     >
       <a href={`https://www.crunchbase.com/person/${permalink}`} target="_blank" rel="noopener noreferrer">
-        <div className="imageWrapper">
-          <Suspense fallback={<Spinner animation="border" variant="info" role="status" size="sm" />}>
-            <ErrorBoundary>
-              <ImgComp imgSrc={image_url} alt={name} />
-            </ErrorBoundary>
-          </Suspense>
-          <div className="orgLogoWrapper">
-            <Suspense fallback={<Spinner animation="border" variant="info" role="status" size="sm" />}>
-              <ErrorBoundary>
-                <ImgComp imgSrc={logo_url} alt={org_name} />
-              </ErrorBoundary>
-            </Suspense>
-          </div>
+        <div className="imageWrapper" style={{ backgroundImage: `url(${image_url})` }}>
+          <div className="orgLogoWrapper" style={{ backgroundImage: `url(${logo_url})` }} />
         </div>
         <div className="content">
           <h1 className="clamp2">

@@ -61,7 +61,7 @@ export default function Person(props) {
 
   const location = useLocation();
 
-  const path = capitalizeFirstLetter(location.pathname.substring(1));
+  const path = capitalizeFirstLetter(location.pathname.substring(1).split('/')[0]);
 
   const validationProps = {};
 

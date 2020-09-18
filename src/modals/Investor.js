@@ -68,8 +68,15 @@ export default function Investor(props) {
   const { params } = match;
   const { uuid } = params;
 
-  const people = useSelector(state => state.people);
-  const data = people[uuid] || {};
+  const location = useLocation();
+  const path = capitalizeFirstLetter(location.pathname.substring(1).split('/')[0]);
+
+  const searchResults = useSelector(state => state.search.results) || {};
+  const people = useSelector(state => state.people) || {};
+  const sData = searchResults[uuid] || {};
+  const pData = people[uuid] || {};
+  const data = { ...pData, ...sData };
+
   const {
     status,
     name,
@@ -92,8 +99,6 @@ export default function Investor(props) {
     validation,
   } = data;
 
-  console.log(data)
-
   const primary_organization_logo = primary_organization.image_url || '';
   const primary_organization_name = primary_organization.name || '';
   const primary_organization_homepage = primary_organization.homepage || '';
@@ -113,7 +118,13 @@ export default function Investor(props) {
     extraLocations,
   });
 
-  const { percentageMatch, matches } = calcedMatch;
+  let { percentageMatch, matches } = calcedMatch;
+
+  // TODO: remove when server matching is live
+  if (path === 'Board') {
+    matches = false;
+    percentageMatch = 0;
+  }
 
   const parsedInvestors = {};
   investments.forEach(i => {
@@ -136,10 +147,6 @@ export default function Investor(props) {
 
   const [invalidOpen, setInvalidOpen] = useState(false);
 
-  const location = useLocation();
-
-  const path = capitalizeFirstLetter(location.pathname.substring(1));
-
   const history = useHistory();
 
   const closeModal = () => {
@@ -149,11 +156,13 @@ export default function Investor(props) {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    dispatch({
-      type: types.PEOPLE_GET_REQUEST,
-      id: uuid,
-    });
-  }, [dispatch, uuid]);
+    if (!Object.keys(data).length) {
+      dispatch({
+        type: types.PEOPLE_GET_REQUEST,
+        id: uuid,
+      });
+    }
+  }, [dispatch, data, uuid]);
 
   useEffect(() => {
     dispatch({
@@ -241,13 +250,7 @@ export default function Investor(props) {
       <Modal.Body>
         <section className="investorHeader mb-4">
           <div className="thumbCol">
-            <div className="thumb">
-              <Suspense fallback={<Spinner animation="border" variant="info" role="status" size="sm" />}>
-                <ErrorBoundary>
-                  <ImgComp imgSrc={image_url} alt={name} />
-                </ErrorBoundary>
-              </Suspense>
-            </div>
+            <div className="thumb" style={{ backgroundImage: `url(${image_url})` }} />
           </div>
           <div className="d-flex flex-column">
             <h1>{name}</h1>
@@ -326,35 +329,37 @@ export default function Investor(props) {
             </div>
           )}
         </section>
-        <section className="matches mb-4">
-          <h2>{searchLocation && `${percentageMatch}% Match`}</h2>
-          <ul>
-            {matchData.map(d => {
-              if (searchData[d.key]) {
-                return <MatchBullet {...d} />;
-              }
-              return null;
-            })}
-            <MatchBullet
-              faIcon="key"
-              bool={matches.keywords.length > 0 || !searchLocation}
-              text={`Their matching interests: ${matches.keywords.length ? matches.keywords.join(', ') : 'none'}.`}
-            />
-            <MatchBullet
-              faIcon="rocket"
-              bool={matches.raise || !searchLocation}
-              text={`They invest in rounds of ${usdFormatter.format(raise_min)} or more.`}
-            />
-            <MatchBullet
-              faIcon="map-marker-alt"
-              bool={matches.location || !searchLocation}
-              text={locationText}
-            />
-          </ul>
-        </section>
+        {searchLocation && !!matches && Object.keys(matches).length > 0 && (
+          <section className="matches mb-4">
+            <h2>{`${percentageMatch}% Match`}</h2>
+            <ul>
+              {matchData.map(d => {
+                if (searchData[d.key]) {
+                  return <MatchBullet {...d} />;
+                }
+                return null;
+              })}
+              <MatchBullet
+                faIcon="key"
+                bool={matches.keywords.length > 0 || !searchLocation}
+                text={`Their matching interests: ${matches.keywords.length ? matches.keywords.join(', ') : 'none'}.`}
+              />
+              <MatchBullet
+                faIcon="rocket"
+                bool={matches.raise || !searchLocation}
+                text={`They invest in rounds of ${usdFormatter.format(raise_min)} or more.`}
+              />
+              <MatchBullet
+                faIcon="map-marker-alt"
+                bool={matches.location || !searchLocation}
+                text={locationText}
+              />
+            </ul>
+          </section>
+        )}
         {Array.isArray(investments) && investments.length > 0 && (
           <section className="funded mb-4">
-            <h2>Founders they&apos;ve funded</h2>
+            <h3>Founders they&apos;ve funded</h3>
             <div className="founders">
               {Object.keys(parsedInvestors).map(k => (
                 <PersonStamp key={k} {...parsedInvestors[k]} />
