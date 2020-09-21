@@ -156,13 +156,11 @@ export default function Investor(props) {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    if (!Object.keys(data).length) {
-      dispatch({
-        type: types.PEOPLE_GET_REQUEST,
-        id: uuid,
-      });
-    }
-  }, [dispatch, data, uuid]);
+    dispatch({
+      type: types.PEOPLE_GET_REQUEST,
+      id: uuid,
+    });
+  }, [dispatch, uuid]);
 
   useEffect(() => {
     dispatch({
