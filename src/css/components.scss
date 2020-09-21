@@ -35,6 +35,7 @@ html#ov body {
       border-right: 1px solid $col-primary-light4;
       background-size: cover;
       background-position: center;
+      background-repeat: no-repeat;
 
       @media (min-width: $mediaLg) {
         width: $pad7;
@@ -45,6 +46,7 @@ html#ov body {
     .content {
       display: flex;
       flex-direction: column;
+      justify-content: space-between;
       flex-grow: 1;
       padding: $pad2;
 
@@ -57,25 +59,41 @@ html#ov body {
         margin-top: auto;
 
         .orgLogoWrapper {
-          width: 28px;
-          height: 28px;
+          width: 20px;
+          height: 20px;
           flex-shrink: 0;
           margin-right: $pad1;
           border-radius: $pad1;
           border: 1px solid $col-primary-light7;
           overflow: hidden;
-          display: none;
+          background-size: cover;
+          background-repeat: no-repeat;
+          background-position: center;
         }
 
         .orgText {
+          display: flex;
+          align-items: center;
           font-size: $txSm;
         }
       }
 
       @media (min-width: $mediaXs) {
         .details {
+          .orgText {
+            font-size: 0.7rem;
+          }
+        }
+      }
+
+      @media (min-width: $mediaSm) {
+        .details {
           .orgLogoWrapper {
-            display: block;
+            width: 28px;
+            height: 28px;
+          }
+          .orgText {
+            font-size: $txMd;
           }
         }
       }
@@ -282,11 +300,8 @@ html#ov body {
                   overflow: hidden;
                   border-radius: $pad2;
                   border: 1px solid $col-primary-light6;
-
-                  img {
-                    width: 100%;
-                    height: auto;
-                  }
+                  background-size: cover;
+                  background-repeat: no-repeat;
                 }
 
                 @media (min-width: $mediaXs) {
@@ -307,6 +322,7 @@ html#ov body {
 
               h1 {
                 font-size: $h5;
+                margin-bottom: 0;
 
                 @media (min-width: $mediaXs) {
                   font-size: $h4;
@@ -336,19 +352,27 @@ html#ov body {
                   border-radius: $pad1;
                   overflow: hidden;
                   margin-right: $pad1;
+                  background-size: cover;
+                  background-repeat: no-repeat;
+                  background-position: center;
+                }
 
-                  img {
-                    width: 100%;
-                    height: auto;
-                  }
+                .jobTitle {
+                  display: flex;
+                  align-items: center;
                 }
 
                 @media (min-width: $mediaXs) {
                   font-size: $txMd;
 
                   .orgLogoWrapper {
-                    width: $pad4;
-                    height: $pad4;
+                    width: 40px;
+                    height: 40px;
+                  }
+
+                  .jobTitle {
+                    flex-direction: column;
+                    align-items: start;
                   }
                 }
 
@@ -383,8 +407,8 @@ html#ov body {
               margin-bottom: $pad4;
 
               h2 {
-                font-size: $h3;
-                color: $col-primary;
+                color: $col-primary-light2;
+                font-weight: 700;
               }
 
               ul {
@@ -405,8 +429,8 @@ html#ov body {
             .funded {
               margin-bottom: $pad4;
 
-              h2 {
-                font-size: $h3;
+              h3 {
+                font-size: 1.4rem;
               }
 
               .founders {
@@ -414,6 +438,18 @@ html#ov body {
                 flex-wrap: nowrap;
                 overflow-x: auto;
                 padding: $pad2 0;
+              }
+
+              @media (min-width: $mediaXs) {
+                h3 {
+                  font-size: 1.7rem;
+                }
+              }
+
+              @media (min-width: $mediaLg) {
+                h3 {
+                  font-size: $h2;
+                }
               }
             }
 
@@ -664,9 +700,10 @@ html#ov body {
     a {
       display: flex;
       flex-direction: column;
-      width: $pad6;
+      margin-right: $pad2;
       text-decoration: none;
       color: $col-text;
+      width: $pad5;
 
       .imageWrapper {
         width: $pad5;
@@ -677,11 +714,8 @@ html#ov body {
         overflow: hidden;
         position: relative;
         margin-bottom: $pad1;
-
-        img {
-          width: 100%;
-          height: auto;
-        }
+        background-size: cover;
+        background-repeat: no-repeat;
 
         .orgLogoWrapper {
           position: absolute;
@@ -690,11 +724,11 @@ html#ov body {
           width: $pad3;
           height: $pad3;
           border: 1px solid $col-primary-light7;
+          border-radius: $pad1;
+          border-bottom-left-radius: $pad2;
           box-sizing: border-box;
-
-          img {
-            position: absolute;
-          }
+          background-size: cover;
+          background-repeat: no-repeat;
         }
       }
 
@@ -710,6 +744,21 @@ html#ov body {
         span {
           font-size: $txSm;
           text-align: center;
+        }
+      }
+
+      @media (min-width: $mediaMd) {
+        width: $pad6;
+        margin-right: $pad3;
+
+        .imageWrapper {
+          width: $pad6;
+          height: $pad6;
+
+          .orgLogoWrapper {
+            width: $pad4;
+            height: $pad4;
+          }
         }
       }
     }

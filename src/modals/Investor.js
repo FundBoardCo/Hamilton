@@ -68,8 +68,15 @@ export default function Investor(props) {
   const { params } = match;
   const { uuid } = params;
 
-  const people = useSelector(state => state.people);
-  const data = people[uuid] || {};
+  const location = useLocation();
+  const path = capitalizeFirstLetter(location.pathname.substring(1).split('/')[0]);
+
+  const searchResults = useSelector(state => state.search.results) || {};
+  const people = useSelector(state => state.people) || {};
+  const sData = searchResults[uuid] || {};
+  const pData = people[uuid] || {};
+  const data = { ...pData, ...sData };
+
   const {
     status,
     name,
@@ -89,8 +96,7 @@ export default function Investor(props) {
     is_open = false,
     is_impact = false,
     isBoard = false,
-    invalid,
-    invalid_status,
+    validation,
   } = data;
 
   const primary_organization_logo = primary_organization.image_url || '';
@@ -112,7 +118,13 @@ export default function Investor(props) {
     extraLocations,
   });
 
-  const { percentageMatch, matches } = calcedMatch;
+  let { percentageMatch, matches } = calcedMatch;
+
+  // TODO: remove when server matching is live
+  if (path === 'Board') {
+    matches = false;
+    percentageMatch = 0;
+  }
 
   const parsedInvestors = {};
   investments.forEach(i => {
@@ -135,10 +147,6 @@ export default function Investor(props) {
 
   const [invalidOpen, setInvalidOpen] = useState(false);
 
-  const location = useLocation();
-
-  const path = capitalizeFirstLetter(location.pathname.substring(1));
-
   const history = useHistory();
 
   const closeModal = () => {
@@ -148,11 +156,13 @@ export default function Investor(props) {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    dispatch({
-      type: types.PEOPLE_GET_REQUEST,
-      id: uuid,
-    });
-  }, [dispatch, uuid]);
+    if (!Object.keys(data).length) {
+      dispatch({
+        type: types.PEOPLE_GET_REQUEST,
+        id: uuid,
+      });
+    }
+  }, [dispatch, data, uuid]);
 
   useEffect(() => {
     dispatch({
@@ -203,7 +213,24 @@ export default function Investor(props) {
 
   let locationText = location_state ? `${location_city}, ${location_state}` : location_state;
   locationText = locationText ? `They are located in ${locationText}.` : 'No location available.';
-  locationText = `${locationText} Investors are more likely to invest locally.`
+  locationText = `${locationText} Investors are more likely to invest locally.`;
+
+  const validationProps = {
+    text: 'This investor has not been validated by FundBoard yet.',
+    classes: 'text-warning',
+  };
+
+  if (validation === 'verified') {
+    validationProps.text = 'This investor has been validated by FundBoard.';
+    validationProps.classes = 'text-secondary';
+    validationProps.faIcon = 'star';
+  }
+
+  if (validation === 'invalid') {
+    validationProps.text = 'This investor is no longer investing, or their data is otherwise invalid.';
+    validationProps.classes = 'text-danger';
+    validationProps.faIcon = 'ban';
+  }
 
   return (
     <Modal
@@ -223,13 +250,7 @@ export default function Investor(props) {
       <Modal.Body>
         <section className="investorHeader mb-4">
           <div className="thumbCol">
-            <div className="thumb">
-              <Suspense fallback={<Spinner animation="border" variant="info" role="status" size="sm" />}>
-                <ErrorBoundary>
-                  <ImgComp imgSrc={image_url} alt={name} />
-                </ErrorBoundary>
-              </Suspense>
-            </div>
+            <div className="thumb" style={{ backgroundImage: `url(${image_url})` }} />
           </div>
           <div className="d-flex flex-column">
             <h1>{name}</h1>
@@ -241,19 +262,16 @@ export default function Investor(props) {
               data-track={`${path}InvestorHomepage`}
             >
               {primary_organization_logo && (
-                <div className="orgLogoWrapper">
-                  <Suspense fallback={<Spinner animation="border" variant="info" role="status" size="sm" />}>
-                    <ErrorBoundary>
-                      <ImgComp imgSrc={primary_organization_logo} alt={primary_organization_name} />
-                    </ErrorBoundary>
-                  </Suspense>
-                </div>
+                <div className="orgLogoWrapper" style={{ backgroundImage: `url(${primary_organization_logo})` }} />
               )}
               {(primary_job_title || primary_organization_name) && (
-                <div>
-                  {`${primary_job_title}${primary_job_title && ','}`}
-                  {`${primary_job_title ? '\xa0' : ''}`}
-                  {primary_organization_name}
+                <div className="jobTitle">
+                  <span style={{ marginRight: '0.25em' }}>
+                    {`${primary_job_title}${primary_job_title && ','}`}
+                  </span>
+                  <span>
+                    {primary_organization_name}
+                  </span>
                 </div>
               )}
             </a>
@@ -265,6 +283,18 @@ export default function Investor(props) {
           dissmissAction={types.PEOPLE_GET_DISMISS}
           dismissParams={{ ids: [uuid] }}
         />
+        <section className={`mb-2 d-flex ${validationProps.classes}`}>
+          {validationProps.faIcon && (
+            <FontAwesomeIcon
+              icon={validationProps.faIcon}
+              className="mr-1"
+              style={{ marginTop: '0.2em' }}
+            />
+          )}
+          <span>
+            {validationProps.text}
+          </span>
+        </section>
         <section className="mb-4">
           {description && (
             <div className="description mb-3">
@@ -299,35 +329,37 @@ export default function Investor(props) {
             </div>
           )}
         </section>
-        <section className="matches mb-4">
-          <h2>{searchLocation && `${percentageMatch}% Match`}</h2>
-          <ul>
-            {matchData.map(d => {
-              if (searchData[d.key]) {
-                return <MatchBullet {...d} />;
-              }
-              return null;
-            })}
-            <MatchBullet
-              faIcon="key"
-              bool={matches.keywords.length > 0 || !searchLocation}
-              text={`Their matching interests: ${matches.keywords.length ? matches.keywords.join(', ') : 'none'}.`}
-            />
-            <MatchBullet
-              faIcon="rocket"
-              bool={matches.raise || !searchLocation}
-              text={`They invest in rounds of ${usdFormatter.format(raise_min)} or more.`}
-            />
-            <MatchBullet
-              faIcon="map-marker-alt"
-              bool={matches.location || !searchLocation}
-              text={locationText}
-            />
-          </ul>
-        </section>
+        {searchLocation && !!matches && Object.keys(matches).length > 0 && (
+          <section className="matches mb-4">
+            <h2>{`${percentageMatch}% Match`}</h2>
+            <ul>
+              {matchData.map(d => {
+                if (searchData[d.key]) {
+                  return <MatchBullet {...d} />;
+                }
+                return null;
+              })}
+              <MatchBullet
+                faIcon="key"
+                bool={matches.keywords.length > 0 || !searchLocation}
+                text={`Their matching interests: ${matches.keywords.length ? matches.keywords.join(', ') : 'none'}.`}
+              />
+              <MatchBullet
+                faIcon="rocket"
+                bool={matches.raise || !searchLocation}
+                text={`They invest in rounds of ${usdFormatter.format(raise_min)} or more.`}
+              />
+              <MatchBullet
+                faIcon="map-marker-alt"
+                bool={matches.location || !searchLocation}
+                text={locationText}
+              />
+            </ul>
+          </section>
+        )}
         {Array.isArray(investments) && investments.length > 0 && (
           <section className="funded mb-4">
-            <h2>Founders they&apos;ve funded</h2>
+            <h3>Founders they&apos;ve funded</h3>
             <div className="founders">
               {Object.keys(parsedInvestors).map(k => (
                 <PersonStamp key={k} {...parsedInvestors[k]} />
