@@ -60,7 +60,7 @@ export function calcMatch(opts) {
     location_state,
     description,
   } = opts;
-  const searchedCity = extraLocations.filter(l => l.zip_code === location)[0];
+  const searchedCity = extraLocations.filter(l => l.zip_code === location)[0] || {};
   const matches = {
     keywords: [],
     raise: raise >= raise_min && raise <= raise_max,
@@ -92,7 +92,7 @@ export function calcMatch(opts) {
   // count location as 0.5, so it's 40/40/20 on keywords/raise/location
   if (matches.location) {
     percentageMatch += 0.33;
-    if (searchedCity.city.toLowerCase() === location_city.toLowerCase()) {
+    if (searchedCity.city && searchedCity.city.toLowerCase() === location_city.toLowerCase()) {
       percentageMatch += 0.17;
     }
   }
