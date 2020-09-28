@@ -355,6 +355,7 @@ html#ov {
           #Keywords {
             flex-grow: 1;
             padding-bottom: $pad3;
+            overflow: auto; // kludge because the overflow on the tiles stopped working.
 
             .keywordsInner {
               display: flex;
@@ -363,15 +364,13 @@ html#ov {
               .tilesWrapper {
                 position: relative;
                 display: flex;
-                flex-direction: column;
-                overflow: hidden;
-
+                flex-grow: 1;
+                
                 .tiles {
                   flex-grow: 1;
                   display: flex;
                   flex-wrap: wrap;
                   overflow: auto;
-                  position: relative;
 
                   .tile {
                     flex: 1 1 auto;
