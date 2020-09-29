@@ -46,6 +46,7 @@ import {
   faThumbsDown,
   faThumbsUp,
   faTimes,
+  faQuestion,
   faQuestionCircle,
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -98,6 +99,7 @@ library.add(
   faThumbsDown,
   faThumbsUp,
   faTimes,
+  faQuestion,
   faQuestionCircle,
 );
 

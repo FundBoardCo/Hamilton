@@ -686,6 +686,31 @@ html#ov body {
         }
       }
     }
+    &.modal-howToIntro {
+      .howToIntroList {
+
+        dt {
+          position: relative;
+          display: inline-flex;
+          justify-content: center;
+          align-items: center;
+          color: $col-text-light;
+          font-size: 2rem;
+          font-weight: 700;
+          width: 3rem;
+          height: 3rem;
+          background-color: $col-primary;
+          border-radius: 50%;
+          float: left;
+          clear: left;
+          margin:0 1rem 2rem 0;
+        }
+
+        dd {
+          margin: 0 0 2rem 0;
+        }
+      }
+    }
   }
 
   // modal-backdrop is a peer to root

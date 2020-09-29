@@ -313,6 +313,12 @@ html#ov body {
     }
   }
 
+  .h-lg-3 {
+    @media (min-width: $mediaLg) {
+      font-size: $h3;
+    }
+  }
+
   .h-lg-5 {
     @media (min-width: $mediaLg) {
       font-size: $h5;
