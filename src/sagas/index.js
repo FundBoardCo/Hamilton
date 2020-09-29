@@ -39,9 +39,12 @@ function isLoginErr(err) {
 const loginErrProps = { type: types.MODAL_SET_OPEN, model: 'login' };
 
 function requestAirtableGetKeywords() {
+  /*
   return axios.get('https://api.airtable.com/v0/app5hJojHQxyJ7ElS/Keywords', {
     headers: { Authorization: `Bearer ${AIRTABLE_APIKEY}` },
   });
+  */
+  return axios.get('.netlify/functions/airtable_get_keywords');
 }
 
 function* workAirtableGetKeywords() {
