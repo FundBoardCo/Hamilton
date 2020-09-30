@@ -114,11 +114,15 @@ export default function Board() {
         <div>
           <div className="boardDetailsBar">
             <div className="primaryDetails">
-              {`My Fundboard: ${investorIDs.length} investors`}
+              <span>
+                {`My Fundboard: ${investorIDs.length}`}
+                <span className="d-none d-md-inline">&nbsp;Potential Lead</span>
+                &nbsp;Investors
+              </span>
             </div>
           </div>
           {investorIDs.length > 0 && (
-            <div className="d-flex justify-content-around justify-content-lg-end mb-3">
+            <div className="d-flex justify-content-end justify-content-lg-end mb-3">
               <Button
                 className="primaryDetailsLink txs-2 txs-lg-tx3 mr-2 btnNoMax"
                 variant="primary"
@@ -126,7 +130,8 @@ export default function Board() {
                 data-track="BoardGetFunded"
               >
                 <FontAwesomeIcon icon="question" />
-                <span className="ml-2">Next Steps</span>
+                <span className="ml-2">Next</span>
+                <span className="d-none d-sm-inline">&nbsp;Steps</span>
               </Button>
               <Button
                 className="primaryDetailsLink txs-2 txs-lg-tx3"
@@ -136,7 +141,8 @@ export default function Board() {
                 data-track="BoardDownload"
               >
                 <FontAwesomeIcon icon="file-download" />
-                <span className="ml-2">Download My Investors</span>
+                <span className="ml-2">Download</span>
+                <span className="d-none d-sm-inline">&nbsp;My Investors</span>
               </Button>
             </div>
           )}
