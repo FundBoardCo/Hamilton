@@ -688,6 +688,8 @@ html#ov body {
     }
     &.modal-howToIntro {
       .howToIntroList {
+        display: flex;
+        flex-flow: row wrap;
 
         dt {
           position: relative;
@@ -695,19 +697,36 @@ html#ov body {
           justify-content: center;
           align-items: center;
           color: $col-text-light;
-          font-size: 2rem;
+          font-size: 1rem;
           font-weight: 700;
-          width: 3rem;
-          height: 3rem;
+          width: 2rem;
+          height: 2rem;
+          flex-basis: 2rem;
           background-color: $col-primary;
           border-radius: 50%;
-          float: left;
-          clear: left;
-          margin:0 1rem 2rem 0;
+          margin:0 0.5rem 1rem 0;
         }
 
         dd {
-          margin: 0 0 2rem 0;
+          margin: 0 0 1rem 0;
+          display: block;
+          flex-basis: calc(100% - 2.5rem);
+        }
+
+        @media (min-width: $mediaMd) {
+          dt {
+            font-size: 2rem;
+            font-weight: 700;
+            width: 3rem;
+            height: 3rem;
+            flex-basis: 3rem;
+            margin:0 1rem 2rem 0;
+          }
+
+          dd {
+            margin: 0 0 2rem 0;
+            flex-basis: calc(100% - 4rem);
+          }
         }
       }
     }

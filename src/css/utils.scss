@@ -277,12 +277,12 @@ html#ov body {
 
   h4, .h4 {
     font-size: $h4;
-    font-weight: 500;
+    font-weight: 700;
   }
 
   h5, .h5 {
     font-size: $h5;
-    font-weight: 500;
+    font-weight: 700;
   }
 
   .unbold {
@@ -301,15 +301,39 @@ html#ov body {
     font-size: $txSm;
   }
 
+  .h-xs-3 {
+    @media (min-width: $mediaXs) {
+      font-size: $h3;
+    }
+  }
+
   .h-sm-4 {
     @media (min-width: $mediaSm) {
       font-size: $h4;
     }
   }
 
-  .h-lg-1 {
+  .h-sm-3 {
+    @media (min-width: $mediaSm) {
+      font-size: $h3;
+    }
+  }
+
+  .h-sm-2 {
+    @media (min-width: $mediaSm) {
+      font-size: $h2;
+    }
+  }
+
+  .h-md-2 {
+    @media (min-width: $mediaMd) {
+      font-size: $h2;
+    }
+  }
+
+  .h-lg-5 {
     @media (min-width: $mediaLg) {
-      font-size: $h1;
+      font-size: $h5;
     }
   }
 
@@ -319,9 +343,15 @@ html#ov body {
     }
   }
 
-  .h-lg-5 {
+  .h-lg-2 {
     @media (min-width: $mediaLg) {
-      font-size: $h5;
+      font-size: $h2;
+    }
+  }
+
+  .h-lg-1 {
+    @media (min-width: $mediaLg) {
+      font-size: $h1;
     }
   }
 

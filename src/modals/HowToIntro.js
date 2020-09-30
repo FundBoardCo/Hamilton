@@ -35,7 +35,7 @@ export default function HowToIntro() {
     >
       <Modal.Header closeButton>
         <Modal.Title>
-          <h2>Time to connect to some investors.</h2>
+          <h2 className="h4 h-xs-3 h-sm-2 bold">Time to connect to some investors.</h2>
         </Modal.Title>
       </Modal.Header>
       <Modal.Body>
