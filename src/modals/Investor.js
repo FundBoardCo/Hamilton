@@ -186,6 +186,9 @@ export default function Investor(props) {
     type: 'PERSON_PUT_INVALID_REQUESTED',
     params: {
       uuid,
+      name,
+      permalink,
+      date: moment().format(),
       reason,
     },
   });

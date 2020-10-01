@@ -4,7 +4,7 @@ exports.handler = async (event, context, callback) => {
   const pass = body => { callback(null, { statusCode: 200, body: JSON.stringify(body) }); };
 
   try {
-    const response = await fetch('https://api.airtable.com/v0/app7qe3RJry7GgvKw/Feedback',
+    const response = await fetch('https://api.airtable.com/v0/appZTL6daVhkCbRGG/reports',
       {
         method: 'POST',
         headers: {

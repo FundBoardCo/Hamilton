@@ -39,11 +39,6 @@ function isLoginErr(err) {
 const loginErrProps = { type: types.MODAL_SET_OPEN, model: 'login' };
 
 function requestAirtableGetKeywords() {
-  /*
-  return axios.get('https://api.airtable.com/v0/app5hJojHQxyJ7ElS/Keywords', {
-    headers: { Authorization: `Bearer ${AIRTABLE_APIKEY}` },
-  });
-  */
   return axios.get('/.netlify/functions/airtable_get_keywords');
 }
 
@@ -266,7 +261,8 @@ function personPutInvalid(params = {}) {
 function* workPersonPutInvalid(action) {
   const { params } = action;
   try {
-    yield call(personPutInvalid, params);
+    const response = yield call(personPutInvalid, params);
+    console.log(response)
     yield put({ type: 'PERSON_PUT_INVALID_SUCCEEDED', params });
   } catch (error) {
     trackErr(error);
@@ -289,8 +285,7 @@ function sendFeedback(params = {}) {
   };
   return axios({
     method: 'post',
-    url: 'https://api.airtable.com/v0/app7qe3RJry7GgvKw/Feedback',
-    headers: { Authorization: `Bearer ${AIRTABLE_APIKEY}` },
+    url: '/.netlify/functions/airtable_post_feedback',
     data,
   });
 }
