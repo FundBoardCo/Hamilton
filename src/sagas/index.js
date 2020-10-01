@@ -44,7 +44,7 @@ function requestAirtableGetKeywords() {
     headers: { Authorization: `Bearer ${AIRTABLE_APIKEY}` },
   });
   */
-  return axios.get('.netlify/functions/airtable_get_keywords');
+  return axios.get('/.netlify/functions/airtable_get_keywords');
 }
 
 function* workAirtableGetKeywords() {
@@ -258,8 +258,7 @@ function personPutInvalid(params = {}) {
   };
   return axios({
     method: 'post',
-    url: 'https://api.airtable.com/v0/apps8kfzmvaJV4oV6/reports',
-    headers: { Authorization: `Bearer ${AIRTABLE_APIKEY}` },
+    url: '/.netlify/functions/airtable_post_report',
     data,
   });
 }
