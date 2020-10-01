@@ -93,7 +93,7 @@ export default function Location() {
   return (
     <Row id="Location">
       <Col className="locationInner">
-        <h1 className="text-center">Near</h1>
+        <h1 className="text-center">Your Location</h1>
         <p className="text-center">The location of your office, or home if you're remote.</p>
         <div className="formWrapper">
           <Form noValidate validated={validated}>
@@ -139,7 +139,7 @@ export default function Location() {
                 onClick={onSearchClick}
                 data-track="IntroSearchSeeMatches"
               >
-                See My Matches
+                Find a Lead Investor
               </Button>
             </div>
           </Form>

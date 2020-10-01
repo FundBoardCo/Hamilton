@@ -19,6 +19,7 @@ export const INFO_GET_FAILED = 'INFO_GET_FAILED';
 export const INFO_GET_DISMISSED = 'INFO_GET_DISMISSED';
 
 export const MODAL_SET_OPEN = 'MODAL_SET_OPEN';
+export const MODAL_SEEN = 'MODAL_SEEN';
 
 export const PEOPLE_UPDATE = 'PEOPLE_UPDATE';
 

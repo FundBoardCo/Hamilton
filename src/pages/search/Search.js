@@ -61,7 +61,9 @@ export default function Search() {
             onClick={onDetailClick}
             data-track="ToggleSearchDetails"
           >
-            {`${Object.keys(searchResults).length} investors match`}
+            {`${Object.keys(searchResults).length}`}
+            <span className="d-none d-md-inline">&nbsp;Potential Lead</span>
+            &nbsp;Investors
           </Button>
           <Button
             variant="primary-light"
@@ -69,7 +71,7 @@ export default function Search() {
             onClick={onEditClick}
             data-track="EditSearch"
           >
-            <FontAwesomeIcon icon="edit" className="mr-2"/>
+            <FontAwesomeIcon icon="edit" className="mr-2" />
             <span className="d-none d-md-inline">New </span>
             Search
           </Button>

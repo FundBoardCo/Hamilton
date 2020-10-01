@@ -29,7 +29,7 @@ export default function Raise() {
   return (
     <Row id="Raise">
       <Col className="raiseInner">
-        <h1 className="text-center">Raising</h1>
+        <h1 className="text-center">Your Raise</h1>
         <p className="text-center">Select the amount you are raising.</p>
         <h2 className="text-center">{usdFormatter.format(raiseValue)}</h2>
         <div className="sliderWrapper">

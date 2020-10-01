@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useCallback } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import Papa from 'papaparse';
 import FileSaver from 'file-saver';
@@ -13,7 +13,7 @@ export default function Board() {
   const investorIDs = useSelector(state => state.board.ids) || [];
   const people = useSelector(state => state.people);
   const loggedIn = useSelector(state => state.user.token);
-  const showAdvice = useSelector(state => state.board.showAdvice) && investorIDs.length > 0;
+  const modalsSeen = useSelector(state => state.modal.modalsSeen) || [];
 
   // TODO: this currently doesn't do anything, because none of the fetched people have match data
   investorIDs.sort((a, b) => {
@@ -90,21 +90,23 @@ export default function Board() {
   const csv = Papa.unparse(Object.values(csvList));
   const csvData = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
 
-  const onCSVClick = () => {
+  const onCSVClick = useCallback(() => {
     FileSaver.saveAs(csvData, 'MyFundBoard.csv');
-  };
+  }, [csvData]);
 
-  /*
-  const onShowNextClick = () => dispatch({
+  const showHowToIntro = useCallback(() => dispatch({
     type: types.MODAL_SET_OPEN,
-    modal: 'afterDownload',
-  });
-   */
+    modal: 'howToIntro',
+    actions: { onCSVClick },
+  }), [dispatch, onCSVClick]);
 
-  const onToggleShowAdvice = () => dispatch({
-    type: types.BOARD_SHOWADVICE,
-    showAdvice: !showAdvice,
-  });
+  useEffect(() => {
+    // if the how to intro modal has never been opened, open it
+    // ToDo save to the server so it's maintained across browsers and devices.
+    if (!modalsSeen.includes('howToIntro')) {
+      showHowToIntro();
+    }
+  }, [showHowToIntro, modalsSeen]);
 
   return (
     <Row id="PageBoard" className="pageContainer">
@@ -112,19 +114,24 @@ export default function Board() {
         <div>
           <div className="boardDetailsBar">
             <div className="primaryDetails">
-              {`My Fundboard: ${investorIDs.length} investors`}
+              <span>
+                {`My Fundboard: ${investorIDs.length}`}
+                <span className="d-none d-md-inline">&nbsp;Potential Lead</span>
+                &nbsp;Investors
+              </span>
             </div>
           </div>
           {investorIDs.length > 0 && (
-            <div className="d-flex justify-content-around justify-content-lg-end mb-2">
+            <div className="d-flex justify-content-end justify-content-lg-end mb-3">
               <Button
                 className="primaryDetailsLink txs-2 txs-lg-tx3 mr-2 btnNoMax"
                 variant="primary"
-                onClick={onToggleShowAdvice}
+                onClick={showHowToIntro}
                 data-track="BoardGetFunded"
               >
-                <FontAwesomeIcon icon="comment" />
-                <span className="ml-2">Get Intros and Get Funded</span>
+                <FontAwesomeIcon icon="question" />
+                <span className="ml-2">Next</span>
+                <span className="d-none d-sm-inline">&nbsp;Steps</span>
               </Button>
               <Button
                 className="primaryDetailsLink txs-2 txs-lg-tx3"
@@ -134,58 +141,11 @@ export default function Board() {
                 data-track="BoardDownload"
               >
                 <FontAwesomeIcon icon="file-download" />
-                <span className="ml-2">Download CSV</span>
+                <span className="ml-2">Download</span>
+                <span className="d-none d-sm-inline">&nbsp;My Investors</span>
               </Button>
             </div>
           )}
-          <div className="mb-3 txs-2 txs-md-tx3">
-            {showAdvice && (
-              <div>
-                <p>
-                  Use the information available for each investor on your FundBoard to find&nbsp;
-                  someone that can introduce you to them, or try to reach them directly.
-                </p>
-                <p>
-                  Track your progress by&nbsp;
-                  <Button
-                    className="inlineBtn"
-                    variant="link"
-                    onClick={onCSVClick}
-                    data-track="BoardDownloadText"
-                  >
-                    downloading this CSV,
-                  </Button>
-                  and saving it locally, or to a shareable platform like Google Sheets.
-                </p>
-                <p>
-                  You should have 20 or more potential leads. If you need more, try adjusting&nbsp;
-                  the parameters in your&nbsp;
-                  <a href="/search/menu">search.</a>
-                </p>
-                <p>
-                  Want more?&nbsp;
-                  <a
-                    href="https://www.fundboard.co/our-take/how-to-raise-with-your-fundboard"
-                    target="_blank"
-                    rel="noreferrer"
-                  >
-                    We&apos;ve written a detailed guide to raising funds with your FundBoard.
-                  </a>
-                </p>
-              </div>
-            )}
-            <div className="d-flex">
-              {showAdvice && (
-                <Button
-                  variant="link"
-                  className="ml-auto"
-                  onClick={onToggleShowAdvice}
-                >
-                  Hide Get Intros and Get Funded Advice
-                </Button>
-              )}
-            </div>
-          </div>
         </div>
       )}
       {loggedIn && (

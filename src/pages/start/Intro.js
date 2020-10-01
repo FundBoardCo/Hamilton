@@ -21,7 +21,7 @@ export default function Intro() {
           className="btn btn-secondary btnNoMax mb-3 mb-lg-5"
           data-track="IntroPageSearch"
         >
-          Find Your Investors
+          Find A Lead Investor
         </a>
       </div>
     </Row>

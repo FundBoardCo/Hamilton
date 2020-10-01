@@ -2,9 +2,9 @@ import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
+import Button from 'react-bootstrap/Button';
 import DismissibleStatus from '../../components/DismissibleStatus';
 import * as types from '../../actions/types';
-import Button from "react-bootstrap/Button";
 
 export default function Keywords() {
   const searchKeywords = useSelector(state => state.search.keywords) || [];
@@ -47,7 +47,7 @@ export default function Keywords() {
     <Row id="Keywords">
       <Col className="keywordsInner">
         <h1 className="text-center">
-          We Are
+          Your Startup
         </h1>
         <p className="text-center">Choose up to 5 keywords that describe your startup.</p>
         <DismissibleStatus

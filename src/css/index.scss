@@ -365,7 +365,7 @@ html#ov {
                 position: relative;
                 display: flex;
                 flex-grow: 1;
-                
+
                 .tiles {
                   flex-grow: 1;
                   display: flex;
@@ -387,13 +387,13 @@ html#ov {
                     &.active {
                       background-color: $col-info;
                       border-color: $col-info-dark;
-                      color: $col-info-light5;
+                      color: $col-text-light;
                     }
                   }
                 }
 
                 #TileWarning {
-                  position: absolute;
+                  position: fixed;
                   top: -5px;
                   bottom: -5px;
                   left: -5px;

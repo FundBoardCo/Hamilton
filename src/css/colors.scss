@@ -22,7 +22,7 @@ $col-secondary-light6: scale_color($col-secondary, $lightness: 70%);
 $col-secondary-dark: scale_color($col-secondary, $lightness: -20%);
 $col-secondary-dark2: scale_color($col-secondary, $lightness: -30%);
 
-$col-info: #1F9D94;
+$col-info: #1A847D;
 $col-info-light: scale_color($col-info, $lightness: 20%);
 $col-info-light2: scale_color($col-info, $lightness: 30%);
 $col-info-light3: scale_color($col-info, $lightness: 40%);
@@ -32,7 +32,7 @@ $col-info-dark: scale_color($col-info, $lightness: -20%);
 $col-info-dark2: scale_color($col-info, $lightness: -30%);
 $col-info-op1: scale_color($col-info, $alpha: -10%);
 
-$col-success: #154D4A;
+$col-success: #168333;
 $col-success-light: scale_color($col-success, $lightness: 20%);
 $col-success-light2: scale_color($col-success, $lightness: 30%);
 $col-success-light3: scale_color($col-success, $lightness: 40%);
@@ -40,7 +40,7 @@ $col-success-light4: scale_color($col-success, $lightness: 50%);
 $col-success-dark: scale_color($col-success, $lightness: -20%);
 $col-success-dark2: scale_color($col-success, $lightness: -30%);
 
-$col-danger: #DD5B5F;
+$col-danger: #D73C41;
 $col-danger-light: scale_color($col-danger, $lightness: 20%);
 $col-danger-light2: scale_color($col-danger, $lightness: 30%);
 $col-danger-light3: scale_color($col-danger, $lightness: 40%);
@@ -48,7 +48,7 @@ $col-danger-light4: scale_color($col-danger, $lightness: 50%);
 $col-danger-dark: scale_color($col-danger, $lightness: -20%);
 $col-danger-dark2: scale_color($col-danger, $lightness: -30%);
 
-$col-warning: #E10E55;
+$col-warning: #9D0034;
 $col-warning-light: scale_color($col-warning, $lightness: 20%);
 $col-warning-light2: scale_color($col-warning, $lightness: 30%);
 $col-warning-light3: scale_color($col-warning, $lightness: 40%);
@@ -199,6 +199,10 @@ html#ov body {
     background-color: $col-primary !important;
   }
 
+  .bg-primary-light {
+    background-color: $col-primary-light !important;
+  }
+
   .bg-primary-light2 {
     background-color: $col-primary-light2 !important;
   }
@@ -221,6 +225,10 @@ html#ov body {
 
   .bg-secondary {
     background-color: $col-secondary !important;
+  }
+
+  .bg-secondary-light {
+    background-color: $col-secondary-light !important;
   }
 
   .bg-secondary-light2 {
@@ -247,8 +255,36 @@ html#ov body {
     background-color: $col-success !important;
   }
 
+  .bg-success-light {
+    background-color: $col-success-light !important;
+  }
+
+  .bg-success-light2 {
+    background-color: $col-success-light2 !important;
+  }
+
+  .bg-success-light3 {
+    background-color: $col-success-light3 !important;
+  }
+
+  .bg-success-light4 {
+    background-color: $col-success-light4 !important;
+  }
+
+  .bg-success-dark {
+    background-color: $col-success-dark !important;
+  }
+
+  .bg-success-dark2 {
+    background-color: $col-success-dark2 !important;
+  }
+
   .bg-danger {
     background-color: $col-danger !important;
+  }
+
+  .bg-danger-light {
+    background-color: $col-danger-light !important;
   }
 
   .bg-danger-light2 {
@@ -257,6 +293,18 @@ html#ov body {
 
   .bg-danger-light3 {
     background-color: $col-danger-light3 !important;
+  }
+
+  .bg-danger-light4 {
+    background-color: $col-danger-light4 !important;
+  }
+
+  .bg-danger-dark {
+    background-color: $col-danger-dark !important;
+  }
+
+  .bg-danger-dark2 {
+    background-color: $col-danger-dark2 !important;
   }
 
   .bg-warning {
@@ -275,8 +323,24 @@ html#ov body {
     background-color: $col-warning-light3 !important;
   }
 
+  .bg-warning-light4 {
+    background-color: $col-warning-light4 !important;
+  }
+
+  .bg-warning-dark {
+    background-color: $col-warning-dark !important;
+  }
+
+  .bg-warning-dark2 {
+    background-color: $col-warning-dark2 !important;
+  }
+
   .bg-info {
     background-color: $col-info !important;
+  }
+
+  .bg-info-light {
+    background-color: $col-info-light !important;
   }
 
   .bg-info-light2 {
@@ -299,12 +363,56 @@ html#ov body {
     background-color: $col-info-dark2 !important;
   }
 
-  .bg-transparent {
-    background-color: transparent !important;
-  }
-
   .bg-emp {
     background-color: $col-emp !important;
+  }
+
+  .bg-emp-light {
+    background-color: $col-emp-light !important;
+  }
+
+  .bg-emp-light2 {
+    background-color: $col-emp-light2 !important;
+  }
+
+  .bg-emp-light3 {
+    background-color: $col-emp-light3 !important;
+  }
+
+  .bg-emp-light4 {
+    background-color: $col-emp-light4 !important;
+  }
+
+  .bg-emp-dark {
+    background-color: $col-emp-dark !important;
+  }
+
+  .bg-emp-dark2 {
+    background-color: $col-emp-dark2 !important;
+  }
+
+  .bg-structure {
+    background-color: $col-structure !important;
+  }
+
+  .bg-structure-light {
+    background-color: $col-structure-light !important;
+  }
+
+  .bg-structure-light2 {
+    background-color: $col-structure-light2 !important;
+  }
+
+  .bg-structure-light3 {
+    background-color: $col-structure-light3 !important;
+  }
+
+  .bg-structure-light4 {
+    background-color: $col-structure-light4 !important;
+  }
+
+  .bg-transparent {
+    background-color: transparent !important;
   }
 
   .bg-light {

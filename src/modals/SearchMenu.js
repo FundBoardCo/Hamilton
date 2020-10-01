@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { useHistory } from 'react-router';
 import { useSelector, useDispatch } from 'react-redux';
 import Modal from 'react-bootstrap/Modal';
@@ -7,7 +7,7 @@ import RangeSlider from 'react-bootstrap-range-slider';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Button from 'react-bootstrap/Button';
 import { statusIsError } from '../utils';
-import * as types from "../actions/types";
+import * as types from '../actions/types';
 
 const usdFormatter = new Intl.NumberFormat('en-US', {
   style: 'currency',
@@ -43,6 +43,8 @@ function SectionTitle(params) {
 }
 
 export default function SearchMenu() {
+  const form = useRef(null);
+
   const airtableKeywords = useSelector(state => state.airtable.keywords) || {};
   const wordsToShow = Array.isArray(airtableKeywords.data) ? airtableKeywords.data : [];
 
@@ -143,8 +145,12 @@ export default function SearchMenu() {
   };
 
   const closeAndSearch = () => {
-    getResults();
-    history.push('/search');
+    const formNode = form.current;
+    setValidated(true);
+    if (formNode.checkValidity() !== false) {
+      getResults();
+      history.push('/search');
+    }
   };
 
   useEffect(() => {
@@ -256,7 +262,7 @@ export default function SearchMenu() {
             {usdFormatter.format(10000000)}
           </div>
         </div>
-        <Form noValidate validated={validated}>
+        <Form noValidate validated={validated} ref={form}>
           <SectionTitle
             faIcon="map-marker-alt"
             text="Location"
