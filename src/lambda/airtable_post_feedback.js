@@ -9,20 +9,6 @@ exports.handler = async (event, context, callback) => {
     });
   };
 
-  axios({
-    method: 'post',
-    url: 'https://api.airtable.com/v0/app7qe3RJry7GgvKw/Feedback',
-    headers: {
-      Authorization: `Bearer ${process.env.AIRTABLE_APIKEY}`,
-    },
-    data: event.body,
-  })
-    .then(response => {
-      console.log(response.data);
-      pass(response.data);
-    })
-    .catch(err => pass(err));
-/*
   try {
     const response = await fetch('https://api.airtable.com/v0/app7qe3RJry7GgvKw/Feedback',
       {
@@ -49,5 +35,4 @@ exports.handler = async (event, context, callback) => {
     };
     await pass(error);
   }
- */
 };

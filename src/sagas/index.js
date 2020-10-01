@@ -9,7 +9,6 @@ import {
 import axios from 'axios';
 import Webflow from 'webflow-api';
 import {
-  AIRTABLE_APIKEY,
   WEBFLOW_APIKEY,
   ZIPCODECLIENTKEY,
 } from '../constants';
@@ -261,8 +260,7 @@ function personPutInvalid(params = {}) {
 function* workPersonPutInvalid(action) {
   const { params } = action;
   try {
-    const response = yield call(personPutInvalid, params);
-    console.log(response)
+    yield call(personPutInvalid, params);
     yield put({ type: 'PERSON_PUT_INVALID_SUCCEEDED', params });
   } catch (error) {
     trackErr(error);
@@ -293,7 +291,7 @@ function sendFeedback(params = {}) {
 function* workSendFeedback(action) {
   const { params } = action;
   try {
-    yield call(sendFeedback, params);
+    const test = yield call(sendFeedback, params);
     yield put({ type: types.FEEDBACK_SEND_SUCCEEDED });
   } catch (error) {
     trackErr(error);
