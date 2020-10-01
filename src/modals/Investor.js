@@ -1,27 +1,22 @@
-import React, { Suspense, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useHistory, useLocation } from 'react-router';
 import { useSelector, useDispatch } from 'react-redux';
 import Modal from 'react-bootstrap/Modal';
 import PropTypes from 'prop-types';
-import { useImage } from 'react-image';
 import Spinner from 'react-bootstrap/Spinner';
 import Button from 'react-bootstrap/Button';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Timeline } from 'react-twitter-widgets';
-import GreySquare from '../imgs/greySquare.jpg';
+import moment from 'moment';
 import PersonStamp from '../components/people/PersonStamp';
-import { calcMatch, capitalizeFirstLetter, getSafeVar, statusIsError } from '../utils';
+import {
+  calcMatch,
+  capitalizeFirstLetter,
+  getSafeVar,
+  statusIsError,
+} from '../utils';
 import * as types from '../actions/types';
 import DismissibleStatus from '../components/DismissibleStatus';
-import ErrorBoundary from '../components/ErrorBoundary';
-
-function ImgComp(params) {
-  const { imgSrc = '', alt = '' } = params;
-  const { src } = useImage({
-    srcList: imgSrc || GreySquare,
-  });
-  return <img src={src} alt={alt || ''} className="responsiveImg" />;
-}
 
 const matchData = [
   {
@@ -88,14 +83,14 @@ export default function Investor(props) {
     linkedin,
     twitter,
     raise_min,
-    raise_max,
+    // raise_max,
     location_city,
     location_state,
     investments = [],
-    is_lead_investor = false,
-    is_open = false,
-    is_impact = false,
-    isBoard = false,
+    // is_lead_investor = false,
+    // is_open = false,
+    // is_impact = false,
+    // isBoard = false,
     validation,
   } = data;
 
