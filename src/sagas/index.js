@@ -291,7 +291,7 @@ function sendFeedback(params = {}) {
 function* workSendFeedback(action) {
   const { params } = action;
   try {
-    const test = yield call(sendFeedback, params);
+    yield call(sendFeedback, params);
     yield put({ type: types.FEEDBACK_SEND_SUCCEEDED });
   } catch (error) {
     trackErr(error);
@@ -344,19 +344,25 @@ function* watchBoardAdd() {
   yield takeLatest(types.BOARD_ADD, workBoardAdd);
 }
 
-function getExtraZipCodes(zipcode) {
+function getExtraZipCodes(params) {
+  const { zipcode, miles } = params;
   return axios.get(
-    `https://www.zipcodeapi.com/rest/${ZIPCODECLIENTKEY}/radius.json/${zipcode}/10/mile`,
+    `https://www.zipcodeapi.com/rest/${ZIPCODECLIENTKEY}/radius.json/${zipcode}/${miles}/mile`,
+    //`/.netlify/functions/zipcodeapi_get_codes?${toQueryString(params)}`,
   );
 }
 
 function* workGetExtraZipCodes(action) {
   const zipcode = action.location;
+  const params = {
+    zipcode,
+    miles: 10,
+  };
   try {
     if (!zipcode || typeof zipcode !== 'string' || zipcode.length !== 5) {
       yield put({ type: types.SEARCH_GET_EXTRAZIPCODES_FAILED, error: 'Invalid Zip Code' });
     } else {
-      const results = yield call(getExtraZipCodes, zipcode);
+      const results = yield call(getExtraZipCodes, params);
       yield put({ type: types.SEARCH_GET_EXTRAZIPCODES_SUCCEEDED, data: results.data });
     }
   } catch (error) {
