@@ -443,12 +443,13 @@ export default function Investor(props) {
                 </div>
               )}
               {statusIsError(data.invalid_status) && (
-                <div className="invalidError">
-                  <span>
+                <div className="invalidError d-flex flex-column align-items-center">
+                  <span className="mb-2">
                     {`Error: ${data.invalid_status}`}
                   </span>
                   <Button
                     variant="danger-light"
+                    className="btnNoMax"
                     onClick={clearInvalid}
                   >
                     Clear error and try again
