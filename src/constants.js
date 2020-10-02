@@ -2,8 +2,6 @@
 
 export const INTROSEARCH_STAGES = ['keywords', 'raise', 'location'];
 
-export const ZIPCODEAPPKEY = 'SpyunvdJlwQo1PV3zN9EvTeDNkuiWXOJ0QHazIZ2QDrTIHMNTW9AbITZGnUCVUrK';
-
 export const ZIPCODECLIENTKEY = 'js-IQnw1s8a35CYiI4clJrcM1yIvqTyyciNZfDHMIrhOY2ViLWXTjzYVzYEdkPjwRqD';
 
 // temp data until backend is ready TODO: delete when backend is ready
