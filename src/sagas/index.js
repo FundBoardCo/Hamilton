@@ -335,10 +335,10 @@ function* watchBoardAdd() {
 }
 
 function getExtraZipCodes(params) {
-  const { zipcode, miles } = params;
+  // const { zipcode, miles } = params;
   return axios.get(
-    `https://www.zipcodeapi.com/rest/${ZIPCODECLIENTKEY}/radius.json/${zipcode}/${miles}/mile`,
-    // `/.netlify/functions/zipcodeapi_get_codes?${toQueryString(params)}`,
+    // `https://www.zipcodeapi.com/rest/${ZIPCODECLIENTKEY}/radius.json/${zipcode}/${miles}/mile`,
+    `/.netlify/functions/zipcodeapi_get_codes?${toQueryString(params)}`,
   );
 }
 
