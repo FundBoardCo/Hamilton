@@ -7,7 +7,6 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Person from '../../components/people/Person';
 import DismissibleStatus from '../../components/DismissibleStatus';
 import * as types from '../../actions/types';
-import InfoTip from "../../components/InfoTip";
 
 export default function Search() {
   const searchKeywords = useSelector(state => state.search.keywords) || [];
@@ -103,7 +102,6 @@ export default function Search() {
           </span>
         )}
       </div>
-      <InfoTip itemId="5f57a20b911680813d8a5d45" collection="blog" />
       <DismissibleStatus
         status={searchStatus}
         showSuccess={false}
