@@ -26,6 +26,7 @@ const webFlowAPI = new Webflow({ token: WEBFLOW_APIKEY });
 
 const getToken = state => state.user.token;
 const getBoard = state => state.board.ids;
+const getInvestors = state => state.user.investors;
 
 function trackErr(err) {
   window.heap.track('Error', { message: processErr(err) });
@@ -100,11 +101,13 @@ function* workUserLogin(action) {
     const results = yield call(userLogin, params);
     yield put({ type: types.USER_LOGIN_SUCCEEDED, data: results.data });
     yield put({ type: types.USER_GET_PROFILE_REQUESTED });
+    /*
     const board = yield select(getBoard);
     if (Array.isArray(board) && board.length) {
       const uParams = { investors: [...board] };
       yield put({ type: types.USER_UPDATE_REQUESTED, params: uParams });
     }
+     */
   } catch (error) {
     trackErr(error);
     yield put({ type: types.USER_LOGIN_FAILED, error });
@@ -173,6 +176,24 @@ function* watchUserUpdate() {
   yield takeEvery(types.USER_UPDATE_REQUESTED, workUserUpdate);
 }
 
+function* workUserGetProfileSucceeded() {
+  // any time the profile is received, if unmerged investors are on the board update the profile
+  const ids = yield select(getInvestors) || [];
+  const unmergedBoard = yield select(getBoard) || [];
+  if (ids.length && unmergedBoard.filter(b => !ids.includes(b)).length) {
+    yield put({ type: types.BOARD_MERGE, ids });
+    const board = yield select(getBoard) || [];
+    const params = {
+      investors: [...board],
+    };
+    yield put({ type: types.USER_UPDATE_REQUESTED, params });
+  }
+}
+
+function* watchUserGetProfileSucceeded() {
+  yield takeLatest(types.USER_GET_PROFILE_SUCCEEDED, workUserGetProfileSucceeded);
+}
+
 function getUserProfile(token) {
   return axios({
     method: 'get',
@@ -189,9 +210,6 @@ function* workUserGetProfile() {
     const results = yield call(getUserProfile, token);
     const ids = getSafeVar(() => results.data.following, []);
     yield put({ type: types.USER_GET_PROFILE_SUCCEEDED, data: results.data });
-    if (ids.length) {
-      yield put({ type: types.BOARD_MERGE, ids });
-    }
   } catch (error) {
     trackErr(error);
     if (isLoginErr(error)) yield put(loginErrProps);
@@ -470,6 +488,7 @@ export default function* rootSaga() {
   yield fork(watchUserDelete);
   yield fork(watchUserReset);
   yield fork(watchUserGetProfile);
+  yield fork(watchUserGetProfileSucceeded);
   yield fork(watchPersonPutInvalid);
   yield fork(watchPeopleGetResults);
   yield fork(watchPeopleGetInvestments);
