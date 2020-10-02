@@ -6,10 +6,10 @@ import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 export default function InfoTip(props) {
-  const { itemId } = props;
+  const { itemId, collection } = props;
   const item = useSelector(state => state.info[itemId]) || {};
   const { data = {} } = item;
-  console.log(data)
+  console.log(data);
   console.log(item);
 
   const [open, setOpen] = useState(false);
@@ -19,9 +19,9 @@ export default function InfoTip(props) {
   useEffect(() => {
     dispatch({
       type: 'INFO_GET_REQUEST',
-      params: { itemId },
+      params: { itemId, collection },
     });
-  }, [dispatch, itemId]);
+  }, [dispatch, itemId, collection]);
 
   const toggleTip = () => {
     setOpen(!open);
@@ -54,8 +54,10 @@ export default function InfoTip(props) {
 
 InfoTip.defaultProps = {
   itemId: '',
+  collection: '',
 };
 
 InfoTip.propTypes = {
   itemId: PropTypes.string,
+  collection: PropTypes.string,
 };

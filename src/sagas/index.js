@@ -7,9 +7,7 @@ import {
   takeLatest,
 } from 'redux-saga/effects';
 import axios from 'axios';
-import Webflow from 'webflow-api';
 import {
-  WEBFLOW_APIKEY,
   ZIPCODECLIENTKEY,
 } from '../constants';
 import {
@@ -20,8 +18,6 @@ import {
 import * as types from '../actions/types';
 
 const api = `https://${process.env.REACT_APP_ENV === 'DEV' ? 'staging-' : ''}api.fundboard.co/`;
-
-const webFlowAPI = new Webflow({ token: WEBFLOW_APIKEY });
 
 const getToken = state => state.user.token;
 const getBoard = state => state.board.ids;
@@ -56,20 +52,14 @@ function* watchAirtableGetKeywords() {
 }
 
 function getInfo(params) {
-  const { itemId, collection } = params;
-  let collectionId = '5f32059a4837a2f38d6d2de3'; // tips, the default;
-  if (collection === 'blog') collectionId = '5e8e265102dac128f49dd555';
-  return webFlowAPI.item({
-    collectionId,
-    itemId,
-  });
+  return axios.get(`/.netlify/functions/webflow_get_blog?${toQueryString(params)}`);
 }
 
 function* workGetInfo(action) {
   const { params } = action;
   try {
-    const data = yield call(getInfo, params);
-    yield put({ type: types.INFO_GET_SUCCEEDED, params, data });
+    const response = yield call(getInfo, params);
+    yield put({ type: types.INFO_GET_SUCCEEDED, params, data: response.data });
   } catch (error) {
     trackErr(error);
     yield put({ type: types.INFO_GET_FAILED, error });
@@ -348,7 +338,7 @@ function getExtraZipCodes(params) {
   const { zipcode, miles } = params;
   return axios.get(
     `https://www.zipcodeapi.com/rest/${ZIPCODECLIENTKEY}/radius.json/${zipcode}/${miles}/mile`,
-    //`/.netlify/functions/zipcodeapi_get_codes?${toQueryString(params)}`,
+    // `/.netlify/functions/zipcodeapi_get_codes?${toQueryString(params)}`,
   );
 }
 
