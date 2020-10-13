@@ -1,4 +1,3 @@
-import { REHYDRATE } from 'redux-persist';
 import * as types from '../actions/types';
 import { getSafeVar, processErr } from '../utils';
 
@@ -23,13 +22,7 @@ export const userResets = {
 };
 
 export default function user(state = { ...defaults }, action) {
-  const rehydration = getSafeVar(() => action.payload.user, {});
   switch (action.type) {
-    case REHYDRATE: return {
-      ...state,
-      ...rehydration,
-      ...userResets,
-    };
     case types.USER_CREATE_REQUESTED: return {
       ...state,
       create_status: 'pending',

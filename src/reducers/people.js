@@ -1,6 +1,5 @@
-import { REHYDRATE } from 'redux-persist';
 import * as types from '../actions/types';
-import { getSafeVar, processErr } from '../utils';
+import { processErr } from '../utils';
 import { VERIFIEDIDS, INVALIDIDS } from '../constants';
 
 export default function people(state = {}, action) {
@@ -13,13 +12,8 @@ export default function people(state = {}, action) {
   } = params;
   // The id param is singular for the API, but represents an array of ids.
   const ids = Array.isArray(id) ? id : [id];
-  const rehydration = getSafeVar(() => action.payload.people, {});
 
   switch (action.type) {
-    case REHYDRATE: return {
-      ...state,
-      ...rehydration,
-    };
     case types.PEOPLE_GET_REQUEST:
       if (ids) {
         ids.forEach(i => {

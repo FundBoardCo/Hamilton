@@ -2,6 +2,7 @@ import { createStore, applyMiddleware, combineReducers } from 'redux';
 import { persistStore, persistReducer } from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
 import hardSet from 'redux-persist/lib/stateReconciler/hardSet';
+import autoMergeLevel2 from 'redux-persist/lib/stateReconciler/autoMergeLevel2';
 import createSagaMiddleware from 'redux-saga';
 import rootSaga from './sagas';
 import airtable from './reducers/airtable';
@@ -29,29 +30,35 @@ const boardConfig = {
   key: 'board',
   storage,
   blacklist: [],
+  stateReconciler: autoMergeLevel2,
 };
 
 const modalConfig = {
   key: 'modal',
   storage,
   blacklist: [],
+  stateReconciler: autoMergeLevel2,
 };
 
 const peopleConfig = {
   key: 'people',
   storage,
   blacklist: [],
+  stateReconciler: autoMergeLevel2,
 };
 
 const searchConfig = {
   key: 'search',
   storage,
   blacklist: ['results', 'results_status', 'extraZipcodes_status'],
+  stateReconciler: autoMergeLevel2,
 };
+
 const userConfig = {
   key: 'user',
   storage,
   blacklist: Object.keys(userResets),
+  stateReconciler: autoMergeLevel2,
 };
 
 const rootReducer = combineReducers({

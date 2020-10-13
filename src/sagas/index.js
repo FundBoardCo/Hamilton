@@ -6,6 +6,7 @@ import {
   takeEvery,
   takeLatest,
 } from 'redux-saga/effects';
+import { REHYDRATE } from 'redux-persist';
 import axios from 'axios';
 import {
   ZIPCODECLIENTKEY,
@@ -59,8 +60,8 @@ function getInfo(params) {
 function* workGetInfo(action) {
   const { params } = action;
   try {
-    const response = yield call(getInfo, params);
-    yield put({ type: types.INFO_GET_SUCCEEDED, params, data: response.data });
+    const data = yield call(getInfo, params);
+    yield put({ type: types.INFO_GET_SUCCEEDED, params, data });
   } catch (error) {
     trackErr(error);
     yield put({ type: types.INFO_GET_FAILED, error });
@@ -82,8 +83,11 @@ function userLogin(data = {}) {
 function* workUserLogin(action) {
   try {
     const { params } = action;
+    const { email } = params;
     const results = yield call(userLogin, params);
     yield put({ type: types.USER_LOGIN_SUCCEEDED, data: results.data });
+    window.heap.identify(email);
+    window.heap.addUserProperties({ email });
     yield put({ type: types.USER_GET_PROFILE_REQUESTED });
     /*
     const board = yield select(getBoard);
@@ -102,6 +106,14 @@ function* watchUserLogin() {
   yield takeLatest(types.USER_LOGIN_REQUESTED, workUserLogin);
 }
 
+function workUserLogout() {
+  window.heap.resetIdentity();
+}
+
+function* watchUserLogout() {
+  yield takeLatest(types.USER_LOGOUT, workUserLogout);
+}
+
 function userCreate(data = {}) {
   return axios({
     method: 'post',
@@ -113,8 +125,14 @@ function userCreate(data = {}) {
 function* workUserCreate(action) {
   try {
     const { params } = action;
+    const { email } = params;
     const results = yield call(userCreate, params);
     yield put({ type: types.USER_CREATE_SUCCEEDED, data: results.data });
+    window.heap.identity(email);
+    window.heap.addUserProperties({
+      email,
+    });
+    yield put({ type: types.USER_GET_PROFILE_REQUESTED });
   } catch (error) {
     trackErr(error);
     yield put({ type: types.USER_CREATE_FAILED, error });
@@ -142,9 +160,12 @@ function userUpdate(params) {
 function* workUserUpdate(action) {
   try {
     const { params } = action;
-    if (params.investors) {
+    if (Array.isArray(params.investors)) {
       params.following = params.investors;
       delete params.investors;
+      window.heap.addUserProperties({
+        investorCount: params.following.length,
+      });
     }
     params.token = yield select(getToken);
     const results = yield call(userUpdate, params);
@@ -193,7 +214,11 @@ function* workUserGetProfile() {
     const token = yield select(getToken);
     const results = yield call(getUserProfile, token);
     const ids = getSafeVar(() => results.data.following, []);
+    const investorCount = Array.isArray(ids) && ids.length;
     yield put({ type: types.USER_GET_PROFILE_SUCCEEDED, data: results.data });
+    window.heap.addUserProperties({
+      investorCount,
+    });
   } catch (error) {
     trackErr(error);
     if (isLoginErr(error)) yield put(loginErrProps);
@@ -466,12 +491,31 @@ function* watchSearchGetResults() {
   yield takeLatest('SEARCH_GET_RESULTS_REQUESTED', workSearchGetResults);
 }
 
+function workRehydrate(action) {
+  const { key, payload } = action;
+  const { token, email, investors } = payload;
+  const investorCount = Array.isArray(investors) && investors.length;
+  if (key === 'user' && token && email) {
+    window.heap.identify(email);
+    window.heap.addUserProperties({
+      email,
+      investorCount,
+    });
+  }
+}
+
+function* watchRehydrate() {
+  yield takeLatest(REHYDRATE, workRehydrate);
+}
+
 export default function* rootSaga() {
+  yield fork(watchRehydrate);
   yield fork(watchAirtableGetKeywords);
   yield fork(watchBoardAdd);
   yield fork(watchBoardRemove);
   yield fork(watchUserCreate);
   yield fork(watchUserLogin);
+  yield fork(watchUserLogout);
   yield fork(watchUserUpdate);
   yield fork(watchUserDelete);
   yield fork(watchUserReset);
