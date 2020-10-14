@@ -59,7 +59,8 @@ export default function SearchMenu() {
 
   const extraLocations = useSelector(state => state.search.extraLocations) || [];
   const extraZipcodes_status = useSelector(state => state.search.extraZipcodes_status);
-  const locations = searchLocation ? getSearchLocations(searchLocation, extraLocations) : {};
+  const locations = searchLocation && Array.isArray(extraLocations)
+    ? getSearchLocations(searchLocation, extraLocations) : {};
   const { searchedCity = [], searchedSecondaryCities = [] } = locations;
 
   const storedRemote = useSelector(state => state.search.remote) || '';

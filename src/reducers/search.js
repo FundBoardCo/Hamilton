@@ -7,7 +7,7 @@ const defaultState = {
   results: [],
   keywords: [],
   raise: 100000,
-  location: '',
+  location: {},
   extraZipcodes: [],
   extraLocations: [],
   firstTime: true,

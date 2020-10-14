@@ -49,11 +49,18 @@ export function getSafeVar(fn, defaultVal) {
 }
 
 export function getSearchLocations(zipCode, locations) {
-  if (!zipCode) throw new Error('Must provid zip code');
-  if (!Array.isArray(locations)) throw new Error('Must provide locations object');
+  if (!zipCode) throw new Error('Must provide zip code');
+  if (!Array.isArray(locations) || !locations.length) {
+    throw new Error('Must provide locations array.');
+  }
 
   let searchedCity = locations.filter(l => l.zip_code === zipCode)[0];
-  searchedCity = [`${searchedCity.city},${searchedCity.state}`];
+  if (searchedCity && searchedCity.city && searchedCity.state) {
+    searchedCity = [`${searchedCity.city},${searchedCity.state}`];
+  } else {
+    throw new Error('locations object must have city and state values');
+  }
+
   let searchedSecondaryCities = locations.filter(l => l.zip_code !== zipCode)
     .map(cs => `${cs.city},${cs.state}`);
   searchedSecondaryCities = [...new Set(searchedSecondaryCities)];
