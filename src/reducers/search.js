@@ -1,6 +1,5 @@
 import * as types from '../actions/types';
-import { calcMatch, processErr } from '../utils';
-import { VERIFIEDIDS, INVALIDIDS } from '../constants';
+import { processErr } from '../utils';
 
 const defaultState = {
   results_status: '',
@@ -13,8 +12,6 @@ const defaultState = {
   extraLocations: [],
   firstTime: true,
 };
-
-let parsedResults = [];
 
 export default function search(state = { ...defaultState }, action) {
   switch (action.type) {
@@ -57,18 +54,9 @@ export default function search(state = { ...defaultState }, action) {
       firstTime: false,
     };
     case types.SEARCH_GET_RESULTS_SUCCEEDED:
-      parsedResults = action.data
-        .filter(p => !INVALIDIDS.includes(p.permalink))
-        .map(i => {
-          const calcedMatch = calcMatch({ ...i, ...state });
-          const validation = VERIFIEDIDS.includes(i.permalink) ? 'verified' : null;
-          return { ...i, ...calcedMatch, validation };
-        });
-      parsedResults.sort((a, b) => b.percentageMatch - a.percentageMatch);
-
       return {
         ...state,
-        results: [...parsedResults],
+        results: action.data.reduce((acc, r) => ({ ...acc, [r.uuid]: r }), {}),
         results_status: 'succeeded',
       };
     case types.SEARCH_GET_RESULTS_FAILED: return {

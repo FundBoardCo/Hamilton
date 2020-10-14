@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
 import { useHistory, useLocation } from 'react-router';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { capitalizeFirstLetter, calcMatch } from '../../utils';
+import { capitalizeFirstLetter } from '../../utils';
 
 export default function Person(props) {
   const {
@@ -16,26 +16,15 @@ export default function Person(props) {
     // isOpen = false,
     // isImpact = false,
     isBoard = false,
-    validation,
+    status,
+    matches = {},
   } = props;
 
   const primary_organization_logo = primary_organization.image_url || '';
   const primary_organization_name = primary_organization.name || '';
 
-  const searchKeywords = useSelector(state => state.search.keywords);
-  const searchRaise = useSelector(state => state.search.raise);
-  const searchLocation = useSelector(state => state.search.location);
-  const extraLocations = useSelector(state => state.search.extraLocations);
-
-  const calcedMatch = calcMatch({
-    ...props,
-    keywords: searchKeywords,
-    raise: searchRaise,
-    location: searchLocation,
-    extraLocations,
-  });
-
-  const { percentageMatch } = calcedMatch;
+  let percentageMatch = matches.percentage_match || 0;
+  percentageMatch = `${Math.floor(percentageMatch * 100)}%`;
 
   const investors = useSelector(state => state.board.ids) || [];
   const isOnBoard = investors.includes(uuid);
@@ -53,12 +42,12 @@ export default function Person(props) {
 
   const validationProps = {};
 
-  if (validation === 'verified') {
+  if (status === 'ACTIVE') {
     validationProps.classes = 'text-secondary';
     validationProps.faIcon = 'star';
   }
 
-  if (validation === 'invalid') {
+  if (status === 'INACTIVE') {
     validationProps.classes = 'text-danger';
     validationProps.faIcon = 'ban';
   }
@@ -103,7 +92,7 @@ export default function Person(props) {
           <span className="sr-only">This investor is on your board.</span>
         </div>
         <div className="percentageMatch">
-          {path !== 'Board' && searchLocation && `${percentageMatch}%`}
+          {path !== 'Board' && `${percentageMatch}%`}
         </div>
       </div>
     </button>
@@ -132,7 +121,6 @@ Person.defaultProps = {
     name: false,
     org: false,
   },
-  percentageMatch: 0,
   // isLead: false,
   // isOpen: false,
   // isImpact: false,
@@ -157,7 +145,6 @@ Person.propTypes = {
     name: PropTypes.bool,
     org: PropTypes.bool,
   }),
-  percentageMatch: PropTypes.number,
   // isLead: PropTypes.bool,
   // isOpen: PropTypes.bool,
   // isImpact: PropTypes.bool,

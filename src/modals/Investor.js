@@ -10,10 +10,10 @@ import { Timeline } from 'react-twitter-widgets';
 import moment from 'moment';
 import PersonStamp from '../components/people/PersonStamp';
 import {
-  calcMatch,
   capitalizeFirstLetter,
   getSafeVar,
   statusIsError,
+  convertKeyTags,
 } from '../utils';
 import * as types from '../actions/types';
 import DismissibleStatus from '../components/DismissibleStatus';
@@ -73,7 +73,7 @@ export default function Investor(props) {
   const data = { ...pData, ...sData };
 
   const {
-    status,
+    getStatus,
     name,
     image_url = '',
     primary_job_title = '',
@@ -83,7 +83,10 @@ export default function Investor(props) {
     linkedin,
     twitter,
     raise_min,
-    // raise_max,
+    raise_max,
+    raise_median,
+    matches,
+    status,
     location_city,
     location_state,
     investments = [],
@@ -91,7 +94,6 @@ export default function Investor(props) {
     // is_open = false,
     // is_impact = false,
     // isBoard = false,
-    validation,
   } = data;
 
   const primary_organization_logo = primary_organization.image_url || '';
@@ -99,26 +101,17 @@ export default function Investor(props) {
   const primary_organization_homepage = primary_organization.homepage || '';
   const twitterName = getSafeVar(() => twitter.substr(twitter.lastIndexOf('/') + 1), '');
 
-  const searchKeywords = useSelector(state => state.search.keywords);
   const searchRaise = useSelector(state => state.search.raise);
   const searchLocation = useSelector(state => state.search.location);
-  const extraLocations = useSelector(state => state.search.extraLocations);
 
   const searchData = useSelector(state => state.search.results[uuid] || {});
-  const calcedMatch = calcMatch({
-    ...data,
-    keywords: searchKeywords,
-    raise: searchRaise,
-    location: searchLocation,
-    extraLocations,
-  });
 
-  let { percentageMatch, matches } = calcedMatch;
+  let percentageMatch;
 
-  // TODO: remove when server matching is live
-  if (path === 'Board') {
-    matches = false;
-    percentageMatch = 0;
+  if (!!matches && typeof matches === 'object' && Object.keys(matches).length) {
+    percentageMatch = matches.percentage_match || 0;
+    percentageMatch = `${Math.floor(percentageMatch * 100)}%`;
+    matches.raise = searchRaise >= raise_min && searchRaise <= raise_max;
   }
 
   const parsedInvestors = {};
@@ -151,11 +144,13 @@ export default function Investor(props) {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    dispatch({
-      type: types.PEOPLE_GET_REQUEST,
-      id: uuid,
-    });
-  }, [dispatch, uuid]);
+    if (!name) {
+      dispatch({
+        type: types.PEOPLE_GET_REQUEST,
+        id: uuid,
+      });
+    }
+  }, [dispatch, data, uuid]);
 
   useEffect(() => {
     dispatch({
@@ -216,13 +211,13 @@ export default function Investor(props) {
     classes: 'text-warning',
   };
 
-  if (validation === 'verified') {
+  if (status === 'ACTIVE') {
     validationProps.text = 'This investor has been validated by FundBoard.';
     validationProps.classes = 'text-secondary';
     validationProps.faIcon = 'star';
   }
 
-  if (validation === 'invalid') {
+  if (status === 'INACTIVE') {
     validationProps.text = 'This investor is no longer investing, or their data is otherwise invalid.';
     validationProps.classes = 'text-danger';
     validationProps.faIcon = 'ban';
@@ -274,7 +269,7 @@ export default function Investor(props) {
           </div>
         </section>
         <DismissibleStatus
-          status={status}
+          status={getStatus}
           showSuccess={false}
           dissmissAction={types.PEOPLE_GET_DISMISS}
           dismissParams={{ ids: [uuid] }}
@@ -293,9 +288,10 @@ export default function Investor(props) {
         </section>
         <section className="mb-4">
           {description && (
-            <div className="description mb-3">
-              {description}
-            </div>
+            <div
+              className="description mb-3"
+              dangerouslySetInnerHTML={{ __html: convertKeyTags(description) }}
+            />
           )}
           {permalink && (
             <div className="crunchBaseAttribution mb-3">
@@ -337,17 +333,18 @@ export default function Investor(props) {
               })}
               <MatchBullet
                 faIcon="key"
-                bool={matches.keywords.length > 0 || !searchLocation}
+                bool={(Array.isArray(matches.keywords) && matches.keywords.length > 0) || !searchLocation}
                 text={`Their matching interests: ${matches.keywords.length ? matches.keywords.join(', ') : 'none'}.`}
               />
               <MatchBullet
                 faIcon="rocket"
                 bool={matches.raise || !searchLocation}
-                text={`They invest in rounds of ${usdFormatter.format(raise_min)} or more.`}
+                text={`They invest in rounds of ${usdFormatter.format(raise_min)} or more. 
+                The median round they participate in is ${usdFormatter.format(raise_median)}`}
               />
               <MatchBullet
                 faIcon="map-marker-alt"
-                bool={matches.location || !searchLocation}
+                bool={matches.location_tier || !searchLocation}
                 text={locationText}
               />
             </ul>

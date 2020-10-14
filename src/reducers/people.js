@@ -1,6 +1,5 @@
 import * as types from '../actions/types';
 import { processErr } from '../utils';
-import { VERIFIEDIDS, INVALIDIDS } from '../constants';
 
 export default function people(state = {}, action) {
   const records = {};
@@ -17,7 +16,7 @@ export default function people(state = {}, action) {
     case types.PEOPLE_GET_REQUEST:
       if (ids) {
         ids.forEach(i => {
-          records[i] = { ...state[i], status: 'pending' };
+          records[i] = { ...state[i], getStatus: 'pending' };
         });
       }
       return {
@@ -29,16 +28,13 @@ export default function people(state = {}, action) {
         ids.forEach(i => {
           records[i] = {
             ...state[i],
-            status: 'succeeded',
+            getStatus: 'succeeded',
           };
         });
         data.forEach(r => {
           records[r.uuid] = {
             ...records[r.uuid],
             ...r,
-            validation: (VERIFIEDIDS.includes(r.permalink) && 'verified')
-              || (INVALIDIDS.includes(r.permalink) && 'invalid')
-              || null,
           };
         });
       }
@@ -50,7 +46,7 @@ export default function people(state = {}, action) {
       if (ids) {
         const err = processErr(action.error);
         ids.forEach(i => {
-          records[i] = { ...state[i], status: err };
+          records[i] = { ...state[i], getStatus: err };
         });
       }
       return {
@@ -60,7 +56,7 @@ export default function people(state = {}, action) {
     case types.PEOPLE_GET_DISMISS:
       if (ids) {
         ids.forEach(i => {
-          records[i] = { ...state[i], status: '' };
+          records[i] = { ...state[i], getStatus: '' };
         });
       }
       return {
