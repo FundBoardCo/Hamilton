@@ -1,5 +1,4 @@
 import fetch from 'node-fetch';
-import axios from 'axios';
 
 exports.handler = async (event, context, callback) => {
   const pass = body => {
@@ -10,7 +9,7 @@ exports.handler = async (event, context, callback) => {
   };
 
   try {
-    const response = await fetch('https://api.airtable.com/v0/app7qe3RJry7GgvKw/Feedback',
+    const response = await fetch('https://api.airtable.com/v0/app7qe3RJry7GgvKw/feedbackv02',
       {
         method: 'POST',
         headers: {
