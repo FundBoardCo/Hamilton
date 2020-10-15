@@ -13,10 +13,16 @@ import {
 } from '../constants';
 import {
   getSafeVar,
-  processErr,
+  trackErr,
+  isLoginErr,
   toQueryString,
 } from '../utils';
 import * as types from '../actions/types';
+import {
+  watchSendFeedback,
+  watchPersonPutInvalid,
+  watchAirtableGetKeywords,
+} from './airtable';
 
 const api = `https://${process.env.REACT_APP_ENV === 'DEV' ? 'staging-' : ''}api.fundboard.co/`;
 
@@ -24,34 +30,7 @@ const getToken = state => state.user.token;
 const getBoard = state => state.board.ids;
 const getInvestors = state => state.user.investors;
 
-function trackErr(err) {
-  window.heap.track('Error', { message: processErr(err) });
-}
-
-function isLoginErr(err) {
-  const status = getSafeVar(() => err.response.status);
-  return status === '401';
-}
-
 const loginErrProps = { type: types.MODAL_SET_OPEN, model: 'login' };
-
-function requestAirtableGetKeywords() {
-  return axios.get('/.netlify/functions/airtable_get_keywords');
-}
-
-function* workAirtableGetKeywords() {
-  try {
-    const results = yield call(requestAirtableGetKeywords);
-    yield put({ type: 'AIRTABLE_GET_KEYWORDS_SUCCEEDED', data: results.data });
-  } catch (error) {
-    trackErr(error);
-    yield put({ type: 'AIRTABLE_GET_KEYWORDS_FAILED', error });
-  }
-}
-
-function* watchAirtableGetKeywords() {
-  yield takeLatest('AIRTABLE_GET_KEYWORDS_REQUESTED', workAirtableGetKeywords);
-}
 
 function getInfo(params) {
   return axios.get(`/.netlify/functions/webflow_get_blog?${toQueryString(params)}`);
@@ -277,63 +256,6 @@ function* workUserReset(action) {
 
 function* watchUserReset() {
   yield takeEvery(types.USER_RESETPASSWORD_REQUESTED, workUserReset);
-}
-
-function personPutInvalid(params = {}) {
-  const data = {
-    fields: { ...params },
-  };
-  return axios({
-    method: 'post',
-    url: '/.netlify/functions/airtable_post_report',
-    data,
-  });
-}
-
-function* workPersonPutInvalid(action) {
-  const { params } = action;
-  try {
-    yield call(personPutInvalid, params);
-    yield put({ type: 'PERSON_PUT_INVALID_SUCCEEDED', params });
-  } catch (error) {
-    trackErr(error);
-    yield put({ type: 'PERSON_PUT_INVALID_FAILED', params, error });
-  }
-}
-
-function* watchPersonPutInvalid() {
-  yield takeEvery('PERSON_PUT_INVALID_REQUESTED', workPersonPutInvalid);
-}
-
-function sendFeedback(params = {}) {
-  const data = {
-    records: [
-      {
-        fields: { ...params },
-      },
-    ],
-    typecast: true,
-  };
-  return axios({
-    method: 'post',
-    url: '/.netlify/functions/airtable_post_feedback',
-    data,
-  });
-}
-
-function* workSendFeedback(action) {
-  const { params } = action;
-  try {
-    yield call(sendFeedback, params);
-    yield put({ type: types.FEEDBACK_SEND_SUCCEEDED });
-  } catch (error) {
-    trackErr(error);
-    yield put({ type: types.FEEDBACK_SEND_FAILED, error });
-  }
-}
-
-function* watchSendFeedback() {
-  yield takeEvery(types.FEEDBACK_SEND_REQUESTED, workSendFeedback);
 }
 
 function* workBoardRemove(action) {
