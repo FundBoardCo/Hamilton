@@ -1,17 +1,5 @@
-import React, { Suspense } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
-import Spinner from 'react-bootstrap/Spinner';
-import { useImage } from 'react-image';
-import GreySquare from '../../imgs/greySquare.jpg';
-import ErrorBoundary from '../ErrorBoundary';
-
-function ImgComp(params) {
-  const { imgSrc = '', alt = '' } = params;
-  const { src } = useImage({
-    srcList: imgSrc || GreySquare,
-  });
-  return <img src={src} alt={alt || ''} className="responsiveImg" />;
-}
 
 export default function PersonStamp(props) {
   // temp for airtable data

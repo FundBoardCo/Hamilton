@@ -150,7 +150,7 @@ export default function Investor(props) {
         id: uuid,
       });
     }
-  }, [dispatch, data, uuid]);
+  }, [dispatch, name, uuid]);
 
   useEffect(() => {
     dispatch({

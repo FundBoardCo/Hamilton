@@ -43,11 +43,6 @@ export default function Profile() {
     email,
   });
 
-  const onShowLogin = () => dispatch({
-    type: types.MODAL_SET_OPEN,
-    modal: 'login',
-  });
-
   const onEmailChange = e => {
     setEmailValue(e.target.value);
   };

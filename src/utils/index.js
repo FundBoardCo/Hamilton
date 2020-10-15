@@ -80,3 +80,12 @@ export function getMatchedKeywords(text, keywords) {
   );
   return [...new Set(k)];
 }
+
+export function trackErr(err) {
+  window.heap.track('Error', { message: processErr(err) });
+}
+
+export function isLoginErr(err) {
+  const status = getSafeVar(() => err.response.status);
+  return status === '401';
+}

@@ -72,7 +72,7 @@ export default function HowToIntro() {
             <a
               href="https://www.fundboard.co/our-take/how-to-raise-with-your-fundboard"
               target="_blank"
-              rel="noreferrer"
+              rel="noopener noreferrer"
             >
               We&apos;ve written a detailed guide to raising funds with your FundBoard.
             </a>
