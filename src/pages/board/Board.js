@@ -14,6 +14,9 @@ export default function Board() {
   const people = useSelector(state => state.people);
   const loggedIn = useSelector(state => state.user.token);
   const modalsSeen = useSelector(state => state.modal.modalsSeen) || [];
+  const investorStatus_getStatus = useSelector(state => state.manageRaise.get_status);
+  const investorStatus_records = useSelector(state => state.manageRaise.records);
+  console.log(investorStatus_records)
 
   // TODO: this currently doesn't do anything, because none of the fetched people have match data
   investorIDs.sort((a, b) => {
@@ -35,6 +38,15 @@ export default function Board() {
       dispatch({
         type: types.PEOPLE_GET_REQUEST,
         id: investorIDs,
+      });
+    }
+  }, [investorIDs, dispatch]);
+
+  useEffect(() => {
+    if (investorIDs.length) {
+      dispatch({
+        type: types.USER_GET_INVESTORSTATUSES_REQUESTED,
+        ids: investorIDs,
       });
     }
   }, [investorIDs, dispatch]);

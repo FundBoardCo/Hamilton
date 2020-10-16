@@ -1,6 +1,9 @@
 import fetch from 'node-fetch';
+import { toQueryString } from '../utils';
 
 exports.handler = async (event, context, callback) => {
+  const API_PARAMS = toQueryString(event.queryStringParameters);
+
   const pass = body => {
     callback(null, {
       statusCode: 200,
@@ -8,24 +11,18 @@ exports.handler = async (event, context, callback) => {
     });
   };
 
+  const API_URL = 'https://api.airtable.com/v0/appGVqCRTs9ZDqcoR/status';
+
   try {
-    const response = await fetch('https://api.airtable.com/v0/app7qe3RJry7GgvKw/Feedback',
+    const response = await fetch(`${API_URL}?${API_PARAMS}`,
       {
-        method: 'POST',
+        method: 'GET',
         headers: {
           Authorization: `Bearer ${process.env.AIRTABLE_APIKEY}`,
           'Content-Type': 'application/json',
         },
-        body: event.body,
       });
     const data = await response.json();
-    if (data.error) {
-      const error = {
-        statusCode: 500,
-        body: JSON.stringify({ error: data.error }),
-      };
-      await pass(error);
-    }
     await pass(data);
   } catch (err) {
     const error = {

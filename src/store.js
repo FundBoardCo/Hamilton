@@ -12,6 +12,7 @@ import search from './reducers/search';
 import user, { userResets } from './reducers/user'
 import modal from './reducers/modal';
 import people from './reducers/people';
+import manageRaise from './reducers/manageRaise';
 
 const persistConfig = {
   key: 'root',
@@ -30,6 +31,13 @@ const boardConfig = {
   key: 'board',
   storage,
   blacklist: [],
+  stateReconciler: autoMergeLevel2,
+};
+
+const manageRaiseConfig = {
+  key: 'manageRaise',
+  storage,
+  blacklist: ['results', 'get_status'],
   stateReconciler: autoMergeLevel2,
 };
 
@@ -65,6 +73,7 @@ const rootReducer = combineReducers({
   airtable: persistReducer(airtableConfig, airtable),
   board: persistReducer(boardConfig, board),
   info,
+  manageRaise: persistReducer(manageRaiseConfig, manageRaise),
   modal: persistReducer(modalConfig, modal),
   people: persistReducer(peopleConfig, people),
   search: persistReducer(searchConfig, search),

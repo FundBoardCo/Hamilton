@@ -15,15 +15,21 @@ function requestAirtableGetKeywords() {
 function* workAirtableGetKeywords() {
   try {
     const results = yield call(requestAirtableGetKeywords);
-    yield put({ type: 'AIRTABLE_GET_KEYWORDS_SUCCEEDED', data: results.data });
+    // catch airtable errors
+    if (results.data.error) {
+      trackErr(results.data.error);
+      yield put({ type: types.AIRTABLE_GET_KEYWORDS_FAILED, error: results.data.error });
+    } else {
+      yield put({ type: types.AIRTABLE_GET_KEYWORDS_SUCCEEDED, data: results.data });
+    }
   } catch (error) {
     trackErr(error);
-    yield put({ type: 'AIRTABLE_GET_KEYWORDS_FAILED', error });
+    yield put({ type: types.AIRTABLE_GET_KEYWORDS_FAILED, error });
   }
 }
 
 export function* watchAirtableGetKeywords() {
-  yield takeLatest('AIRTABLE_GET_KEYWORDS_REQUESTED', workAirtableGetKeywords);
+  yield takeLatest(types.AIRTABLE_GET_KEYWORDS_REQUESTED, workAirtableGetKeywords);
 }
 
 function personPutInvalid(params = {}) {
@@ -40,29 +46,29 @@ function personPutInvalid(params = {}) {
 function* workPersonPutInvalid(action) {
   const { params } = action;
   try {
-    yield call(personPutInvalid, params);
-    yield put({ type: 'PERSON_PUT_INVALID_SUCCEEDED', params });
+    const results = yield call(personPutInvalid, params);
+    // catch airtable errors
+    if (results.data.error) {
+      trackErr(results.data.error);
+      yield put({ type: types.PERSON_PUT_INVALID_FAILED, error: results.data.error });
+    } else {
+      yield put({ type: types.PERSON_PUT_INVALID_SUCCEEDED, params });
+    }
   } catch (error) {
     trackErr(error);
-    yield put({ type: 'PERSON_PUT_INVALID_FAILED', params, error });
+    yield put({ type: types.PERSON_PUT_INVALID_FAILED, params, error });
   }
 }
 
 export function* watchPersonPutInvalid() {
-  yield takeEvery('PERSON_PUT_INVALID_REQUESTED', workPersonPutInvalid);
+  yield takeEvery(types.PERSON_PUT_INVALID_REQUESTED, workPersonPutInvalid);
 }
 
 function sendFeedback(params = {}) {
-  const { email, date } = params;
-  if (!email || !date) throw new Error('Must include email and date.');
-
   const data = {
     records: [
       {
-        fields: {
-          key: `${email}-${new Date().getTime()}`,
-          ...params,
-        },
+        fields: { ...params },
       },
     ],
     typecast: true,
@@ -77,8 +83,14 @@ function sendFeedback(params = {}) {
 function* workSendFeedback(action) {
   const { params } = action;
   try {
-    yield call(sendFeedback, params);
-    yield put({ type: types.FEEDBACK_SEND_SUCCEEDED });
+    const results = yield call(sendFeedback, params);
+    // catch airtable errors
+    if (results.data.error) {
+      trackErr(results.data.error);
+      yield put({ type: types.FEEDBACK_SEND_FAILED, error: results.data.error });
+    } else {
+      yield put({ type: types.FEEDBACK_SEND_SUCCEEDED });
+    }
   } catch (error) {
     trackErr(error);
     yield put({ type: types.FEEDBACK_SEND_FAILED, error });
