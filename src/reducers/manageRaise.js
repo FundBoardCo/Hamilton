@@ -20,7 +20,20 @@ export default function manageRaise(state = { ...defaults }, action) {
       if (Array.isArray(data.records)) {
         data.records.forEach(r => {
           if (r.fields && r.fields.uuid) {
-            records[r.fields.uuid] = { ...r.fields };
+            // convert from airtable format
+            const newRec = { ...r.fields };
+            newRec.next = {
+              text: r.fields.next || '',
+              date: r.fields.next_date || '',
+              waiting: r.fields.waiting,
+            };
+            newRec.notes = r.fields.notes ? r.fields.notes.split('^^^') : [];
+            newRec.intro = {
+              name: r.intro_name || '',
+              email: r.intro_email || '',
+              date: r.intro_date || '',
+            };
+            records[r.fields.uuid] = { ...newRec };
           }
         });
       }

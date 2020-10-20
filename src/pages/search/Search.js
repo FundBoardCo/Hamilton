@@ -129,9 +129,9 @@ export default function Search() {
             )}
           </div>
         )}
-        {Object.keys(searchResults).length === 0 && searchStatus === 'succcess' && (
-          <div className="p-2 text-info">
-            <div>No results found.</div>
+        {Object.keys(searchResults).length === 0 && searchStatus !== 'pending' && (
+          <div className="p-2 text-info d-flex justify-content-center">
+            <div>{searchStatus === 'succcess' && 'No results found.'}</div>
             <Button
               variant="primary"
               onClick={onEditClick}

@@ -8,6 +8,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Col from 'react-bootstrap/Col';
 import Person from '../../components/people/Person';
 import * as types from '../../actions/types';
+import DismissibleStatus from '../../components/DismissibleStatus';
 
 export default function Board() {
   const investorIDs = useSelector(state => state.board.ids) || [];
@@ -160,12 +161,18 @@ export default function Board() {
           )}
         </div>
       )}
+      <DismissibleStatus
+        status={investorStatus_getStatus}
+        showSuccess={false}
+        dissmissAction={types.USER_GET_INVESTORSTATUSES_DISMISSED}
+      />
       {loggedIn && (
         <div className="results">
           {Object.keys(investorList).map(k => {
             const personProps = { ...investorList[k] };
             personProps.uuid = k;
             personProps.isBoard = true;
+            personProps.investorStatus = investorStatus_records[k];
             return (
               <Person key={k} {...personProps} />
             );

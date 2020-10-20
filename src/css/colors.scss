@@ -81,11 +81,12 @@ $col-structure-light5: scale_color($col-structure, $lightness: 60%);
 $col-structure-light6: scale_color($col-structure, $lightness: 70%);
 $col-structure-light7: scale_color($col-structure, $lightness: 80%);
 
-$col-light: #fff;
-$col-light-dark: #f8f9fa;
-$col-light-dark2: #e9eaeb;
+$col-light: #f3f0f8;
+$col-light-dark: scale_color($col-light, $lightness: -20%);
+$col-light-dark2: scale_color($col-light, $lightness: -30%);
 $col-text: #20133C;
 $col-text-light: scale_color($col-structure, $lightness: 95%);
+$col-bright: #fff;
 
 $col-linkedin: #2867B2;
 $col-twitter: #1DA1F2;
@@ -215,6 +216,14 @@ html#ov body {
     background-color: $col-primary-light4 !important;
   }
 
+  .bg-primary-light5 {
+    background-color: $col-primary-light5 !important;
+  }
+
+  .bg-primary-light6 {
+    background-color: $col-primary-light6 !important;
+  }
+
   .bg-primary-dark {
     background-color: $col-primary-dark !important;
   }
@@ -241,6 +250,14 @@ html#ov body {
 
   .bg-secondary-light4 {
     background-color: $col-secondary-light4 !important;
+  }
+
+  .bg-secondary-light5 {
+    background-color: $col-secondary-light5 !important;
+  }
+
+  .bg-secondary-light6 {
+    background-color: $col-secondary-light6 !important;
   }
 
   .bg-secondary-dark {

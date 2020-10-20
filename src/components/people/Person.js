@@ -2,8 +2,10 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
 import { useHistory, useLocation } from 'react-router';
+import moment from 'moment';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { capitalizeFirstLetter } from '../../utils';
+import StageIcon from './StageIcon';
 
 export default function Person(props) {
   const {
@@ -18,7 +20,10 @@ export default function Person(props) {
     isBoard = false,
     status,
     matches = {},
+    investorStatus = {},
   } = props;
+
+  console.log(investorStatus)
 
   const primary_organization_logo = primary_organization.image_url || '';
   const primary_organization_name = primary_organization.name || '';
@@ -40,6 +45,9 @@ export default function Person(props) {
 
   const path = capitalizeFirstLetter(location.pathname.substring(1).split('/')[0]);
 
+  const investorStage = path === 'Board' ? investorStatus.stage || 'added' : isOnBoard && 'added';
+  const { notes = [], next = {} } = investorStatus;
+
   const validationProps = {};
 
   if (status === 'ACTIVE') {
@@ -53,49 +61,65 @@ export default function Person(props) {
   }
 
   return (
-    <button
-      className="person"
-      onClick={showPerson}
-      type="button"
-      data-track={`${path}Person`}
-    >
-      <div className="thumb" style={{ backgroundImage: `url(${image_url})` }} />
-      <div className="content">
-        <div>
-          <h1>
-            {validationProps.faIcon && (
-            <FontAwesomeIcon icon={validationProps.faIcon} className={`mr-1 ${validationProps.classes}`} />
+    <div className={`personWrapper ${path}`}>
+      <button
+        className="person"
+        onClick={showPerson}
+        type="button"
+        data-track={`${path}Person`}
+      >
+        <div className="thumb" style={{ backgroundImage: `url(${image_url})` }} />
+        <div className="content">
+          <div>
+            <h1>
+              {validationProps.faIcon && (
+              <FontAwesomeIcon icon={validationProps.faIcon} className={`mr-1 ${validationProps.classes}`} />
+              )}
+              {name || uuid}
+            </h1>
+          </div>
+          <div className="d-flex details">
+            {primary_organization_logo && (
+              <div className="orgLogoWrapper" style={{ backgroundImage: `url(${primary_organization_logo})` }} />
             )}
-            {name || uuid}
-          </h1>
-        </div>
-        <div className="d-flex details">
-          {primary_organization_logo && (
-            <div className="orgLogoWrapper" style={{ backgroundImage: `url(${primary_organization_logo})` }} />
-          )}
-          <div className="orgText">
-            {primary_job_title && (
-              <div>
-                {`${primary_job_title}${primary_job_title && ','}`}
-                {`${primary_job_title ? '\xa0' : ''}`}
-                {primary_organization_name}
-              </div>
-            )}
+            <div className="orgText">
+              {primary_job_title && (
+                <div>
+                  {`${primary_job_title}${primary_job_title && ','}`}
+                  {`${primary_job_title ? '\xa0' : ''}`}
+                  {primary_organization_name}
+                </div>
+              )}
+            </div>
           </div>
         </div>
-      </div>
-      <div className="controls">
-        <div
-          className="iconBtn addBtn btn btn-icon-info"
-        >
-          <FontAwesomeIcon icon={isOnBoard ? 'check-circle' : 'ellipsis-h'} />
-          <span className="sr-only">This investor is on your board.</span>
+        <div className="controls">
+          <StageIcon stage={investorStage} showText />
+          <div className="percentageMatch">
+            {path !== 'Board' && `${percentageMatch}`}
+          </div>
         </div>
-        <div className="percentageMatch">
-          {path !== 'Board' && `${percentageMatch}%`}
+      </button>
+      {path === 'Board' && (
+        <div className="notes text-primary">
+          {`Notes(${notes.length})${notes.length > 0 ? `: ${notes[0]}` : ''}`}
         </div>
-      </div>
-    </button>
+      )}
+      {path === 'Board' && (
+        <div className="next">
+          <span className={next.waiting ? 'text-primary' : 'text-danger'}>
+            {next.waiting ? 'Waiting' : 'Next'}
+            :&nbsp;
+          </span>
+          <span className={next.waiting ? 'text-primary' : ''}>
+            {next.text ? next.text : ''}
+          </span>
+          <span className="date">
+            {next.date ? moment(next.date).format('LLL') : ''}
+          </span>
+        </div>
+      )}
+    </div>
   );
 }
 
@@ -125,7 +149,8 @@ Person.defaultProps = {
   // isOpen: false,
   // isImpact: false,
   isBoard: false,
-  validation: null,
+  status: '',
+  investorStatus: {},
 };
 
 Person.propTypes = {
@@ -149,5 +174,10 @@ Person.propTypes = {
   // isOpen: PropTypes.bool,
   // isImpact: PropTypes.bool,
   isBoard: PropTypes.bool,
-  validation: PropTypes.oneOfType([PropTypes.string, PropTypes.instanceOf(null)]),
+  status: PropTypes.string,
+  investorStatus: PropTypes.objectOf(PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.bool,
+    PropTypes.number,
+  ])),
 };
