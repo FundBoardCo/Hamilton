@@ -2,7 +2,6 @@ import * as types from '../actions/types';
 import { processErr } from '../utils';
 
 const defaults = {
-  investorStatuses: [],
   records: {},
   get_status: '',
   post_status: '',

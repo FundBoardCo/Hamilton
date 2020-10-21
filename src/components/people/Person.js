@@ -177,5 +177,11 @@ Person.propTypes = {
     PropTypes.string,
     PropTypes.bool,
     PropTypes.number,
+    PropTypes.array,
+    PropTypes.objectOf(PropTypes.oneOfType([
+      PropTypes.string,
+      PropTypes.bool,
+      PropTypes.number,
+    ])),
   ])),
 };
