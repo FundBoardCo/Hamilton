@@ -4,12 +4,12 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { STAGEPROPS } from '../../constants';
 
 export default function StageIcon(props) {
-  const { withText } = props;
+  const { current, withText } = props;
   let { stage } = props;
   stage = stage || 'none';
 
   let bkclr = 'bg-secondary';
-  if (stage === 'added') bkclr = 'bg-success';
+  if (current) bkclr = 'bg-success';
   if (stage === 'none') {
     bkclr = 'bg-primary-light6';
   }
@@ -24,10 +24,12 @@ export default function StageIcon(props) {
 
 StageIcon.defaultProps = {
   stage: '',
+  current: false,
   withText: false,
 };
 
 StageIcon.propTypes = {
-  stage: PropTypes.string,
+  stage: PropTypes.oneOfType([PropTypes.string, PropTypes.bool]),
+  current: PropTypes.bool,
   withText: PropTypes.bool,
 };

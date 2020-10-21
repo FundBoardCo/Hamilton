@@ -92,7 +92,7 @@ export default function Person(props) {
           </div>
         </div>
         <div className="controls">
-          <StageIcon stage={investorStage} showText />
+          <StageIcon stage={investorStage} withText />
           <div className="percentageMatch">
             {path !== 'Board' && `${percentageMatch}`}
           </div>
