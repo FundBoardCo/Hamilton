@@ -8,8 +8,8 @@ export default function StageIcon(props) {
   let { stage } = props;
   stage = stage || 'none';
 
-  let bkclr = 'bg-secondary';
-  if (current) bkclr = 'bg-success';
+  let bkclr = 'bg-primary-light2';
+  if (current) bkclr = 'bg-secondary';
   if (stage === 'none') {
     bkclr = 'bg-primary-light6';
   }

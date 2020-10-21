@@ -6,10 +6,20 @@ import { STAGEPROPS } from '../../constants';
 import StageIcon from './StageIcon';
 
 function Stage(props) {
-  const { stage, current, onClick } = props;
+  const {
+    stage,
+    current,
+    onClick,
+    index,
+    currentIndex,
+  } = props;
+  let indexClass = '';
+  if (typeof index === 'number' && typeof currentIndex === 'number' && index < currentIndex) {
+    indexClass = 'beforeCurrent';
+  }
   return (
     <button
-      className={`stage ${current && 'current'}`}
+      className={`stage ${current && 'current'} ${indexClass}`}
       onClick={() => onClick()}
       type="button"
     >
@@ -26,9 +36,7 @@ export default function SelectInvestorStage(props) {
 
   const investorIDs = useSelector(state => state.board.ids) || [];
   const investorStatus = useSelector(state => state.manageRaise.records[uuid]) || {};
-  const investorStatuses = useSelector(state => state.manageRaise.records);
-  console.log(investorStatuses)
-  console.log(investorStatus)
+  const stageKeys = Object.keys(STAGEPROPS);
 
   const { id } = investorStatus;
   let { stage } = investorStatus;
@@ -40,6 +48,8 @@ export default function SelectInvestorStage(props) {
       stage = 'none';
     }
   }
+
+  const currentIndex = stageKeys.indexOf(stage);
 
   const [open, setOpen] = useState(false);
 
@@ -63,7 +73,7 @@ export default function SelectInvestorStage(props) {
     <div className="selectInvestorStage">
       <Stage stage={stage} current onClick={() => setOpen(!open)} />
       <div className={`${!open ? 'sr-only' : ''}`}>
-        {Object.keys(STAGEPROPS).map(k => {
+        {stageKeys.map((k, i) => {
           if (k !== stage && k !== 'none' && k !== 'added') {
             return (
               <Stage
@@ -71,6 +81,8 @@ export default function SelectInvestorStage(props) {
                 current={k === stage}
                 key={k}
                 onClick={() => onSelected(k)}
+                index={i}
+                currentIndex={currentIndex}
               />
             );
           }
@@ -93,10 +105,14 @@ Stage.defaultProps = {
   stage: '',
   current: false,
   onClick: {},
+  index: 0,
+  currentIndex: 0,
 };
 
 Stage.propTypes = {
   stage: PropTypes.string,
   current: PropTypes.bool,
   onClick: PropTypes.func,
+  index: PropTypes.number,
+  currentIndex: PropTypes.number,
 };

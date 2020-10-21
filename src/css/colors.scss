@@ -570,8 +570,15 @@ html#ov body {
     @include btn-icon-colors($col-light, $col-light-dark, $col-light-dark2);
   }
 
-  input.form-control, textarea.form-control {
+  input.form-control,
+  textarea.form-control {
     border-color: $col-primary;
+  }
+
+  .input-group .input-group-prepend .input-group-text {
+    border-color: $col-primary;
+    background-color: $col-text-light;
+    color: $col-primary;
   }
 
   .shadow-big {

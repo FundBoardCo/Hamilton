@@ -1027,6 +1027,7 @@ html#ov body {
       border: none;
       font-size: $h4;
       margin-bottom: 0.5em;
+      color: $col-text;
 
       &:last-child {
         margin-bottom: 0;
@@ -1038,6 +1039,22 @@ html#ov body {
 
       .stageText {
         font-weight: 700;
+      }
+
+      &:hover {
+        color: $col-secondary;
+
+        .stageIcon {
+          background-color: $col-secondary!important;
+        }
+      }
+
+      &:active {
+        color: $col-text;
+      }
+
+      &.beforeCurrent {
+        opacity: 0.4;
       }
     }
 
