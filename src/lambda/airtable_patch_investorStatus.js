@@ -2,9 +2,9 @@ import fetch from 'node-fetch';
 
 exports.handler = async event => {
   try {
-    const response = await fetch('https://api.airtable.com/v0/appZTL6daVhkCbRGG/reports',
+    const response = await fetch('https://api.airtable.com/v0/appGVqCRTs9ZDqcoR/status',
       {
-        method: 'POST',
+        method: 'PATCH',
         headers: {
           Authorization: `Bearer ${process.env.AIRTABLE_APIKEY}`,
           'Content-Type': 'application/json',

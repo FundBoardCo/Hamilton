@@ -13,12 +13,10 @@ exports.handler = async event => {
           'Content-Type': 'application/json',
         },
       });
-    console.log(response);
     if (!response.ok) { // NOT res.status >= 200 && res.status < 300
       return { statusCode: response.status, body: response.statusText };
     }
     const data = await response.json();
-    console.log(data)
     return {
       statusCode: 200,
       body: JSON.stringify(data),

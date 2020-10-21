@@ -16,12 +16,13 @@ exports.handler = async event => {
     });
     return {
       statusCode: 200,
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(data),
     };
   } catch (err) {
     return {
       statusCode: err.statusCode || 500,
-      body: JSON.stringify({ error: err.message }),
+      body: JSON.stringify(err.message || err),
     };
   }
 };
