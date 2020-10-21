@@ -17,7 +17,6 @@ export default function Board() {
   const modalsSeen = useSelector(state => state.modal.modalsSeen) || [];
   const investorStatus_getStatus = useSelector(state => state.manageRaise.get_status);
   const investorStatus_records = useSelector(state => state.manageRaise.records);
-  console.log(investorStatus_records)
 
   // TODO: this currently doesn't do anything, because none of the fetched people have match data
   investorIDs.sort((a, b) => {

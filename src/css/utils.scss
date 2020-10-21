@@ -252,6 +252,13 @@ html#ov body {
     outline: rgb(59, 153, 252) auto 5px;
   }
 
+  form {
+    .form-check-input.is-valid ~ .form-check-label,
+    &.was-validated .form-check-input:valid ~ .form-check-label {
+      color: inherit;
+    }
+  }
+
   .noTextOverflow {
     display: block;
     overflow: hidden;

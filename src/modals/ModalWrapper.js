@@ -1,7 +1,7 @@
 import React from 'react';
 import { Route, Switch } from 'react-router-dom';
 import { useSelector } from 'react-redux';
-import Investor from './Investor';
+import Investor from './Investor/Investor';
 import SearchMenu from './SearchMenu';
 import Login from './Login';
 import HowToIntro from './HowToIntro';

@@ -1015,10 +1015,37 @@ html#ov body {
       }
     }
   }
-  form {
-    .form-check-input.is-valid ~ .form-check-label,
-    &.was-validated .form-check-input:valid ~ .form-check-label {
-      color: inherit;
+
+  .selectInvestorStage {
+    display: flex;
+    flex-direction: column;
+
+    .stage {
+      display: flex;
+      align-items: center;
+      background: none;
+      border: none;
+      font-size: $h4;
+      margin-bottom: 0.5em;
+
+      &:last-child {
+        margin-bottom: 0;
+      }
+
+      .stageIcon {
+        margin-right: 0.5em;
+      }
+
+      .stageText {
+        font-weight: 700;
+      }
+    }
+
+    @media (min-width: $mediaMd) {
+
+      .stage {
+        font-size: $h3;
+      }
     }
   }
 }

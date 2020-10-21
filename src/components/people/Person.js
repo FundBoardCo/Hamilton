@@ -23,8 +23,6 @@ export default function Person(props) {
     investorStatus = {},
   } = props;
 
-  console.log(investorStatus)
-
   const primary_organization_logo = primary_organization.image_url || '';
   const primary_organization_name = primary_organization.name || '';
 

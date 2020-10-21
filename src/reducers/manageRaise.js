@@ -3,12 +3,13 @@ import { processErr } from '../utils';
 
 const defaults = {
   investorStatuses: [],
+  records: {},
   get_status: '',
   post_status: '',
 };
 
 export default function manageRaise(state = { ...defaults }, action) {
-  const records = {};
+  const newRecords = {};
   const { data } = action;
 
   switch (action.type) {
@@ -22,6 +23,7 @@ export default function manageRaise(state = { ...defaults }, action) {
           if (r.fields && r.fields.uuid) {
             // convert from airtable format
             const newRec = { ...r.fields };
+            newRec.id = r.id;
             newRec.next = {
               text: r.fields.next || '',
               date: r.fields.next_date || '',
@@ -33,14 +35,14 @@ export default function manageRaise(state = { ...defaults }, action) {
               email: r.intro_email || '',
               date: r.intro_date || '',
             };
-            records[r.fields.uuid] = { ...newRec };
+            newRecords[r.fields.uuid] = { ...newRec };
           }
         });
       }
       return {
         ...state,
         get_status: 'succeeded',
-        records,
+        records: { ...newRecords },
       };
     case types.USER_GET_INVESTORSTATUSES_FAILED: return {
       ...state,
@@ -60,7 +62,10 @@ export default function manageRaise(state = { ...defaults }, action) {
         post_status: 'succeeded',
         records: {
           ...state.records,
-          [action.params.uuid]: action.params.data,
+          [action.params.uuid]: {
+            ...action.data.records[0].fields,
+            id: action.data.records[0].id,
+          },
         },
       };
     case types.USER_POST_INVESTORSTATUS_FAILED: return {
