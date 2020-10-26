@@ -59,8 +59,6 @@ export default function SearchMenu() {
 
   const extraLocations = useSelector(state => state.search.extraLocations) || [];
   const extraZipcodes_status = useSelector(state => state.search.extraZipcodes_status);
-  console.log(searchLocation)
-  console.log(extraLocations)
   const locations = searchLocation
   && typeof searchLocation === 'string'
   && Array.isArray(extraLocations)

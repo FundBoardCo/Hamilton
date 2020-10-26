@@ -16,7 +16,9 @@ import {
   faBalanceScale,
   faBan,
   faBuilding,
+  faCaretDown,
   faCaretLeft,
+  faCaretUp,
   faCaretRight,
   faCheck,
   faCheckCircle,
@@ -55,6 +57,7 @@ import {
   faQuestionCircle,
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import 'react-datepicker/dist/react-datepicker.css';
 import Logo from './imgs/FundBoard_Logo.svg';
 import ScrollToTop from './components/ScrollToTop';
 import Intro from './pages/start/Intro';
@@ -74,7 +77,9 @@ library.add(
   faBalanceScale,
   faBan,
   faBuilding,
+  faCaretDown,
   faCaretLeft,
+  faCaretUp,
   faCaretRight,
   faCheck,
   faCheckCircle,

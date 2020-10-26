@@ -14,10 +14,12 @@ export const STAGEPROPS = {
   added: {
     faIcon: 'check',
     text: 'Added to your FundBoard',
+    advice: 'Use this investor’s data to try to find mutual contacts that can introduce you. You can try contacting them directly, but an introduction has a higher chance of success.',
   },
   connected: {
     faIcon: 'project-diagram',
     text: 'Start a Conversation',
+    advice: 'Now that you’ve been introduced, start a conversation about why your startup would be a great investment opportunity.',
   },
   conversing: {
     faIcon: 'comments',

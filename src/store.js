@@ -37,7 +37,7 @@ const boardConfig = {
 const manageRaiseConfig = {
   key: 'manageRaise',
   storage,
-  blacklist: ['results', 'get_status'],
+  blacklist: ['results', 'get_status', 'post_status', 'editNoteParams'],
   stateReconciler: autoMergeLevel2,
 };
 

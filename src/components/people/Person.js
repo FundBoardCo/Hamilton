@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux';
 import { useHistory, useLocation } from 'react-router';
 import moment from 'moment';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { capitalizeFirstLetter } from '../../utils';
+import { capitalizeFirstLetter, isPlainObject } from '../../utils';
 import StageIcon from './StageIcon';
 
 export default function Person(props) {
@@ -44,7 +44,9 @@ export default function Person(props) {
   const path = capitalizeFirstLetter(location.pathname.substring(1).split('/')[0]);
 
   const investorStage = path === 'Board' ? investorStatus.stage || 'added' : isOnBoard && 'added';
-  const { notes = [], next = {} } = investorStatus;
+  let { notes, next } = investorStatus;
+  if (!Array.isArray(notes)) notes = [];
+  if (!isPlainObject(next)) next = {};
 
   const validationProps = {};
 
@@ -173,15 +175,12 @@ Person.propTypes = {
   // isImpact: PropTypes.bool,
   isBoard: PropTypes.bool,
   status: PropTypes.string,
-  investorStatus: PropTypes.objectOf(PropTypes.oneOfType([
-    PropTypes.string,
-    PropTypes.bool,
-    PropTypes.number,
-    PropTypes.array,
-    PropTypes.objectOf(PropTypes.oneOfType([
-      PropTypes.string,
-      PropTypes.bool,
-      PropTypes.number,
-    ])),
-  ])),
+  investorStatus: PropTypes.shape({
+    id: PropTypes.string,
+    notes: PropTypes
+      .objectOf(PropTypes
+        .objectOf(PropTypes
+          .oneOfType([PropTypes.string, PropTypes.bool]))),
+    intro: PropTypes.objectOf(PropTypes.string),
+  }),
 };

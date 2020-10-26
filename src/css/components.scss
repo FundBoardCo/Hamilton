@@ -359,6 +359,10 @@ html#ov body {
 
           .modal-body {
 
+            .sectionHead {
+              border-bottom: 1px solid $col-text;
+            }
+
             .investorHeader {
               display: flex;
 
@@ -576,6 +580,33 @@ html#ov body {
 
                 .invalidBtns {
                   padding-bottom: $pad4;
+                }
+              }
+            }
+
+            .editWrapper {
+              margin-bottom: $pad3;
+            }
+
+            .notesWrapper,
+            .nextWrapper {
+              margin-bottom: $pad3;
+
+              .note {
+                color: $col-primary;
+                font-size: $txMd;
+                margin-bottom: $pad1;
+                background: none;
+                border: none;
+                width: 100%;
+                text-align: left;
+              }
+            }
+
+            .nextWrapper {
+              .note {
+                .date {
+                  color: $col-danger;
                 }
               }
             }
@@ -1029,16 +1060,16 @@ html#ov body {
       margin-bottom: 0.5em;
       color: $col-text;
 
-      &:last-child {
-        margin-bottom: 0;
-      }
-
       .stageIcon {
         margin-right: 0.5em;
       }
 
       .stageText {
         font-weight: 700;
+      }
+
+      .caret {
+        margin-left: auto;
       }
 
       &:hover {
@@ -1062,6 +1093,88 @@ html#ov body {
 
       .stage {
         font-size: $h3;
+      }
+    }
+  }
+
+  .datePickerWrapper {
+    flex-grow: 1;
+    z-index: 10;
+
+    .react-datepicker-wrapper {
+      width: 100%;
+
+      .react-datepicker__input-container {
+
+        input {
+          display: block;
+          width: 100%;
+          border-color: $col-primary;
+          border-width: 1px;
+          border-style: solid;
+          border-radius: $pad1;
+          height: calc(1.5rem + .75rem + 2px);
+          padding: .375rem + .75rem;
+          font-size: 1rem;
+          line-height: 1.5;
+          color: $col-text;
+          transition: border-color .15s ease-in-out, box-shadow .15s ease-in-out;
+        }
+      }
+    }
+
+    .react-datepicker {
+      border-color: $col-primary;
+
+      .react-datepicker__triangle:before {
+        border-top-color: $col-primary;
+      }
+
+      .react-datepicker__month-container {
+
+        .react-datepicker__header {
+          border-bottom-color: $col-primary;
+          background-color: $col-primary-light6;
+        }
+
+        .react-datepicker__day--selected,
+        .react-datepicker__day--in-selecting-range,
+        .react-datepicker__day--in-range,
+        .react-datepicker__month-text--selected,
+        .react-datepicker__month-text--in-selecting-range,
+        .react-datepicker__month-text--in-range,
+        .react-datepicker__quarter-text--selected,
+        .react-datepicker__quarter-text--in-selecting-range,
+        .react-datepicker__quarter-text--in-range,
+        .react-datepicker__year-text--selected,
+        .react-datepicker__year-text--in-selecting-range,
+        .react-datepicker__year-text--in-range {
+          background-color: $col-primary;
+          &:hover {
+            background-color: $col-secondary;
+          }
+        }
+      }
+
+      .react-datepicker__time-container {
+        border-left-color: $col-primary;
+
+        .react-datepicker__header {
+          border-bottom-color: $col-primary;
+          background-color: $col-primary-light6;
+        }
+
+        .react-datepicker__time {
+          .react-datepicker__time-box {
+            ul.react-datepicker__time-list {
+              li.react-datepicker__time-list-item {
+              }
+              li.react-datepicker__time-list-item--selected {
+                  background-color: $col-secondary;
+              }
+            }
+          }
+        }
       }
     }
   }

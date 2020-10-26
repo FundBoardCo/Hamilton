@@ -5,7 +5,7 @@ import {
   select,
   takeEvery,
 } from 'redux-saga/effects';
-import { toQueryString, trackErr } from '../utils';
+import { getSafeVar, toQueryString, trackErr } from '../utils';
 import * as types from '../actions/types';
 
 const getEmail = state => state.user.email;
@@ -48,7 +48,6 @@ function updateInvestorStatus(params) {
       fields: { ...postParams },
     }],
   };
-  console.log(data)
   return axios({
     method: 'post',
     url: '/.netlify/functions/airtable_patch_investorStatus',
@@ -77,6 +76,28 @@ function* workInvestorStatusPost(action) {
   const email = yield select(getEmail);
   params.key = `${email}-${params.uuid}`;
   params.userid = email;
+  // process notes into airtable format
+  const { notes } = params;
+  // extract the first next note, if any. There should be only one for Airtable.
+  const next = [];
+  let parsedNotes = [];
+  Object.keys(notes).forEach(k => {
+    const n = notes[k];
+    if (n.next) {
+      next.push(n);
+    } else {
+      parsedNotes.push(n);
+    }
+  });
+  const [firstNext] = next;
+  if (firstNext) {
+    params.next = getSafeVar(() => firstNext.text, '');
+    params.next_date = getSafeVar(() => firstNext.date, '');
+    params.waiting = getSafeVar(() => firstNext.waiting, false);
+  }
+  parsedNotes = parsedNotes.map(n => `${n.text}${n.date ? `%%%${n.date}` : ''}`).join('^^^');
+  params.notes = parsedNotes;
+
   let results;
 
   try {
@@ -98,6 +119,8 @@ function* workInvestorStatusPost(action) {
         params,
         data: results.data,
       });
+      // close the edit component by setting the edited note to null
+      yield put({ type: types.USER_SET_EDITNOTE, params: { noteID: null } });
     }
   } catch (error) {
     trackErr(error);

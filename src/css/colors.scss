@@ -463,7 +463,7 @@ html#ov body {
   .btn-outline-primary {
     border-width: 1px;
     border-style: solid;
-    @include btn-colors($col-light, $col-primary, $col-primary-light2, $col-primary, $col-primary-light4);
+    @include btn-colors(transparent, $col-primary, $col-primary-light2, $col-primary, $col-primary-light4);
   }
 
   .btn-secondary, .badge-secondary {
@@ -473,7 +473,7 @@ html#ov body {
   .btn-outline-secondary {
     border-width: 1px;
     border-style: solid;
-    @include btn-colors($col-light, $col-secondary, $col-secondary-light2, $col-secondary, $col-light);
+    @include btn-colors(transparent, $col-secondary, $col-secondary-light2, $col-secondary, $col-light);
   }
 
   .btn-danger, .badge-danger {
@@ -487,7 +487,7 @@ html#ov body {
   .btn-outline-danger {
     border-width: 1px;
     border-style: solid;
-    @include btn-colors($col-light, $col-danger, $col-danger-light2, $col-danger, $col-light);
+    @include btn-colors(transparent, $col-danger, $col-danger-light2, $col-danger, $col-light);
   }
 
   .btn-warning, .badge-warning {
@@ -513,7 +513,7 @@ html#ov body {
   }
 
   .btn-outline-info {
-    @include btn-colors($col-light, $col-info, $col-info-light2, $col-info, $col-light);
+    @include btn-colors(transparent, $col-info, $col-info-light2, $col-info, $col-light);
   }
 
   .btn-emp, .badge-emp {
@@ -523,7 +523,7 @@ html#ov body {
   .btn-outline-emp {
     border-width: 1px;
     border-style: solid;
-    @include btn-colors($col-light, $col-emp, $col-emp-light2, $col-emp, $col-light);
+    @include btn-colors(transparent, $col-emp, $col-emp-light2, $col-emp, $col-light);
   }
 
   .btn-light, .badge-light {

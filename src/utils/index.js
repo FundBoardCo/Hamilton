@@ -89,3 +89,7 @@ export function isLoginErr(err) {
   const status = getSafeVar(() => err.response.status);
   return status === '401';
 }
+
+export function isPlainObject(obj) {
+  return Object.prototype.toString.call(obj) === '[object Object]';
+}

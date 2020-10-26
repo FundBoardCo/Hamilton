@@ -251,6 +251,31 @@ html#ov body {
     outline: rgb(59, 153, 252) auto 5px;
   }
 
+  input[type="radio"] {
+    position: absolute;
+    left: -9999px;
+  }
+
+  input[type="radio"] + label {
+    display: inline-flex;
+    align-items: center;
+    cursor: pointer;
+  }
+
+  input[type="radio"] + label:before {
+    content: '';
+    display: inline-block;
+    width: 1em;
+    height: 1em;
+    margin-right: 0.5em;
+    border-radius: 50%;
+    border: 2px solid $col-primary;
+  }
+
+  input[type="radio"]:checked + label:before {
+    background-color: $col-primary;
+  }
+
   form {
     .form-check-input.is-valid ~ .form-check-label,
     &.was-validated .form-check-input:valid ~ .form-check-label {

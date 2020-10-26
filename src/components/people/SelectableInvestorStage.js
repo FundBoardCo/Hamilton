@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import * as types from '../../actions/types';
 import { STAGEPROPS } from '../../constants';
 import StageIcon from './StageIcon';
@@ -12,6 +13,7 @@ function Stage(props) {
     onClick,
     index,
     currentIndex,
+    open,
   } = props;
   let indexClass = '';
   if (typeof index === 'number' && typeof currentIndex === 'number' && index < currentIndex) {
@@ -27,6 +29,7 @@ function Stage(props) {
       <div className="stageText">
         {STAGEPROPS[stage].text}
       </div>
+      {current && <FontAwesomeIcon className="caret" icon={open ? 'caret-down' : 'caret-left'} />}
     </button>
   );
 }
@@ -67,11 +70,17 @@ export default function SelectInvestorStage(props) {
       uuid,
     };
     updateStatus(params);
+    setOpen(false);
   };
 
   return (
     <div className="selectInvestorStage">
-      <Stage stage={stage} current onClick={() => setOpen(!open)} />
+      <Stage
+        stage={stage}
+        current
+        open={open}
+        onClick={() => setOpen(!open)}
+      />
       <div className={`${!open ? 'sr-only' : ''}`}>
         {stageKeys.map((k, i) => {
           if (k !== stage && k !== 'none' && k !== 'added') {
@@ -107,6 +116,7 @@ Stage.defaultProps = {
   onClick: {},
   index: 0,
   currentIndex: 0,
+  open: false,
 };
 
 Stage.propTypes = {
@@ -115,4 +125,5 @@ Stage.propTypes = {
   onClick: PropTypes.func,
   index: PropTypes.number,
   currentIndex: PropTypes.number,
+  open: PropTypes.bool,
 };

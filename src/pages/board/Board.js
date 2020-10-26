@@ -186,7 +186,7 @@ export default function Board() {
       {investorIDs.length === 0 && (
         <div>
           <p>
-            You don't have any investors saved yet.
+            You don’t have any investors saved yet.
           </p>
           <div className="d-flex justify-content-center">
             <a className="btn btn-secondary" href="/search/menu">Find My Investors</a>
