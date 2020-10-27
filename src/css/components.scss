@@ -593,20 +593,48 @@ html#ov body {
               margin-bottom: $pad3;
 
               .note {
-                color: $col-primary;
-                font-size: $txMd;
+                display: flex;
                 margin-bottom: $pad1;
-                background: none;
-                border: none;
-                width: 100%;
-                text-align: left;
+
+                .body {
+                  display: flex;
+                  flex-grow: 1;
+                  background: none;
+                  border: none;
+                  text-align: left;
+                  color: $col-primary;
+                  font-size: $txMd;
+
+                  &:hover {
+                    text-decoration: underline;
+                  }
+
+                  .content {
+                    flex-grow: 1;
+                    display: flex;
+                    flex-direction: column;
+
+                    .date {
+                    }
+
+                    .text {
+                    }
+                  }
+                }
               }
             }
 
             .nextWrapper {
               .note {
-                .date {
-                  color: $col-danger;
+                .content {
+                  .date {
+                    font-weight: 700;
+                    color: $col-danger;
+
+                    &.waiting {
+                      color: $col-primary;
+                    }
+                  }
                 }
               }
             }
@@ -1130,10 +1158,6 @@ html#ov body {
     .react-datepicker {
       border-color: $col-primary;
 
-      .react-datepicker__triangle:before {
-        border-top-color: $col-primary;
-      }
-
       .react-datepicker__month-container {
 
         .react-datepicker__header {
@@ -1178,6 +1202,25 @@ html#ov body {
               }
             }
           }
+        }
+      }
+    }
+
+    .react-datepicker-popper[data-placement^="bottom"] {
+      .react-datepicker__triangle {
+        border-bottom-color: $col-primary-light6;
+
+        &:before {
+          border-bottom-color: $col-primary;
+        }
+      }
+    }
+
+    .react-datepicker-popper[data-placement^="top"] {
+      .react-datepicker__triangle {
+
+        &:before {
+          border-bottom-color: $col-primary;
         }
       }
     }

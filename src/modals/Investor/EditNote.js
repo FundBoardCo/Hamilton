@@ -44,7 +44,7 @@ export default function EditNote() {
   let type = next ? 'next' : 'note';
   if (waiting) type = 'waiting';
 
-  const parsedDate = Number.isNaN(Date.parse(date)) ? '' : new Date(date);
+  const parsedDate = Number.isNaN(Date.parse(date)) ? Date.now() : new Date(date);
   const [textVal, setTextVal] = useState(text);
   const [dateVal, setDateVal] = useState(parsedDate);
   const [typeVal, setTypeVal] = useState(type);
@@ -71,7 +71,7 @@ export default function EditNote() {
         ...notes,
         [noteID]: {
           text: textVal,
-          date: dateVal,
+          date: moment(dateVal).format('MMMM d, yyyy h:mm a'),
           next: ['next', 'waiting'].includes(typeVal),
           waiting: typeVal === 'waiting',
         },
@@ -84,6 +84,18 @@ export default function EditNote() {
       updateStatus(params);
     }
   };
+
+  const onDelete = () => {
+    const newNotes = { ...notes };
+    delete newNotes[noteID];
+
+    const params = {
+      id: investorID,
+      uuid,
+      notes: { ...newNotes },
+    };
+    updateStatus(params);
+  }
 
   const onTextChange = e => {
     const input = e.currentTarget;
@@ -142,7 +154,7 @@ export default function EditNote() {
             showTimeSelect
             selected={dateVal}
             dateFormat="MMMM d, yyyy h:mm aa"
-            isClearable
+            isClearable={typeVal === 'note'}
             onChange={d => onDateChange(d)}
           />
         </div>
@@ -165,6 +177,13 @@ export default function EditNote() {
             onClick={onSave}
           >
             Save
+          </Button>
+          <Button
+            variant="danger"
+            className="flex-grow-1 mr-2 btnResponsiveMax"
+            onClick={onDelete}
+          >
+            Delete
           </Button>
           <Button
             variant="outline-primary"

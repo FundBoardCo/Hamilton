@@ -5,35 +5,14 @@ import moment from 'moment';
 import InputGroup from 'react-bootstrap/InputGroup';
 import FormControl from 'react-bootstrap/FormControl';
 import Button from 'react-bootstrap/Button';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import InvestorNameTag from './InvestorNameTag';
 import SelectableInvestorStage from '../../components/people/SelectableInvestorStage';
 import * as types from '../../actions/types';
 import DismissibleStatus from '../../components/DismissibleStatus';
 import EditNote from './EditNote';
+import Note from './Note';
 import { STAGEPROPS } from '../../constants';
-
-function Note(props) {
-  const {
-    text,
-    date,
-    next,
-    onClick,
-  } = props;
-  return (
-    <button
-      className="note"
-      type="button"
-      onClick={onClick}
-    >
-      {(date || next) && (
-        <div className="date">
-          {`${next ? 'Next ' : ''}${moment(date).format('MM-DD-YYYY hh:mm a') || ''}`}
-        </div>
-      )}
-      <div className="text">{text}</div>
-    </button>
-  );
-}
 
 export default function InvestorRaise(props) {
   const { uuid, data = {}, path } = props;
@@ -70,10 +49,6 @@ export default function InvestorRaise(props) {
       amount: amountValue,
     };
     updateStatus(params);
-  };
-
-  const onEditNote = noteID => {
-    setNoteID({ noteID, uuid });
   };
 
   const onNewNote = () => {
@@ -134,16 +109,14 @@ export default function InvestorRaise(props) {
         </div>
         <div className="nextWrapper">
           {!noteParams.noteID && Object.keys(notes).map(k => {
-            const nData = notes[k];
-            if (!nData.next) return null;
-            return <Note id={k} key={k} {...nData} onClick={() => onEditNote(k)} />;
+            if (!notes[k].next) return null;
+            return <Note noteID={k} key={k} uuid={uuid} />;
           })}
         </div>
         <div className="notesWrapper">
           {!noteParams.noteID && Object.keys(notes).map(k => {
-            const nData = notes[k];
-            if (nData.next) return null;
-            return <Note id={k} key={k} {...nData} onClick={() => onEditNote(k)} />;
+            if (notes[k].next) return null;
+            return <Note noteID={k} key={k} uuid={uuid} />;
           })}
         </div>
         {!noteParams.noteID && (
@@ -173,18 +146,4 @@ InvestorRaise.propTypes = {
       .oneOfType([PropTypes.bool, PropTypes.string, PropTypes.objectOf(PropTypes.string)])),
   }),
   path: PropTypes.string,
-};
-
-Note.defaultProps = {
-  date: '',
-  text: '',
-  next: false,
-  onClick: {},
-};
-
-Note.propTypes = {
-  date: PropTypes.string,
-  text: PropTypes.string,
-  next: PropTypes.bool,
-  onClick: PropTypes.func,
 };
