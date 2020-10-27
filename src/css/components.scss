@@ -1120,6 +1120,10 @@ html#ov body {
           color: $col-text;
           transition: border-color .15s ease-in-out, box-shadow .15s ease-in-out;
         }
+
+        button.react-datepicker__close-icon:after {
+          background-color: $col-primary;
+        }
       }
     }
 
