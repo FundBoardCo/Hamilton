@@ -161,14 +161,14 @@ export default function EditNote() {
         <div className="d-flex">
           <Button
             variant="success"
-            className="flex-grow-1 flex-md-grow-0 mr-2"
+            className="flex-grow-1 mr-2 btnResponsiveMax"
             onClick={onSave}
           >
             Save
           </Button>
           <Button
             variant="outline-primary"
-            className="flex-grow-1 flex-md-grow-0"
+            className="flex-grow-1 btnResponsiveMax"
             onClick={onCancel}
           >
             Cancel
