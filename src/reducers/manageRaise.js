@@ -42,7 +42,6 @@ function convertRecords(recs) {
         email: r.intro_email || '',
         date: r.intro_date || '',
       };
-      console.log(newRec)
       newRecs[r.fields.uuid] = { ...newRec };
     }
   });

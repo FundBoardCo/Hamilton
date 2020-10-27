@@ -196,7 +196,7 @@ export default function InvestorData(props) {
           </div>
         )}
       </section>
-      {searchLocation && !!matches && Object.keys(matches).length > 0 && (
+      {path !== 'Board' && searchLocation && !!matches && Object.keys(matches).length > 0 && (
         <section className="matches mb-4">
           <h2>{`${percentageMatch}% Match`}</h2>
           <ul>
