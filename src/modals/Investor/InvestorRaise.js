@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import PropTypes from 'prop-types';
+import moment from 'moment';
 import InputGroup from 'react-bootstrap/InputGroup';
 import FormControl from 'react-bootstrap/FormControl';
 import Button from 'react-bootstrap/Button';
@@ -26,7 +27,7 @@ function Note(props) {
     >
       {(date || next) && (
         <div className="date">
-          {`${next ? 'Next ' : ''}${date || ''}`}
+          {`${next ? 'Next ' : ''}${moment(date).format('MM-DD-YYYY hh:mm a') || ''}`}
         </div>
       )}
       <div className="text">{text}</div>
