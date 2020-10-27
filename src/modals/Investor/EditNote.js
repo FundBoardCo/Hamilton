@@ -33,7 +33,6 @@ export default function EditNote() {
 
   const investorStatus = useSelector(state => state.manageRaise.records[uuid]);
   const { notes } = investorStatus;
-  console.log(notes)
   const investorID = investorStatus.id;
   const toEdit = notes[noteID] || {};
   const {
@@ -109,9 +108,6 @@ export default function EditNote() {
 
   // null this out when there is no note to edit
   if (!noteID) return null;
-
-  console.log(date)
-  console.log(dateVal)
 
   return (
     <div className="editNote">
