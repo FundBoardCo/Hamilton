@@ -1,14 +1,10 @@
-import React, {useRef, useState} from 'react';
-import PropTypes from 'prop-types';
+import React, { useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import moment from 'moment';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import DatePicker from 'react-datepicker';
 import Form from 'react-bootstrap/Form';
+import Button from 'react-bootstrap/Button';
 import * as types from '../../actions/types';
-import InputGroup from "react-bootstrap/InputGroup";
-import FormControl from "react-bootstrap/FormControl";
-import Button from "react-bootstrap/Button";
 
 const noteTypes = [
   {
@@ -95,7 +91,7 @@ export default function EditNote() {
       notes: { ...newNotes },
     };
     updateStatus(params);
-  }
+  };
 
   const onTextChange = e => {
     const input = e.currentTarget;
