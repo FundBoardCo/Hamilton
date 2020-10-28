@@ -1,4 +1,4 @@
-import React, { useEffect, useCallback } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import Papa from 'papaparse';
 import FileSaver from 'file-saver';
@@ -9,6 +9,7 @@ import Col from 'react-bootstrap/Col';
 import Person from '../../components/people/Person';
 import * as types from '../../actions/types';
 import DismissibleStatus from '../../components/DismissibleStatus';
+import { STAGEPROPS } from '../../constants';
 
 export default function Board() {
   const investorIDs = useSelector(state => state.board.ids) || [];
@@ -18,12 +19,7 @@ export default function Board() {
   const investorStatus_getStatus = useSelector(state => state.manageRaise.get_status);
   const investorStatus_records = useSelector(state => state.manageRaise.records);
 
-  // TODO: this currently doesn't do anything, because none of the fetched people have match data
-  investorIDs.sort((a, b) => {
-    const matchA = (people[a] && people[a].percentageMatch) || 0;
-    const matchB = (people[b] && people[b].percentageMatch) || 0;
-    return matchB - matchA;
-  });
+  const [sortBy, setSortBy] = useState('status');
 
   const dispatch = useDispatch();
 
@@ -51,7 +47,7 @@ export default function Board() {
     }
   }, [investorIDs, dispatch]);
 
-  const investorList = {};
+  const investorList = [];
   const csvList = [];
 
   const firstLine = {};
@@ -61,7 +57,7 @@ export default function Board() {
   firstLine.Priority = 'Rank investors in the order you will reach out to them.';
   firstLine['Introed By'] = 'Fill in when someone has made an introduction.';
   firstLine['Date of Intro'] = '';
-  firstLine.Status = 'Contacted, Meeting Scheduled, Pitched, Term Sheet, Signed, Funded';
+  firstLine.Stage = 'Contacted, Meeting Scheduled, Pitched, Term Sheet, Signed, Funded';
   firstLine['Next Steps'] = 'If you need to do something, list it here.';
   firstLine.Notes = '';
   firstLine['Potential Lead'] = 'Focus on getting leads first.';
@@ -74,11 +70,16 @@ export default function Board() {
 
   investorIDs.forEach(i => {
     const person = people[i] ? { ...people[i] } : {};
+    const investorStatus = investorStatus_records[i] || {};
+    investorList.push({
+      ...person,
+      uuid: i,
+      investorStatus,
+    });
     const org = person.primary_organization || {};
     const location = [];
     if (person.location_city) location.push(person.location_city);
     if (person.location_state) location.push(person.location_state);
-    investorList[i] = { ...person };
     const csvPer = {};
     // TODO change this for API data
     csvPer['Investor Name'] = person.name || '';
@@ -87,7 +88,7 @@ export default function Board() {
     csvPer.Priority = '';
     csvPer['Introed By'] = '';
     csvPer['Date of Intro'] = '';
-    csvPer.Status = '';
+    csvPer.Stage = investorStatus.stage;
     csvPer['Next Steps'] = '';
     csvPer.Notes = '';
     csvPer['Potential Lead'] = person.is_lead_investor ? 'Yes' : '';
@@ -97,6 +98,16 @@ export default function Board() {
     csvPer.Twitter = person.twitter || '';
     csvPer.CrunchBase = person.permalink ? `https://www.crunchbase.com/person/${person.permalink}` : '';
     csvList.push(csvPer);
+  });
+
+  investorList.sort((a, b) => {
+    if (sortBy === 'status') {
+      const stageKeys = Object.keys(STAGEPROPS);
+      const aStage = a.investorStatus.stage;
+      const bStage = b.investorStatus.stage;
+      return stageKeys.indexOf(aStage) > stageKeys.indexOf(bStage) ? 1 : -1;
+    }
+    return a.name > b.name ? 1 : -1;
   });
 
   const csv = Papa.unparse(Object.values(csvList));
@@ -135,6 +146,30 @@ export default function Board() {
           </div>
           {investorIDs.length > 0 && (
             <div className="d-flex justify-content-end justify-content-lg-end mb-3">
+              <div className="sortBar">
+                <span className="label">Sort By:</span>
+                <button
+                  type="button"
+                  className={sortBy === 'name' ? 'active' : ''}
+                  onClick={() => setSortBy('name')}
+                >
+                  ABC
+                </button>
+                <button
+                  type="button"
+                  className={sortBy === 'status' ? 'active' : ''}
+                  onClick={() => setSortBy('status')}
+                >
+                  Status
+                </button>
+                <button
+                  type="button"
+                  className={sortBy === 'next' ? 'active' : ''}
+                  onClick={() => setSortBy('next')}
+                >
+                  Next
+                </button>
+              </div>
               <Button
                 className="primaryDetailsLink txs-2 txs-lg-tx3 mr-2 btnNoMax"
                 variant="primary"
@@ -167,13 +202,12 @@ export default function Board() {
       />
       {loggedIn && (
         <div className="results">
-          {Object.keys(investorList).map(k => {
-            const personProps = { ...investorList[k] };
-            personProps.uuid = k;
+          {investorList.map(i => {
+            const personProps = { ...i };
             personProps.isBoard = true;
-            personProps.investorStatus = investorStatus_records[k];
+            personProps.sortedBy = sortBy;
             return (
-              <Person key={k} {...personProps} />
+              <Person key={i.uuid} {...personProps} />
             );
           })}
         </div>

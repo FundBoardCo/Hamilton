@@ -44,7 +44,7 @@ html#ov {
       .nav {
         display: flex;
         align-items: center;
-        min-height: $navSz1;
+        min-height: $navSz1; // only for smallest phones
         padding: 0 $pad3;
         order: 2; // nav on the bottom for mobile
         background-color: $col-structure;
@@ -101,6 +101,14 @@ html#ov {
           text-decoration: none;
         }
 
+        @media (min-width: $mediaXs) {
+          min-height: $navSz2;
+
+          .navbar-nav {
+            font-size: 38px;
+          }
+        }
+
         @media (max-width: $mediaMaxMd) {
           .navBrand {
             .navLogo {
@@ -114,14 +122,6 @@ html#ov {
             .navVersion {
               @include hidden();
             }
-          }
-        }
-
-        @media (min-width: $mediaXs) {
-          min-height: $navSz2;
-
-          .navbar-nav {
-            font-size: 38px;
           }
         }
 
@@ -620,6 +620,67 @@ html#ov {
 
               p:last-child {
                 margin: 0;
+              }
+            }
+          }
+
+          .sortBar {
+            position: fixed;
+            bottom: $navSz1;
+            display: flex;
+            align-items: stretch;
+            height: $sortBarSz;
+            left: 0;
+            right: 0;
+            background: $col-primary;
+
+            .label {
+              color: $col-structure;
+              margin-right: $pad2;
+              display: none;
+            }
+
+            button {
+              background: none;
+              border: none;
+              border-right: 1px solid $col-primary-light;
+              color: $col-text-light;
+              flex-grow: 1;
+
+              &.active {
+                background: $col-structure;
+                font-weight: 700;
+              }
+            }
+
+            @media (min-width: $mediaXs) {
+              bottom: $navSz2;
+            }
+
+            @media (min-width: $mediaMd) {
+              position: static;
+              margin-right: auto;
+              background: none;
+              align-items: flex-start;
+
+              .label {
+                display: inline;
+              }
+
+              button {
+                color: $col-primary;
+                border-right: none;
+                margin-right: $pad2;
+                flex-grow: 0;
+
+                &:hover {
+                  text-decoration: underline;
+                }
+
+                &.active {
+                  color: $col-structure;
+                  background: none;
+                }
               }
             }
           }

@@ -217,14 +217,38 @@ html#ov body {
       }
 
       .notes {
-        font-size: $txMd;
+        margin-top: $pad1;
+        font-size: $txSm;
       }
 
       .next {
         display: flex;
+        font-size: $txMd;
+
+        .text {
+          margin-right: $pad1;
+        }
 
         .date {
           margin-left: auto;
+        }
+
+        &.sortedByNext .date {
+          flex-basis: 35%;
+        }
+      }
+
+      @media (min-width: $mediaMd) {
+        .notes {
+          font-size: $txMd;
+        }
+
+        .next {
+          font-size: $tx;
+
+          .date {
+            margin-left: auto;
+          }
         }
       }
     }

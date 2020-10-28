@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux';
 import { useHistory, useLocation } from 'react-router';
 import moment from 'moment';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { capitalizeFirstLetter, isPlainObject } from '../../utils';
+import { capitalizeFirstLetter } from '../../utils';
 import StageIcon from './StageIcon';
 
 export default function Person(props) {
@@ -19,6 +19,7 @@ export default function Person(props) {
     // isImpact = false,
     isBoard = false,
     status,
+    sortedBy,
     matches = {},
     investorStatus = {},
   } = props;
@@ -44,11 +45,14 @@ export default function Person(props) {
   const path = capitalizeFirstLetter(location.pathname.substring(1).split('/')[0]);
 
   const investorStage = path === 'Board' ? investorStatus.stage || 'added' : isOnBoard && 'added';
-  let { notes = [] } = investorStatus;
+  let { notes } = investorStatus;
   let next = {};
   if (notes && Object.values(notes).length) {
     [next] = Object.values(notes).filter(v => v.next);
     notes = Object.values(notes).filter(v => !v.next);
+  } else {
+    // Sometimes notes gets saved as an object somehow?
+    notes = [];
   }
 
   const validationProps = {};
@@ -63,6 +67,8 @@ export default function Person(props) {
     validationProps.faIcon = 'ban';
   }
 
+  if (sortedBy === 'next' && !next.text) return null;
+
   return (
     <div className={`personWrapper ${path}`}>
       <button
@@ -73,28 +79,45 @@ export default function Person(props) {
       >
         <div className="thumb" style={{ backgroundImage: `url(${image_url})` }} />
         <div className="content">
-          <div>
-            <h1>
-              {validationProps.faIcon && (
-              <FontAwesomeIcon icon={validationProps.faIcon} className={`mr-1 ${validationProps.classes}`} />
-              )}
-              {name || uuid}
-            </h1>
-          </div>
-          <div className="d-flex details">
-            {primary_organization_logo && (
-              <div className="orgLogoWrapper" style={{ backgroundImage: `url(${primary_organization_logo})` }} />
-            )}
-            <div className="orgText">
-              {primary_job_title && (
-                <div>
-                  {`${primary_job_title}${primary_job_title && ','}`}
-                  {`${primary_job_title ? '\xa0' : ''}`}
-                  {primary_organization_name}
-                </div>
-              )}
+          {sortedBy !== 'next' && (
+            <div>
+              <h1>
+                {validationProps.faIcon && (
+                <FontAwesomeIcon icon={validationProps.faIcon} className={`mr-1 ${validationProps.classes}`} />
+                )}
+                {name || uuid}
+              </h1>
             </div>
-          </div>
+          )}
+          {sortedBy !== 'next' && (
+            <div className="d-flex details">
+              {primary_organization_logo && (
+                <div className="orgLogoWrapper" style={{ backgroundImage: `url(${primary_organization_logo})` }} />
+              )}
+              <div className="orgText">
+                {primary_job_title && (
+                  <div>
+                    {`${primary_job_title}${primary_job_title && ','}`}
+                    {`${primary_job_title ? '\xa0' : ''}`}
+                    {primary_organization_name}
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
+          {sortedBy === 'next' && next.text && (
+            <div className="next sortedByNext">
+              <span className="text">
+                <span className="text-danger">
+                  Next:&nbsp;
+                </span>
+                {next.text ? next.text : ''}
+              </span>
+              <span className="date">
+                {next.date ? moment(next.date).format('LLL') : ''}
+              </span>
+            </div>
+          )}
         </div>
         <div className="controls">
           <StageIcon stage={investorStage} withText />
@@ -103,19 +126,21 @@ export default function Person(props) {
           </div>
         </div>
       </button>
-      {path === 'Board' && (
+      {path === 'Board' && sortedBy !== 'next' && (
         <div className="notes text-primary">
           {`Notes(${notes.length})${notes.length > 0 ? `: ${notes[0].text}` : ''}`}
         </div>
       )}
-      {path === 'Board' && (
+      {path === 'Board' && sortedBy !== 'next' && (
         <div className="next">
-          <span className={next.waiting ? 'text-primary' : 'text-danger'}>
-            {next.waiting ? 'Waiting' : 'Next'}
-            :&nbsp;
-          </span>
-          <span className={next.waiting ? 'text-primary' : ''}>
-            {next.text ? next.text : ''}
+          <span className="text">
+            <span className={next.waiting ? 'text-primary' : 'text-danger'}>
+              {next.waiting ? 'Waiting' : 'Next'}
+              :&nbsp;
+            </span>
+            <span className={next.waiting ? 'text-primary' : ''}>
+              {next.text ? next.text : ''}
+            </span>
           </span>
           <span className="date">
             {next.date ? moment(next.date).format('LLL') : ''}
@@ -153,6 +178,7 @@ Person.defaultProps = {
   // isImpact: false,
   isBoard: false,
   status: '',
+  sortedBy: '',
   investorStatus: {},
 };
 
@@ -178,6 +204,7 @@ Person.propTypes = {
   // isImpact: PropTypes.bool,
   isBoard: PropTypes.bool,
   status: PropTypes.string,
+  sortedBy: PropTypes.string,
   investorStatus: PropTypes.shape({
     id: PropTypes.string,
     notes: PropTypes
