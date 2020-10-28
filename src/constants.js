@@ -18,16 +18,16 @@ export const STAGEPROPS = {
   },
   connected: {
     faIcon: 'project-diagram',
-    text: 'Start a Conversation',
+    text: 'Having a Conversation',
     advice: 'Now that you’ve been introduced, start a conversation about why your startup would be a great investment opportunity.',
   },
   conversing: {
     faIcon: 'comments',
-    text: 'Get an Agreement',
+    text: 'Getting an Agreement',
   },
   negotiating: {
     faIcon: 'hands-helping',
-    text: 'Negotiate the Details',
+    text: 'Negotiating the Details',
   },
   invested: {
     faIcon: 'money-check',
@@ -39,6 +39,6 @@ export const STAGEPROPS = {
   },
   archived: {
     faIcon: 'archive',
-    text: 'Archive this Investor',
+    text: 'They are Archived',
   },
 };
