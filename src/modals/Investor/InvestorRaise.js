@@ -1,7 +1,6 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import PropTypes from 'prop-types';
-import moment from 'moment';
 import InputGroup from 'react-bootstrap/InputGroup';
 import FormControl from 'react-bootstrap/FormControl';
 import Button from 'react-bootstrap/Button';
@@ -29,6 +28,7 @@ export default function InvestorRaise(props) {
   const noteParams = useSelector(state => state.manageRaise.editNoteParams);
 
   const [amountValue, setAmount] = useState(amount);
+  const [showEditAmount, setShowEditAmount] = useState(false);
 
   const dispatch = useDispatch();
 
@@ -49,6 +49,7 @@ export default function InvestorRaise(props) {
       amount: amountValue,
     };
     updateStatus(params);
+    setShowEditAmount(false);
   };
 
   const onNewNote = () => {
@@ -56,8 +57,9 @@ export default function InvestorRaise(props) {
   };
 
   const showAmount = ['negotiating', 'invested', 'leading'].includes(stage);
-  const amountText = stage === 'negotiating'
+  let amountText = stage === 'negotiating'
     ? 'You are Asking Them to Invest' : 'Amount They Invested';
+  amountText = `${amountText}: $${amountValue}`;
 
   return (
     <div>
@@ -71,9 +73,36 @@ export default function InvestorRaise(props) {
         <div className="mt-3">
           <SelectableInvestorStage uuid={uuid} />
         </div>
-        {showAmount && (
+        {showAmount && !showEditAmount && (
+          <div className="d-flex align-items-center">
+            <span>{amountText}</span>
+            <button
+              className="btn iconBtn ml-auto text-primary"
+              type="button"
+              onClick={() => setShowEditAmount(true)}
+            >
+              <span className="sr-only">Edit Investment Amount</span>
+              <FontAwesomeIcon icon="edit" />
+            </button>
+          </div>
+        )}
+        {showAmount && showEditAmount && (
           <div>
-            <label htmlFor="raise-amount">{amountText}</label>
+            <div className="d-flex align-items-center mb-2">
+              <label
+                className="mb-0"
+                htmlFor="raise-amount"
+              >
+                {amountText}
+              </label>
+              <button
+                className="btn btn-link ml-auto"
+                type="button"
+                onClick={() => setShowEditAmount(false)}
+              >
+                cancel
+              </button>
+            </div>
             <InputGroup className="mb-2">
               <InputGroup.Prepend>
                 <InputGroup.Text>$</InputGroup.Text>
