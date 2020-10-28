@@ -72,33 +72,27 @@ function createInvestorStatus(params) {
 }
 
 function* workInvestorStatusPost(action) {
-  const { params } = action;
-  const email = yield select(getEmail);
-  params.key = `${email}-${params.uuid}`;
-  params.userid = email;
-  // process notes into airtable format
-  const { notes } = params;
-  // extract the first next note, if any. There should be only one for Airtable.
-  const next = [];
-  let parsedNotes = [];
-  Object.keys(notes).forEach(k => {
-    const n = notes[k];
-    if (n.next) {
-      next.push(n);
-    } else {
-      parsedNotes.push(n);
-    }
-  });
-  const [firstNext] = next;
-  params.next = getSafeVar(() => firstNext.text, '');
-  params.next_date = getSafeVar(() => firstNext.date);
-  params.waiting = getSafeVar(() => firstNext.waiting, false);
-  parsedNotes = parsedNotes.map(n => `${n.text}${n.date ? `%%%${n.date}` : ''}`).join('^^^');
-  params.notes = parsedNotes;
-
-  let results;
-
   try {
+    const { params } = action;
+    const email = yield select(getEmail);
+    params.key = `${email}-${params.uuid}`;
+    params.userid = email;
+    // process notes into airtable format
+    const { notes } = params;
+    if (notes) {
+      // extract the first next note, if any. There should be only one for Airtable.
+      const next = Object.values(notes).filter(v => v.next);
+      let parsedNotes = Object.values(notes).filter(v => !v.next);
+      const [firstNext] = next;
+      params.next = getSafeVar(() => firstNext.text, '');
+      params.next_date = getSafeVar(() => firstNext.date);
+      params.waiting = getSafeVar(() => firstNext.waiting, false);
+      parsedNotes = parsedNotes.map(n => `${n.text}${n.date ? `%%%${n.date}` : ''}`).join('^^^');
+      params.notes = parsedNotes;
+    }
+
+    let results;
+
     if (params.id) {
       results = yield call(updateInvestorStatus, params);
     } else {
