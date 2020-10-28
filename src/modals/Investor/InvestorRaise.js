@@ -21,7 +21,7 @@ export default function InvestorRaise(props) {
     id,
     stage,
     notes,
-    amount,
+    amount = 0,
   } = investorStatus;
   const { advice } = STAGEPROPS[stage];
   const postStatus = useSelector(state => state.manageRaise.post_status) || '';
