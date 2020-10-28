@@ -44,9 +44,12 @@ export default function Person(props) {
   const path = capitalizeFirstLetter(location.pathname.substring(1).split('/')[0]);
 
   const investorStage = path === 'Board' ? investorStatus.stage || 'added' : isOnBoard && 'added';
-  let { notes, next } = investorStatus;
-  if (!Array.isArray(notes)) notes = [];
-  if (!isPlainObject(next)) next = {};
+  let { notes = [] } = investorStatus;
+  let next = {};
+  if (notes && Object.values(notes).length) {
+    [next] = Object.values(notes).filter(v => v.next);
+    notes = Object.values(notes).filter(v => !v.next);
+  }
 
   const validationProps = {};
 
@@ -102,7 +105,7 @@ export default function Person(props) {
       </button>
       {path === 'Board' && (
         <div className="notes text-primary">
-          {`Notes(${notes.length})${notes.length > 0 ? `: ${notes[0]}` : ''}`}
+          {`Notes(${notes.length})${notes.length > 0 ? `: ${notes[0].text}` : ''}`}
         </div>
       )}
       {path === 'Board' && (
