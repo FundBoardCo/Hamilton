@@ -28,8 +28,8 @@ export default function EditNote() {
   const { uuid } = noteParams;
   const { noteID } = noteParams;
 
-  const investorStatus = useSelector(state => state.manageRaise.records[uuid]);
-  const { notes } = investorStatus;
+  const investorStatus = useSelector(state => state.manageRaise.records[uuid]) || {};
+  const { notes = {} } = investorStatus;
   const investorID = investorStatus.id;
   const toEdit = notes[noteID] || {};
   const {
