@@ -48,7 +48,7 @@ export default function Person(props) {
   let { notes } = investorStatus;
   let next = {};
   if (notes && Object.values(notes).length) {
-    [next] = Object.values(notes).filter(v => v.next);
+    [next = {}] = Object.values(notes).filter(v => v.next);
     notes = Object.values(notes).filter(v => !v.next);
   } else {
     // Sometimes notes gets saved as an object somehow?

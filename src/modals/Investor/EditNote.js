@@ -23,6 +23,7 @@ const noteTypes = [
 
 export default function EditNote() {
   const form = useRef(null);
+  const postStatus = useSelector(state => state.manageRaise.post_status);
   const noteParams = useSelector(state => state.manageRaise.editNoteParams);
   const { uuid } = noteParams;
   const { noteID } = noteParams;
@@ -171,6 +172,7 @@ export default function EditNote() {
             variant="success"
             className="flex-grow-1 mr-2 btnResponsiveMax"
             onClick={onSave}
+            disabled={postStatus === 'pending'}
           >
             Save
           </Button>
@@ -178,6 +180,7 @@ export default function EditNote() {
             variant="danger"
             className="flex-grow-1 mr-2 btnResponsiveMax"
             onClick={onDelete}
+            disabled={postStatus === 'pending'}
           >
             Delete
           </Button>
@@ -185,6 +188,7 @@ export default function EditNote() {
             variant="outline-primary"
             className="flex-grow-1 btnResponsiveMax"
             onClick={onCancel}
+            disabled={postStatus === 'pending'}
           >
             Cancel
           </Button>

@@ -16,11 +16,11 @@ import { STAGEPROPS } from '../../constants';
 export default function InvestorRaise(props) {
   const { uuid, data = {}, path } = props;
 
-  const investorStatus = useSelector(state => state.manageRaise.records[uuid]);
+  const investorStatus = useSelector(state => state.manageRaise.records[uuid]) || {};
   const {
     id,
-    stage,
-    notes,
+    stage = 'added',
+    notes = {},
     amount = 0,
   } = investorStatus;
   const { advice } = STAGEPROPS[stage];
