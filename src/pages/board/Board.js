@@ -57,7 +57,8 @@ export default function Board() {
   firstLine.Priority = 'Rank investors in the order you will reach out to them.';
   firstLine['Introed By'] = 'Fill in when someone has made an introduction.';
   firstLine['Date of Intro'] = '';
-  firstLine.Stage = 'Contacted, Meeting Scheduled, Pitched, Term Sheet, Signed, Funded';
+  firstLine.Stage = Object.keys(STAGEPROPS).join(', ');
+  firstLine.Amount = 'Amount they are investing';
   firstLine['Next Steps'] = 'If you need to do something, list it here.';
   firstLine.Notes = '';
   firstLine['Potential Lead'] = 'Focus on getting leads first.';
@@ -80,8 +81,12 @@ export default function Board() {
     const location = [];
     if (person.location_city) location.push(person.location_city);
     if (person.location_state) location.push(person.location_state);
+    const noteValues = investorStatus.notes ? Object.values(investorStatus.notes) : [];
+    const notesForCSV = noteValues
+      .filter(n => !n.next).map(n => `${n.text} ${n.date || ''}`).join(' || ');
+    const nextForCSV = noteValues
+      .filter(n => n.next).map(n => `${n.text} ${n.date || ''}`).join(' || ');
     const csvPer = {};
-    // TODO change this for API data
     csvPer['Investor Name'] = person.name || '';
     csvPer.Title = person.primary_job_title || '';
     csvPer.Organization = org.name || '';
@@ -89,8 +94,9 @@ export default function Board() {
     csvPer['Introed By'] = '';
     csvPer['Date of Intro'] = '';
     csvPer.Stage = investorStatus.stage;
-    csvPer['Next Steps'] = '';
-    csvPer.Notes = '';
+    csvPer.Amount = investorStatus.amount || '';
+    csvPer['Next Steps'] = nextForCSV;
+    csvPer.Notes = notesForCSV;
     csvPer['Potential Lead'] = person.is_lead_investor ? 'Yes' : '';
     csvPer['Open to Direct Outreach'] = person.is_open ? 'Yes' : '';
     csvPer.Location = location.join(', ');
