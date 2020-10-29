@@ -68,7 +68,7 @@ export default function EditNote() {
         ...notes,
         [noteID]: {
           text: textVal,
-          date: moment(dateVal).format('MMMM d, yyyy h:mm a'),
+          date: dateVal ? moment(dateVal).format('MMMM d, yyyy h:mm a') : '',
           next: ['next', 'waiting'].includes(typeVal),
           waiting: typeVal === 'waiting',
         },
