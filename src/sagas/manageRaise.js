@@ -7,6 +7,7 @@ import {
 } from 'redux-saga/effects';
 import { getSafeVar, toQueryString, trackErr } from '../utils';
 import * as types from '../actions/types';
+import moment from "moment";
 
 const getEmail = state => state.user.email;
 
@@ -49,9 +50,12 @@ function updateInvestorStatus(params) {
     }],
   };
   return axios({
-    method: 'post',
-    url: '/.netlify/functions/airtable_patch_investorStatus',
+    method: 'patch',
+    url: '/.netlify/functions/airtable_p_investorStatus',
     data,
+    headers: {
+      endpoint: 'status',
+    },
   });
 }
 
@@ -66,8 +70,11 @@ function createInvestorStatus(params) {
   };
   return axios({
     method: 'post',
-    url: '/.netlify/functions/airtable_post_investorStatus',
+    url: '/.netlify/functions/airtable_p_investorStatus',
     data,
+    headers: {
+      endpoint: 'status',
+    },
   });
 }
 
