@@ -123,7 +123,6 @@ export default function Board() {
   if (searchBy) {
     toShowInvestorList = investorList.filter(i => {
       const org = getSafeVar(() => i.primary_organization.name, '');
-      console.log(org)
       return i.name.toLowerCase().includes(searchBy.toLowerCase())
       || org.toLowerCase().includes(searchBy.toLowerCase());
     });

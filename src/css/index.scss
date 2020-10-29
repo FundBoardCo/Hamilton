@@ -655,7 +655,7 @@ html#ov {
               position: static;
               margin-right: auto;
               background: none;
-              align-items: flex-start;
+              align-items: center;
 
               .label {
                 display: inline;
@@ -676,6 +676,14 @@ html#ov {
                   background: none;
                 }
               }
+            }
+          }
+
+          .searchBar {
+            flex-grow: 1;
+
+            input {
+              font-size: $tx;
             }
           }
 
@@ -713,7 +721,7 @@ html#ov {
             .boardDetailsBar {
               position: static;
               height: auto;
-              margin: 0 0 $pad3 0;
+              margin: 0 0 $pad2 0;
 
               .primaryDetails {
                 padding: 0;
@@ -732,6 +740,10 @@ html#ov {
                 border-bottom-right-radius: $pad2;
                 border-bottom-left-radius: $pad2;
               }
+            }
+
+            .searchBar {
+              flex-grow: 0;
             }
 
             .results {
