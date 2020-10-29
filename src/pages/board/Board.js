@@ -4,12 +4,14 @@ import Papa from 'papaparse';
 import FileSaver from 'file-saver';
 import Row from 'react-bootstrap/Row';
 import Button from 'react-bootstrap/Button';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Col from 'react-bootstrap/Col';
+import FormControl from 'react-bootstrap/FormControl';
+import InputGroup from 'react-bootstrap/InputGroup';
 import Person from '../../components/people/Person';
 import * as types from '../../actions/types';
 import DismissibleStatus from '../../components/DismissibleStatus';
 import { STAGEPROPS } from '../../constants';
+import {getSafeVar} from "../../utils";
 
 export default function Board() {
   const investorIDs = useSelector(state => state.board.ids) || [];
@@ -20,6 +22,7 @@ export default function Board() {
   const investorStatus_records = useSelector(state => state.manageRaise.records);
 
   const [sortBy, setSortBy] = useState('status');
+  const [searchBy, setSearchBy] = useState('');
 
   const dispatch = useDispatch();
 
@@ -48,6 +51,7 @@ export default function Board() {
   }, [investorIDs, dispatch]);
 
   const investorList = [];
+  let toShowInvestorList;
   const csvList = [];
 
   const firstLine = {};
@@ -116,6 +120,17 @@ export default function Board() {
     return a.name > b.name ? 1 : -1;
   });
 
+  if (searchBy) {
+    toShowInvestorList = investorList.filter(i => {
+      const org = getSafeVar(() => i.primary_organization.name, '');
+      console.log(org)
+      return i.name.toLowerCase().includes(searchBy.toLowerCase())
+      || org.toLowerCase().includes(searchBy.toLowerCase());
+    });
+  } else {
+    toShowInvestorList = investorList;
+  }
+
   const csv = Papa.unparse(Object.values(csvList));
   const csvData = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
 
@@ -126,8 +141,7 @@ export default function Board() {
   const showHowToIntro = useCallback(() => dispatch({
     type: types.MODAL_SET_OPEN,
     modal: 'howToIntro',
-    actions: { onCSVClick },
-  }), [dispatch, onCSVClick]);
+  }), [dispatch]);
 
   useEffect(() => {
     // if the how to intro modal has never been opened, open it
@@ -148,6 +162,25 @@ export default function Board() {
                 <span className="d-none d-md-inline">&nbsp;Potential Lead</span>
                 &nbsp;Investors
               </span>
+              <Button
+                className="ml-auto mr-2 primaryDetailsLink"
+                variant="link"
+                onClick={showHowToIntro}
+                data-track="BoardGetFunded"
+              >
+                <span className="ml-2">Next</span>
+                <span className="d-none d-sm-inline">&nbsp;Steps</span>
+              </Button>
+              <Button
+                className="primaryDetailsLink"
+                variant="link"
+                onClick={onCSVClick}
+                disabled={investorIDs.length === 0}
+                data-track="BoardDownload"
+              >
+                <span className="ml-2">Download</span>
+                <span className="d-none d-sm-inline">&nbsp;My Investors</span>
+              </Button>
             </div>
           </div>
           {investorIDs.length > 0 && (
@@ -176,27 +209,21 @@ export default function Board() {
                   Next
                 </button>
               </div>
-              <Button
-                className="primaryDetailsLink txs-2 txs-lg-tx3 mr-2 btnNoMax"
-                variant="primary"
-                onClick={showHowToIntro}
-                data-track="BoardGetFunded"
-              >
-                <FontAwesomeIcon icon="question" />
-                <span className="ml-2">Next</span>
-                <span className="d-none d-sm-inline">&nbsp;Steps</span>
-              </Button>
-              <Button
-                className="primaryDetailsLink txs-2 txs-lg-tx3"
-                variant="secondary"
-                onClick={onCSVClick}
-                disabled={investorIDs.length === 0}
-                data-track="BoardDownload"
-              >
-                <FontAwesomeIcon icon="file-download" />
-                <span className="ml-2">Download</span>
-                <span className="d-none d-sm-inline">&nbsp;My Investors</span>
-              </Button>
+              <div className="searchBar">
+                <InputGroup>
+                  <InputGroup.Prepend>
+                    <InputGroup.Text>
+                      Search
+                    </InputGroup.Text>
+                  </InputGroup.Prepend>
+                  <FormControl
+                    type="text"
+                    value={searchBy}
+                    onChange={e => setSearchBy(e.target.value)}
+                    aria-label="Search for an investor by name or organization."
+                  />
+                </InputGroup>
+              </div>
             </div>
           )}
         </div>
@@ -208,7 +235,7 @@ export default function Board() {
       />
       {loggedIn && (
         <div className="results">
-          {investorList.map(i => {
+          {toShowInvestorList.map(i => {
             const personProps = { ...i };
             personProps.isBoard = true;
             personProps.sortedBy = sortBy;

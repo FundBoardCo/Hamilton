@@ -36,9 +36,6 @@ export default function DAlert(props) {
     }
   };
 
-  console.log(status)
-  console.log(dissmissAction)
-
   if (show && status && (status !== 'succeeded' || showSuccess)) {
     return (
       <Alert

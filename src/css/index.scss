@@ -597,17 +597,15 @@ html#ov {
               color: $col-text-light;
               background-color: $col-structure;
               padding: $pad2 $pad3;
-              font-size: $h5;
+              font-size: $tx;
               font-weight: 700;
               display: flex;
               justify-content: space-between;
               align-items: center;
 
               .primaryDetailsLink {
-                font-size: $h5;
+                font-size: $txSm;
                 color: $col-text-light;
-                padding: 0;
-                background-color: transparent;
               }
             }
 
@@ -653,10 +651,6 @@ html#ov {
               }
             }
 
-            @media (min-width: $mediaXs) {
-              bottom: $navSz2;
-            }
-
             @media (min-width: $mediaMd) {
               position: static;
               margin-right: auto;
@@ -685,6 +679,33 @@ html#ov {
             }
           }
 
+          @media (min-width: $mediaXs) {
+
+            .boardDetailsBar {
+
+              .primaryDetails {
+                font-size: $h5;
+              }
+            }
+
+            .sortBar {
+              bottom: $navSz2;
+            }
+          }
+
+          @media (min-width: $mediaSm) {
+
+            .boardDetailsBar {
+
+              .primaryDetails {
+
+                .primaryDetailsLink {
+                  font-size: $txMd;
+                }
+              }
+            }
+          }
+
           @media (min-width: $mediaLg) {
             margin-top: 0;
             padding-top:$pad3;
@@ -702,7 +723,7 @@ html#ov {
                 font-size: $h3;
 
                 .primaryDetailsLink {
-                  font-size: $h3;
+                  font-size: $tx;
                   color: $col-text;
                 }
               }

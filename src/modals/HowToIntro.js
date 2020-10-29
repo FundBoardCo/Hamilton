@@ -1,15 +1,10 @@
 import React from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import Modal from 'react-bootstrap/Modal';
 import Button from 'react-bootstrap/Button';
 import * as types from '../actions/types';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 export default function HowToIntro() {
-  const actions = useSelector(state => state.modal.actions);
-  const { onCSVClick } = actions;
-  const investorIDs = useSelector(state => state.board.ids) || [];
-
   const dispatch = useDispatch();
 
   const closeModal = () => {
@@ -48,23 +43,13 @@ export default function HowToIntro() {
           </dd>
           <dt>2</dt>
           <dd>
-            Track your progress by&nbsp;
-            <Button
-              className="inlineBtn"
-              variant="link"
-              onClick={onCSVClick}
-              data-track="BoardDownloadText"
-            >
-              downloading this spreadsheet,
-            </Button>
-            and saving it locally, or to a shareable platform like Google Sheets. We&apos;ll&nbsp;
-            automatically add the columns for the steps you need to take.
+            Track your progress on your board. You can track the stage you’re at with each&nbsp;
+            investor, what your next step is, and record notes on each one.
           </dd>
           <dt>3</dt>
           <dd>
             Contact friends, mutual contacts, and anyone else you think might be able to&nbsp;
-            introduce you to the investors on your FundBoard, and track your progress on the&nbsp;
-            spreadsheet you downloaded.
+            introduce you to the investors on your FundBoard.
           </dd>
           <dt>4</dt>
           <dd>
@@ -78,18 +63,6 @@ export default function HowToIntro() {
             </a>
           </dd>
         </dl>
-        <div className="d-flex justify-content-center">
-          <Button
-            className="primaryDetailsLink txs-3 h-lg-3 btnNoMax"
-            variant="secondary"
-            onClick={onCSVClick}
-            disabled={investorIDs.length === 0}
-            data-track="BoardDownload"
-          >
-            <FontAwesomeIcon icon="file-download" />
-            <span className="ml-2">Download My Investors</span>
-          </Button>
-        </div>
       </Modal.Body>
     </Modal>
   );
