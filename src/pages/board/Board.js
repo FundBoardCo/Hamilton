@@ -159,7 +159,7 @@ export default function Board() {
               <span>
                 {`My Fundboard: ${investorIDs.length}`}
                 <span className="d-none d-md-inline">&nbsp;Potential Lead</span>
-                &nbsp;Investors
+                <span className="d-none d-xs-inline">&nbsp;Investors</span>
               </span>
               <Button
                 className="ml-auto mr-2 primaryDetailsLink"

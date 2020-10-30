@@ -488,4 +488,10 @@ html#ov body {
   .op-1 {
     opacity: 0.3;
   }
+
+  @media (min-width: $mediaXs) {
+    .d-xs-inline {
+      display: inline!important;
+    }
+  }
 }
