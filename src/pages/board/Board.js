@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
+import { useHistory } from 'react-router-dom';
 import Papa from 'papaparse';
 import FileSaver from 'file-saver';
 import Row from 'react-bootstrap/Row';
@@ -11,7 +12,7 @@ import Person from '../../components/people/Person';
 import * as types from '../../actions/types';
 import DismissibleStatus from '../../components/DismissibleStatus';
 import { STAGEPROPS } from '../../constants';
-import {getSafeVar} from "../../utils";
+import { getSafeVar } from '../../utils';
 
 export default function Board() {
   const investorIDs = useSelector(state => state.board.ids) || [];
@@ -20,6 +21,7 @@ export default function Board() {
   const modalsSeen = useSelector(state => state.modal.modalsSeen) || [];
   const investorStatus_getStatus = useSelector(state => state.manageRaise.get_status);
   const investorStatus_records = useSelector(state => state.manageRaise.records);
+  const publicID = useSelector(state => state.manageRaise.publicUUID);
 
   const [sortBy, setSortBy] = useState('status');
   const [searchBy, setSearchBy] = useState('');
@@ -137,6 +139,22 @@ export default function Board() {
     FileSaver.saveAs(csvData, 'MyFundBoard.csv');
   }, [csvData]);
 
+  const history = useHistory();
+
+  const onBoardClick = () => {
+    if (!publicID) {
+      dispatch({
+        type: types.USER_POST_PUBLICBOARD_REQUESTED,
+      });
+      dispatch({
+        type: types.MODAL_SET_OPEN,
+        modal: 'creatingPublicBoard',
+      });
+    } else {
+      history.push(`/public/${publicID}`);
+    }
+  };
+
   const showHowToIntro = useCallback(() => dispatch({
     type: types.MODAL_SET_OPEN,
     modal: 'howToIntro',
@@ -183,7 +201,7 @@ export default function Board() {
             </div>
           </div>
           {investorIDs.length > 0 && (
-            <div className="d-flex justify-content-end justify-content-lg-end mb-3">
+            <div className="d-flex justify-content-end justify-content-lg-end align-items-center mb-3">
               <div className="sortBar">
                 <span className="label">Sort By:</span>
                 <button
@@ -208,6 +226,17 @@ export default function Board() {
                   Next
                 </button>
               </div>
+              <Button
+                variant={publicID ? 'outline-secondary' : 'secondary'}
+                className="txs-3 mr-2"
+                onClick={onBoardClick}
+              >
+                <span>
+                  {publicID ? 'Public' : 'Share'}
+                  &nbsp;
+                </span>
+                <span className="d-none d-sm-inline">Board</span>
+              </Button>
               <div className="searchBar">
                 <InputGroup>
                   <InputGroup.Prepend>

@@ -5,6 +5,7 @@ import Investor from './Investor/Investor';
 import SearchMenu from './SearchMenu';
 import Login from './Login';
 import HowToIntro from './HowToIntro';
+import CreatingPublicBoard from './CreatingPublicBoard';
 
 export default function ModalWrapper() {
   const loggedIn = useSelector(state => state.user.token);
@@ -27,6 +28,7 @@ export default function ModalWrapper() {
       { !loggedIn && <Route path="/profile" component={Login} /> }
       { openModal === 'login' && <Route path="/" component={Login} /> }
       { openModal === 'howToIntro' && <Route path="/" component={HowToIntro} /> }
+      { openModal === 'creatingPublicBoard' && <Route path="/" component={CreatingPublicBoard} />}
     </Switch>
   );
 }

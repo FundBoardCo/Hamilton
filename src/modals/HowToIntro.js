@@ -1,7 +1,6 @@
 import React from 'react';
 import { useDispatch } from 'react-redux';
 import Modal from 'react-bootstrap/Modal';
-import Button from 'react-bootstrap/Button';
 import * as types from '../actions/types';
 
 export default function HowToIntro() {
