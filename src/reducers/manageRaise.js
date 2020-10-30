@@ -5,6 +5,9 @@ const defaults = {
   records: {},
   get_status: '',
   post_status: '',
+  createBoard_status: '',
+  publicUUID: '',
+  publicUUID_recordID: '',
   editNoteParams: {},
 };
 
@@ -101,6 +104,23 @@ export default function manageRaise(state = { ...defaults }, action) {
     case types.USER_SET_EDITNOTE: return {
       ...state,
       editNoteParams: { ...action.params },
+    };
+    case types.USER_POST_PUBLICBOARD_REQUESTED: return {
+      ...state,
+      createBoard_status: 'pending',
+    };
+    case types.USER_POST_PUBLICBOARD_SUCCEEDED: return {
+      ...state,
+      createBoard_status: 'succeeded',
+      publicUUID: action.params.uuid,
+    };
+    case types.USER_POST_PUBLICBOARD_FAILED: return {
+      ...state,
+      createBoard_status: processErr(action.error),
+    };
+    case types.USER_POST_PUBLICBOARD_DISMISSED: return {
+      ...state,
+      createBoard_status: '',
     };
     default: return state;
   }
