@@ -589,6 +589,7 @@ html#ov {
 
           .boardDetailsBar {
             position: fixed;
+            z-index: 10;
             top: 0;
             left: 0;
             right: 0;
@@ -687,6 +688,10 @@ html#ov {
             }
           }
 
+          .results {
+            padding-bottom: calc(#{$sortBarSz} - #{$pad2});
+          }
+
           @media (min-width: $mediaXs) {
 
             .boardDetailsBar {
@@ -711,6 +716,13 @@ html#ov {
                   font-size: $txMd;
                 }
               }
+            }
+          }
+
+          @media (min-width: $mediaMd) {
+            
+            .results {
+              padding-bottom: 0;
             }
           }
 

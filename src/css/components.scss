@@ -159,12 +159,15 @@ html#ov body {
     }
 
     &.Board {
-      border-bottom: 1px solid $col-primary-light6;
-      padding-bottom: $pad1;
+      // border-bottom: 1px solid $col-primary-light6;
+      padding: 10px 10px 5px 10px;
       margin-bottom: $pad2;
+      margin-right: -15px;
+      margin-left: -15px;
+      background-color: #fff;
 
       .person {
-        flex-basis:33%;
+        flex-basis: 33%;
         background-color: transparent;
         border-radius: 0;
         border: none;
@@ -214,6 +217,11 @@ html#ov body {
             }
           }
         }
+
+        .controls {
+          padding-top: 0;
+          padding-right: 0;
+        }
       }
 
       .notes {
@@ -239,6 +247,10 @@ html#ov body {
       }
 
       @media (min-width: $mediaMd) {
+        margin-right: 0;
+        margin-left: 0;
+        border-radius: $pad2;
+
         .notes {
           font-size: $txMd;
         }
