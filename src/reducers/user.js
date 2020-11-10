@@ -21,7 +21,7 @@ export const userResets = {
   reset_status: '',
 };
 
-export default function user(state = { ...defaults }, action) {
+export default function user(state = defaults, action) {
   switch (action.type) {
     case types.USER_CREATE_REQUESTED: return {
       ...state,

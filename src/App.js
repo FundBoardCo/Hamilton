@@ -66,6 +66,7 @@ import Board from './pages/board/Board';
 import Search from './pages/search/Search';
 import Profile from './pages/profile/Profile';
 import Talk from './pages/talk/Talk';
+import Public from './pages/public/Public';
 import NotFound from './pages/NotFound';
 import Modal from './modals/ModalWrapper';
 import * as types from './actions/types';
@@ -213,6 +214,7 @@ function App() {
               <Route path="/search" component={Search} />
               <Route path="/profile" component={Profile} />
               <Route path="/talk" component={Talk} />
+              <Route path="/public/:uuid" component={Public} />
               <Route component={NotFound} />
             </Switch>
           </div>

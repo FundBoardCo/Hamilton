@@ -40,6 +40,32 @@ export function* watchInvestorStatusesGet() {
   yield takeEvery(types.USER_GET_INVESTORSTATUSES_REQUESTED, workInvestorStatusesGet);
 }
 
+function requestPublicBoard(params) {
+  return axios.get(`/.netlify/functions/airtable_get_boardByUUID?${toQueryString(params)}`);
+}
+
+function* workPublicBoardGet(action) {
+  const { uuid } = action;
+  const params = { filterByFormula: `{uuid}="${uuid}"` };
+  try {
+    const results = yield call(requestPublicBoard, params);
+    // catch airtable errors
+    if (results.data.error) {
+      trackErr(results.data.error);
+      yield put({ type: types.PUBLIC_GET_BOARD_FAILED, error: results.data.error });
+    } else {
+      yield put({ type: types.PUBLIC_GET_BOARD_SUCCEEDED, data: results.data });
+    }
+  } catch (error) {
+    trackErr(error);
+    yield put({ type: types.PUBLIC_GET_BOARD_FAILED, error });
+  }
+}
+
+export function* watchPublicBoardGet() {
+  yield takeLatest(types.PUBLIC_GET_BOARD_REQUESTED, workPublicBoardGet);
+}
+
 function updateInvestorStatus(params) {
   const postParams = { ...params };
   const { id } = params;
@@ -136,6 +162,8 @@ export function* watchInvestorStatusPost() {
 // TODO: make this a universal call for all the investorStatus tables
 function updatePublicBoard(params) {
   const postParams = { ...params };
+  const { endpoint } = params;
+  delete postParams.endpoint;
   const idParams = {};
   if (params.id) idParams.id = params.id;
   delete postParams.id;
@@ -151,7 +179,7 @@ function updatePublicBoard(params) {
     url: '/.netlify/functions/airtable_p_investorStatus',
     data,
     headers: {
-      endpoint: 'emailMap',
+      endpoint,
     },
   });
 }
@@ -165,6 +193,7 @@ function* workUserPublicBoardCreate() {
       id,
       email,
       uuid,
+      endpoint: 'emailMap',
     };
     const results = yield call(updatePublicBoard, params);
     // catch airtable errors
@@ -188,4 +217,32 @@ function* workUserPublicBoardCreate() {
 
 export function* watchUserPublicBoardCreate() {
   yield takeLatest(types.USER_POST_PUBLICBOARD_REQUESTED, workUserPublicBoardCreate);
+}
+
+function* workPublicInvestorStatusUpdate(action) {
+  const { params } = action;
+  params.endpoint = 'status';
+  try {
+    const results = yield call(updatePublicBoard, params);
+    // catch airtable errors
+    if (results.data.error) {
+      trackErr(results.data.error);
+      yield put({ type: types.PUBLIC_POST_INVESTORSTATUS_FAILED, error: results.data.error });
+    } else if (results.data.statusCode && results.data.statusCode === 500) {
+      trackErr(results.data.body);
+      yield put({ type: types.PUBLIC_POST_INVESTORSTATUS_FAILED, error: results.data.body });
+    } else {
+      yield put({
+        type: types.PUBLIC_POST_INVESTORSTATUS_SUCCEEDED,
+        params,
+      });
+    }
+  } catch (error) {
+    trackErr(error);
+    yield put({ type: types.PUBLIC_POST_INVESTORSTATUS_FAILED, error });
+  }
+}
+
+export function* watchPublicInvestorStatusUpdate() {
+  yield takeLatest(types.PUBLIC_POST_INVESTORSTATUS_REQUESTED, workPublicInvestorStatusUpdate);
 }

@@ -1,11 +1,12 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useHistory, useLocation } from 'react-router';
 import moment from 'moment';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { capitalizeFirstLetter } from '../../utils';
 import StageIcon from './StageIcon';
+import * as types from '../../actions/types';
 
 export default function Person(props) {
   const {
@@ -18,11 +19,14 @@ export default function Person(props) {
     // isOpen = false,
     // isImpact = false,
     isBoard = false,
+    isPublic = false,
     status,
     sortedBy,
     matches = {},
     investorStatus = {},
   } = props;
+
+  const { intro_name, intro_date } = investorStatus;
 
   const primary_organization_logo = primary_organization.image_url || '';
   const primary_organization_name = primary_organization.name || '';
@@ -33,18 +37,26 @@ export default function Person(props) {
   const investors = useSelector(state => state.board.ids) || [];
   const isOnBoard = investors.includes(uuid);
 
-  const history = useHistory();
+  const location = useLocation();
+  const path = location.pathname.substring(1).split('/')[0];
+  const capPath = capitalizeFirstLetter(path);
 
-  const showPerson = () => {
-    const root = isBoard ? 'board' : 'search';
-    history.push(`/${root}/${uuid}`);
+  const history = useHistory();
+  const dispatch = useDispatch();
+
+  const clickPerson = () => {
+    if (!isPublic) {
+      history.push(`/${path}/${uuid}`);
+    } else {
+      dispatch({
+        type: types.MODAL_SET_OPEN,
+        modal: 'makeIntro',
+        modalProps: { ...investorStatus },
+      });
+    }
   };
 
-  const location = useLocation();
-
-  const path = capitalizeFirstLetter(location.pathname.substring(1).split('/')[0]);
-
-  const investorStage = path === 'Board' ? investorStatus.stage || 'added' : isOnBoard && 'added';
+  const investorStage = isBoard ? investorStatus.stage || 'added' : isOnBoard && 'added';
   let { notes } = investorStatus;
   let next = {};
   if (notes && Object.values(notes).length) {
@@ -70,12 +82,12 @@ export default function Person(props) {
   if (sortedBy === 'next' && !next.text) return null;
 
   return (
-    <div className={`personWrapper ${path}`}>
+    <div className={`personWrapper ${isBoard ? 'Board' : ''}`}>
       <button
         className="person"
-        onClick={showPerson}
+        onClick={clickPerson}
         type="button"
-        data-track={`${path}Person`}
+        data-track={`${capPath}Person`}
       >
         <div className="thumb" style={{ backgroundImage: `url(${image_url})` }} />
         <div className="content">
@@ -105,7 +117,7 @@ export default function Person(props) {
               </div>
             </div>
           )}
-          {sortedBy === 'next' && next.text && (
+          {sortedBy === 'next' && next.text && !isPublic && (
             <div className="next sortedByNext">
               <span className="text">
                 <span className="text-danger">
@@ -119,19 +131,33 @@ export default function Person(props) {
             </div>
           )}
         </div>
-        <div className="controls">
-          <StageIcon stage={investorStage} withText />
-          <div className="percentageMatch">
-            {path !== 'Board' && `${percentageMatch}`}
+        { isPublic ? (
+          <div>
+            {['none', 'added'].includes(investorStage) ? (
+              <span className="btn btn-link">
+                I can introduce this investor.
+              </span>
+            ) : (
+              <span>
+                {`Introduced${intro_name ? ` by ${intro_name}` : ''}${intro_date ? `on ${intro_date}` : ''}`}
+              </span>
+            )}
           </div>
-        </div>
+        ) : (
+          <div className="controls">
+            <StageIcon stage={investorStage} withText />
+            <div className="percentageMatch">
+              {!isBoard && `${percentageMatch}`}
+            </div>
+          </div>
+        )}
       </button>
-      {path === 'Board' && sortedBy !== 'next' && (
+      {isBoard && sortedBy !== 'next' && !isPublic && (
         <div className="notes text-primary">
           {`Notes(${notes.length})${notes.length > 0 ? `: ${notes[0].text}` : ''}`}
         </div>
       )}
-      {path === 'Board' && sortedBy !== 'next' && (
+      {isBoard && sortedBy !== 'next' && !isPublic && (
         <div className="next">
           <span className="text">
             <span className={next.waiting ? 'text-primary' : 'text-danger'}>
@@ -177,6 +203,7 @@ Person.defaultProps = {
   // isOpen: false,
   // isImpact: false,
   isBoard: false,
+  isPublic: false,
   status: '',
   sortedBy: '',
   investorStatus: {},
@@ -203,6 +230,7 @@ Person.propTypes = {
   // isOpen: PropTypes.bool,
   // isImpact: PropTypes.bool,
   isBoard: PropTypes.bool,
+  isPublic: PropTypes.bool,
   status: PropTypes.string,
   sortedBy: PropTypes.string,
   investorStatus: PropTypes.shape({

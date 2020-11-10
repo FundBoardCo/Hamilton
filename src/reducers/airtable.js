@@ -6,7 +6,7 @@ const defaultState = {
   feedback_status: '',
 };
 
-export default function airTable(state = { ...defaultState }, action) {
+export default function airTable(state = defaultState, action) {
   console.log(action);
   switch (action.type) {
     case types.AIRTABLE_GET_KEYWORDS_REQUESTED: return {

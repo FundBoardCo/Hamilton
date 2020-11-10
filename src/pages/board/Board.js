@@ -47,7 +47,6 @@ export default function Board() {
     if (investorIDs.length) {
       dispatch({
         type: types.USER_GET_INVESTORSTATUSES_REQUESTED,
-        ids: investorIDs,
       });
     }
   }, [investorIDs, dispatch]);
@@ -264,9 +263,11 @@ export default function Board() {
       {loggedIn && (
         <div className="results">
           {toShowInvestorList.map(i => {
-            const personProps = { ...i };
-            personProps.isBoard = true;
-            personProps.sortedBy = sortBy;
+            const personProps = {
+              ...i,
+              isBoard: true,
+              sortedBy: sortBy,
+            };
             return (
               <Person key={i.uuid} {...personProps} />
             );

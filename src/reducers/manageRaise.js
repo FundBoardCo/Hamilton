@@ -3,9 +3,12 @@ import { processErr } from '../utils';
 
 const defaults = {
   records: {},
+  public_records: {},
   get_status: '',
   post_status: '',
+  publicPost_status: '',
   createBoard_status: '',
+  getPublic_status: '',
   publicUUID: '',
   publicUUID_recordID: '',
   editNoteParams: {},
@@ -51,7 +54,7 @@ function convertRecords(recs) {
   return { ...newRecs };
 }
 
-export default function manageRaise(state = { ...defaults }, action) {
+export default function manageRaise(state = defaults, action) {
   let newRecords = {};
   const { data } = action;
 
@@ -61,13 +64,10 @@ export default function manageRaise(state = { ...defaults }, action) {
       get_status: 'pending',
     };
     case types.USER_GET_INVESTORSTATUSES_SUCCEEDED:
-      if (Array.isArray(data.records)) {
-        newRecords = convertRecords(data.records);
-      }
       return {
         ...state,
         get_status: 'succeeded',
-        records: { ...newRecords },
+        records: Array.isArray(data.records) ? convertRecords(data.records) : {},
       };
     case types.USER_GET_INVESTORSTATUSES_FAILED: return {
       ...state,
@@ -82,9 +82,7 @@ export default function manageRaise(state = { ...defaults }, action) {
       post_status: 'pending',
     };
     case types.USER_POST_INVESTORSTATUS_SUCCEEDED:
-      if (Array.isArray(data.records)) {
-        newRecords = convertRecords(data.records);
-      }
+      newRecords = Array.isArray(data.records) ? convertRecords(data.records) : {};
       return {
         ...state,
         post_status: 'succeeded',
@@ -121,6 +119,39 @@ export default function manageRaise(state = { ...defaults }, action) {
     case types.USER_POST_PUBLICBOARD_DISMISSED: return {
       ...state,
       createBoard_status: '',
+    };
+    case types.PUBLIC_GET_BOARD_REQUESTED: return {
+      ...state,
+      getPublic_status: 'pending',
+    };
+    case types.PUBLIC_GET_BOARD_SUCCEEDED: return {
+      ...state,
+      getPublic_status: 'succeeded',
+      public_records: Array.isArray(data.records) ? convertRecords(data.records) : {},
+    };
+    case types.PUBLIC_GET_BOARD_FAILED: return {
+      ...state,
+      getPublic_status: processErr(action.error),
+    };
+    case types.PUBLIC_GET_BOARD_DISMISSED: return {
+      ...state,
+      getPublic_status: '',
+    };
+    case types.PUBLIC_POST_INVESTORSTATUS_REQUESTED: return {
+      ...state,
+      publicPost_status: 'pending',
+    };
+    case types.PUBLIC_POST_INVESTORSTATUS_SUCCEEDED: return {
+      ...state,
+      publicPost_status: 'succeeded',
+    };
+    case types.PUBLIC_POST_INVESTORSTATUS_FAILED: return {
+      ...state,
+      publicPost_status: processErr(action.error),
+    };
+    case types.PUBLIC_POST_INVESTORSTATUS_DISMISSED: return {
+      ...state,
+      publicPost_status: '',
     };
     default: return state;
   }

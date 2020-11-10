@@ -25,8 +25,10 @@ import {
 } from './airtable';
 import {
   watchInvestorStatusesGet,
+  watchPublicBoardGet,
   watchInvestorStatusPost,
   watchUserPublicBoardCreate,
+  watchPublicInvestorStatusUpdate,
 } from './manageRaise';
 
 const api = `https://${process.env.REACT_APP_ENV === 'DEV' ? 'staging-' : ''}api.fundboard.co/`;
@@ -449,6 +451,8 @@ export default function* rootSaga() {
   yield fork(watchUserGetProfile);
   yield fork(watchUserGetProfileSucceeded);
   yield fork(watchInvestorStatusesGet);
+  yield fork(watchPublicBoardGet);
+  yield fork(watchPublicInvestorStatusUpdate);
   yield fork(watchInvestorStatusPost);
   yield fork(watchUserPublicBoardCreate);
   yield fork(watchPersonPutInvalid);

@@ -13,7 +13,7 @@ const defaultState = {
   firstTime: true,
 };
 
-export default function search(state = { ...defaultState }, action) {
+export default function search(state = defaultState, action) {
   switch (action.type) {
     case types.SEARCH_SET_KEYWORDS: return {
       ...state,
