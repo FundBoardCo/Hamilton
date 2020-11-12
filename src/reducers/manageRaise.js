@@ -1,5 +1,5 @@
 import * as types from '../actions/types';
-import { processErr } from '../utils';
+import { processErr, isPlainObject } from '../utils';
 
 const defaults = {
   records: {},
@@ -9,6 +9,8 @@ const defaults = {
   publicPost_status: '',
   createBoard_status: '',
   getPublic_status: '',
+  getFounder_status: '',
+  founderData: {},
   publicUUID: '',
   publicUUID_recordID: '',
   editNoteParams: {},
@@ -137,14 +139,40 @@ export default function manageRaise(state = defaults, action) {
       ...state,
       getPublic_status: '',
     };
+    case types.PUBLIC_GET_FOUNDER_REQUESTED: return {
+      ...state,
+      getFounder_status: 'pending',
+    };
+    case types.PUBLIC_GET_FOUNDER_SUCCEEDED: return {
+      ...state,
+      getFounder_status: 'succeeded',
+      founderData: Array.isArray(action.data.records)
+      && isPlainObject(action.data.records[0].fields)
+      ? { ...action.data.records[0].fields }
+      : {},
+    };
+    case types.PUBLIC_GET_FOUNDER_FAILED: return {
+      ...state,
+      getFounder_status: processErr(action.error),
+    };
+    case types.PUBLIC_GET_FOUNDER_DISMISSED: return {
+      ...state,
+      getFounder_status: '',
+    };
     case types.PUBLIC_POST_INVESTORSTATUS_REQUESTED: return {
       ...state,
       publicPost_status: 'pending',
     };
-    case types.PUBLIC_POST_INVESTORSTATUS_SUCCEEDED: return {
-      ...state,
-      publicPost_status: 'succeeded',
-    };
+    case types.PUBLIC_POST_INVESTORSTATUS_SUCCEEDED:
+      newRecords = Array.isArray(data.records) ? convertRecords(data.records) : {};
+      return {
+        ...state,
+        publicPost_status: 'succeeded',
+        records: {
+          ...state.records,
+          ...newRecords,
+        },
+      };
     case types.PUBLIC_POST_INVESTORSTATUS_FAILED: return {
       ...state,
       publicPost_status: processErr(action.error),

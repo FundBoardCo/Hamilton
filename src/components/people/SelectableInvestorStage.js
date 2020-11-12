@@ -83,7 +83,7 @@ export default function SelectInvestorStage(props) {
       />
       <div className={`${!open ? 'sr-only' : ''}`}>
         {stageKeys.map((k, i) => {
-          if (k !== stage && k !== 'none' && k !== 'added') {
+          if (k !== stage && k !== 'none') {
             return (
               <Stage
                 stage={k}

@@ -1,12 +1,10 @@
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import Row from 'react-bootstrap/Row';
-import Button from 'react-bootstrap/Button';
-import Col from 'react-bootstrap/Col';
 import FormControl from 'react-bootstrap/FormControl';
 import InputGroup from 'react-bootstrap/InputGroup';
 import PropTypes from 'prop-types';
-import Person from '../../components/people/Person';
+import PersonPublic from '../../components/people/PersonPublic';
 import * as types from '../../actions/types';
 import DismissibleStatus from '../../components/DismissibleStatus';
 import { STAGEPROPS } from '../../constants';
@@ -17,8 +15,9 @@ export default function Public(props) {
   const { params } = match;
   const { uuid } = params;
 
-  const getPublic_status = useSelector(state => state.manageRaise.getPublic_status);
-  const public_records = useSelector(state => state.manageRaise.public_records) || {};
+  const manageRaise = useSelector(state => state.manageRaise);
+  const { getPublic_status, public_records = {}, publicUUID } = manageRaise;
+  const isMyPage = uuid === publicUUID;
   const investorIDs = Object.keys(public_records);
   const people = useSelector(state => state.people);
 
@@ -135,13 +134,12 @@ export default function Public(props) {
         {toShowInvestorList.map(i => {
           const personProps = {
             ...i,
-            isBoard: true,
-            isPublic: true,
             sortedBy: sortBy,
             founderID: uuid,
+            isMyPage,
           };
           return (
-            <Person key={i.uuid} {...personProps} />
+            <PersonPublic key={i.uuid} {...personProps} />
           );
         })}
       </div>

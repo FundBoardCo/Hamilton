@@ -1,12 +1,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { useHistory, useLocation } from 'react-router';
 import moment from 'moment';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { capitalizeFirstLetter } from '../../utils';
 import StageIcon from './StageIcon';
-import * as types from '../../actions/types';
 
 export default function Person(props) {
   const {
@@ -19,14 +18,11 @@ export default function Person(props) {
     // isOpen = false,
     // isImpact = false,
     isBoard = false,
-    isPublic = false,
     status,
     sortedBy,
     matches = {},
     investorStatus = {},
   } = props;
-
-  const { intro_name, intro_date } = investorStatus;
 
   const primary_organization_logo = primary_organization.image_url || '';
   const primary_organization_name = primary_organization.name || '';
@@ -42,18 +38,9 @@ export default function Person(props) {
   const capPath = capitalizeFirstLetter(path);
 
   const history = useHistory();
-  const dispatch = useDispatch();
 
   const clickPerson = () => {
-    if (!isPublic) {
-      history.push(`/${path}/${uuid}`);
-    } else {
-      dispatch({
-        type: types.MODAL_SET_OPEN,
-        modal: 'makeIntro',
-        modalProps: { ...investorStatus },
-      });
-    }
+    history.push(`/${path}/${uuid}`);
   };
 
   const investorStage = isBoard ? investorStatus.stage || 'added' : isOnBoard && 'added';
@@ -117,7 +104,7 @@ export default function Person(props) {
               </div>
             </div>
           )}
-          {sortedBy === 'next' && next.text && !isPublic && (
+          {sortedBy === 'next' && next.text && (
             <div className="next sortedByNext">
               <span className="text">
                 <span className="text-danger">
@@ -131,33 +118,19 @@ export default function Person(props) {
             </div>
           )}
         </div>
-        { isPublic ? (
-          <div>
-            {['none', 'added'].includes(investorStage) ? (
-              <span className="btn btn-link">
-                I can introduce this investor.
-              </span>
-            ) : (
-              <span>
-                {`Introduced${intro_name ? ` by ${intro_name}` : ''}${intro_date ? `on ${intro_date}` : ''}`}
-              </span>
-            )}
+        <div className="controls">
+          <StageIcon stage={investorStage} withText />
+          <div className="percentageMatch">
+            {!isBoard && `${percentageMatch}`}
           </div>
-        ) : (
-          <div className="controls">
-            <StageIcon stage={investorStage} withText />
-            <div className="percentageMatch">
-              {!isBoard && `${percentageMatch}`}
-            </div>
-          </div>
-        )}
+        </div>
       </button>
-      {isBoard && sortedBy !== 'next' && !isPublic && (
+      {isBoard && sortedBy !== 'next' && (
         <div className="notes text-primary">
           {`Notes(${notes.length})${notes.length > 0 ? `: ${notes[0].text}` : ''}`}
         </div>
       )}
-      {isBoard && sortedBy !== 'next' && !isPublic && (
+      {isBoard && sortedBy !== 'next' && (
         <div className="next">
           <span className="text">
             <span className={next.waiting ? 'text-primary' : 'text-danger'}>
@@ -203,7 +176,6 @@ Person.defaultProps = {
   // isOpen: false,
   // isImpact: false,
   isBoard: false,
-  isPublic: false,
   status: '',
   sortedBy: '',
   investorStatus: {},
@@ -230,7 +202,6 @@ Person.propTypes = {
   // isOpen: PropTypes.bool,
   // isImpact: PropTypes.bool,
   isBoard: PropTypes.bool,
-  isPublic: PropTypes.bool,
   status: PropTypes.string,
   sortedBy: PropTypes.string,
   investorStatus: PropTypes.shape({

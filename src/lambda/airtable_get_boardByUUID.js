@@ -1,5 +1,5 @@
 import fetch from 'node-fetch';
-import {getSafeVar, toQueryString} from '../utils';
+import { getSafeVar, toQueryString } from '../utils';
 
 exports.handler = async event => {
   // call the emailMap table to get the email.
@@ -31,7 +31,19 @@ exports.handler = async event => {
         },
       });
     const data = await statusResponse.json();
-    console.log(data)
+    if (Array.isArray(data.records)) {
+      // remove sensitive data
+      data.records = data.records.map(r => {
+        const newF = { ...r.fields } || {};
+        delete newF.userid;
+        delete newF.key;
+        delete newF.intro_email;
+        return {
+          ...r,
+          fields: newF,
+        };
+      });
+    }
     return {
       statusCode: 200,
       headers: { 'Content-Type': 'application/json' },

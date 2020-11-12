@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import { useHistory } from 'react-router';
 import { useSelector, useDispatch } from 'react-redux';
 import Form from 'react-bootstrap/Form';
@@ -9,10 +9,13 @@ import Status from '../components/DismissibleStatus';
 
 export default function MakeIntro() {
   const postStatus = useSelector(state => state.manageRaise.publicPost_status) || '';
-  console.log(postStatus)
+  const founderStatus = useSelector(state => state.manageRaise.getFounder_status) || '';
 
   const openModal = useSelector(state => state.modal.openModal);
   const modalProps = useSelector(state => state.modal.modalProps);
+  const { isPublic, founderID, investor } = modalProps;
+  const founderProps = useSelector(state => state.manageRaise.founderData) || {};
+  console.log(founderProps)
 
   const [validated, setValidated] = useState(false);
 
@@ -21,6 +24,13 @@ export default function MakeIntro() {
   const [dateVal, setDateVal] = useState('');
 
   const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch({
+      type: types.PUBLIC_GET_FOUNDER_REQUESTED,
+      uuid: founderID,
+    });
+  }, [dispatch]);
 
   const updateStatus = params => dispatch({
     type: types.PUBLIC_POST_INVESTORSTATUS_REQUESTED,
@@ -52,6 +62,7 @@ export default function MakeIntro() {
         id: modalProps.id,
         intro_name: nameVal,
         intro_email: emailVal,
+        stage: 'connected',
         //intro_date: dateVal,
       };
       updateStatus(p);
@@ -70,6 +81,10 @@ export default function MakeIntro() {
     setDateVal(e.target.value);
   };
 
+  const introTitle = isPublic
+    ? `Introduce ${founderProps.name} to ${investor.name}`
+    : `Introduction to ${investor.name}`;
+
   return (
     <Modal
       size="lg"
@@ -82,10 +97,16 @@ export default function MakeIntro() {
     >
       <Modal.Header closeButton>
         <Modal.Title>
-          <h2>title</h2>
+          <h2>{introTitle}</h2>
         </Modal.Title>
       </Modal.Header>
       <Modal.Body>
+        <Status
+          statusPrefix="Founder data:"
+          showSuccess={false}
+          status={founderStatus}
+          dissmissAction={types.PUBLIC_GET_FOUNDER_DISMISSED}
+        />
         <Form
           noValidate
           validated={validated}
@@ -96,7 +117,7 @@ export default function MakeIntro() {
             <Form.Control
               required
               type="text"
-              placeholder="Your name"
+              placeholder={isPublic ? 'Your name' : 'Name'}
               value={nameVal}
               onChange={e => onNameChange(e)}
               data-track="MakeIntro-Name"
