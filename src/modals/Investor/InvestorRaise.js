@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import InputGroup from 'react-bootstrap/InputGroup';
 import FormControl from 'react-bootstrap/FormControl';
 import Button from 'react-bootstrap/Button';
+import moment from 'moment';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import InvestorNameTag from './InvestorNameTag';
 import SelectableInvestorStage from '../../components/people/SelectableInvestorStage';
@@ -11,6 +12,7 @@ import * as types from '../../actions/types';
 import DismissibleStatus from '../../components/DismissibleStatus';
 import EditNote from './EditNote';
 import Note from './Note';
+import EditIntro from './EditIntro';
 import { STAGEPROPS } from '../../constants';
 
 export default function InvestorRaise(props) {
@@ -29,6 +31,7 @@ export default function InvestorRaise(props) {
 
   const [amountValue, setAmount] = useState(amount);
   const [showEditAmount, setShowEditAmount] = useState(false);
+  const [showEditIntro, setShowEditIntro] = useState(false);
 
   const dispatch = useDispatch();
 
@@ -129,6 +132,39 @@ export default function InvestorRaise(props) {
         )}
         {advice && (
           <div>{`${advice}`}</div>
+        )}
+      </section>
+      <section className="mb-3">
+        <h2 className="sectionHead">Introduced By</h2>
+        {showEditIntro ? (
+          <EditIntro
+            {...investorStatus}
+            onSubmit={() => setShowEditIntro(false)}
+            onCancel={() => setShowEditIntro(false)}
+          />
+        ) : (
+          <div className="d-flex">
+            <div className="flex-grow-1">
+              <div className="mb-1">{investorStatus.intro_name}</div>
+              <div className="mb-1">
+                <a href={`mailto://${investorStatus.intro_email}`}>
+                  {investorStatus.intro_email}
+                </a>
+              </div>
+              <div className="mb-1">
+                {`On ${moment(investorStatus.intro_date).format('MMMM d, yyyy h:mma')}`}
+              </div>
+            </div>
+            <div>
+              <button
+                className="btn iconBtn text-primary"
+                type="button"
+                onClick={() => setShowEditIntro(true)}
+              >
+                <FontAwesomeIcon icon="edit" className="txs-2" />
+              </button>
+            </div>
+          </div>
         )}
       </section>
       <section>

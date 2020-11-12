@@ -76,7 +76,7 @@ export default function Note(props) {
         <div className="content">
           {(date || next) && (
             <div className={`date ${waiting ? 'waiting' : ''}`}>
-              {`${next ? 'Next ' : ''}${moment(date).format('MM-DD-YYYY hh:mm a') || ''}`}
+              {`${next ? 'Next ' : ''}${moment(date).format('MM-DD-YYYY hh:mma') || ''}`}
             </div>
           )}
           <div className="text">{text}</div>

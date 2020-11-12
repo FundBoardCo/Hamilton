@@ -45,11 +45,6 @@ function convertRecords(recs) {
         };
       }
       newRec.notes = { ...notesObj };
-      newRec.intro = {
-        name: r.intro_name || '',
-        email: r.intro_email || '',
-        date: r.intro_date || '',
-      };
       newRecs[r.fields.uuid] = { ...newRec };
     }
   });
@@ -148,8 +143,8 @@ export default function manageRaise(state = defaults, action) {
       getFounder_status: 'succeeded',
       founderData: Array.isArray(action.data.records)
       && isPlainObject(action.data.records[0].fields)
-      ? { ...action.data.records[0].fields }
-      : {},
+        ? { ...action.data.records[0].fields }
+        : {},
     };
     case types.PUBLIC_GET_FOUNDER_FAILED: return {
       ...state,
@@ -168,8 +163,8 @@ export default function manageRaise(state = defaults, action) {
       return {
         ...state,
         publicPost_status: 'succeeded',
-        records: {
-          ...state.records,
+        public_records: {
+          ...state.public_records,
           ...newRecords,
         },
       };

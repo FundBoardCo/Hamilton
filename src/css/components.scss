@@ -121,6 +121,23 @@ html#ov body {
         }
       }
 
+      .introText {
+        font-size: $txSm;
+        flex-basis: 33%;
+        display: flex;
+        justify-content: flex-end;
+        text-align: right;
+
+        .btn-link {
+          align-items: flex-start;
+          justify-content: flex-end;
+        }
+
+        @media (min-width: $mediaMd) {
+          font-size: $txMd;
+        }
+      }
+
       .controls {
         flex-basis: 15%;
         display: flex;
@@ -396,7 +413,8 @@ html#ov body {
           .modal-body {
 
             .sectionHead {
-              border-bottom: 1px solid $col-text;
+              padding-bottom: $pad1;
+              border-bottom: 2px solid $col-text;
             }
 
             .investorHeader {
@@ -1130,6 +1148,7 @@ html#ov body {
 
       .stageText {
         font-weight: 700;
+        text-align: left;
       }
 
       .caret {

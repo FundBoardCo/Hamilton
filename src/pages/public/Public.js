@@ -9,14 +9,17 @@ import * as types from '../../actions/types';
 import DismissibleStatus from '../../components/DismissibleStatus';
 import { STAGEPROPS } from '../../constants';
 import { getSafeVar } from '../../utils';
+import Status from "../../components/DismissibleStatus";
 
 export default function Public(props) {
   const { match } = props;
   const { params } = match;
   const { uuid } = params;
 
-  const manageRaise = useSelector(state => state.manageRaise);
-  const { getPublic_status, public_records = {}, publicUUID } = manageRaise;
+  const getPublic_status = useSelector(state => state.manageRaise.getPublic_status);
+  const postStatus = useSelector(state => state.manageRaise.publicPost_status);
+  const publicUUID = useSelector(state => state.manageRaise.publicUUID);
+  const public_records = useSelector(state => state.manageRaise.public_records) || {};
   const isMyPage = uuid === publicUUID;
   const investorIDs = Object.keys(public_records);
   const people = useSelector(state => state.people);
@@ -32,6 +35,12 @@ export default function Public(props) {
       uuid,
     });
   }, [uuid, dispatch]);
+
+  useEffect(() => {
+    dispatch({
+      type: types.PUBLIC_POST_INVESTORSTATUS_DISMISSED,
+    });
+  }, [dispatch]);
 
   useEffect(() => {
     const ids = Object.keys(public_records);
@@ -129,6 +138,12 @@ export default function Public(props) {
         status={getPublic_status}
         showSuccess={false}
         dissmissAction={types.PUBLIC_GET_BOARD_DISMISSED}
+      />
+      <Status
+        statusPrefix="Make Introduction:"
+        showSuccess
+        status={postStatus}
+        dissmissAction={types.PUBLIC_POST_INVESTORSTATUS_DISMISSED}
       />
       <div className="results">
         {toShowInvestorList.map(i => {

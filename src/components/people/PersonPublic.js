@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { useDispatch } from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import { useLocation } from 'react-router';
 import moment from 'moment';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -45,7 +45,8 @@ export default function Person(props) {
         modal: 'makeIntro',
         modalProps: {
           ...investorStatus,
-          isPublic: !isMyPage,
+          //isPublic: !isMyPage,
+          isPublic: true,
           investor: {
             name,
             primary_job_title,
@@ -103,14 +104,18 @@ export default function Person(props) {
             </div>
           </div>
         </div>
-        <div>
+        <div className="introText">
           {notIntroed ? (
             <span className="btn btn-link">
               I can introduce this investor
             </span>
           ) : (
             <span>
-              {`Introduced${intro_name ? ` by ${intro_name}` : ''}${intro_date ? `on ${intro_date}` : ''}`}
+              {`Introduced ${
+                intro_name ? ` by ${intro_name}` : ''
+              }${
+                intro_date ? ` on ${moment(intro_date).format('MMMM d, yyyy h:mma')}` : ''
+              }`}
             </span>
           )}
         </div>

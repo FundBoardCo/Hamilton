@@ -40,13 +40,11 @@ export default function Investor(props) {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    if (!name) {
-      dispatch({
-        type: types.PEOPLE_GET_REQUEST,
-        id: uuid,
-      });
-    }
-  }, [dispatch, name, uuid]);
+    dispatch({
+      type: types.PEOPLE_GET_REQUEST,
+      id: uuid,
+    });
+  }, [dispatch, uuid]);
 
   const onToggleMode = () => {
     setMode(mode === 'data' ? 'raise' : 'data');

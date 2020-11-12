@@ -13,7 +13,7 @@ export const STAGEPROPS = {
   },
   added: {
     faIcon: 'check',
-    text: 'Added to your FundBoard',
+    text: 'Needs an Intro',
     advice: 'Use this investor’s data to try to find mutual contacts that can introduce you. You can try contacting them directly, but an introduction has a higher chance of success.',
   },
   connected: {
