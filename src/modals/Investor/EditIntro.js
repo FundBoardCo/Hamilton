@@ -1,10 +1,9 @@
-import React, {useRef, useState} from 'react';
+import React, { useRef, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import PropTypes from 'prop-types';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import DatePicker from 'react-datepicker';
-import moment from 'moment';
 import * as types from '../../actions/types';
 import Status from '../../components/DismissibleStatus';
 
@@ -76,8 +75,8 @@ export default function EditIntro(props) {
     onCancel();
   };
 
-  const emailFormProps = {};
-  if (isPublic) emailFormProps.required = true;
+  const publicFormProps = {};
+  if (isPublic) publicFormProps.required = true;
 
   return (
     <Form
@@ -89,7 +88,7 @@ export default function EditIntro(props) {
       <Form.Group controlId="NameInput">
         <Form.Label className="sr-only">Name</Form.Label>
         <Form.Control
-          required
+          {...publicFormProps}
           type="text"
           placeholder={isPublic ? 'Your name' : 'Name'}
           value={nameVal}
@@ -103,7 +102,7 @@ export default function EditIntro(props) {
       <Form.Group controlId="EmailInput">
         <Form.Label className="sr-only">Email Address</Form.Label>
         <Form.Control
-          {...emailFormProps}
+          {...publicFormProps}
           type="email"
           placeholder="email address"
           value={emailVal}

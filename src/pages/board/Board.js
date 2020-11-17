@@ -21,6 +21,7 @@ export default function Board() {
   const modalsSeen = useSelector(state => state.modal.modalsSeen) || [];
   const investorStatus_getStatus = useSelector(state => state.manageRaise.get_status);
   const investorStatus_records = useSelector(state => state.manageRaise.records);
+  const boardNotFound = useSelector(state => state.manageRaise.notFound);
   const publicID = useSelector(state => state.manageRaise.publicUUID);
 
   const [sortBy, setSortBy] = useState('status');
@@ -33,6 +34,13 @@ export default function Board() {
       type: types.USER_GET_PROFILE_REQUESTED,
     });
   }, [dispatch]);
+
+  useEffect(() => {
+    dispatch({
+      type: types.PUBLIC_GET_BOARD_REQUESTED,
+      uuid: publicID,
+    });
+  }, [publicID, dispatch]);
 
   useEffect(() => {
     if (investorIDs.length) {
@@ -141,9 +149,10 @@ export default function Board() {
   const history = useHistory();
 
   const onBoardClick = () => {
-    if (!publicID) {
+    if (!publicID || boardNotFound) {
       dispatch({
         type: types.USER_POST_PUBLICBOARD_REQUESTED,
+        params: { id: false },
       });
       dispatch({
         type: types.MODAL_SET_OPEN,

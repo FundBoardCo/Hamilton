@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import {useDispatch, useSelector} from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { useLocation } from 'react-router';
 import moment from 'moment';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -45,8 +45,7 @@ export default function Person(props) {
         modal: 'makeIntro',
         modalProps: {
           ...investorStatus,
-          //isPublic: !isMyPage,
-          isPublic: true,
+          isPublic: !isMyPage,
           investor: {
             name,
             primary_job_title,

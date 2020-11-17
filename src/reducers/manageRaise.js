@@ -7,13 +7,16 @@ const defaults = {
   get_status: '',
   post_status: '',
   publicPost_status: '',
-  createBoard_status: '',
+  postBoard_status: '',
+  deleteBoard_status: '',
   getPublic_status: '',
   getFounder_status: '',
   founderData: {},
   publicUUID: '',
   publicUUID_recordID: '',
   editNoteParams: {},
+  hidden: false,
+  notFound: false,
 };
 
 function convertRecords(recs) {
@@ -102,20 +105,22 @@ export default function manageRaise(state = defaults, action) {
     };
     case types.USER_POST_PUBLICBOARD_REQUESTED: return {
       ...state,
-      createBoard_status: 'pending',
+      postBoard_status: 'pending',
     };
     case types.USER_POST_PUBLICBOARD_SUCCEEDED: return {
       ...state,
-      createBoard_status: 'succeeded',
+      postBoard_status: 'succeeded',
+      hidden: action.params.hide,
       publicUUID: action.params.uuid,
+      publicUUID_recordID: action.params.id,
     };
     case types.USER_POST_PUBLICBOARD_FAILED: return {
       ...state,
-      createBoard_status: processErr(action.error),
+      postBoard_status: processErr(action.error),
     };
     case types.USER_POST_PUBLICBOARD_DISMISSED: return {
       ...state,
-      createBoard_status: '',
+      postBoard_status: '',
     };
     case types.PUBLIC_GET_BOARD_REQUESTED: return {
       ...state,
@@ -124,6 +129,9 @@ export default function manageRaise(state = defaults, action) {
     case types.PUBLIC_GET_BOARD_SUCCEEDED: return {
       ...state,
       getPublic_status: 'succeeded',
+      hidden: data.hidden,
+      notFound: data.notFound,
+      publicUUID_recordID: data.publicUUID_recordID,
       public_records: Array.isArray(data.records) ? convertRecords(data.records) : {},
     };
     case types.PUBLIC_GET_BOARD_FAILED: return {

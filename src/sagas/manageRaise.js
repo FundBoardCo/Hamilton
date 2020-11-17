@@ -38,6 +38,11 @@ function postStatusData(params) {
   const idParams = {};
   if (params.id) idParams.id = params.id;
   delete postParams.id;
+  let method = params.id ? 'patch' : 'post';
+  if (params.method) {
+    method = params.method;
+    delete postParams.method;
+  }
 
   const data = {
     records: [{
@@ -46,7 +51,7 @@ function postStatusData(params) {
     }],
   };
   return axios({
-    method: params.id ? 'patch' : 'post',
+    method,
     url: '/.netlify/functions/airtable_p_investorStatus',
     data,
     headers: {
@@ -226,16 +231,18 @@ export function* watchInvestorStatusPost() {
   yield takeEvery(types.USER_POST_INVESTORSTATUS_REQUESTED, workInvestorStatusPost);
 }
 
-function* workUserPublicBoardCreate() {
+function* workUserPublicBoardPost(action) {
+  let { params } = action;
   try {
     const id = yield select(getPubRecID);
     const email = yield select(getEmail);
     const uuid = uuidv5(email, '4c0db00b-f035-4b07-884d-c9139c7a91b5');
-    const params = {
+    params = {
       id,
       email,
       uuid,
       endpoint: 'emailMap',
+      ...params,
     };
     const results = yield call(postStatusData, params);
     // catch airtable errors
@@ -257,8 +264,8 @@ function* workUserPublicBoardCreate() {
   }
 }
 
-export function* watchUserPublicBoardCreate() {
-  yield takeLatest(types.USER_POST_PUBLICBOARD_REQUESTED, workUserPublicBoardCreate);
+export function* watchUserPublicBoardPost() {
+  yield takeLatest(types.USER_POST_PUBLICBOARD_REQUESTED, workUserPublicBoardPost);
 }
 
 function* workPublicInvestorStatusUpdate(action) {

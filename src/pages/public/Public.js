@@ -4,43 +4,94 @@ import Row from 'react-bootstrap/Row';
 import FormControl from 'react-bootstrap/FormControl';
 import InputGroup from 'react-bootstrap/InputGroup';
 import PropTypes from 'prop-types';
+import Button from 'react-bootstrap/Button';
 import PersonPublic from '../../components/people/PersonPublic';
 import * as types from '../../actions/types';
 import DismissibleStatus from '../../components/DismissibleStatus';
+import GenericModal from '../../modals/GenericModal';
 import { STAGEPROPS } from '../../constants';
 import { getSafeVar } from '../../utils';
-import Status from "../../components/DismissibleStatus";
 
 export default function Public(props) {
   const { match } = props;
   const { params } = match;
   const { uuid } = params;
 
-  const getPublic_status = useSelector(state => state.manageRaise.getPublic_status);
-  const postStatus = useSelector(state => state.manageRaise.publicPost_status);
+  const getStatus = useSelector(state => state.manageRaise.getPublic_status);
+  const boardStatus = useSelector(state => state.manageRaise.postBoard_status);
   const publicUUID = useSelector(state => state.manageRaise.publicUUID);
   const public_records = useSelector(state => state.manageRaise.public_records) || {};
+  const founderStatus = useSelector(state => state.manageRaise.getFounder_status) || '';
+  const founderProps = useSelector(state => state.manageRaise.founderData) || {};
+  const publicIDRecordID = useSelector(state => state.manageRaise.publicUUID_recordID);
+  const boardHidden = useSelector(state => state.manageRaise.hidden);
   const isMyPage = uuid === publicUUID;
   const investorIDs = Object.keys(public_records);
   const people = useSelector(state => state.people);
+  const publicPostStatus = useSelector(state => state.manageRaise.publicPost_status);
+
+  // if this is a public page, use the public state tracking.
+  let postStatus = useSelector(state => state.manageRaise.post_status);
+  let dismissPost = types.USER_POST_INVESTORSTATUS_DISMISSED;
+  if (!isMyPage) {
+    postStatus = publicPostStatus;
+    dismissPost = types.PUBLIC_POST_INVESTORSTATUS_DISMISSED;
+  }
 
   const [sortBy, setSortBy] = useState('status');
   const [searchBy, setSearchBy] = useState('');
+  const [showConfirmHide, setShowConfirmHide] = useState(false);
+
+  const statusBars = [
+    {
+      key: 'get',
+      status: getStatus,
+      showSuccess: false,
+      dissmissAction: types.PUBLIC_GET_BOARD_DISMISSED,
+    },
+    {
+      key: 'founder',
+      status: founderStatus,
+      showSuccess: false,
+      dissmissAction: types.PUBLIC_GET_FOUNDER_DISMISSED,
+    },
+    {
+      key: 'board',
+      status: boardStatus,
+      dissmissAction: types.USER_POST_PUBLICBOARD_DISMISSED,
+    },
+    {
+      key: 'post',
+      status: postStatus,
+      statusPrefix: 'Make Introduction:',
+      dissmissAction: dismissPost,
+    },
+  ];
 
   const dispatch = useDispatch();
+
+  // dismiss lingering status bars
+  useEffect(() => {
+    statusBars.forEach(s => {
+      dispatch({
+        type: s.dissmissAction,
+      });
+    });
+  }, [statusBars, dispatch]);
 
   useEffect(() => {
     dispatch({
       type: types.PUBLIC_GET_BOARD_REQUESTED,
       uuid,
     });
-  }, [uuid, dispatch]);
+  }, [uuid, boardHidden, dispatch]);
 
   useEffect(() => {
     dispatch({
-      type: types.PUBLIC_POST_INVESTORSTATUS_DISMISSED,
+      type: types.PUBLIC_GET_FOUNDER_REQUESTED,
+      uuid: publicUUID,
     });
-  }, [dispatch]);
+  }, [publicUUID, dispatch]);
 
   useEffect(() => {
     const ids = Object.keys(public_records);
@@ -85,16 +136,74 @@ export default function Public(props) {
     toShowInvestorList = investorList;
   }
 
+  const toggleHideBoard = () => {
+    dispatch({
+      type: types.USER_POST_PUBLICBOARD_REQUESTED,
+      params: {
+        hide: !boardHidden,
+        id: publicIDRecordID,
+      },
+    });
+  };
+
+  const onCancelHideClick = () => {
+    setShowConfirmHide(false);
+  };
+
+  const onConfirmHideClick = () => {
+    setShowConfirmHide(false);
+    toggleHideBoard();
+  };
+
+  const onToggleHideBoardClick = () => {
+    if (boardHidden) {
+      toggleHideBoard();
+    } else {
+      setShowConfirmHide(true);
+    }
+  };
+
+  // TODOS: change hide button to hide/unhide toggle, change saga to toggle.
+
+  const confirmDeleteProps = {
+    title: 'Are You Sure?',
+    text: 'This will hide your public board, and make all links to it inoperable.',
+    buttons: [
+      {
+        key: 'cancel',
+        text: 'Cancel',
+        variant: 'danger',
+        onClick: onCancelHideClick,
+      },
+      {
+        key: 'confirm',
+        text: 'Yes, Hide My Board',
+        variant: 'success',
+        onClick: onConfirmHideClick,
+      },
+    ],
+  };
+
   return (
     <Row id="PageBoard" className="pageContainer">
+      {showConfirmHide && <GenericModal {...confirmDeleteProps} />}
       <div>
         <div className="boardDetailsBar">
           <div className="primaryDetails">
             <span>
-              {`My Fundboard: ${investorIDs.length}`}
-              <span className="d-none d-md-inline">&nbsp;Potential Lead</span>
-              <span className="d-none d-xs-inline">&nbsp;Investors</span>
+              {`Welcome to the FundBoard of ${founderProps.name}!`}
             </span>
+            {isMyPage && (
+              <span className="txs-1">
+                <Button
+                  variant="link"
+                  className="txs-1 text-warning"
+                  onClick={onToggleHideBoardClick}
+                >
+                  {`${boardHidden ? 'Show' : 'Hide'} Public Board`}
+                </Button>
+              </span>
+            )}
           </div>
         </div>
         {investorIDs.length > 0 && (
@@ -134,17 +243,7 @@ export default function Public(props) {
           </div>
         )}
       </div>
-      <DismissibleStatus
-        status={getPublic_status}
-        showSuccess={false}
-        dissmissAction={types.PUBLIC_GET_BOARD_DISMISSED}
-      />
-      <Status
-        statusPrefix="Make Introduction:"
-        showSuccess
-        status={postStatus}
-        dissmissAction={types.PUBLIC_POST_INVESTORSTATUS_DISMISSED}
-      />
+      {statusBars.map(s => <DismissibleStatus {...s} />)}
       <div className="results">
         {toShowInvestorList.map(i => {
           const personProps = {

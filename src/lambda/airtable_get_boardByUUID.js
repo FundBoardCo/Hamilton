@@ -19,30 +19,44 @@ exports.handler = async event => {
       });
     const mapData = await mapResponse.json();
     const params = {};
+    const publicUUID_recordID = getSafeVar(() => mapData.records[0].id);
     const email = getSafeVar(() => mapData.records[0].fields.email);
+    const hide = getSafeVar(() => mapData.records[0].fields.hide);
     params.filterByFormula = `{userid}="${email}"`;
     STATUS_PARAMS = toQueryString(params);
-    const statusResponse = await fetch(`${STATUS_URL}?${STATUS_PARAMS}`,
-      {
-        method: 'GET',
-        headers: {
-          Authorization: `Bearer ${process.env.AIRTABLE_APIKEY}`,
-          'Content-Type': 'application/json',
-        },
-      });
-    const data = await statusResponse.json();
-    if (Array.isArray(data.records)) {
-      // remove sensitive data
-      data.records = data.records.map(r => {
-        const newF = { ...r.fields } || {};
-        delete newF.userid;
-        delete newF.key;
-        delete newF.intro_email;
-        return {
-          ...r,
-          fields: newF,
-        };
-      });
+    // return only this if the founder has set hide to true.
+    let data = { publicUUID_recordID, hidden: true };
+    if (!email) {
+      return {
+        statusCode: 200,
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ publicUUID_recordID, notFound: true }),
+      };
+    }
+    if (!hide) {
+      const statusResponse = await fetch(`${STATUS_URL}?${STATUS_PARAMS}`,
+        {
+          method: 'GET',
+          headers: {
+            Authorization: `Bearer ${process.env.AIRTABLE_APIKEY}`,
+            'Content-Type': 'application/json',
+          },
+        });
+      data = await statusResponse.json();
+      data.publicUUID_recordID = publicUUID_recordID;
+      if (Array.isArray(data.records)) {
+        // remove sensitive data
+        data.records = data.records.map(r => {
+          const newF = { ...r.fields } || {};
+          delete newF.userid;
+          delete newF.key;
+          delete newF.intro_email;
+          return {
+            ...r,
+            fields: newF,
+          };
+        });
+      }
     }
     return {
       statusCode: 200,

@@ -27,7 +27,7 @@ import {
   watchInvestorStatusesGet,
   watchPublicBoardGet,
   watchInvestorStatusPost,
-  watchUserPublicBoardCreate,
+  watchUserPublicBoardPost,
   watchPublicInvestorStatusUpdate,
   watchFounderDataGet,
 } from './manageRaise';
@@ -456,7 +456,7 @@ export default function* rootSaga() {
   yield fork(watchFounderDataGet);
   yield fork(watchPublicInvestorStatusUpdate);
   yield fork(watchInvestorStatusPost);
-  yield fork(watchUserPublicBoardCreate);
+  yield fork(watchUserPublicBoardPost);
   yield fork(watchPersonPutInvalid);
   yield fork(watchPeopleGetResults);
   yield fork(watchPeopleGetInvestments);

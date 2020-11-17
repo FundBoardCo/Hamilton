@@ -42,7 +42,7 @@ const manageRaiseConfig = {
     'get_status',
     'post_status',
     'publicPost_status',
-    'createBoard_status',
+    'postBoard_status',
     'getPublic_status',
     'editNoteParams',
   ],
