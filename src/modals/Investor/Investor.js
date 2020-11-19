@@ -89,7 +89,7 @@ export default function Investor(props) {
       show
       scrollable
       onHide={closeModal}
-      className="modal-investor"
+      className="modal-profile investor"
     >
       <Modal.Header closeButton>
         <Modal.Title className="sr-only">

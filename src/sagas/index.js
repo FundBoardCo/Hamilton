@@ -30,6 +30,7 @@ import {
   watchUserPublicBoardPost,
   watchPublicInvestorStatusUpdate,
   watchFounderDataGet,
+  watchUserFounderDataPost,
 } from './manageRaise';
 
 const api = `https://${process.env.REACT_APP_ENV === 'DEV' ? 'staging-' : ''}api.fundboard.co/`;
@@ -76,13 +77,6 @@ function* workUserLogin(action) {
     window.heap.identify(email);
     window.heap.addUserProperties({ email });
     yield put({ type: types.USER_GET_PROFILE_REQUESTED });
-    /*
-    const board = yield select(getBoard);
-    if (Array.isArray(board) && board.length) {
-      const uParams = { investors: [...board] };
-      yield put({ type: types.USER_UPDATE_REQUESTED, params: uParams });
-    }
-     */
   } catch (error) {
     trackErr(error);
     yield put({ type: types.USER_LOGIN_FAILED, error });
@@ -454,6 +448,7 @@ export default function* rootSaga() {
   yield fork(watchInvestorStatusesGet);
   yield fork(watchPublicBoardGet);
   yield fork(watchFounderDataGet);
+  yield fork(watchUserFounderDataPost);
   yield fork(watchPublicInvestorStatusUpdate);
   yield fork(watchInvestorStatusPost);
   yield fork(watchUserPublicBoardPost);

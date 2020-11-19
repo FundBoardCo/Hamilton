@@ -6,7 +6,7 @@ import FormControl from 'react-bootstrap/FormControl';
 import Button from 'react-bootstrap/Button';
 import moment from 'moment';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import InvestorNameTag from './InvestorNameTag';
+import InvestorNameTag from '../../components/people/PersonNameTag';
 import SelectableInvestorStage from '../../components/people/SelectableInvestorStage';
 import * as types from '../../actions/types';
 import DismissibleStatus from '../../components/DismissibleStatus';

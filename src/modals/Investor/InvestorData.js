@@ -13,7 +13,8 @@ import {
   convertKeyTags,
 } from '../../utils';
 import * as types from '../../actions/types';
-import InvestorNameTag from './InvestorNameTag';
+import NameTag from '../../components/people/PersonNameTag';
+import RaiseBullet from '../../components/people/RaiseBullet';
 
 const matchData = [
   {
@@ -35,19 +36,6 @@ const matchData = [
     bool: true,
   },
 ];
-
-function MatchBullet(params) {
-  const { faIcon, text, bool } = params;
-  return (
-    <li>
-      <div className={`iconDisc ${bool ? 'bg-primary' : 'bg-warning-light3'}`}>
-        <FontAwesomeIcon icon={faIcon} />
-        {!bool && <FontAwesomeIcon icon="ban" className="iconDiscOverlay text-warning" />}
-      </div>
-      <span className={bool ? 'text-primary' : 'text-warning'}>{text}</span>
-    </li>
-  );
-}
 
 const usdFormatter = new Intl.NumberFormat('en-US', {
   style: 'currency',
@@ -160,7 +148,7 @@ export default function InvestorData(props) {
 
   return (
     <div>
-      <InvestorNameTag data={data} path={path} />
+      <NameTag data={data} path={path} />
       <section className="mb-4">
         {description && (
           <div
@@ -202,23 +190,23 @@ export default function InvestorData(props) {
           <ul>
             {matchData.map(d => {
               if (searchData[d.key]) {
-                return <MatchBullet {...d} />;
+                return <RaiseBullet {...d} />;
               }
               return null;
             })}
-            <MatchBullet
+            <RaiseBullet
               faIcon="key"
               bool={(Array.isArray(matches.keywords) && matches.keywords.length > 0)
               || !searchLocation}
               text={`Their matching interests: ${matches.keywords.length ? matches.keywords.join(', ') : 'none'}.`}
             />
-            <MatchBullet
+            <RaiseBullet
               faIcon="rocket"
               bool={matches.raise || !searchLocation}
               text={`They invest in rounds of ${usdFormatter.format(raise_min)} or more. 
               The median round they participate in is ${usdFormatter.format(raise_median)}`}
             />
-            <MatchBullet
+            <RaiseBullet
               faIcon="map-marker-alt"
               bool={matches.location_tier || !searchLocation}
               text={locationText}

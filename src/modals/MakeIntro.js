@@ -7,7 +7,7 @@ import Status from '../components/DismissibleStatus';
 import EditIntro from './Investor/EditIntro';
 
 export default function MakeIntro() {
-  const founderStatus = useSelector(state => state.manageRaise.getFounder_status) || '';
+  const founderStatus = useSelector(state => state.manageRaise.getFounderData_status) || '';
   const openModal = useSelector(state => state.modal.openModal);
   const modalProps = useSelector(state => state.modal.modalProps);
   const { isPublic, founderID, investor } = modalProps;
@@ -17,7 +17,7 @@ export default function MakeIntro() {
 
   useEffect(() => {
     dispatch({
-      type: types.PUBLIC_GET_FOUNDER_REQUESTED,
+      type: types.PUBLIC_GET_FOUNDERDATA_REQUESTED,
       uuid: founderID,
     });
   }, [founderID, dispatch]);
@@ -60,7 +60,7 @@ export default function MakeIntro() {
           statusPrefix="Founder data:"
           showSuccess={false}
           status={founderStatus}
-          dissmissAction={types.PUBLIC_GET_FOUNDER_DISMISSED}
+          dissmissAction={types.PUBLIC_GET_FOUNDERDATA_DISMISSED}
         />
         <EditIntro
           {...modalProps}

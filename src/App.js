@@ -53,8 +53,11 @@ import {
   faThumbsDown,
   faThumbsUp,
   faTimes,
+  faUser,
+  faUsers,
   faQuestion,
   faQuestionCircle,
+  faWifi,
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import 'react-datepicker/dist/react-datepicker.css';
@@ -115,8 +118,11 @@ library.add(
   faThumbsDown,
   faThumbsUp,
   faTimes,
+  faUser,
+  faUsers,
   faQuestion,
   faQuestionCircle,
+  faWifi,
 );
 
 function App() {
@@ -174,7 +180,7 @@ function App() {
                 activeClassName="profile"
                 data-track="navProfile"
               >
-                <FontAwesomeIcon icon="cog" />
+                <FontAwesomeIcon icon="user" />
                 <span>My Profile</span>
               </Nav.Link>
             )}

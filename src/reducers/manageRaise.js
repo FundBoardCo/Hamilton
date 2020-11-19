@@ -1,5 +1,5 @@
 import * as types from '../actions/types';
-import { processErr, isPlainObject } from '../utils';
+import { processErr, isPlainObject,getSafeVar } from '../utils';
 
 const defaults = {
   records: {},
@@ -10,8 +10,10 @@ const defaults = {
   postBoard_status: '',
   deleteBoard_status: '',
   getPublic_status: '',
-  getFounder_status: '',
+  getFounderData_status: '',
+  postFounderData_status: '',
   founderData: {},
+  founderData_recordID: '',
   publicUUID: '',
   publicUUID_recordID: '',
   editNoteParams: {},
@@ -142,25 +144,25 @@ export default function manageRaise(state = defaults, action) {
       ...state,
       getPublic_status: '',
     };
-    case types.PUBLIC_GET_FOUNDER_REQUESTED: return {
+    case types.PUBLIC_GET_FOUNDERDATA_REQUESTED: return {
       ...state,
-      getFounder_status: 'pending',
+      getFounderData_status: 'pending',
     };
-    case types.PUBLIC_GET_FOUNDER_SUCCEEDED: return {
+    case types.PUBLIC_GET_FOUNDERDATA_SUCCEEDED: return {
       ...state,
-      getFounder_status: 'succeeded',
+      getFounderData_status: 'succeeded',
       founderData: Array.isArray(action.data.records)
       && isPlainObject(action.data.records[0].fields)
         ? { ...action.data.records[0].fields }
         : {},
     };
-    case types.PUBLIC_GET_FOUNDER_FAILED: return {
+    case types.PUBLIC_GET_FOUNDERDATA_FAILED: return {
       ...state,
-      getFounder_status: processErr(action.error),
+      getFounderData_status: processErr(action.error),
     };
-    case types.PUBLIC_GET_FOUNDER_DISMISSED: return {
+    case types.PUBLIC_GET_FOUNDERDATA_DISMISSED: return {
       ...state,
-      getFounder_status: '',
+      getFounderData_status: '',
     };
     case types.PUBLIC_POST_INVESTORSTATUS_REQUESTED: return {
       ...state,
@@ -183,6 +185,24 @@ export default function manageRaise(state = defaults, action) {
     case types.PUBLIC_POST_INVESTORSTATUS_DISMISSED: return {
       ...state,
       publicPost_status: '',
+    };
+    case types.USER_POST_FOUNDERDATA_REQUESTED: return {
+      ...state,
+      postFounderData_status: 'pending',
+    };
+    case types.USER_POST_FOUNDERDATA_SUCCEEDED: return {
+      ...state,
+      postFounderData_status: 'succeeded',
+      founderData_recordID: getSafeVar(() => action.data.records[0].id),
+      founderData: getSafeVar(() => action.data.records[0].fields, {}),
+    };
+    case types.USER_POST_FOUNDERDATA_FAILED: return {
+      ...state,
+      postFounderData_status: processErr(action.error),
+    };
+    case types.USER_POST_FOUNDERDATA_DISMISSED: return {
+      ...state,
+      postFounderData_status: '',
     };
     default: return state;
   }

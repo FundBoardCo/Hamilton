@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 export default function InvestorData(props) {
-  const { data = {}, path } = props;
+  const { data = {}, path, isFounder } = props;
 
   const {
     name,
@@ -13,9 +13,21 @@ export default function InvestorData(props) {
     status,
   } = data;
 
-  const primary_organization_logo = primary_organization.image_url || '';
-  const primary_organization_name = primary_organization.name || '';
-  const primary_organization_homepage = primary_organization.homepage || '';
+  let {
+    primary_organization_logo,
+    primary_organization_name,
+    primary_organization_homepage,
+  } = data;
+
+  primary_organization_logo = primary_organization_logo
+    || primary_organization.image_url
+    || '';
+  primary_organization_name = primary_organization_name
+    || primary_organization.name
+    || '';
+  primary_organization_homepage = primary_organization_homepage
+    || primary_organization.homepage
+    || '';
 
   const validationProps = {
     text: 'This investor has not been validated by FundBoard yet.',
@@ -35,11 +47,13 @@ export default function InvestorData(props) {
   }
 
   return (
-    <div>
-      <section className="investorHeader mb-4">
-        <div className="thumbCol">
-          <div className="thumb" style={{ backgroundImage: `url(${image_url})` }} />
-        </div>
+    <div className="personNameTag">
+      <section className="profileHeader mb-4">
+        {image_url && (
+          <div className="thumbCol">
+            <div className="thumb" style={{ backgroundImage: `url(${image_url})` }} />
+          </div>
+        )}
         <div className="d-flex flex-column">
           <h1>{name}</h1>
           <a
@@ -65,18 +79,20 @@ export default function InvestorData(props) {
           </a>
         </div>
       </section>
-      <section className={`mb-2 d-flex ${validationProps.classes}`}>
-        {validationProps.faIcon && (
-          <FontAwesomeIcon
-            icon={validationProps.faIcon}
-            className="mr-1"
-            style={{ marginTop: '0.2em' }}
-          />
-        )}
-        <span>
-          {validationProps.text}
-        </span>
-      </section>
+      {!isFounder && (
+        <section className={`mb-2 d-flex ${validationProps.classes}`}>
+          {validationProps.faIcon && (
+            <FontAwesomeIcon
+              icon={validationProps.faIcon}
+              className="mr-1"
+              style={{ marginTop: '0.2em' }}
+            />
+          )}
+          <span>
+            {validationProps.text}
+          </span>
+        </section>
+      )}
     </div>
   );
 }

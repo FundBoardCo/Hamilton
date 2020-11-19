@@ -7,6 +7,7 @@ import Login from './Login';
 import HowToIntro from './HowToIntro';
 import CreatingPublicBoard from './CreatingPublicBoard';
 import MakeIntro from './MakeIntro';
+import Founder from './Founder';
 
 export default function ModalWrapper() {
   const loggedIn = useSelector(state => state.user.token);
@@ -31,6 +32,7 @@ export default function ModalWrapper() {
       { openModal === 'howToIntro' && <Route path="/" component={HowToIntro} /> }
       { openModal === 'creatingPublicBoard' && <Route path="/" component={CreatingPublicBoard} />}
       { openModal === 'makeIntro' && <Route path="/" component={MakeIntro} />}
+      { openModal === 'founder' && <Route path="/" component={Founder} />}
     </Switch>
   );
 }

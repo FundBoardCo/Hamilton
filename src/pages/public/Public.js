@@ -19,13 +19,13 @@ export default function Public(props) {
 
   const getStatus = useSelector(state => state.manageRaise.getPublic_status);
   const boardStatus = useSelector(state => state.manageRaise.postBoard_status);
-  const publicUUID = useSelector(state => state.manageRaise.publicUUID);
+  const userPublicUUID = useSelector(state => state.manageRaise.publicUUID);
+  const isMyPage = uuid === userPublicUUID;
   const public_records = useSelector(state => state.manageRaise.public_records) || {};
-  const founderStatus = useSelector(state => state.manageRaise.getFounder_status) || '';
+  const founderStatus = useSelector(state => state.manageRaise.getFounderData_status) || '';
   const founderProps = useSelector(state => state.manageRaise.founderData) || {};
   const publicIDRecordID = useSelector(state => state.manageRaise.publicUUID_recordID);
   const boardHidden = useSelector(state => state.manageRaise.hidden);
-  const isMyPage = uuid === publicUUID;
   const investorIDs = Object.keys(public_records);
   const people = useSelector(state => state.people);
   const publicPostStatus = useSelector(state => state.manageRaise.publicPost_status);
@@ -53,7 +53,7 @@ export default function Public(props) {
       key: 'founder',
       status: founderStatus,
       showSuccess: false,
-      dissmissAction: types.PUBLIC_GET_FOUNDER_DISMISSED,
+      dissmissAction: types.PUBLIC_GET_FOUNDERDATA_DISMISSED,
     },
     {
       key: 'board',
@@ -88,10 +88,10 @@ export default function Public(props) {
 
   useEffect(() => {
     dispatch({
-      type: types.PUBLIC_GET_FOUNDER_REQUESTED,
-      uuid: publicUUID,
+      type: types.PUBLIC_GET_FOUNDERDATA_REQUESTED,
+      uuid,
     });
-  }, [publicUUID, dispatch]);
+  }, [uuid, dispatch]);
 
   useEffect(() => {
     const ids = Object.keys(public_records);
@@ -163,7 +163,13 @@ export default function Public(props) {
     }
   };
 
-  // TODOS: change hide button to hide/unhide toggle, change saga to toggle.
+  const onClickShowProfile = () => {
+    dispatch({
+      type: types.MODAL_SET_OPEN,
+      modal: 'founder',
+      modalProps: { ...founderProps, uuid },
+    });
+  };
 
   const confirmDeleteProps = {
     title: 'Are You Sure?',
@@ -185,19 +191,31 @@ export default function Public(props) {
   };
 
   return (
-    <Row id="PageBoard" className="pageContainer">
+    <Row id="PageBoard" className="pageContainer public">
       {showConfirmHide && <GenericModal {...confirmDeleteProps} />}
       <div>
         <div className="boardDetailsBar">
           <div className="primaryDetails">
-            <span>
-              {`Welcome to the FundBoard of ${founderProps.name}!`}
+            <span className="d-flex">
+              <span className="d-none d-md-inline">
+                Welcome to the FundBoard of&nbsp;
+              </span>
+              <button
+                className="btn btn-link"
+                type="button"
+                onClick={onClickShowProfile}
+              >
+                {founderProps.name}
+              </button>
+              <span className="d-none d-md-inline">
+                !
+              </span>
             </span>
             {isMyPage && (
               <span className="txs-1">
                 <Button
                   variant="link"
-                  className="txs-1 text-warning"
+                  className="txs-1 toggleHideLink"
                   onClick={onToggleHideBoardClick}
                 >
                   {`${boardHidden ? 'Show' : 'Hide'} Public Board`}

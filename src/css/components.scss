@@ -400,7 +400,7 @@ html#ov body {
       }
     }
 
-    &.modal-investor {
+    &.modal-profile {
       .modal-dialog {
         .modal-content {
           height:100%;
@@ -417,109 +417,111 @@ html#ov body {
               border-bottom: 2px solid $col-text;
             }
 
-            .investorHeader {
-              display: flex;
-
-              .thumbCol {
-                flex-grow: 0;
-                flex-shrink: 0;
-                min-width: auto;
-                margin-right: $pad2;
-
-                .thumb {
-                  width: $pad5;
-                  height: $pad5;
-                  overflow: hidden;
-                  border-radius: $pad2;
-                  border: 1px solid $col-primary-light6;
-                  background-size: cover;
-                  background-repeat: no-repeat;
-                }
-
-                @media (min-width: $mediaXs) {
-                  .thumb {
-                    width: $pad6;
-                    height: $pad6;
-                  }
-                }
-
-                @media (min-width: $mediaLg) {
-                  margin-right: $pad3;
-                  .thumb {
-                    width: $pad7;
-                    height: $pad7;
-                  }
-                }
-              }
-
-              h1 {
-                font-size: $h5;
-                margin-bottom: 0;
-
-                @media (min-width: $mediaXs) {
-                  font-size: $h4;
-                }
-
-                @media (min-width: $mediaMd) {
-                  font-size: $h3;
-                }
-
-                @media (min-width: $mediaLg) {
-                  font-size: $h2;
-                }
-              }
-
-              .orgDetails {
+            .personNameTag {
+              .profileHeader {
                 display: flex;
-                margin-top: auto;
-                font-size: $txSm;
 
-                .orgLogoWrapper {
-                  width: $pad3;
-                  height: $pad3;
+                .thumbCol {
+                  flex-grow: 0;
                   flex-shrink: 0;
-                  padding-right: $pad1;
-                  border: 1px solid $col-primary-light7;
-                  box-sizing: border-box;
-                  border-radius: $pad1;
-                  overflow: hidden;
-                  margin-right: $pad1;
-                  background-size: cover;
-                  background-repeat: no-repeat;
-                  background-position: center;
+                  min-width: auto;
+                  margin-right: $pad2;
+
+                  .thumb {
+                    width: $pad5;
+                    height: $pad5;
+                    overflow: hidden;
+                    border-radius: $pad2;
+                    border: 1px solid $col-primary-light6;
+                    background-size: cover;
+                    background-repeat: no-repeat;
+                  }
+
+                  @media (min-width: $mediaXs) {
+                    .thumb {
+                      width: $pad6;
+                      height: $pad6;
+                    }
+                  }
+
+                  @media (min-width: $mediaLg) {
+                    margin-right: $pad3;
+                    .thumb {
+                      width: $pad7;
+                      height: $pad7;
+                    }
+                  }
                 }
 
-                .jobTitle {
+                h1 {
+                  font-size: $h5;
+                  margin-bottom: 0;
+
+                  @media (min-width: $mediaXs) {
+                    font-size: $h4;
+                  }
+
+                  @media (min-width: $mediaMd) {
+                    font-size: $h3;
+                  }
+
+                  @media (min-width: $mediaLg) {
+                    font-size: $h2;
+                  }
+                }
+
+                .orgDetails {
                   display: flex;
-                  align-items: center;
-                }
-
-                @media (min-width: $mediaXs) {
-                  font-size: $txMd;
+                  margin-top: auto;
+                  font-size: $txSm;
 
                   .orgLogoWrapper {
-                    width: 40px;
-                    height: 40px;
+                    width: $pad3;
+                    height: $pad3;
+                    flex-shrink: 0;
+                    padding-right: $pad1;
+                    border: 1px solid $col-primary-light7;
+                    box-sizing: border-box;
+                    border-radius: $pad1;
+                    overflow: hidden;
+                    margin-right: $pad1;
+                    background-size: cover;
+                    background-repeat: no-repeat;
+                    background-position: center;
                   }
 
                   .jobTitle {
-                    flex-direction: column;
-                    align-items: start;
+                    display: flex;
+                    align-items: center;
                   }
-                }
 
-                @media (min-width: $mediaMd) {
-                  font-size: $tx;
-                }
+                  @media (min-width: $mediaXs) {
+                    font-size: $txMd;
 
-                @media (min-width: $mediaLg) {
-                  font-size: $tx;
+                    .orgLogoWrapper {
+                      width: 40px;
+                      height: 40px;
+                    }
 
-                  .orgLogoWrapper {
-                    width: $pad5;
-                    height: $pad5;
-                    border-radius: $pad2;
-                    margin-right: $pad2;
+                    .jobTitle {
+                      flex-direction: column;
+                      align-items: start;
+                    }
+                  }
+
+                  @media (min-width: $mediaMd) {
+                    font-size: $tx;
+                  }
+
+                  @media (min-width: $mediaLg) {
+                    font-size: $tx;
+
+                    .orgLogoWrapper {
+                      width: $pad5;
+                      height: $pad5;
+                      border-radius: $pad2;
+                      margin-right: $pad2;
+                    }
                   }
                 }
               }
@@ -562,160 +564,168 @@ html#ov body {
                 }
               }
             }
+          }
+        }
+      }
 
-            .funded {
-              margin-bottom: $pad4;
-
-              h3 {
-                font-size: 1.4rem;
-              }
-
-              .founders {
-                display: flex;
-                flex-wrap: nowrap;
-                overflow-x: auto;
-                padding: $pad2 0;
-              }
-
-              @media (min-width: $mediaXs) {
-                h3 {
-                  font-size: 1.7rem;
-                }
-              }
-
-              @media (min-width: $mediaLg) {
-                h3 {
-                  font-size: $h2;
-                }
-              }
-            }
-
-            .twitterFeed {
-              margin-bottom: $pad4;
-            }
-
-            .invalidWrapper {
-              padding: $pad2;
-              margin: -$pad2;
-
-              .openLinkWrapper {
+      &.investor {
+        .modal-dialog {
+          .modal-content {
+            .modal-body {
+              .funded {
                 margin-bottom: $pad4;
-                color: $col-secondary-dark;
-                font-size: $h5;
-                display: flex;
-                align-items: flex-start;
 
-                .btn.btn-link {
-                  font-weight: 700;
-                  color: inherit;
+                h3 {
+                  font-size: 1.4rem;
+                }
+
+                .founders {
+                  display: flex;
+                  flex-wrap: nowrap;
+                  overflow-x: auto;
+                  padding: $pad2 0;
+                }
+
+                @media (min-width: $mediaXs) {
+                  h3 {
+                    font-size: 1.7rem;
+                  }
+                }
+
+                @media (min-width: $mediaLg) {
+                  h3 {
+                    font-size: $h2;
+                  }
                 }
               }
 
-              .invalidBtns {
-                display: flex;
-                flex-direction: column;
-                align-items: flex-start;
-                padding-bottom: $pad2;
+              .twitterFeed {
+                margin-bottom: $pad4;
+              }
 
-                .btn {
-                  color: $col-secondary;
-                  margin-bottom: $pad2;
+              .invalidWrapper {
+                padding: $pad2;
+                margin: -$pad2;
+
+                .openLinkWrapper {
+                  margin-bottom: $pad4;
+                  color: $col-secondary-dark;
+                  font-size: $h5;
+                  display: flex;
+                  align-items: flex-start;
+
+                  .btn.btn-link {
+                    font-weight: 700;
+                    color: inherit;
+                  }
                 }
-              }
-
-              .invalidError {
-                padding: $pad3;
-                text-align: center;
-                width: 100%;
-                overflow-wrap: break-word;
-              }
-
-              @media (min-width: $mediaLg) {
 
                 .invalidBtns {
-                  padding-bottom: $pad4;
-                }
-              }
-            }
-
-            .editWrapper {
-              margin-bottom: $pad3;
-            }
-
-            .notesWrapper,
-            .nextWrapper {
-              margin-bottom: $pad3;
-
-              .note {
-                display: flex;
-                margin-bottom: $pad1;
-
-                .body {
                   display: flex;
-                  flex-grow: 1;
-                  background: none;
-                  border: none;
-                  text-align: left;
-                  color: $col-primary;
-                  font-size: $txMd;
+                  flex-direction: column;
+                  align-items: flex-start;
+                  padding-bottom: $pad2;
 
-                  &:hover {
-                    text-decoration: underline;
+                  .btn {
+                    color: $col-secondary;
+                    margin-bottom: $pad2;
                   }
+                }
 
-                  .content {
-                    flex-grow: 1;
+                .invalidError {
+                  padding: $pad3;
+                  text-align: center;
+                  width: 100%;
+                  overflow-wrap: break-word;
+                }
+
+                @media (min-width: $mediaLg) {
+
+                  .invalidBtns {
+                    padding-bottom: $pad4;
+                  }
+                }
+              }
+
+              .editWrapper {
+                margin-bottom: $pad3;
+              }
+
+              .notesWrapper,
+              .nextWrapper {
+                margin-bottom: $pad3;
+
+                .note {
+                  display: flex;
+                  margin-bottom: $pad1;
+
+                  .body {
                     display: flex;
-                    flex-direction: column;
+                    flex-grow: 1;
+                    background: none;
+                    border: none;
+                    text-align: left;
+                    color: $col-primary;
+                    font-size: $txMd;
 
+                    &:hover {
+                      text-decoration: underline;
+                    }
+
+                    .content {
+                      flex-grow: 1;
+                      display: flex;
+                      flex-direction: column;
+
+                      .date {
+                      }
+
+                      .text {
+                      }
+                    }
+                  }
+                }
+              }
+
+              .nextWrapper {
+                .note {
+                  .content {
                     .date {
-                    }
+                      font-weight: 700;
+                      color: $col-danger;
 
-                    .text {
-                    }
-                  }
-                }
-              }
-            }
-
-            .nextWrapper {
-              .note {
-                .content {
-                  .date {
-                    font-weight: 700;
-                    color: $col-danger;
-
-                    &.waiting {
-                      color: $col-primary;
+                      &.waiting {
+                        color: $col-primary;
+                      }
                     }
                   }
                 }
               }
             }
-          }
 
-          .modal-footer {
-            padding: 0;
+            .modal-footer {
+              padding: 0;
 
-            .addBtn {
-              width: 100%;
-              height: 100%;
-              color: $col-text-light;
-              border: none;
-              font-size: $tx;
-              font-weight: 700;
-              display: flex;
-              justify-content: center;
-              align-items: center;
-              margin: 0;
-              padding: $pad3;
+              .addBtn {
+                width: 100%;
+                height: 100%;
+                color: $col-text-light;
+                border: none;
+                font-size: $tx;
+                font-weight: 700;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                margin: 0;
+                padding: $pad3;
 
-              @media (min-width: $mediaXs) {
-                font-size: $h5;
-              }
+                @media (min-width: $mediaXs) {
+                  font-size: $h5;
+                }
 
-              @media (min-width: $mediaLg) {
-                font-size: $h4;
+                @media (min-width: $mediaLg) {
+                  font-size: $h4;
+                }
               }
             }
           }

@@ -98,18 +98,18 @@ function* workFounderDataGet(action) {
     // catch airtable errors
     if (results.data.error) {
       trackErr(results.data.error);
-      yield put({ type: types.PUBLIC_GET_FOUNDER_FAILED, error: results.data.error });
+      yield put({ type: types.PUBLIC_GET_FOUNDERDATA_FAILED, error: results.data.error });
     } else {
-      yield put({ type: types.PUBLIC_GET_FOUNDER_SUCCEEDED, data: results.data });
+      yield put({ type: types.PUBLIC_GET_FOUNDERDATA_SUCCEEDED, data: results.data });
     }
   } catch (error) {
     trackErr(error);
-    yield put({ type: types.PUBLIC_GET_FOUNDER_FAILED, error });
+    yield put({ type: types.PUBLIC_GET_FOUNDERDATA_FAILED, error });
   }
 }
 
 export function* watchFounderDataGet() {
-  yield takeEvery(types.PUBLIC_GET_FOUNDER_REQUESTED, workFounderDataGet);
+  yield takeEvery(types.PUBLIC_GET_FOUNDERDATA_REQUESTED, workFounderDataGet);
 }
 
 function requestPublicBoard(params) {
@@ -182,7 +182,6 @@ function* workInvestorStatusPost(action) {
   try {
     const { params } = action;
     const email = yield select(getEmail);
-    params.key = `${email}-${params.uuid}`;
     params.userid = email;
     // process notes into airtable format
     const { notes } = params;
@@ -231,6 +230,33 @@ export function* watchInvestorStatusPost() {
   yield takeEvery(types.USER_POST_INVESTORSTATUS_REQUESTED, workInvestorStatusPost);
 }
 
+function* workUserFounderDataPost(action) {
+  const { params } = action;
+  try {
+    const results = yield call(postStatusData, params);
+    // catch airtable errors
+    if (results.data.error) {
+      trackErr(results.data.error);
+      yield put({ type: types.USER_POST_FOUNDERDATA_FAILED, error: results.data.error });
+    } else if (results.data.statusCode && results.data.statusCode === 500) {
+      trackErr(results.data.body);
+      yield put({ type: types.USER_POST_FOUNDERDATA_FAILED, error: results.data.body });
+    } else {
+      yield put({
+        type: types.USER_POST_FOUNDERDATA_SUCCEEDED,
+        params,
+      });
+    }
+  } catch (error) {
+    trackErr(error);
+    yield put({ type: types.USER_POST_FOUNDERDATA_FAILED, error });
+  }
+}
+
+export function* watchUserFounderDataPost() {
+  yield takeLatest(types.USER_POST_FOUNDERDATA_REQUESTED, workUserFounderDataPost);
+}
+
 function* workUserPublicBoardPost(action) {
   let { params } = action;
   try {
@@ -260,7 +286,7 @@ function* workUserPublicBoardPost(action) {
     }
   } catch (error) {
     trackErr(error);
-    yield put({ type: types.USER_POST_INVESTORSTATUS_FAILED, error });
+    yield put({ type: types.USER_POST_PUBLICBOARD_FAILED, error });
   }
 }
 

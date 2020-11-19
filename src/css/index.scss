@@ -763,6 +763,32 @@ html#ov {
               overflow: auto;
             }
           }
+
+          &.public {
+            // overrides for the public page
+            .primaryDetails {
+
+              .btn.btn-link {
+                color: $col-text-light;
+                text-decoration: underline;
+              }
+
+              .btn.btn-link.toggleHideLink {
+                color: $col-primary-light7;
+              }
+
+              @media (min-width: $mediaMd) {
+
+                .btn.btn-link {
+                  color: $col-text;
+                }
+
+                .btn.btn-link.toggleHideLink {
+                  color: $col-warning-light;
+                }
+              }
+            }
+          }
         }
 
         #PageProfile {
