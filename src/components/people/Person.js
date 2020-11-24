@@ -126,24 +126,39 @@ export default function Person(props) {
         </div>
       </button>
       {isBoard && sortedBy !== 'next' && (
-        <div className="notes text-primary">
-          {`Notes(${notes.length})${notes.length > 0 ? `: ${notes[0].text}` : ''}`}
-        </div>
-      )}
-      {isBoard && sortedBy !== 'next' && (
-        <div className="next">
-          <span className="text">
-            <span className={next.waiting ? 'text-primary' : 'text-danger'}>
-              {next.waiting ? 'Waiting' : 'Next'}
-              :&nbsp;
-            </span>
-            <span className={next.waiting ? 'text-primary' : ''}>
-              {next.text ? next.text : ''}
-            </span>
-          </span>
-          <span className="date">
-            {next.date ? moment(next.date).format('LLL') : ''}
-          </span>
+        <div className="notesWrapper">
+          <div>
+            <div className="notes text-primary">
+              {`Notes(${notes.length})${notes.length > 0 ? `: ${notes[0].text}` : ''}`}
+            </div>
+            <div className="next">
+              <span className="text">
+                <span className={next.waiting ? 'text-primary' : 'text-danger'}>
+                  {next.waiting ? 'Waiting' : 'Next'}
+                  :&nbsp;
+                </span>
+                <span className={next.waiting ? 'text-primary' : ''}>
+                  {next.text ? next.text : ''}
+                </span>
+              </span>
+              <span className="date">
+                {next.date ? moment(next.date).format('LLL') : ''}
+              </span>
+            </div>
+          </div>
+          <div className="published">
+            {investorStatus.published ? (
+              <span>
+                <FontAwesomeIcon icon="eye" className="mr-1" />
+                <span>Published</span>
+              </span>
+            ) : (
+              <span>
+                <FontAwesomeIcon icon="eye-slash" className="mr-1" />
+                <span>Private</span>
+              </span>
+            )}
+          </div>
         </div>
       )}
     </div>

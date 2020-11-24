@@ -30,7 +30,7 @@ export default function ModalWrapper() {
       { !loggedIn && <Route path="/profile" component={Login} /> }
       { openModal === 'login' && <Route path="/" component={Login} /> }
       { openModal === 'howToIntro' && <Route path="/" component={HowToIntro} /> }
-      { openModal === 'creatingPublicBoard' && <Route path="/" component={CreatingPublicBoard} />}
+      { openModal === 'creatingPublicBoard' && <Route path="/board" component={CreatingPublicBoard} />}
       { openModal === 'makeIntro' && <Route path="/" component={MakeIntro} />}
       { openModal === 'founder' && <Route path="/" component={Founder} />}
     </Switch>

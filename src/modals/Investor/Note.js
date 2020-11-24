@@ -15,6 +15,7 @@ export default function Note(props) {
   const { notes } = investorStatus;
   const investorID = investorStatus.id;
   const noteData = notes[noteID] || {};
+
   const {
     text,
     date,
@@ -76,7 +77,9 @@ export default function Note(props) {
         <div className="content">
           {(date || next) && (
             <div className={`date ${waiting ? 'waiting' : ''}`}>
-              {`${next ? 'Next ' : ''}${moment(date).format('MM-DD-YYYY hh:mma') || ''}`}
+              {`${next ? 'Next ' : ''}${
+                moment(date, [moment.ISO_8601, 'MM DD, YYYY hh:mma']).format('MMM DD, YYYY hh:mma') || ''
+              }`}
             </div>
           )}
           <div className="text">{text}</div>

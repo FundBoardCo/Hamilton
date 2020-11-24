@@ -107,7 +107,6 @@ export default function Public(props) {
   }, [public_records, dispatch]);
 
   const investorList = [];
-  let toShowInvestorList;
 
   investorIDs.forEach(i => {
     const person = people[i] ? { ...people[i] } : {};
@@ -129,15 +128,15 @@ export default function Public(props) {
     return a.name > b.name ? 1 : -1;
   });
 
-  if (searchBy) {
-    toShowInvestorList = investorList.filter(i => {
+  const toShowInvestorList = investorList.filter(i => {
+    let include = i.investorStatus.published;
+    if (searchBy) {
       const org = getSafeVar(() => i.primary_organization.name, '');
-      return i.name.toLowerCase().includes(searchBy.toLowerCase())
+      include = i.name.toLowerCase().includes(searchBy.toLowerCase())
         || org.toLowerCase().includes(searchBy.toLowerCase());
-    });
-  } else {
-    toShowInvestorList = investorList;
-  }
+    }
+    return include;
+  });
 
   const toggleHideBoard = () => {
     dispatch({
@@ -283,9 +282,9 @@ export default function Public(props) {
           );
         })}
       </div>
-      {investorIDs.length === 0 && (
+      {toShowInvestorList.length === 0 && (
         <div>
-          This founder doesn’t have any investors saved yet.
+          This founder doesn’t have any investors shared publically yet.
         </div>
       )}
     </Row>

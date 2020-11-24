@@ -278,7 +278,8 @@ function postBulkInvestors(params) {
     data.records.push({
       fields: {
         userid: params.email,
-        stage: 'added',
+        stage: params.stage || 'added',
+        published: params.published,
         uuid: i.uuid,
       },
     });
@@ -298,6 +299,8 @@ function* workUserPublicBoardPost(action) {
   let postParams = params;
   const { addInvestors } = params;
   delete postParams.addInvestors;
+  const { investorParams } = params;
+  delete postParams.investorParams;
 
   try {
     const email = yield select(getEmail);
@@ -331,6 +334,7 @@ function* workUserPublicBoardPost(action) {
         investors: [...addInvestors],
         email,
         id: params.id || getSafeVar(() => results.data.records[0].id),
+        ...investorParams,
       };
       yield call(postBulkInvestors, invParams);
     }

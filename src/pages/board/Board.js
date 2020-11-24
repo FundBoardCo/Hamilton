@@ -155,6 +155,10 @@ export default function Board() {
         params: {
           id: false,
           addInvestors: investorList.filter(i => !Object.keys(i.investorStatus).length),
+          investorParams: {
+            stage: 'added',
+            published: true,
+          },
         },
       });
       dispatch({

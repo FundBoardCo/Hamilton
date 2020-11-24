@@ -241,25 +241,38 @@ html#ov body {
         }
       }
 
-      .notes {
-        margin-top: $pad1;
-        font-size: $txSm;
-      }
-
-      .next {
+      .notesWrapper {
         display: flex;
         font-size: $txMd;
 
-        .text {
-          margin-right: $pad1;
+        .notes {
+          margin-top: $pad1;
+          font-size: $txSm;
         }
 
-        .date {
+        .published {
           margin-left: auto;
+          margin-top: $pad1;
+          padding-left: $pad2;
+          font-size: $txSm;
+          color: $col-primary-light;
+          flex-shrink: 0;
         }
 
-        &.sortedByNext .date {
-          flex-basis: 35%;
+        .next {
+          display: flex;
+
+          .text {
+            margin-right: $pad1;
+          }
+
+          .date {
+            margin-left: auto;
+          }
+
+          &.sortedByNext .date {
+            flex-basis: 35%;
+          }
         }
       }
 
@@ -268,15 +281,14 @@ html#ov body {
         margin-left: 0;
         border-radius: $pad2;
 
-        .notes {
-          font-size: $txMd;
-        }
+        .notesWrapper {
 
-        .next {
-          font-size: $tx;
+          .next {
+            font-size: $tx;
 
-          .date {
-            margin-left: auto;
+            .date {
+              margin-left: auto;
+            }
           }
         }
       }
