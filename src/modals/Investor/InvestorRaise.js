@@ -24,6 +24,7 @@ export default function InvestorRaise(props) {
     stage = 'added',
     notes = {},
     amount = 0,
+    published,
   } = investorStatus;
   const { advice } = STAGEPROPS[stage];
   const postStatus = useSelector(state => state.manageRaise.post_status) || '';
@@ -53,6 +54,15 @@ export default function InvestorRaise(props) {
     };
     updateStatus(params);
     setShowEditAmount(false);
+  };
+
+  const onTogglePublish = () => {
+    const params = {
+      id,
+      uuid,
+      published: !published,
+    };
+    updateStatus(params);
   };
 
   const onNewNote = () => {
@@ -133,6 +143,27 @@ export default function InvestorRaise(props) {
         {advice && (
           <div>{`${advice}`}</div>
         )}
+      </section>
+      <section className="mb-3">
+        <h2 className="sectionHead">
+          {published ? 'Published' : 'Private'}
+        </h2>
+        <div className="d-flex">
+          <p>
+            You can change whether this investor is visible on your public board by publishing or
+            unpublishing them.
+          </p>
+          <span className="flex-shrink-0 ml-2">
+            <Button
+              variant="link"
+              className={published ? 'primary' : 'warning'}
+              onClick={onTogglePublish}
+            >
+              <FontAwesomeIcon className="mr-2" icon={published ? 'eye-slash' : 'eye'} />
+              {published ? 'Make Private' : 'Publish'}
+            </Button>
+          </span>
+        </div>
       </section>
       <section className="mb-3">
         <h2 className="sectionHead">Introduced By</h2>
