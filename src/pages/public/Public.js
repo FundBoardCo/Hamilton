@@ -23,7 +23,7 @@ export default function Public(props) {
   const isMyPage = uuid === userPublicUUID;
   const public_records = useSelector(state => state.manageRaise.public_records) || {};
   const founderStatus = useSelector(state => state.manageRaise.getFounderData_status) || '';
-  const founderProps = useSelector(state => state.manageRaise.founderData) || {};
+  const founderProps = useSelector(state => state.manageRaise.founderData[uuid]) || {};
   const publicIDRecordID = useSelector(state => state.manageRaise.publicUUID_recordID);
   const boardHidden = useSelector(state => state.manageRaise.hidden);
   const investorIDs = Object.keys(public_records);
@@ -70,14 +70,17 @@ export default function Public(props) {
 
   const dispatch = useDispatch();
 
-  // dismiss lingering status bars
   useEffect(() => {
-    statusBars.forEach(s => {
-      dispatch({
-        type: s.dissmissAction,
-      });
+    dispatch({
+      type: types.PUBLIC_GET_BOARD_DISMISSED,
     });
-  }, [statusBars, dispatch]);
+    dispatch({
+      type: types.PUBLIC_GET_FOUNDERDATA_DISMISSED,
+    });
+    dispatch({
+      type: types.USER_POST_PUBLICBOARD_DISMISSED,
+    });
+  }, [dispatch]);
 
   useEffect(() => {
     dispatch({
@@ -140,6 +143,7 @@ export default function Public(props) {
     dispatch({
       type: types.USER_POST_PUBLICBOARD_REQUESTED,
       params: {
+        uuid,
         hide: !boardHidden,
         id: publicIDRecordID,
       },
@@ -196,21 +200,25 @@ export default function Public(props) {
       <div>
         <div className="boardDetailsBar">
           <div className="primaryDetails">
-            <span className="d-flex">
-              <span className="d-none d-md-inline">
-                Welcome to the FundBoard of&nbsp;
+            {founderProps.name ? (
+              <span className="d-flex">
+                <span className="d-none d-md-inline">
+                  Welcome to the FundBoard of&nbsp;
+                </span>
+                <button
+                  className="btn btn-link"
+                  type="button"
+                  onClick={onClickShowProfile}
+                >
+                  {founderProps.name}
+                </button>
+                <span className="d-none d-md-inline">
+                  !
+                </span>
               </span>
-              <button
-                className="btn btn-link"
-                type="button"
-                onClick={onClickShowProfile}
-              >
-                {founderProps.name}
-              </button>
-              <span className="d-none d-md-inline">
-                !
-              </span>
-            </span>
+            ) : (
+              <span>Welcome! This founder has not saved their profile data yet.</span>
+            )}
             {isMyPage && (
               <span className="txs-1">
                 <Button
@@ -267,7 +275,7 @@ export default function Public(props) {
           const personProps = {
             ...i,
             sortedBy: sortBy,
-            founderID: uuid,
+            founderUUID: uuid,
             isMyPage,
           };
           return (

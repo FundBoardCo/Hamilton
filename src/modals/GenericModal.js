@@ -3,9 +3,8 @@ import Modal from 'react-bootstrap/Modal';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router';
 import Button from 'react-bootstrap/Button';
+import PropTypes from 'prop-types';
 import * as types from '../actions/types';
-import PropTypes from "prop-types";
-import Public from "../pages/public/Public";
 
 export default function GenericModal(props) {
   const openModal = useSelector(state => state.modal.openModal);

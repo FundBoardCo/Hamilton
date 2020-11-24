@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import Modal from 'react-bootstrap/Modal';
 import * as types from '../actions/types';
@@ -6,7 +6,6 @@ import DismissibleStatus from '../components/DismissibleStatus';
 
 export default function HowToIntro() {
   const publicID = useSelector(state => state.manageRaise.publicUUID);
-  const publicURL = `https://fundboard.co/public/${publicID}`;
   const publicStatus = useSelector(state => state.manageRaise.postBoard_status);
 
   const dispatch = useDispatch();
@@ -53,15 +52,21 @@ export default function HowToIntro() {
             You can always edit who says they have introduced you to an investor, and add your own
             information if you were connected outside of FundBoard.
           </p>
+          <p>
+            All of the investors on your personal board have been published to your public
+            FundBoard. If you add more investors, they will be set as private until you share them.
+            You can mark shared investors as private at any time to take them off your public
+            FundBoard.
+          </p>
           {publicStatus === 'succeeded' && (
             <p>
               Your public URL:&nbsp;
               <a
-                href={publicURL}
+                href={`${window.location.protocol}//${window.location.host}/public/${publicID}`}
                 target="_blank"
                 rel="noreferrer"
               >
-                {publicURL}
+                {`${window.location.protocol}//${window.location.host}/public/${publicID}`}
               </a>
             </p>
           )}

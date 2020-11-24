@@ -1,6 +1,10 @@
 import * as types from '../actions/types';
 
-export default function board(state = { ids: [] }, action) {
+const defaults = {
+  ids: [],
+};
+
+export default function board(state = defaults, action) {
   switch (action.type) {
     case types.BOARD_ADD: return {
       ...state,
@@ -17,6 +21,9 @@ export default function board(state = { ids: [] }, action) {
     case types.BOARD_SHOWADVICE: return {
       ...state,
       showAdvice: action.showAdvice,
+    };
+    case types.USER_LOGOUT: return {
+      ...defaults,
     };
     default: return state;
   }

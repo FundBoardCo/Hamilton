@@ -98,13 +98,13 @@ function* workFounderDataGet(action) {
     // catch airtable errors
     if (results.data.error) {
       trackErr(results.data.error);
-      yield put({ type: types.PUBLIC_GET_FOUNDERDATA_FAILED, error: results.data.error });
+      yield put({ type: types.PUBLIC_GET_FOUNDERDATA_FAILED, uuid, error: results.data.error });
     } else {
-      yield put({ type: types.PUBLIC_GET_FOUNDERDATA_SUCCEEDED, data: results.data });
+      yield put({ type: types.PUBLIC_GET_FOUNDERDATA_SUCCEEDED, uuid, data: results.data });
     }
   } catch (error) {
     trackErr(error);
-    yield put({ type: types.PUBLIC_GET_FOUNDERDATA_FAILED, error });
+    yield put({ type: types.PUBLIC_GET_FOUNDERDATA_FAILED, uuid, error });
   }
 }
 
@@ -113,12 +113,26 @@ export function* watchFounderDataGet() {
 }
 
 function requestPublicBoard(params) {
-  return axios.get(`/.netlify/functions/airtable_get_boardByUUID?${toQueryString(params)}`);
+  const getParams = params;
+  const { requestorEmail } = params;
+  delete getParams.requestorEmail;
+
+  return axios({
+    method: 'get',
+    url: `/.netlify/functions/airtable_get_boardByUUID?${toQueryString(getParams)}`,
+    headers: {
+      requestorEmail,
+    },
+  });
 }
 
 function* workPublicBoardGet(action) {
   const { uuid } = action;
-  const params = { filterByFormula: `{uuid}="${uuid}"` };
+  const requestorEmail = yield select(getEmail);
+  const params = {
+    requestorEmail,
+    filterByFormula: `{uuid}="${uuid}"`,
+  };
   try {
     const results = yield call(requestPublicBoard, params);
     // catch airtable errors
@@ -257,20 +271,44 @@ export function* watchUserFounderDataPost() {
   yield takeLatest(types.USER_POST_FOUNDERDATA_REQUESTED, workUserFounderDataPost);
 }
 
+// TODO: make this a universal call for all the investorStatus tables
+function postBulkInvestors(params) {
+  const data = { records: [] };
+  params.investors.forEach(i => {
+    data.records.push({
+      fields: {
+        userid: params.email,
+        stage: 'added',
+        uuid: i.uuid,
+      },
+    });
+  });
+  return axios({
+    method: 'post',
+    url: '/.netlify/functions/airtable_p_investorStatus',
+    data,
+    headers: {
+      endpoint: 'status',
+    },
+  });
+}
+
 function* workUserPublicBoardPost(action) {
-  let { params } = action;
+  const { params } = action;
+  let postParams = params;
+  const { addInvestors } = params;
+  delete postParams.addInvestors;
+
   try {
-    const id = yield select(getPubRecID);
     const email = yield select(getEmail);
-    const uuid = uuidv5(email, '4c0db00b-f035-4b07-884d-c9139c7a91b5');
-    params = {
-      id,
+    const uuid = params.uuid || uuidv5(email, '4c0db00b-f035-4b07-884d-c9139c7a91b5');
+    postParams = {
       email,
-      uuid,
+      uuid, // pass in as param if this already exists
       endpoint: 'emailMap',
       ...params,
     };
-    const results = yield call(postStatusData, params);
+    const results = yield call(postStatusData, postParams);
     // catch airtable errors
     if (results.data.error) {
       trackErr(results.data.error);
@@ -281,8 +319,20 @@ function* workUserPublicBoardPost(action) {
     } else {
       yield put({
         type: types.USER_POST_PUBLICBOARD_SUCCEEDED,
-        params,
+        data: {
+          uuid,
+          ...params,
+          ...results.data,
+        },
       });
+    }
+    if (Array.isArray(addInvestors) && addInvestors.length) {
+      const invParams = {
+        investors: [...addInvestors],
+        email,
+        id: params.id || getSafeVar(() => results.data.records[0].id),
+      };
+      yield call(postBulkInvestors, invParams);
     }
   } catch (error) {
     trackErr(error);

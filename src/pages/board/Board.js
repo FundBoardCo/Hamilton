@@ -152,7 +152,10 @@ export default function Board() {
     if (!publicID || boardNotFound) {
       dispatch({
         type: types.USER_POST_PUBLICBOARD_REQUESTED,
-        params: { id: false },
+        params: {
+          id: false,
+          addInvestors: investorList.filter(i => !Object.keys(i.investorStatus).length),
+        },
       });
       dispatch({
         type: types.MODAL_SET_OPEN,

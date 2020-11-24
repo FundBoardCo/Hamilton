@@ -9,7 +9,7 @@ export const ZIPDISTANCE = '20';
 export const STAGEPROPS = {
   none: {
     faIcon: 'ellipsis-h',
-    text: 'GetConnected',
+    text: 'Get Connected',
   },
   added: {
     faIcon: 'check',

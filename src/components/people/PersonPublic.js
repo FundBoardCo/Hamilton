@@ -19,7 +19,7 @@ export default function Person(props) {
     // isImpact = false,
     status,
     investorStatus = {},
-    founderID,
+    founderUUID,
     isMyPage,
   } = props;
 
@@ -51,7 +51,7 @@ export default function Person(props) {
             primary_job_title,
             primary_organization_name,
           },
-          founderID,
+          founderUUID,
         },
       });
     }
@@ -147,7 +147,7 @@ Person.defaultProps = {
   },
   status: '',
   investorStatus: {},
-  founderID: '',
+  founderUUID: '',
   isMyPage: false,
 };
 
@@ -177,6 +177,6 @@ Person.propTypes = {
           .oneOfType([PropTypes.string, PropTypes.bool]))),
     intro: PropTypes.objectOf(PropTypes.string),
   }),
-  founderID: PropTypes.string,
+  founderUUID: PropTypes.string,
   isMyPage: PropTypes.bool,
 };

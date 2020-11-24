@@ -11,9 +11,7 @@ const defaults = {
   deleteBoard_status: '',
   getPublic_status: '',
   getFounderData_status: '',
-  postFounderData_status: '',
   founderData: {},
-  founderData_recordID: '',
   publicUUID: '',
   publicUUID_recordID: '',
   editNoteParams: {},
@@ -112,9 +110,9 @@ export default function manageRaise(state = defaults, action) {
     case types.USER_POST_PUBLICBOARD_SUCCEEDED: return {
       ...state,
       postBoard_status: 'succeeded',
-      hidden: action.params.hide,
-      publicUUID: action.params.uuid,
-      publicUUID_recordID: action.params.id,
+      hidden: action.data.hide,
+      publicUUID: action.data.uuid,
+      publicUUID_recordID: action.data.id,
     };
     case types.USER_POST_PUBLICBOARD_FAILED: return {
       ...state,
@@ -151,10 +149,17 @@ export default function manageRaise(state = defaults, action) {
     case types.PUBLIC_GET_FOUNDERDATA_SUCCEEDED: return {
       ...state,
       getFounderData_status: 'succeeded',
-      founderData: Array.isArray(action.data.records)
-      && isPlainObject(action.data.records[0].fields)
-        ? { ...action.data.records[0].fields }
-        : {},
+      founderData: {
+        ...state.founderData,
+        [action.uuid]: Array.isArray(action.data.records)
+          && action.data.records[0]
+          && isPlainObject(action.data.records[0].fields)
+          ? {
+            recordID: getSafeVar(() => action.data.records[0].id),
+            ...action.data.records[0].fields,
+          }
+          : {},
+      },
     };
     case types.PUBLIC_GET_FOUNDERDATA_FAILED: return {
       ...state,
@@ -192,17 +197,32 @@ export default function manageRaise(state = defaults, action) {
     };
     case types.USER_POST_FOUNDERDATA_SUCCEEDED: return {
       ...state,
-      postFounderData_status: 'succeeded',
-      founderData_recordID: getSafeVar(() => action.data.records[0].id),
-      founderData: getSafeVar(() => action.data.records[0].fields, {}),
+      founderData: {
+        ...state.founderData,
+        [action.uuid]: {
+          post_status: 'succeeded',
+          recordID: getSafeVar(() => action.data.records[0].id),
+          ...getSafeVar(() => action.data.records[0].fields, {}),
+        },
+      },
     };
     case types.USER_POST_FOUNDERDATA_FAILED: return {
       ...state,
-      postFounderData_status: processErr(action.error),
+      founderData: {
+        ...state.founderData,
+        [action.uuid]: {
+          post_status: processErr(action.error),
+          recordID: getSafeVar(() => action.data.records[0].id),
+          ...getSafeVar(() => action.data.records[0].fields, {}),
+        },
+      },
     };
     case types.USER_POST_FOUNDERDATA_DISMISSED: return {
       ...state,
       postFounderData_status: '',
+    };
+    case types.USER_LOGOUT: return {
+      ...defaults,
     };
     default: return state;
   }

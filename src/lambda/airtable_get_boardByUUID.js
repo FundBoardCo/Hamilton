@@ -7,6 +7,7 @@ exports.handler = async event => {
   const MAP_URL = 'https://api.airtable.com/v0/appGVqCRTs9ZDqcoR/emailMap';
   let STATUS_PARAMS = '';
   const STATUS_URL = 'https://api.airtable.com/v0/appGVqCRTs9ZDqcoR/status';
+  const { requestorEmail } = event.headers;
 
   try {
     const mapResponse = await fetch(`${MAP_URL}?${MAP_PARAMS}`,
@@ -19,8 +20,12 @@ exports.handler = async event => {
       });
     const mapData = await mapResponse.json();
     const params = {};
-    const publicUUID_recordID = getSafeVar(() => mapData.records[0].id);
     const email = getSafeVar(() => mapData.records[0].fields.email);
+    let publicUUID_recordID;
+    if (requestorEmail === email) {
+      // Only return the record ID if the logged in user is requesting it
+      publicUUID_recordID = getSafeVar(() => mapData.records[0].id);
+    }
     const hide = getSafeVar(() => mapData.records[0].fields.hide);
     params.filterByFormula = `{userid}="${email}"`;
     STATUS_PARAMS = toQueryString(params);
@@ -44,12 +49,11 @@ exports.handler = async event => {
         });
       data = await statusResponse.json();
       data.publicUUID_recordID = publicUUID_recordID;
-      if (Array.isArray(data.records)) {
+      if (Array.isArray(data.records) && requestorEmail !== email) {
         // remove sensitive data
         data.records = data.records.map(r => {
           const newF = { ...r.fields } || {};
           delete newF.userid;
-          delete newF.key;
           delete newF.intro_email;
           return {
             ...r,

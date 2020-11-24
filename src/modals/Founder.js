@@ -35,7 +35,6 @@ export default function Founder() {
   } = modalProps;
 
   let { links } = modalProps;
-  console.log(links)
   // convert from AirTable
   links = (links && links.split('^^^')) || [];
   links = links.map(l => {
@@ -45,8 +44,6 @@ export default function Founder() {
       url: s[1],
     };
   });
-
-  console.log(modalProps)
 
   const userPublicUUID = useSelector(state => state.manageRaise.publicUUID);
   const isMyPage = uuid === userPublicUUID;
@@ -72,7 +69,6 @@ export default function Founder() {
 
   return (
     <Modal
-      size="lg"
       aria-labelledby="Modal-Title"
       centered
       show
