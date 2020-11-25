@@ -193,13 +193,20 @@ export default function manageRaise(state = defaults, action) {
     };
     case types.USER_POST_FOUNDERDATA_REQUESTED: return {
       ...state,
-      postFounderData_status: 'pending',
+      founderData: {
+        ...state.founderData,
+        [action.uuid]: {
+          ...state.founderData[action.uuid],
+          post_status: 'pending',
+        },
+      },
     };
     case types.USER_POST_FOUNDERDATA_SUCCEEDED: return {
       ...state,
       founderData: {
         ...state.founderData,
         [action.uuid]: {
+          ...state.founderData[action.uuid],
           post_status: 'succeeded',
           recordID: getSafeVar(() => action.data.records[0].id),
           ...getSafeVar(() => action.data.records[0].fields, {}),
@@ -211,6 +218,7 @@ export default function manageRaise(state = defaults, action) {
       founderData: {
         ...state.founderData,
         [action.uuid]: {
+          ...state.founderData[action.uuid],
           post_status: processErr(action.error),
           recordID: getSafeVar(() => action.data.records[0].id),
           ...getSafeVar(() => action.data.records[0].fields, {}),
@@ -219,7 +227,13 @@ export default function manageRaise(state = defaults, action) {
     };
     case types.USER_POST_FOUNDERDATA_DISMISSED: return {
       ...state,
-      postFounderData_status: '',
+      founderData: {
+        ...state.founderData,
+        [action.params.uuid]: {
+          ...state.founderData[action.params.uuid],
+          post_status: '',
+        },
+      },
     };
     case types.USER_LOGOUT: return {
       ...defaults,

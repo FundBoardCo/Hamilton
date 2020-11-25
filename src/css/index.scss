@@ -793,6 +793,19 @@ html#ov {
 
         #PageProfile {
           margin-bottom: $pad4;
+
+          form {
+            label {
+              font-weight: 700;
+              margin-bottom: $pad1;
+            }
+            input {
+              font-size: $tx;
+            }
+            .form-text {
+              margin-bottom: $pad2;
+            }
+          }
         }
 
         #PageTalk {

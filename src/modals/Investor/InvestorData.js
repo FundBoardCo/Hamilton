@@ -186,7 +186,7 @@ export default function InvestorData(props) {
       </section>
       {path !== 'Board' && searchLocation && !!matches && Object.keys(matches).length > 0 && (
         <section className="matches mb-4">
-          <h2>{`${percentageMatch}% Match`}</h2>
+          <h2 className="sectionHead">{`${percentageMatch}% Match`}</h2>
           <ul>
             {matchData.map(d => {
               if (searchData[d.key]) {
@@ -216,7 +216,7 @@ export default function InvestorData(props) {
       )}
       {Array.isArray(investments) && investments.length > 0 && (
         <section className="funded mb-4">
-          <h3>Founders they&apos;ve funded</h3>
+          <h3 className="sectionHead">Founders they&apos;ve funded</h3>
           <div className="founders">
             {Object.keys(parsedInvestors).map(k => (
               <PersonStamp key={k} {...parsedInvestors[k]} />
@@ -226,7 +226,7 @@ export default function InvestorData(props) {
       )}
       {twitterName && (
         <section className="twitterFeed">
-          <div className="h4 text-twitter d-flex mb-2">
+          <div className="h3 text-twitter d-flex mb-2 sectionHead">
             <FontAwesomeIcon icon={['fab', 'twitter-square']} />
             &nbsp;
             <a

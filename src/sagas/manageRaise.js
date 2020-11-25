@@ -246,24 +246,40 @@ export function* watchInvestorStatusPost() {
 
 function* workUserFounderDataPost(action) {
   const { params } = action;
+  const { uuid } = params;
+  params.endpoint = 'founders';
+
   try {
     const results = yield call(postStatusData, params);
     // catch airtable errors
     if (results.data.error) {
       trackErr(results.data.error);
-      yield put({ type: types.USER_POST_FOUNDERDATA_FAILED, error: results.data.error });
+      yield put({
+        type: types.USER_POST_FOUNDERDATA_FAILED,
+        uuid,
+        error: results.data.error,
+      });
     } else if (results.data.statusCode && results.data.statusCode === 500) {
       trackErr(results.data.body);
-      yield put({ type: types.USER_POST_FOUNDERDATA_FAILED, error: results.data.body });
+      yield put({
+        type: types.USER_POST_FOUNDERDATA_FAILED,
+        uuid,
+        error: results.data.body,
+      });
     } else {
       yield put({
         type: types.USER_POST_FOUNDERDATA_SUCCEEDED,
-        params,
+        uuid,
+        data: results.data,
       });
     }
   } catch (error) {
     trackErr(error);
-    yield put({ type: types.USER_POST_FOUNDERDATA_FAILED, error });
+    yield put({
+      type: types.USER_POST_FOUNDERDATA_FAILED,
+      uuid,
+      error,
+    });
   }
 }
 

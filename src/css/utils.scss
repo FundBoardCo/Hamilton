@@ -281,6 +281,12 @@ html#ov body {
     &.was-validated .form-check-input:valid ~ .form-check-label {
       color: inherit;
     }
+    .endOfRowWithLabelBtn {
+      margin-top: 1.75rem;
+      height: calc(1.5em + .75rem + 2px);
+      font-size: $h3;
+    }
+
   }
 
   .noTextOverflow {
@@ -408,6 +414,11 @@ html#ov body {
     @media (min-width: $mediaLg) {
       font-size: $tx;
     }
+  }
+
+  .sectionHead {
+    padding-bottom: $pad1;
+    border-bottom: 2px solid $col-primary-light6;
   }
 
   .responsiveImg {

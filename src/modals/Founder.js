@@ -46,7 +46,7 @@ export default function Founder() {
   });
 
   const userPublicUUID = useSelector(state => state.manageRaise.publicUUID);
-  const isMyPage = uuid === userPublicUUID;
+  // const isMyPage = uuid === userPublicUUID;
 
   const pathLocation = useLocation();
   const path = capitalizeFirstLetter(pathLocation.pathname.substring(1).split('/')[0]);
@@ -70,6 +70,7 @@ export default function Founder() {
   return (
     <Modal
       aria-labelledby="Modal-Title"
+      size="lg"
       centered
       show
       scrollable
@@ -153,28 +154,28 @@ export default function Founder() {
           <section className="matches mb-4">
             <h2>Key Facts</h2>
             <ul>
-              {raise && (
+              {!!raise && (
                 <RaiseBullet
                   faIcon="rocket"
                   bool
                   text={`They are raising ${usdFormatter.format(raise)}.`}
                 />
               )}
-              {location && (
+              {!!location && (
                 <RaiseBullet
                   faIcon="map-marker-alt"
                   bool
                   text={`They are located in ${location}.`}
                 />
               )}
-              {remote && (
+              {!!remote && (
                 <RaiseBullet
                   faIcon="wifi"
                   bool
                   text="They are remote."
                 />
               )}
-              {team_size && (
+              {!!team_size && (
                 <RaiseBullet
                   faIcon="users"
                   bool
