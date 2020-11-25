@@ -1,4 +1,5 @@
 import * as types from '../actions/types';
+import { getSafeVar } from '../utils';
 
 const defaults = {
   ids: [],
@@ -21,6 +22,13 @@ export default function board(state = defaults, action) {
     case types.BOARD_SHOWADVICE: return {
       ...state,
       showAdvice: action.showAdvice,
+    };
+    case types.USER_LOGIN_SUCCEEDED: return {
+      ...state,
+      ids: [...new Set([
+        ...state.ids,
+        ...(getSafeVar(() => action.data.following, [])),
+      ])],
     };
     case types.USER_LOGOUT: return {
       ...defaults,
