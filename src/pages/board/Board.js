@@ -15,7 +15,7 @@ import { STAGEPROPS } from '../../constants';
 import { getSafeVar } from '../../utils';
 
 export default function Board() {
-  const investorIDs = useSelector(state => state.board.ids) || [];
+  const investorIDs = useSelector(state => state.user.investors) || [];
   const people = useSelector(state => state.people);
   const loggedIn = useSelector(state => state.user.token);
   const modalsSeen = useSelector(state => state.modal.modalsSeen) || [];
