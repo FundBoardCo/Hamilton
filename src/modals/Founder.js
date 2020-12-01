@@ -91,6 +91,44 @@ export default function Founder() {
               dangerouslySetInnerHTML={{ __html: convertKeyTags(description) }}
             />
           )}
+        </section>
+        {[raise, location, remote, team_size].filter(i => i).length > 0 && (
+          <section className="matches mb-4">
+            <h3>Key Facts</h3>
+            <ul>
+              {!!raise && (
+                <RaiseBullet
+                  faIcon="rocket"
+                  bool
+                  text={`They are raising ${usdFormatter.format(raise)}.`}
+                />
+              )}
+              {!!location && (
+                <RaiseBullet
+                  faIcon="map-marker-alt"
+                  bool
+                  text={`They are located in ${location}.`}
+                />
+              )}
+              {!!remote && (
+                <RaiseBullet
+                  faIcon="wifi"
+                  bool
+                  text="They are remote."
+                />
+              )}
+              {!!team_size && (
+                <RaiseBullet
+                  faIcon="users"
+                  bool
+                  text={`Team size: ${team_size}.`}
+                />
+              )}
+            </ul>
+          </section>
+        )}
+        <section className="mb-4">
+          <h3>More Information</h3>
           {linkedin && (
             <div className="h4 text-linkedin d-flex">
               <FontAwesomeIcon icon={['fab', 'linkedin']} />
@@ -150,41 +188,6 @@ export default function Founder() {
             </div>
           ))}
         </section>
-        {[raise, location, remote, team_size].filter(i => i).length > 0 && (
-          <section className="matches mb-4">
-            <h2>Key Facts</h2>
-            <ul>
-              {!!raise && (
-                <RaiseBullet
-                  faIcon="rocket"
-                  bool
-                  text={`They are raising ${usdFormatter.format(raise)}.`}
-                />
-              )}
-              {!!location && (
-                <RaiseBullet
-                  faIcon="map-marker-alt"
-                  bool
-                  text={`They are located in ${location}.`}
-                />
-              )}
-              {!!remote && (
-                <RaiseBullet
-                  faIcon="wifi"
-                  bool
-                  text="They are remote."
-                />
-              )}
-              {!!team_size && (
-                <RaiseBullet
-                  faIcon="users"
-                  bool
-                  text={`Team size: ${team_size}.`}
-                />
-              )}
-            </ul>
-          </section>
-        )}
       </Modal.Body>
     </Modal>
   );
