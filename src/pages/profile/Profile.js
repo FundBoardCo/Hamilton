@@ -16,6 +16,7 @@ function convertLinksFromAirTable(str) {
     return {
       text: s[0],
       url: s[1],
+      key: Math.floor(Math.random() * Math.floor(1000000)),
     };
   });
   return links;
@@ -48,6 +49,7 @@ function LinkInput(props) {
             value={text}
             onChange={e => onLinkTextChange(e.target.value, linkIndex)}
             data-track="ProfileLinkInput"
+            isInvalid={!text && url}
           />
           <Form.Control.Feedback type="invalid">
             Please enter a valid url.
@@ -63,6 +65,7 @@ function LinkInput(props) {
             value={url}
             onChange={e => onLinkURLChange(e.target.value, linkIndex)}
             data-track="ProfileLinkInput"
+            isInvalid={text && !url}
           />
           <Form.Control.Feedback type="invalid">
             Please enter a valid url.
@@ -170,7 +173,6 @@ export default function Profile() {
   };
 
   const setLinkText = (text, index) => {
-    console.log(links)
     const newLinks = [...links];
     newLinks[index].text = text;
     setLinks(newLinks);
@@ -489,7 +491,7 @@ export default function Profile() {
               <LinkInput
                 text={l.text}
                 url={l.url}
-                key={`${l.text}-${i}`}
+                key={l.key}
                 linkIndex={i}
                 onLinkTextChange={setLinkText}
                 onLinkURLChange={setLinkURL}
