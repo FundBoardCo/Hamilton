@@ -24,7 +24,7 @@ export default function Public(props) {
   const public_records = useSelector(state => state.manageRaise.public_records) || {};
   const founderStatus = useSelector(state => state.manageRaise.getFounderData_status) || '';
   const founderProps = useSelector(state => state.manageRaise.founderData[uuid]) || {};
-  const publicIDRecordID = useSelector(state => state.manageRaise.publicUUID_recordID);
+  const publicUUID_recordID = useSelector(state => state.manageRaise.publicUUID_recordID);
   const boardHidden = useSelector(state => state.manageRaise.hidden);
   const investorIDs = Object.keys(public_records);
   const people = useSelector(state => state.people);
@@ -144,7 +144,7 @@ export default function Public(props) {
       params: {
         uuid,
         hide: !boardHidden,
-        id: publicIDRecordID,
+        id: publicUUID_recordID,
       },
     });
   };
@@ -196,28 +196,12 @@ export default function Public(props) {
   return (
     <Row id="PageBoard" className="pageContainer public">
       {showConfirmHide && <GenericModal {...confirmDeleteProps} />}
-      <div>
+      {(boardHidden ? (
         <div className="boardDetailsBar">
           <div className="primaryDetails">
-            {founderProps.name ? (
-              <span className="d-flex">
-                <span className="d-none d-md-inline">
-                  Welcome to the FundBoard of&nbsp;
-                </span>
-                <button
-                  className="btn btn-link"
-                  type="button"
-                  onClick={onClickShowProfile}
-                >
-                  {founderProps.name}
-                </button>
-                <span className="d-none d-md-inline">
-                  !
-                </span>
-              </span>
-            ) : (
-              <span>Welcome! This founder has not saved their profile data yet.</span>
-            )}
+            <span>
+              This FundBoard is not currently public.
+            </span>
             {isMyPage && (
               <span className="txs-1">
                 <Button
@@ -231,60 +215,101 @@ export default function Public(props) {
             )}
           </div>
         </div>
-        {investorIDs.length > 0 && (
-          <div className="d-flex justify-content-end justify-content-lg-end align-items-center mb-3">
-            <div className="sortBar">
-              <span className="label">Sort By:</span>
-              <button
-                type="button"
-                className={sortBy === 'name' ? 'active' : ''}
-                onClick={() => setSortBy('name')}
-              >
-                ABC
-              </button>
-              <button
-                type="button"
-                className={sortBy === 'status' ? 'active' : ''}
-                onClick={() => setSortBy('status')}
-              >
-                Status
-              </button>
-            </div>
-            <div className="searchBar">
-              <InputGroup>
-                <InputGroup.Prepend>
-                  <InputGroup.Text>
-                    Search
-                  </InputGroup.Text>
-                </InputGroup.Prepend>
-                <FormControl
-                  type="text"
-                  value={searchBy}
-                  onChange={e => setSearchBy(e.target.value)}
-                  aria-label="Search for an investor by name or organization."
-                />
-              </InputGroup>
+      ) : (
+        <div>
+          <div className="boardDetailsBar">
+            <div className="primaryDetails">
+              {founderProps.name ? (
+                <span className="d-flex">
+                  <span className="d-none d-md-inline">
+                    Welcome to the FundBoard of&nbsp;
+                  </span>
+                  <button
+                    className="btn btn-text"
+                    type="button"
+                    onClick={onClickShowProfile}
+                  >
+                    <b className="bold text-secondary">{founderProps.name}</b>
+                  </button>
+                  <span className="d-none d-md-inline">
+                    !
+                  </span>
+                </span>
+              ) : (
+                <span>Welcome! This founder has not saved their profile data yet.</span>
+              )}
+              {isMyPage && (
+                <span className="txs-1">
+                  <Button
+                    variant="link"
+                    className="txs-1 toggleHideLink"
+                    onClick={onToggleHideBoardClick}
+                  >
+                    {`${boardHidden ? 'Show' : 'Hide'} Public Board`}
+                  </Button>
+                </span>
+              )}
             </div>
           </div>
-        )}
-      </div>
+          {investorIDs.length > 0 && (
+            <div className="d-flex justify-content-end justify-content-lg-end align-items-center mb-3">
+              <div className="sortBar">
+                <span className="label">Sort By:</span>
+                <button
+                  type="button"
+                  className={sortBy === 'name' ? 'active' : ''}
+                  onClick={() => setSortBy('name')}
+                >
+                  ABC
+                </button>
+                <button
+                  type="button"
+                  className={sortBy === 'status' ? 'active' : ''}
+                  onClick={() => setSortBy('status')}
+                >
+                  Status
+                </button>
+              </div>
+              <div className="searchBar">
+                <InputGroup>
+                  <InputGroup.Prepend>
+                    <InputGroup.Text>
+                      Search
+                    </InputGroup.Text>
+                  </InputGroup.Prepend>
+                  <FormControl
+                    type="text"
+                    value={searchBy}
+                    onChange={e => setSearchBy(e.target.value)}
+                    aria-label="Search for an investor by name or organization."
+                  />
+                </InputGroup>
+              </div>
+            </div>
+          )}
+        </div>
+      ))}
       {statusBars.map(s => <DismissibleStatus {...s} />)}
-      <div className="results">
-        {toShowInvestorList.map(i => {
-          const personProps = {
-            ...i,
-            sortedBy: sortBy,
-            founderUUID: uuid,
-            isMyPage,
-          };
-          return (
-            <PersonPublic key={i.uuid} {...personProps} />
-          );
-        })}
-      </div>
-      {toShowInvestorList.length === 0 && (
+      {!boardHidden && (
         <div>
-          This founder doesn’t have any investors shared publically yet.
+          <div className="results">
+            {toShowInvestorList.map(i => {
+              const personProps = {
+                ...i,
+                sortedBy: sortBy,
+                founderUUID: uuid,
+                isMyPage,
+              };
+              return (
+                <PersonPublic key={i.uuid} {...personProps} />
+              );
+            })}
+          </div>
+          {toShowInvestorList.length === 0 && (
+            <div>
+              This founder doesn’t have any investors shared publically yet.
+            </div>
+          )}
         </div>
       )}
     </Row>

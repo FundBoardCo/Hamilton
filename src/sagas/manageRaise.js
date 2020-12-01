@@ -47,7 +47,10 @@ function postStatusData(params) {
   const data = {
     records: [{
       ...idParams,
-      fields: { ...postParams },
+      fields: {
+        timestamp: Date.now(),
+        ...postParams,
+      },
     }],
   };
   return axios({
@@ -114,23 +117,23 @@ export function* watchFounderDataGet() {
 
 function requestPublicBoard(params) {
   const getParams = params;
-  const { requestorEmail } = params;
-  delete getParams.requestorEmail;
+  const { requestoremail } = params;
+  delete getParams.requestoremail;
 
   return axios({
     method: 'get',
     url: `/.netlify/functions/airtable_get_boardByUUID?${toQueryString(getParams)}`,
     headers: {
-      requestorEmail,
+      requestoremail,
     },
   });
 }
 
 function* workPublicBoardGet(action) {
   const { uuid } = action;
-  const requestorEmail = yield select(getEmail);
+  const requestoremail = yield select(getEmail);
   const params = {
-    requestorEmail,
+    requestoremail,
     filterByFormula: `{uuid}="${uuid}"`,
   };
   try {

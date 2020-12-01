@@ -65,9 +65,9 @@ html#ov body {
   .btn.btn-text-light {
     padding: 0;
     max-width: none;
+    font-size: 1em;
 
     @media (min-width: $mediaXs) {
-      font-size: $tx;
       padding: 0;
     }
   }

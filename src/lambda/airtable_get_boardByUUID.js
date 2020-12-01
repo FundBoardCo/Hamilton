@@ -7,7 +7,7 @@ exports.handler = async event => {
   const MAP_URL = 'https://api.airtable.com/v0/appGVqCRTs9ZDqcoR/emailMap';
   let STATUS_PARAMS = '';
   const STATUS_URL = 'https://api.airtable.com/v0/appGVqCRTs9ZDqcoR/status';
-  const { requestorEmail } = event.headers;
+  const { requestoremail } = event.headers;
 
   try {
     const mapResponse = await fetch(`${MAP_URL}?${MAP_PARAMS}`,
@@ -22,7 +22,7 @@ exports.handler = async event => {
     const params = {};
     const email = getSafeVar(() => mapData.records[0].fields.email);
     let publicUUID_recordID;
-    if (requestorEmail === email) {
+    if (requestoremail === email) {
       // Only return the record ID if the logged in user is requesting it
       publicUUID_recordID = getSafeVar(() => mapData.records[0].id);
     }
@@ -49,7 +49,7 @@ exports.handler = async event => {
         });
       data = await statusResponse.json();
       data.publicUUID_recordID = publicUUID_recordID;
-      if (Array.isArray(data.records) && requestorEmail !== email) {
+      if (Array.isArray(data.records) && requestoremail !== email) {
         // remove sensitive data
         data.records = data.records.map(r => {
           const newF = { ...r.fields } || {};

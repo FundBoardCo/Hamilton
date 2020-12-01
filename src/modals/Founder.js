@@ -45,7 +45,7 @@ export default function Founder() {
     };
   });
 
-  const userPublicUUID = useSelector(state => state.manageRaise.publicUUID);
+  // const userPublicUUID = useSelector(state => state.manageRaise.publicUUID);
   // const isMyPage = uuid === userPublicUUID;
 
   const pathLocation = useLocation();
