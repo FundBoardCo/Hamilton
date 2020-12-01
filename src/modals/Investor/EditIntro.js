@@ -18,6 +18,7 @@ export default function EditIntro(props) {
     intro_name = '',
     intro_email = '',
     intro_date,
+    stage,
   } = props;
 
   const parsedDate = Number.isNaN(Date.parse(intro_date)) ? Date.now() : new Date(intro_date);
@@ -45,7 +46,9 @@ export default function EditIntro(props) {
     event.stopPropagation();
     setValidated(true);
     const publicProps = {};
-    if (isPublic) publicProps.stage = 'connected';
+    if (isPublic || !stage || ['none', 'added'].includes(stage)) {
+      publicProps.stage = 'connected';
+    }
     if (formNode.checkValidity() !== false) {
       const p = {
         id,
@@ -171,6 +174,7 @@ EditIntro.defaultProps = {
   intro_name: '',
   intro_email: '',
   intro_date: '',
+  stage: '',
 };
 
 EditIntro.propTypes = {
@@ -181,4 +185,5 @@ EditIntro.propTypes = {
   intro_name: PropTypes.string,
   intro_email: PropTypes.string,
   intro_date: PropTypes.string,
+  stage: PropTypes.string,
 };

@@ -90,6 +90,11 @@ export default function manageRaise(state = defaults, action) {
           ...state.records,
           ...newRecords,
         },
+        // kind of a trashy way to make sure the public board updates if the founder changes it.
+        public_records: {
+          ...state.public_records,
+          ...newRecords,
+        },
       };
     case types.USER_POST_INVESTORSTATUS_FAILED: return {
       ...state,

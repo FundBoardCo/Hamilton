@@ -29,14 +29,9 @@ export default function Public(props) {
   const investorIDs = Object.keys(public_records);
   const people = useSelector(state => state.people);
   const publicPostStatus = useSelector(state => state.manageRaise.publicPost_status);
-
-  // if this is a public page, use the public state tracking.
-  let postStatus = useSelector(state => state.manageRaise.post_status);
-  let dismissPost = types.USER_POST_INVESTORSTATUS_DISMISSED;
-  if (!isMyPage) {
-    postStatus = publicPostStatus;
-    dismissPost = types.PUBLIC_POST_INVESTORSTATUS_DISMISSED;
-  }
+  const publicDismissPost = types.PUBLIC_POST_INVESTORSTATUS_DISMISSED;
+  const privatePostStatus = useSelector(state => state.manageRaise.post_status);
+  const privateDismissPost = types.USER_POST_INVESTORSTATUS_DISMISSED;
 
   const [sortBy, setSortBy] = useState('status');
   const [searchBy, setSearchBy] = useState('');
@@ -61,10 +56,16 @@ export default function Public(props) {
       dissmissAction: types.USER_POST_PUBLICBOARD_DISMISSED,
     },
     {
-      key: 'post',
-      status: postStatus,
+      key: 'publiPost',
+      status: publicPostStatus,
       statusPrefix: 'Make Introduction:',
-      dissmissAction: dismissPost,
+      dissmissAction: publicDismissPost,
+    },
+    {
+      key: 'privatePost',
+      status: privatePostStatus,
+      statusPrefix: 'Make Introduction:',
+      dissmissAction: privateDismissPost,
     },
   ];
 
