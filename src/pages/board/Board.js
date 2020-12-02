@@ -15,6 +15,7 @@ import { STAGEPROPS } from '../../constants';
 import { getSafeVar } from '../../utils';
 
 export default function Board() {
+  const getBoardUUID_status = useSelector(state => state.manageRaise.getBoardUUID_status);
   const investorIDs = useSelector(state => state.board.ids) || [];
   const people = useSelector(state => state.people);
   const loggedIn = useSelector(state => state.user.token);
@@ -28,6 +29,12 @@ export default function Board() {
   const [searchBy, setSearchBy] = useState('');
 
   const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch({
+      type: types.USER_GET_BOARDUUID_REQUESTED,
+    });
+  }, [dispatch]);
 
   useEffect(() => {
     dispatch({
@@ -275,6 +282,11 @@ export default function Board() {
         status={investorStatus_getStatus}
         showSuccess={false}
         dissmissAction={types.USER_GET_INVESTORSTATUSES_DISMISSED}
+      />
+      <DismissibleStatus
+        status={getBoardUUID_status}
+        showSuccess={false}
+        dissmissAction={types.USER_GET_BOARDUUID_DISMISSED}
       />
       {loggedIn && (
         <div className="results">

@@ -155,6 +155,31 @@ export function* watchPublicBoardGet() {
   yield takeLatest(types.PUBLIC_GET_BOARD_REQUESTED, workPublicBoardGet);
 }
 
+function* workBoardUUIDGet() {
+  const requestoremail = yield select(getEmail);
+  const params = {
+    filterByFormula: `{email}="${requestoremail}"`,
+    endpoint: 'emailMap',
+  };
+  try {
+    const results = yield call(getStatusData, params);
+    // catch airtable errors
+    if (results.data.error) {
+      trackErr(results.data.error);
+      yield put({ type: types.USER_GET_BOARDUUID_FAILED, error: results.data.error });
+    } else {
+      yield put({ type: types.USER_GET_BOARDUUID_SUCCEEDED, data: results.data });
+    }
+  } catch (error) {
+    trackErr(error);
+    yield put({ type: types.USER_GET_BOARDUUID_FAILED, error });
+  }
+}
+
+export function* watchBoardUUIDGet() {
+  yield takeLatest(types.USER_GET_BOARDUUID_REQUESTED, workBoardUUIDGet);
+}
+
 function updateInvestorStatus(params) {
   const postParams = { ...params };
   const { id } = params;
@@ -198,8 +223,7 @@ function createInvestorStatus(params) {
 function* workInvestorStatusPost(action) {
   try {
     const { params } = action;
-    const email = yield select(getEmail);
-    params.userid = email;
+    params.userid = yield select(getEmail);
     // process notes into airtable format
     const { notes } = params;
     if (notes) {
@@ -290,7 +314,6 @@ export function* watchUserFounderDataPost() {
   yield takeLatest(types.USER_POST_FOUNDERDATA_REQUESTED, workUserFounderDataPost);
 }
 
-// TODO: make this a universal call for all the investorStatus tables
 function postBulkInvestors(params) {
   const data = { records: [] };
   params.investors.forEach(i => {

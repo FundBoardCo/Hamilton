@@ -26,6 +26,7 @@ import {
 import {
   watchInvestorStatusesGet,
   watchPublicBoardGet,
+  watchBoardUUIDGet,
   watchInvestorStatusPost,
   watchUserPublicBoardPost,
   watchPublicInvestorStatusUpdate,
@@ -447,6 +448,7 @@ export default function* rootSaga() {
   yield fork(watchUserGetProfileSucceeded);
   yield fork(watchInvestorStatusesGet);
   yield fork(watchPublicBoardGet);
+  yield fork(watchBoardUUIDGet);
   yield fork(watchFounderDataGet);
   yield fork(watchUserFounderDataPost);
   yield fork(watchPublicInvestorStatusUpdate);

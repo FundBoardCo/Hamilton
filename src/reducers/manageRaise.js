@@ -1,5 +1,5 @@
 import * as types from '../actions/types';
-import { processErr, isPlainObject,getSafeVar } from '../utils';
+import { processErr, isPlainObject, getSafeVar } from '../utils';
 
 const defaults = {
   records: {},
@@ -10,6 +10,7 @@ const defaults = {
   postBoard_status: '',
   deleteBoard_status: '',
   getPublic_status: '',
+  getBoardUUID_status: '',
   getFounderData_status: '',
   founderData: {},
   publicUUID: '',
@@ -18,6 +19,18 @@ const defaults = {
   hidden: false,
   notFound: false,
 };
+
+let parsedRecord = {};
+
+function parseOneRecord(action) {
+  return Array.isArray(action.data.records)
+  && action.data.records[0]
+  && isPlainObject(action.data.records[0].fields)
+    ? {
+      id: action.data.records[0].id,
+      ...action.data.records[0].fields,
+    } : {};
+}
 
 function convertRecords(recs) {
   const newRecs = {};
@@ -115,6 +128,7 @@ export default function manageRaise(state = defaults, action) {
     case types.USER_POST_PUBLICBOARD_SUCCEEDED: return {
       ...state,
       postBoard_status: 'succeeded',
+      // TODO: refactor hidden to be in an object of props per uuid key
       hidden: action.data.hide,
       publicUUID: action.data.uuid,
       publicUUID_recordID: action.data.id,
@@ -146,6 +160,26 @@ export default function manageRaise(state = defaults, action) {
     case types.PUBLIC_GET_BOARD_DISMISSED: return {
       ...state,
       getPublic_status: '',
+    };
+    case types.USER_GET_BOARDUUID_REQUESTED: return {
+      ...state,
+      getBoardUUID_status: 'pending',
+    };
+    case types.USER_GET_BOARDUUID_SUCCEEDED:
+      parsedRecord = parseOneRecord(action);
+      return {
+        ...state,
+        getBoardUUID_status: 'succeeded',
+        publicUUID: parsedRecord.uuid,
+        publicUUID_recordID: parsedRecord.id,
+      };
+    case types.USER_GET_BOARDUUID_FAILED: return {
+      ...state,
+      getBoardUUID_status: processErr(action.error),
+    };
+    case types.USER_GET_BOARDUUID_DISMISSED: return {
+      ...state,
+      getBoardUUID_status: '',
     };
     case types.PUBLIC_GET_FOUNDERDATA_REQUESTED: return {
       ...state,
