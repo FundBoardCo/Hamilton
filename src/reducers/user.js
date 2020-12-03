@@ -61,9 +61,7 @@ export default function user(state = defaults, action) {
       login_status: '',
     };
     case types.USER_LOGOUT: return {
-      ...state,
       ...defaults,
-      // if needed, delete any cookies here
     };
     case types.USER_GET_PROFILE_REQUESTED: return {
       ...state,

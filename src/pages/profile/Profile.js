@@ -5,9 +5,10 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
-import * as types from '../../actions/types';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import * as types from '../../actions/types';
 import DismissibleStatus from '../../components/DismissibleStatus';
+import { capitalizeFirstLetter } from '../../utils';
 
 function convertLinksFromAirTable(str) {
   let links = (str && str.split('^^^')) || [];
@@ -29,7 +30,6 @@ function convertLinksToAirTable(arr) {
 }
 
 function LinkInput(props) {
-  // GIANT FING TODO: make a component with it's own state so it doesnt lose focus when changing
   const {
     text,
     url,
@@ -85,12 +85,51 @@ function LinkInput(props) {
   );
 }
 
+function FormInput(props) {
+  const {
+    iKey,
+    label,
+    type,
+    placeholder,
+    feedback,
+    onChange,
+    value,
+    formText,
+    min,
+  } = props;
+
+  const optionalProps = {};
+  if (min) optionalProps.min = min;
+
+  return (
+    <Form.Group controlId={`${iKey}Input`}>
+      <Form.Label>{label}</Form.Label>
+      <Form.Control
+        type={type || 'text'}
+        placeholder={placeholder}
+        name={iKey}
+        value={value}
+        onChange={e => onChange(e)}
+        data-track={`Profile${capitalizeFirstLetter(iKey)}`}
+        {...optionalProps}
+      />
+      {feedback && (
+      <Form.Control.Feedback type="invalid">
+        {`Please enter a valid ${placeholder}`}
+      </Form.Control.Feedback>
+      )}
+      {formText && (
+        <Form.Text className="text-muted">
+          {formText}
+        </Form.Text>
+      )}
+    </Form.Group>
+  );
+}
+
 export default function Profile() {
   const loggedIn = useSelector(state => state.user.token);
   const user = useSelector(state => state.user) || {};
-  const {
-    email,
-  } = user;
   const uuid = useSelector(state => state.manageRaise.publicUUID) || '';
   const getFounderStatus = useSelector(state => state.manageRaise.getFounderData_status) || '';
   const founderProps = useSelector(state => state.manageRaise.founderData[uuid]) || {};
@@ -100,28 +139,163 @@ export default function Profile() {
   const searchRemote = useSelector(state => state.search.remote) || '';
   const updateStatus = useSelector(state => state.user.update_status);
   const deleteStatus = useSelector(state => state.user.delete_status);
+  const createBoardStatus = useSelector(state => state.manageRaise.postBoard_status);
+  const investorIDs = useSelector(state => state.board.ids) || [];
+
+  const initialInputState = {
+    email: user.email,
+    password: '',
+    name: founderProps.name || '',
+    title: founderProps.primary_job_title || '',
+    orgName: founderProps.primary_organization_name || '',
+    orgURL: founderProps.primary_organization_homepage || '',
+    orgLogoURL: founderProps.primary_organization_logo || '',
+    desc: founderProps.description || '',
+    linkedin: founderProps.linkedin || '',
+    twitter: founderProps.twitter || '',
+    permalink: founderProps.permalink || '',
+    links: convertLinksFromAirTable(founderProps.links),
+    raise: founderProps.raise || searchRaise || 0,
+    remote: founderProps.remote !== undefined ? founderProps.remote : searchRemote,
+    location: founderProps.location || searchLocation || '',
+    teamSize: founderProps.team_size || 1,
+  };
+
+  const [{
+    email,
+    password,
+    name,
+    title,
+    orgName,
+    orgURL,
+    orgLogoURL,
+    desc,
+    linkedin,
+    twitter,
+    permalink,
+    links,
+    raise,
+    remote,
+    location,
+    teamSize,
+  }, setState] = useState(initialInputState);
+
+  const accountInputs = {
+    email: {
+      label: 'Email Address',
+      type: 'email',
+      placeholder: 'email address',
+      feedback: true,
+      value: email,
+    },
+    password: {
+      label: 'New Password',
+      type: 'password',
+      placeholder: 'password',
+      feedback: true,
+      formText: 'Enter a password with 8 or more characters, and at least one upper and lower '
+        + 'case letter and number.',
+      value: password,
+    },
+  };
+
+  const publicInputs1 = {
+    name: {
+      label: 'Your Full Name',
+      placeholder: 'name',
+      value: name,
+    },
+    title: {
+      label: 'Your Title At Your Startup',
+      placeholder: 'title',
+      value: title,
+    },
+    orgName: {
+      label: 'The Name of Your Startup',
+      placeholder: 'startup name',
+      value: orgName,
+    },
+    orgURL: {
+      label: 'Your Startup’s Website',
+      type: 'url',
+      placeholder: 'url',
+      feedback: true,
+      value: orgURL,
+    },
+    orgLogoURL: {
+      label: 'A Link to Your Startup’s Logo',
+      type: 'url',
+      placeholder: 'url',
+      feedback: true,
+      value: orgLogoURL,
+    },
+  };
+
+  const publicInputs2 = {
+    linkedin: {
+      label: 'Your LinkedIn Page',
+      type: 'url',
+      placeholder: 'LinkedIn url',
+      feedback: true,
+      value: linkedin,
+    },
+    twitter: {
+      label: 'Your Twitter Page',
+      type: 'url',
+      placeholder: 'Twitter url',
+      feedback: true,
+      value: twitter,
+    },
+    permalink: {
+      label: 'Your CrunchBase Page',
+      type: 'url',
+      placeholder: 'CrunchBase url',
+      feedback: true,
+      value: permalink,
+    },
+  };
+
+  const publicInputs3 = {
+    raise: {
+      label: 'How Much You’re Trying to Raise (in Dollars)',
+      type: 'number',
+      min: 100000,
+      placeholder: 'number equal to or higher than 100000',
+      feedback: true,
+      formText: 'Plese enter a value of at least $100,000.',
+      value: raise,
+    },
+    teamSize: {
+      label: 'How Many People Are On Your Team?',
+      type: 'number',
+      min: 1,
+      placeholder: 'number equal to or higher than 1',
+      feedback: true,
+      value: teamSize,
+    },
+    location: {
+      label: 'Your Location (city, 2 letter state abbreviation)',
+      placeholder: 'location',
+      formText: 'Use the format &ldquo;city name, 2 letter state abbreviation.&rdquo',
+      value: remote,
+    },
+  };
 
   const [validated, setValidated] = useState(false);
   const [publicValidated, setPublicValidated] = useState(false);
-  const [emailValue, setEmailValue] = useState(email);
-  const [password, setPassword] = useState('');
-  const [name, setName] = useState(founderProps.name || '');
-  const [title, setTitle] = useState(founderProps.primary_job_title || '');
-  const [orgName, setOrgName] = useState(founderProps.primary_organization_name || '');
-  const [orgURL, setOrgURL] = useState(founderProps.primary_organization_homepage || '');
-  const [orgLogoURL, setOrgLogoURL] = useState(founderProps.primary_organization_logo || '');
-  const [desc, setDesc] = useState(founderProps.description || '');
-  const [linkedin, setLinkedin] = useState(founderProps.linkedin || '');
-  const [twitter, setTwitter] = useState(founderProps.twitter || '');
-  const [permalink, setPermalink] = useState(founderProps.permalink || '');
-  const [links, setLinks] = useState(convertLinksFromAirTable(founderProps.links));
-  const [raise, setRaise] = useState(founderProps.raise || searchRaise || 0);
-  const [remote, setRemote] = useState(founderProps.remote !== undefined
-    ? founderProps.remote
-    : searchRemote);
-  const [location, setLocation] = useState(founderProps.location || searchLocation || '');
-  const [teamSize, setTeamSize] = useState(founderProps.team_size || 1);
   const [deletePressed, setDeletePressed] = useState(false);
+
+  const clearState = () => {
+    setState({ ...initialInputState });
+  };
+
+  const onInputChange = e => {
+    // eslint-disable-next-line no-shadow
+    const { name, type } = e.target;
+    let { value } = e.target;
+    if (type === 'number') value = Number(value);
+    setState(prevState => ({ ...prevState, [name]: value }));
+  };
 
   const dispatch = useDispatch();
 
@@ -133,16 +307,26 @@ export default function Profile() {
 
   useEffect(() => {
     dispatch({
-      type: types.USER_POST_FOUNDERDATA_DISMISSED,
-      params: { uuid },
+      type: types.PUBLIC_GET_FOUNDERDATA_DISMISSED,
     });
+  }, [dispatch]);
+
+  useEffect(() => {
+    if (uuid) {
+      dispatch({
+        type: types.USER_POST_FOUNDERDATA_DISMISSED,
+        params: { uuid },
+      });
+    }
   }, [uuid, dispatch]);
 
   useEffect(() => {
-    dispatch({
-      type: types.PUBLIC_GET_FOUNDERDATA_REQUESTED,
-      uuid,
-    });
+    if (uuid) {
+      dispatch({
+        type: types.PUBLIC_GET_FOUNDERDATA_REQUESTED,
+        uuid,
+      });
+    }
   }, [uuid, dispatch]);
 
   const updateAccount = params => dispatch({
@@ -155,43 +339,46 @@ export default function Profile() {
     params,
   });
 
-  const logout = () => dispatch({
-    type: types.USER_LOGOUT,
-  });
+  const logout = () => {
+    dispatch({
+      type: types.USER_LOGOUT,
+    });
+    clearState();
+  };
 
   const deleteAccount = () => dispatch({
     type: types.USER_DELETE_REQUESTED,
-    email,
+    email: user.email,
   });
-
-  const onEmailChange = e => {
-    setEmailValue(e.target.value);
-  };
-
-  const onPasswordChange = e => {
-    setPassword(e.target.value);
-  };
 
   const setLinkText = (text, index) => {
     const newLinks = [...links];
     newLinks[index].text = text;
-    setLinks(newLinks);
+    setState(prevState => ({ ...prevState, links: newLinks }));
   };
 
   const setLinkURL = (url, index) => {
     const newLinks = [...links];
     newLinks[index].url = url;
-    setLinks(newLinks);
+    setState(prevState => ({ ...prevState, links: newLinks }));
   };
 
   const removeLink = i => {
     const newLinks = [...links];
     newLinks.splice(i, 1);
-    setLinks(newLinks);
+    setState(prevState => ({ ...prevState, links: newLinks }));
   };
 
   const addLink = () => {
-    setLinks([...links, { text: '', url: '' }]);
+    const newLinks = [
+      ...links,
+      {
+        text: '',
+        url: '',
+        key: Math.floor(Math.random() * Math.floor(1000000)),
+      },
+    ];
+    setState(prevState => ({ ...prevState, links: newLinks }));
   };
 
   const handleSubmit = event => {
@@ -201,7 +388,7 @@ export default function Profile() {
     setValidated(true);
     if (form.checkValidity() !== false) {
       const params = {};
-      if (emailValue !== email) params.email = emailValue;
+      if (email !== user.email) params.email = email;
       if (password) params.password = password;
       updateAccount(params);
     }
@@ -233,6 +420,25 @@ export default function Profile() {
       };
       updateFounderData(params);
     }
+  };
+
+  const onCreateBoardClick = () => {
+    const addInvestors = investorIDs.map(i => ({ uuid: i }));
+    dispatch({
+      type: types.USER_POST_PUBLICBOARD_REQUESTED,
+      params: {
+        id: false,
+        addInvestors,
+        investorParams: {
+          stage: 'added',
+          published: true,
+        },
+      },
+    });
+    dispatch({
+      type: types.MODAL_SET_OPEN,
+      modal: 'creatingPublicBoard',
+    });
   };
 
   const onLogoutClick = () => {
@@ -320,37 +526,14 @@ export default function Profile() {
           onSubmit={handleSubmit}
         >
           <h2 className="sectionHead">Account Information</h2>
-          <Form.Group controlId="EmailInput">
-            <Form.Label className="sr-only">Email Address</Form.Label>
-            <Form.Control
-              type="email"
-              placeholder="email address"
-              value={emailValue}
-              onChange={e => onEmailChange(e)}
-              data-track="ProfileNewEmail"
+          {Object.keys(accountInputs).map(k => (
+            <FormInput
+              onChange={onInputChange}
+              key={k}
+              iKey={k}
+              {...accountInputs[k]}
             />
-            <Form.Control.Feedback type="invalid">
-              Please enter a valid email address.
-            </Form.Control.Feedback>
-          </Form.Group>
-          <Form.Group controlId="PasswordInput">
-            <Form.Label className="sr-only">New Password</Form.Label>
-            <Form.Control
-              type="password"
-              placeholder="new password"
-              value={password}
-              pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}"
-              onChange={e => onPasswordChange(e)}
-              data-track="ProfileNewPassword"
-            />
-            <Form.Text className="text-muted">
-              Enter a password with 8 or more characters, and at least one upper and lower case
-              letter and number.
-            </Form.Text>
-            <Form.Control.Feedback type="invalid">
-              Please enter a valid password.
-            </Form.Control.Feedback>
-          </Form.Group>
+          ))}
           <DismissibleStatus
             status={updateStatus}
             dissmissAction={types.USER_UPDATE_DISSMISSED}
@@ -368,216 +551,124 @@ export default function Profile() {
         </Form>
         <section className="mb-4">
           <h2 className="sectionHead">Public Data</h2>
-          <p>Anything you add below will be shown on your public FundBoard when it’s published.</p>
+          <p>Your profile will be shown on your public FundBoard when it’s published.</p>
           <DismissibleStatus
             status={getFounderStatus}
             showSuccess={false}
             dismissParams={{ uuid }}
             dissmissAction={types.PUBLIC_GET_FOUNDERDATA_DISMISSED}
           />
-          <Form
-            className="mb-4"
-            noValidate
-            validated={publicValidated}
-            onSubmit={handlePublicSubmit}
-          >
-            <Form.Group controlId="NameInput">
-              <Form.Label>Your Name</Form.Label>
-              <Form.Control
-                type="text"
-                placeholder="Your full name"
-                value={name}
-                onChange={e => setName(e.target.value)}
-                data-track="ProfileName"
-              />
-            </Form.Group>
-            <Form.Group controlId="TitleInput">
-              <Form.Label>Your Title</Form.Label>
-              <Form.Control
-                type="text"
-                placeholder="Your title at your startup"
-                value={title}
-                onChange={e => setTitle(e.target.value)}
-                data-track="ProfileTitle"
-              />
-            </Form.Group>
-            <Form.Group controlId="OrgNameInput">
-              <Form.Label>Your Startup</Form.Label>
-              <Form.Control
-                type="text"
-                placeholder="The name of your startup"
-                value={orgName}
-                onChange={e => setOrgName(e.target.value)}
-                data-track="ProfileOrgName"
-              />
-            </Form.Group>
-            <Form.Group controlId="OrgURL">
-              <Form.Label>Your Startup Website</Form.Label>
-              <Form.Control
-                type="url"
-                placeholder="The url for your startup"
-                value={orgURL}
-                onChange={e => setOrgURL(e.target.value)}
-                data-track="ProfileOrgURL"
-              />
-              <Form.Control.Feedback type="invalid">
-                Please enter a valid url.
-              </Form.Control.Feedback>
-            </Form.Group>
-            <Form.Group controlId="OrgLogoURL">
-              <Form.Label>A Link to Your Startup’s Logo</Form.Label>
-              <Form.Control
-                type="url"
-                placeholder="The url for your startup logo"
-                value={orgLogoURL}
-                onChange={e => setOrgLogoURL(e.target.value)}
-                data-track="ProfileOrgLogoURL"
-              />
-              <Form.Control.Feedback type="invalid">
-                Please enter a valid url.
-              </Form.Control.Feedback>
-            </Form.Group>
-            <Form.Group controlId="DescriptionInput">
-              <Form.Label>A Short Bio or Description</Form.Label>
-              <Form.Control
-                as="textarea"
-                placeholder="More information about you that would be relevant to investors."
-                value={desc}
-                onChange={e => setDesc(e.target.value)}
-                data-track="ProfileDescription"
-              />
-            </Form.Group>
-            <Form.Group controlId="LinkedinInput">
-              <Form.Label>Your LinkedIn Page</Form.Label>
-              <Form.Control
-                type="url"
-                placeholder="The url for your page on LinkedIn"
-                value={linkedin}
-                onChange={e => setLinkedin(e.target.value)}
-                data-track="ProfileLinkedin"
-              />
-              <Form.Control.Feedback type="invalid">
-                Please enter a valid url.
-              </Form.Control.Feedback>
-            </Form.Group>
-            <Form.Group controlId="TwitterInput">
-              <Form.Label>Your Twitter Page</Form.Label>
-              <Form.Control
-                type="url"
-                placeholder="The url for your page on Twitter"
-                value={twitter}
-                onChange={e => setTwitter(e.target.value)}
-                data-track="ProfileTwitter"
-              />
-              <Form.Control.Feedback type="invalid">
-                Please enter a valid url.
-              </Form.Control.Feedback>
-            </Form.Group>
-            <Form.Group controlId="CrunchBaseInput">
-              <Form.Label>Your CrunchBase Page</Form.Label>
-              <Form.Control
-                type="url"
-                placeholder="The url for your page on CrunchBase"
-                value={permalink}
-                onChange={e => setPermalink(e.target.value)}
-                data-track="ProfileCrunchBase"
-              />
-              <Form.Control.Feedback type="invalid">
-                Please enter a valid url.
-              </Form.Control.Feedback>
-            </Form.Group>
-            <h5>Additional Links</h5>
-            {links.map((l, i) => (
-              <LinkInput
-                text={l.text}
-                url={l.url}
-                key={l.key}
-                linkIndex={i}
-                onLinkTextChange={setLinkText}
-                onLinkURLChange={setLinkURL}
-                onLinkRemove={removeLink}
-              />
-            ))}
-            <Button
-              variant="link"
-              className="text-secondary mb-4"
-              type="button"
-              onClick={addLink}
-            >
-              Add another link
-            </Button>
-            <Form.Group controlId="RaiseInput">
-              <Form.Label>How Much You’re Trying to Raise (in Dollars)</Form.Label>
-              <Form.Control
-                type="number"
-                placeholder={0}
-                value={raise}
-                min={100000}
-                onChange={e => setRaise(e.target.value)}
-                data-track="ProfileRaise"
-              />
-              <Form.Text>
-                Minimum of $100,000
-              </Form.Text>
-              <Form.Control.Feedback type="invalid">
-                Please enter a valid number larger than or equal to 100000.
-              </Form.Control.Feedback>
-            </Form.Group>
-            <Form.Group controlId="LocationInput">
-              <Form.Label>Your Location</Form.Label>
-              <Form.Control
-                type="text"
-                placeholder="The city and state you're in"
-                value={location}
-                onChange={e => setLocation(e.target.value)}
-                data-track="ProfileLocation"
-              />
-              <Form.Text>
-                Use the format &ldquo;city name, 2 letter state abbreviation.&rdquo;
-              </Form.Text>
-            </Form.Group>
-            <Form.Group
-              controlId="RemoteCheckbox"
+          {uuid ? (
+            <Form
               className="mb-4"
+              noValidate
+              validated={publicValidated}
+              onSubmit={handlePublicSubmit}
             >
-              <Form.Check
-                type="checkbox"
-                label="We're fully remote."
-                checked={remote}
-                onChange={e => setRemote(e.target.checked)}
-                data-track="ProfileRemote"
-              />
-            </Form.Group>
-            <Form.Group controlId="TeamSizeInput">
-              <Form.Label>How Many People are on Your Team?</Form.Label>
-              <Form.Control
-                type="number"
-                placeholder={1}
-                value={teamSize}
-                min={1}
-                onChange={e => setTeamSize(e.target.value)}
-                data-track="ProfileTeamSize"
-              />
-              <Form.Control.Feedback type="invalid">
-                Please enter a valid number larger than or equal to 1.
-              </Form.Control.Feedback>
-            </Form.Group>
-            <DismissibleStatus
-              status={postFounderStatus}
-              dismissParams={{ uuid }}
-              dissmissAction={types.USER_POST_FOUNDERDATA_DISMISSED}
-            />
-            <div className="d-flex flex-grow-1 justify-content-end">
+              {Object.keys(publicInputs1).map(k => (
+                <FormInput
+                  onChange={onInputChange}
+                  key={k}
+                  iKey={k}
+                  {...publicInputs1[k]}
+                />
+              ))}
+              <Form.Group controlId="DescriptionInput">
+                <Form.Label>A Short Bio or Description</Form.Label>
+                <Form.Control
+                  as="textarea"
+                  placeholder="More information about you that would be relevant to investors."
+                  name="desc"
+                  value={desc}
+                  onChange={e => onInputChange(e)}
+                  data-track="ProfileDescription"
+                />
+              </Form.Group>
+              {Object.keys(publicInputs2).map(k => (
+                <FormInput
+                  onChange={onInputChange}
+                  key={k}
+                  iKey={k}
+                  {...publicInputs2[k]}
+                />
+              ))}
+              <h5>Additional Links</h5>
+              {links.map((l, i) => (
+                <LinkInput
+                  text={l.text}
+                  url={l.url}
+                  key={l.key}
+                  linkIndex={i}
+                  onLinkTextChange={setLinkText}
+                  onLinkURLChange={setLinkURL}
+                  onLinkRemove={removeLink}
+                />
+              ))}
               <Button
-                className="btnMobile100"
-                type="submit"
-                data-track="ProfileUpdateFounderData"
-                {...btnProps.updateFounderData}
+                variant="link"
+                className="text-secondary mb-4"
+                type="button"
+                onClick={addLink}
               >
-                {btnProps.updateFounderData.text}
+                Add another link
               </Button>
+              {Object.keys(publicInputs3).map(k => (
+                <FormInput
+                  onChange={onInputChange}
+                  key={k}
+                  iKey={k}
+                  {...publicInputs3[k]}
+                />
+              ))}
+              <Form.Group
+                controlId="RemoteCheckbox"
+                className="mb-4"
+              >
+                <Form.Check
+                  type="checkbox"
+                  label="We're fully remote."
+                  checked={remote}
+                  onChange={e => onInputChange(e)}
+                  data-track="ProfileRemote"
+                />
+              </Form.Group>
+              <DismissibleStatus
+                status={postFounderStatus}
+                dismissParams={{ uuid }}
+                dissmissAction={types.USER_POST_FOUNDERDATA_DISMISSED}
+              />
+              <div className="d-flex flex-grow-1 justify-content-end">
+                <Button
+                  className="btnMobile100"
+                  type="submit"
+                  data-track="ProfileUpdateFounderData"
+                  {...btnProps.updateFounderData}
+                >
+                  {btnProps.updateFounderData.text}
+                </Button>
+              </div>
+            </Form>
+          ) : (
+            <div>
+              <p className="text-primary">
+                Your FundBoard isn’t public yet, create one now to start filling in your profile.
+              </p>
+              <div className="d-flex">
+                <Button
+                  variant="secondary"
+                  className="txs-3 mr-2 ml-auto"
+                  disabled={createBoardStatus === 'pending'}
+                  onClick={onCreateBoardClick}
+                >
+                  Publish Your FundBoard
+                </Button>
+              </div>
+              <DismissibleStatus
+                status={createBoardStatus}
+                dissmissAction={types.USER_POST_PUBLICBOARD_REQUESTED}
+              />
             </div>
-          </Form>
+          )}
         </section>
         <section className="mb-4">
           <h2 className="sectionHead">Log Out</h2>
@@ -638,4 +729,32 @@ LinkInput.propTypes = {
   onLinkTextChange: PropTypes.func,
   onLinkURLChange: PropTypes.func,
   onLinkRemove: PropTypes.func,
+};
+
+FormInput.defaultProps = {
+  iKey: '',
+  label: '',
+  type: '',
+  placeholder: '',
+  feedback: false,
+  formText: '',
+  value: '',
+  onChange: '',
+  min: 0,
+};
+
+FormInput.propTypes = {
+  iKey: PropTypes.string,
+  label: PropTypes.string,
+  type: PropTypes.string,
+  placeholder: PropTypes.string,
+  feedback: PropTypes.bool,
+  formText: PropTypes.string,
+  value: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.number,
+    PropTypes.bool,
+  ]),
+  onChange: PropTypes.func,
+  min: PropTypes.number,
 };

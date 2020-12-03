@@ -97,6 +97,7 @@ function* workFounderDataGet(action) {
     endpoint: 'founders',
   };
   try {
+    if (!uuid) throw new Error('UUID required to get founder data.');
     const results = yield call(getStatusData, params);
     // catch airtable errors
     if (results.data.error) {
@@ -137,6 +138,7 @@ function* workPublicBoardGet(action) {
     filterByFormula: `{uuid}="${uuid}"`,
   };
   try {
+    if (!uuid) throw new Error('UUID required to get public board.');
     const results = yield call(requestPublicBoard, params);
     // catch airtable errors
     if (results.data.error) {
@@ -277,6 +279,7 @@ function* workUserFounderDataPost(action) {
   params.endpoint = 'founders';
 
   try {
+    if (!uuid) throw new Error('UUID required to post founder data.');
     const results = yield call(postStatusData, params);
     // catch airtable errors
     if (results.data.error) {

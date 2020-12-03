@@ -45,8 +45,8 @@ export default function Founder() {
     };
   });
 
-  // const userPublicUUID = useSelector(state => state.manageRaise.publicUUID);
-  // const isMyPage = uuid === userPublicUUID;
+  const userPublicUUID = useSelector(state => state.manageRaise.publicUUID);
+  const isMyPage = uuid === userPublicUUID;
 
   const pathLocation = useLocation();
   const path = capitalizeFirstLetter(pathLocation.pathname.substring(1).split('/')[0]);
@@ -188,6 +188,16 @@ export default function Founder() {
             </div>
           ))}
         </section>
+        {isMyPage && (
+          <section className="mb-4 d-flex justify-content-center">
+            <a
+              href="/profile"
+              className="h4 text-secondary"
+            >
+              You can add more details by editing your profile.
+            </a>
+          </section>
+        )}
       </Modal.Body>
     </Modal>
   );

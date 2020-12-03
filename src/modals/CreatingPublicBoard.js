@@ -58,6 +58,11 @@ export default function HowToIntro() {
             You can mark shared investors as private at any time to take them off your public
             FundBoard.
           </p>
+          <p>
+            Don’t forget to
+            <a href="/profile">add details about you and your startup to your profile</a>
+            before sharing it!
+          </p>
           {publicStatus === 'succeeded' && (
             <p>
               Your public URL:&nbsp;

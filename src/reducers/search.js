@@ -1,7 +1,7 @@
 import * as types from '../actions/types';
 import { processErr } from '../utils';
 
-const defaultState = {
+const defaults = {
   results_status: '',
   extraZipcodes_status: '',
   results: [],
@@ -13,7 +13,7 @@ const defaultState = {
   firstTime: true,
 };
 
-export default function search(state = defaultState, action) {
+export default function search(state = defaults, action) {
   switch (action.type) {
     case types.SEARCH_SET_KEYWORDS: return {
       ...state,
@@ -71,6 +71,9 @@ export default function search(state = defaultState, action) {
       ...state,
       results_status: '',
       results: [],
+    };
+    case types.USER_LOGOUT: return {
+      ...defaults,
     };
     default: return state;
   }
