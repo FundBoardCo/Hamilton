@@ -16,7 +16,12 @@ import EditIntro from './EditIntro';
 import { STAGEPROPS } from '../../constants';
 
 export default function InvestorRaise(props) {
-  const { uuid, data = {}, path } = props;
+  const {
+    uuid,
+    data = {},
+    path,
+    manualRecordID,
+  } = props;
 
   const investorStatus = useSelector(state => state.manageRaise.records[uuid]) || {};
   const {
@@ -65,6 +70,18 @@ export default function InvestorRaise(props) {
     updateStatus(params);
   };
 
+  const onEditManualClick = () => {
+    dispatch({
+      type: types.MODAL_SET_OPEN,
+      modal: 'editInvestor',
+      modalProps: {
+        ...data,
+        uuid,
+        recordID: manualRecordID,
+      },
+    });
+  };
+
   const onNewNote = () => {
     setNoteID({ noteID: String(Math.floor(Math.random() * 100000000)), uuid });
   };
@@ -82,6 +99,16 @@ export default function InvestorRaise(props) {
         showSuccess={false}
         dissmissAction={types.USER_POST_INVESTORSTATUS_DISMISSED}
       />
+      {manualRecordID && (
+        <div>
+          <Button
+            variant="link"
+            onClick={onEditManualClick}
+          >
+            Edit Manually Entered Investor
+          </Button>
+        </div>
+      )}
       <section className="mb-3">
         <div className="mt-3">
           <SelectableInvestorStage uuid={uuid} />
@@ -233,6 +260,7 @@ InvestorRaise.defaultProps = {
   uuid: '',
   data: {},
   path: '',
+  manualRecordID: '',
 };
 
 InvestorRaise.propTypes = {
@@ -242,4 +270,5 @@ InvestorRaise.propTypes = {
       .oneOfType([PropTypes.bool, PropTypes.string, PropTypes.objectOf(PropTypes.string)])),
   }),
   path: PropTypes.string,
+  manualRecordID: PropTypes.string,
 };

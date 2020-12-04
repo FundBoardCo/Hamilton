@@ -26,8 +26,15 @@ export default function Investor(props) {
   const sData = searchResults[uuid] || {};
   const pData = people[uuid] || {};
   const mData = manual_records[uuid] || {};
+  const manualRecordID = mData.id;
   const data = { ...pData, ...sData, ...mData };
-  const subProps = { uuid, data, path };
+
+  const subProps = {
+    uuid,
+    data,
+    path,
+    manualRecordID,
+  };
 
   const { name, getStatus } = data;
 
