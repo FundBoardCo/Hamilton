@@ -25,14 +25,12 @@ export default function ModalWrapper() {
         path="/search/:uuid"
         component={Investor}
       />
-      { loggedIn
-        ? <Route path="/board/:uuid" component={Investor} />
-        : <Route path="/board" component={Login} />}
-      { !loggedIn && <Route path="/profile" component={Login} /> }
+      { !loggedIn && <Route path={['/board', '/profile']} component={Login} /> }
+      { !openModal && <Route path="/board/:uuid" component={Investor} /> }
       { openModal === 'login' && <Route path="/" component={Login} /> }
       { openModal === 'howToIntro' && <Route path="/board" component={HowToIntro} /> }
       { openModal === 'creatingPublicBoard' && (
-        <Route path={['/board, /profile']} component={CreatingPublicBoard} />
+        <Route path={['/board', '/profile']} component={CreatingPublicBoard} />
       )}
       { openModal === 'makeIntro' && <Route path="/public" component={MakeIntro} />}
       { openModal === 'founder' && <Route path="/public" component={Founder} />}
