@@ -2,6 +2,36 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
+function OrgLogo(props) {
+  const { URL } = props;
+  if (URL) {
+    return (
+      <div
+        className="orgLogoWrapper"
+        style={{ backgroundImage: `url(${URL})` }}
+      />
+    );
+  }
+  return null;
+}
+
+function JobTitle(props) {
+  const { title, orgName } = props;
+  if (title || orgName) {
+    return (
+      <div className="jobTitle">
+        <span style={{ marginRight: '0.25em' }}>
+          {`${title}${title && ','}`}
+        </span>
+        <span>
+          {orgName}
+        </span>
+      </div>
+    );
+  }
+  return null;
+}
+
 export default function InvestorData(props) {
   const { data = {}, path, isFounder } = props;
 
@@ -54,27 +84,23 @@ export default function InvestorData(props) {
         </div>
         <div className="d-flex flex-column">
           <h1>{name}</h1>
-          <a
-            className="orgDetails"
-            href={primary_organization_homepage}
-            target="_blank"
-            rel="noopener noreferrer"
-            data-track={`${path}InvestorHomepage`}
-          >
-            {primary_organization_logo && (
-              <div className="orgLogoWrapper" style={{ backgroundImage: `url(${primary_organization_logo})` }} />
-            )}
-            {(primary_job_title || primary_organization_name) && (
-              <div className="jobTitle">
-                <span style={{ marginRight: '0.25em' }}>
-                  {`${primary_job_title}${primary_job_title && ','}`}
-                </span>
-                <span>
-                  {primary_organization_name}
-                </span>
-              </div>
-            )}
-          </a>
+          {primary_organization_homepage ? (
+            <a
+              className="orgDetails"
+              href={primary_organization_homepage}
+              target="_blank"
+              rel="noopener noreferrer"
+              data-track={`${path}InvestorHomepage`}
+            >
+              <OrgLogo URL={primary_organization_logo} />
+              <JobTitle title={primary_job_title} orgName={primary_organization_name} />
+            </a>
+          ) : (
+            <span className='orgDetails'>
+              <OrgLogo URL={primary_organization_logo} />
+              <JobTitle title={primary_job_title} orgName={primary_organization_name} />
+            </span>
+          )}
         </div>
       </section>
       {!isFounder && (
@@ -98,6 +124,7 @@ export default function InvestorData(props) {
 InvestorData.defaultProps = {
   data: {},
   path: '',
+  isFounder: false,
 };
 
 InvestorData.propTypes = {
@@ -106,4 +133,23 @@ InvestorData.propTypes = {
       .oneOfType([PropTypes.bool, PropTypes.string, PropTypes.objectOf(PropTypes.string)])),
   }),
   path: PropTypes.string,
+  isFounder: PropTypes.bool,
+};
+
+OrgLogo.defaultProps = {
+  URL: '',
+};
+
+OrgLogo.propTypes = {
+  URL: PropTypes.string,
+};
+
+JobTitle.defaultProps = {
+  title: '',
+  orgName: '',
+};
+
+JobTitle.propTypes = {
+  title: PropTypes.string,
+  orgName: PropTypes.string,
 };
