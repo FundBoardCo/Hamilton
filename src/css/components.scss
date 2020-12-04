@@ -1146,6 +1146,10 @@ html#ov body {
   .selectInvestorStage {
     display: flex;
     flex-direction: column;
+    border: 1px solid $col-primary-light4;
+    border-radius: $pad2;
+    padding: $pad3;
+    margin-bottom: $pad2;
 
     .stage {
       display: flex;
@@ -1153,8 +1157,14 @@ html#ov body {
       background: none;
       border: none;
       font-size: $h4;
-      margin-bottom: 0.5em;
       color: $col-text;
+      padding: 0;
+      margin-bottom: $pad4;
+
+      &:last-child,
+      &.firstClosed {
+        margin-bottom: 0;
+      }
 
       .stageIcon {
         margin-right: 0.5em;
