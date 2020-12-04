@@ -169,7 +169,7 @@ export default function InvestorData(props) {
           </div>
         )}
         {linkedin && (
-          <div className="h4 text-linkedin d-flex">
+          <div className="h3 text-linkedin d-flex">
             <FontAwesomeIcon icon={['fab', 'linkedin']} />
             &nbsp;
             <a
