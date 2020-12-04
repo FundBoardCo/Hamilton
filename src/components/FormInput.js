@@ -14,10 +14,17 @@ export default function FormInput(props) {
     value,
     formText,
     min,
+    max,
+    required,
   } = props;
 
   const optionalProps = {};
-  if (min) optionalProps.min = min;
+  if (min && type === 'number') optionalProps.min = min;
+  if (max) {
+    if (type === 'number') optionalProps.max = max;
+    if (!type || type === 'text') optionalProps.maxLength = max;
+  }
+  if (required) optionalProps.required = true;
 
   return (
     <Form.Group controlId={`${iKey}Input`}>
@@ -69,6 +76,8 @@ FormInput.defaultProps = {
   value: '',
   onChange: '',
   min: 0,
+  max: 0,
+  required: false,
 };
 
 FormInput.propTypes = {
@@ -85,4 +94,6 @@ FormInput.propTypes = {
   ]),
   onChange: PropTypes.func,
   min: PropTypes.number,
+  max: PropTypes.number,
+  required: PropTypes.bool,
 };

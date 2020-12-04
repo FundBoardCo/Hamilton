@@ -6,7 +6,7 @@ import {
   takeEvery,
   takeLatest,
 } from 'redux-saga/effects';
-import { v5 as uuidv5 } from 'uuid';
+import { v4 as uuidv4, v5 as uuidv5 } from 'uuid';
 import { getSafeVar, toQueryString, trackErr } from '../utils';
 import * as types from '../actions/types';
 
@@ -397,9 +397,8 @@ function* workUserManualInvestorPost(action) {
   params.endpoint = 'investors';
 
   try {
-    const email = yield select(getEmail);
-    params.userid = email;
-    if (!params.uuid) params.uuid = uuidv5(email, 'c1b6b2fe-5a45-45dd-ab2f-f2ce0a743645');
+    params.userid = yield select(getEmail);
+    if (!params.uuid) params.uuid = uuidv4();
     const results = yield call(postStatusData, params);
     // catch airtable errors
     if (results.data.error) {
@@ -417,7 +416,7 @@ function* workUserManualInvestorPost(action) {
          is being submitted then opens it again. That's probably fine.
        */
       const openModal = yield select(getModalOpen);
-      if (openModal === 'addInvestor') {
+      if (openModal === 'editInvestor') {
         yield put({
           type: types.MODAL_SET_OPEN,
           modal: null,

@@ -49,11 +49,9 @@ export default function InvestorData(props) {
   return (
     <div className="personNameTag">
       <section className="profileHeader mb-4">
-        {image_url && (
-          <div className="thumbCol">
-            <div className="thumb" style={{ backgroundImage: `url(${image_url})` }} />
-          </div>
-        )}
+        <div className="thumbCol">
+          <div className="thumb" style={{ backgroundImage: `url(${image_url})` }} />
+        </div>
         <div className="d-flex flex-column">
           <h1>{name}</h1>
           <a

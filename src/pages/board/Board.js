@@ -19,7 +19,7 @@ export default function Board() {
   const investorIDs = useSelector(state => state.board.ids) || [];
   const people = useSelector(state => state.people);
   const manualInvestorGet_status = useSelector(
-    state => state.manageRaise.manualInvestorGet_status
+    state => state.manageRaise.manualInvestorGet_status,
   );
   const manual_records = useSelector(state => state.manageRaise.manual_records) || [];
   const loggedIn = useSelector(state => state.user.token);

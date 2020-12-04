@@ -22,9 +22,11 @@ export default function Investor(props) {
 
   const searchResults = useSelector(state => state.search.results) || {};
   const people = useSelector(state => state.people) || {};
+  const manual_records = useSelector(state => state.manageRaise.manual_records) || [];
   const sData = searchResults[uuid] || {};
   const pData = people[uuid] || {};
-  const data = { ...pData, ...sData };
+  const mData = manual_records[uuid] || {};
+  const data = { ...pData, ...sData, ...mData };
   const subProps = { uuid, data, path };
 
   const { name, getStatus } = data;

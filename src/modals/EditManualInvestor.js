@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import Modal from 'react-bootstrap/Modal';
 import Form from 'react-bootstrap/Form';
@@ -15,6 +15,14 @@ export default function EditManualInvestor() {
 
   const [validated, setValidated] = useState(false);
 
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch({
+      type: types.USER_POST_MANUALINVESTOR_DISMISSED,
+    });
+  }, [dispatch]);
+
   const initialInputState = {
     name: modalProps.name,
     primary_job_title: modalProps.primary_job_title,
@@ -23,7 +31,8 @@ export default function EditManualInvestor() {
     linkedin: modalProps.linkedin,
     twitter: modalProps.twitter,
     permalink: modalProps.permalink,
-    location: modalProps.location,
+    location_city: modalProps.location_city,
+    location_state: modalProps.location_state,
   };
 
   const [{
@@ -34,7 +43,8 @@ export default function EditManualInvestor() {
     linkedin,
     twitter,
     permalink,
-    location,
+    location_city,
+    location_state,
   }, setState] = useState(initialInputState);
 
   const investorInputs = {
@@ -42,6 +52,7 @@ export default function EditManualInvestor() {
       label: 'Name',
       placeholder: 'name',
       value: name,
+      required: true,
     },
     primary_job_title: {
       label: 'Title',
@@ -79,12 +90,16 @@ export default function EditManualInvestor() {
       feedback: true,
       value: permalink,
     },
-    location: {
-      label: 'Location',
-      placeholder: 'City, XX',
-      formText: 'Enter as "City, 2-letter State Abbreviation" to get match data.',
-      feedback: true,
-      value: location,
+    location_city: {
+      label: 'City',
+      placeholder: 'city',
+      value: location_city,
+    },
+    location_state: {
+      label: 'State (2 letter abbreviation)',
+      placeholder: '--',
+      max: 2,
+      value: location_state,
     },
   };
 
@@ -96,8 +111,6 @@ export default function EditManualInvestor() {
     if (type === 'number') value = Number(value);
     setState(prevState => ({ ...prevState, [name]: value }));
   };
-
-  const dispatch = useDispatch();
 
   const handleSubmit = event => {
     const form = event.currentTarget;
@@ -114,7 +127,8 @@ export default function EditManualInvestor() {
         linkedin,
         twitter,
         permalink,
-        location,
+        location_city,
+        location_state,
       };
       dispatch({
         type: types.USER_POST_MANUALINVESTOR_REQUESTED,

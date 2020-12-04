@@ -38,6 +38,7 @@ html#ov body {
         background-size: cover;
         background-position: center;
         background-repeat: no-repeat;
+        background-color: $col-primary-light7;
 
         @media (min-width: $mediaLg) {
           width: $pad7;
@@ -439,7 +440,8 @@ html#ov body {
                     height: $pad5;
                     overflow: hidden;
                     border-radius: $pad2;
-                    border: 1px solid $col-primary-light6;
+                    border: 1px solid $col-primary-light4;
+                    background-color: $col-primary-light7;
                     background-size: cover;
                     background-repeat: no-repeat;
                   }
