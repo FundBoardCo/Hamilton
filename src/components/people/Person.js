@@ -22,7 +22,6 @@ export default function Person(props) {
     sortedBy,
     matches = {},
     investorStatus = {},
-    manual = false,
   } = props;
 
   const primary_organization_logo = primary_organization.image_url || '';
@@ -160,11 +159,6 @@ export default function Person(props) {
               </span>
             )}
           </div>
-          {manual && (
-            <div>
-              Manually Added
-            </div>
-          )}
         </div>
       )}
     </div>
@@ -200,7 +194,6 @@ Person.defaultProps = {
   status: '',
   sortedBy: '',
   investorStatus: {},
-  manual: false,
 };
 
 Person.propTypes = {
@@ -234,5 +227,4 @@ Person.propTypes = {
           .oneOfType([PropTypes.string, PropTypes.bool]))),
     intro: PropTypes.objectOf(PropTypes.string),
   }),
-  manual: PropTypes.bool,
 };
