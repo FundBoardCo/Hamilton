@@ -143,7 +143,6 @@ export default function Board() {
     const r = manual_records[k];
     investorList.push({
       ...r,
-      manual: true,
       investorStatus,
     });
     const noteValues = investorStatus.notes ? Object.values(investorStatus.notes) : [];

@@ -19,9 +19,12 @@ function Stage(props) {
   if (typeof index === 'number' && typeof currentIndex === 'number' && index < currentIndex) {
     indexClass = 'beforeCurrent';
   }
+  let firstClass = '';
+  if (index === 0 && !open) firstClass = 'firstClosed';
+
   return (
     <button
-      className={`stage ${current && 'current'} ${indexClass}`}
+      className={`stage ${current ? 'current' : ''} ${indexClass} ${firstClass}`}
       onClick={() => onClick()}
       type="button"
     >
