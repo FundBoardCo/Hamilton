@@ -8,6 +8,7 @@ import HowToIntro from './HowToIntro';
 import CreatingPublicBoard from './CreatingPublicBoard';
 import MakeIntro from './MakeIntro';
 import Founder from './Founder';
+import EditManualInvestor from './EditManualInvestor';
 
 export default function ModalWrapper() {
   const loggedIn = useSelector(state => state.user.token);
@@ -35,6 +36,7 @@ export default function ModalWrapper() {
       )}
       { openModal === 'makeIntro' && <Route path="/public" component={MakeIntro} />}
       { openModal === 'founder' && <Route path="/public" component={Founder} />}
+      { openModal === 'editInvestor' && <Route path="/board" component={EditManualInvestor} />}
     </Switch>
   );
 }

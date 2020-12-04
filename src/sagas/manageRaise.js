@@ -11,7 +11,6 @@ import { getSafeVar, toQueryString, trackErr } from '../utils';
 import * as types from '../actions/types';
 
 const getEmail = state => state.user.email;
-const getPubRecID = state => state.user.publicUUID_recordID;
 const getModalOpen = state => state.modal.openModal;
 
 // TODO: make this a universal call for all the investorStatus GET calls
@@ -391,6 +390,79 @@ function* workUserPublicBoardPost(action) {
 
 export function* watchUserPublicBoardPost() {
   yield takeLatest(types.USER_POST_PUBLICBOARD_REQUESTED, workUserPublicBoardPost);
+}
+
+function* workUserManualInvestorPost(action) {
+  const { params } = action;
+  params.endpoint = 'investors';
+
+  try {
+    const email = yield select(getEmail);
+    params.userid = email;
+    if (!params.uuid) params.uuid = uuidv5(email, 'c1b6b2fe-5a45-45dd-ab2f-f2ce0a743645');
+    const results = yield call(postStatusData, params);
+    // catch airtable errors
+    if (results.data.error) {
+      trackErr(results.data.error);
+      yield put({ type: types.USER_POST_MANUALINVESTOR_FAILED, error: results.data.error });
+    } else if (results.data.statusCode && results.data.statusCode === 500) {
+      trackErr(results.data.body);
+      yield put({ type: types.USER_POST_MANUALINVESTOR_FAILED, error: results.data.body });
+    } else {
+      yield put({
+        type: types.USER_POST_MANUALINVESTOR_SUCCEEDED,
+        data: results.data,
+      });
+      /* there is a chance of a race condition here, if someone manually closes the modal while it
+         is being submitted then opens it again. That's probably fine.
+       */
+      const openModal = yield select(getModalOpen);
+      if (openModal === 'addInvestor') {
+        yield put({
+          type: types.MODAL_SET_OPEN,
+          modal: null,
+        });
+      }
+    }
+  } catch (error) {
+    trackErr(error);
+    yield put({ type: types.USER_POST_MANUALINVESTOR_FAILED, error });
+  }
+}
+
+export function* watchUserManualInvestorPost() {
+  yield takeLatest(types.USER_POST_MANUALINVESTOR_REQUESTED, workUserManualInvestorPost);
+}
+
+function* workUserManualInvestorsGet(action) {
+  const { params = {} } = action;
+  params.endpoint = 'investors';
+
+  try {
+    const email = yield select(getEmail);
+    params.filterByFormula = `{userid}="${email}"`;
+    const results = yield call(getStatusData, params);
+    // catch airtable errors
+    if (results.data.error) {
+      trackErr(results.data.error);
+      yield put({ type: types.USER_GET_MANUALINVESTORS_FAILED, error: results.data.error });
+    } else if (results.data.statusCode && results.data.statusCode === 500) {
+      trackErr(results.data.body);
+      yield put({ type: types.USER_GET_MANUALINVESTORS_FAILED, error: results.data.body });
+    } else {
+      yield put({
+        type: types.USER_GET_MANUALINVESTORS_SUCCEEDED,
+        data: results.data,
+      });
+    }
+  } catch (error) {
+    trackErr(error);
+    yield put({ type: types.USER_GET_MANUALINVESTORS_FAILED, error });
+  }
+}
+
+export function* watchUserManualInvestorsGet() {
+  yield takeLatest(types.USER_GET_MANUALINVESTORS_REQUESTED, workUserManualInvestorsGet);
 }
 
 function* workPublicInvestorStatusUpdate(action) {

@@ -186,7 +186,7 @@ export default function InvestorData(props) {
       </section>
       {path !== 'Board' && searchLocation && !!matches && Object.keys(matches).length > 0 && (
         <section className="matches mb-4">
-          <h2 className="sectionHead">{`${percentageMatch}% Match`}</h2>
+          <h2 className="sectionHead">{`${percentageMatch} Match`}</h2>
           <ul>
             {matchData.map(d => {
               if (searchData[d.key]) {

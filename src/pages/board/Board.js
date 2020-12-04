@@ -18,6 +18,10 @@ export default function Board() {
   const getBoardUUID_status = useSelector(state => state.manageRaise.getBoardUUID_status);
   const investorIDs = useSelector(state => state.board.ids) || [];
   const people = useSelector(state => state.people);
+  const manualInvestorGet_status = useSelector(
+    state => state.manageRaise.manualInvestorGet_status
+  );
+  const manual_records = useSelector(state => state.manageRaise.manual_records) || [];
   const loggedIn = useSelector(state => state.user.token);
   const modalsSeen = useSelector(state => state.modal.modalsSeen) || [];
   const investorStatus_getStatus = useSelector(state => state.manageRaise.get_status);
@@ -29,6 +33,12 @@ export default function Board() {
   const [searchBy, setSearchBy] = useState('');
 
   const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch({
+      type: types.USER_GET_MANUALINVESTORS_REQUESTED,
+    });
+  }, [dispatch]);
 
   useEffect(() => {
     dispatch({
@@ -76,6 +86,7 @@ export default function Board() {
   firstLine.Organization = '';
   firstLine.Priority = 'Rank investors in the order you will reach out to them.';
   firstLine['Introed By'] = 'Fill in when someone has made an introduction.';
+  firstLine['Introer Email'] = '';
   firstLine['Date of Intro'] = '';
   firstLine.Stage = Object.keys(STAGEPROPS).join(', ');
   firstLine.Amount = 'Amount they are investing';
@@ -111,8 +122,9 @@ export default function Board() {
     csvPer.Title = person.primary_job_title || '';
     csvPer.Organization = org.name || '';
     csvPer.Priority = '';
-    csvPer['Introed By'] = '';
-    csvPer['Date of Intro'] = '';
+    csvPer['Introed By'] = investorStatus.intro_name || '';
+    csvPer['Introer Email'] = investorStatus.intro_email || '';
+    csvPer['Date of Intro'] = investorStatus.intro_date || '';
     csvPer.Stage = investorStatus.stage;
     csvPer.Amount = investorStatus.amount || '';
     csvPer['Next Steps'] = nextForCSV;
@@ -123,6 +135,40 @@ export default function Board() {
     csvPer.LinkedIn = person.linkedin || '';
     csvPer.Twitter = person.twitter || '';
     csvPer.CrunchBase = person.permalink ? `https://www.crunchbase.com/person/${person.permalink}` : '';
+    csvList.push(csvPer);
+  });
+
+  Object.keys(manual_records).forEach(k => {
+    const investorStatus = investorStatus_records[k] || {};
+    const r = manual_records[k];
+    investorList.push({
+      ...r,
+      manual: true,
+      investorStatus,
+    });
+    const noteValues = investorStatus.notes ? Object.values(investorStatus.notes) : [];
+    const notesForCSV = noteValues
+      .filter(n => !n.next).map(n => `${n.text} ${n.date || ''}`).join(' || ');
+    const nextForCSV = noteValues
+      .filter(n => n.next).map(n => `${n.text} ${n.date || ''}`).join(' || ');
+    const csvPer = {};
+    csvPer['Investor Name'] = r.name || '';
+    csvPer.Title = r.primary_job_title || '';
+    csvPer.Organization = r.primary_organization_name || '';
+    csvPer.Priority = '';
+    csvPer['Introed By'] = investorStatus.intro_name || '';
+    csvPer['Introer Email'] = investorStatus.intro_email || '';
+    csvPer['Date of Intro'] = investorStatus.intro_date || '';
+    csvPer.Stage = investorStatus.stage;
+    csvPer.Amount = investorStatus.amount || '';
+    csvPer['Next Steps'] = nextForCSV;
+    csvPer.Notes = notesForCSV;
+    csvPer['Potential Lead'] = r.is_lead_investor ? 'Yes' : '';
+    csvPer['Open to Direct Outreach'] = '';
+    csvPer.Location = r.location;
+    csvPer.LinkedIn = r.linkedin || '';
+    csvPer.Twitter = r.twitter || '';
+    csvPer.CrunchBase = r.permalink ? `https://www.crunchbase.com/person/${r.permalink}` : '';
     csvList.push(csvPer);
   });
 
@@ -175,6 +221,13 @@ export default function Board() {
     } else {
       history.push(`/public/${publicID}`);
     }
+  };
+
+  const onAddBoardClick = () => {
+    dispatch({
+      type: types.MODAL_SET_OPEN,
+      modal: 'editInvestor',
+    });
   };
 
   const showHowToIntro = useCallback(() => dispatch({
@@ -278,6 +331,19 @@ export default function Board() {
           )}
         </div>
       )}
+      <div className="d-flex mb-3">
+        <Button
+          variant="link"
+          onClick={onAddBoardClick}
+        >
+          Add an Investor Manually
+        </Button>
+      </div>
+      <DismissibleStatus
+        status={manualInvestorGet_status}
+        showSuccess={false}
+        dissmissAction={types.USER_GET_MANUALINVESTORS_DISMISSED}
+      />
       <DismissibleStatus
         status={investorStatus_getStatus}
         showSuccess={false}

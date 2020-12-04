@@ -4,6 +4,7 @@ import { processErr, isPlainObject, getSafeVar } from '../utils';
 const defaults = {
   records: {},
   public_records: {},
+  manual_records: {},
   get_status: '',
   post_status: '',
   publicPost_status: '',
@@ -12,6 +13,8 @@ const defaults = {
   getPublic_status: '',
   getBoardUUID_status: '',
   getFounderData_status: '',
+  manualInvestorGet_status: '',
+  manualInvestorPost_status: '',
   founderData: {},
   publicUUID: '',
   publicUUID_recordID: '',
@@ -229,6 +232,52 @@ export default function manageRaise(state = defaults, action) {
     case types.PUBLIC_POST_INVESTORSTATUS_DISMISSED: return {
       ...state,
       publicPost_status: '',
+    };
+    case types.USER_GET_MANUALINVESTORS_REQUESTED: return {
+      ...state,
+      manualInvestorGet_status: 'pending',
+    };
+    case types.USER_GET_MANUALINVESTORS_SUCCEEDED:
+      newRecords = Array.isArray(data.records) ? convertRecords(data.records) : {};
+      return {
+        ...state,
+        manualInvestorGet_status: 'succeeded',
+        manual_records: {
+          // replace all the records here. any old ones are obsolete
+          ...newRecords,
+        },
+      };
+    case types.USER_GET_MANUALINVESTORS_FAILED: return {
+      ...state,
+      manualInvestorGet_status: processErr(action.error),
+    };
+    case types.USER_GET_MANUALINVESTORS_DISMISSED: return {
+      ...state,
+      manualInvestorGet_status: '',
+    };
+    case types.USER_POST_MANUALINVESTOR_REQUESTED: return {
+      ...state,
+      manualInvestorPost_status: 'pending',
+    };
+    case types.USER_POST_MANUALINVESTOR_SUCCEEDED:
+      newRecords = Array.isArray(data.records)
+        ? convertRecords(data.records, action.data.investorUUIDs)
+        : {};
+      return {
+        ...state,
+        manualInvestorPost_status: 'succeeded',
+        manual_records: {
+          ...state.manual_records,
+          ...newRecords,
+        },
+      };
+    case types.USER_POST_MANUALINVESTOR_FAILED: return {
+      ...state,
+      manualInvestorPost_status: processErr(action.error),
+    };
+    case types.USER_POST_MANUALINVESTOR_DISMISSED: return {
+      ...state,
+      manualInvestorPost_status: '',
     };
     case types.USER_POST_FOUNDERDATA_REQUESTED: return {
       ...state,

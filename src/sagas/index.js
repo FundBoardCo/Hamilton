@@ -32,6 +32,8 @@ import {
   watchPublicInvestorStatusUpdate,
   watchFounderDataGet,
   watchUserFounderDataPost,
+  watchUserManualInvestorPost,
+  watchUserManualInvestorsGet,
 } from './manageRaise';
 
 const api = `https://${process.env.REACT_APP_ENV === 'DEV' ? 'staging-' : ''}api.fundboard.co/`;
@@ -453,6 +455,8 @@ export default function* rootSaga() {
   yield fork(watchUserFounderDataPost);
   yield fork(watchPublicInvestorStatusUpdate);
   yield fork(watchInvestorStatusPost);
+  yield fork(watchUserManualInvestorPost);
+  yield fork(watchUserManualInvestorsGet);
   yield fork(watchUserPublicBoardPost);
   yield fork(watchPersonPutInvalid);
   yield fork(watchPeopleGetResults);

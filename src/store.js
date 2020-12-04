@@ -9,7 +9,7 @@ import airtable from './reducers/airtable';
 import board from './reducers/board';
 import info from './reducers/info';
 import search from './reducers/search';
-import user, { userResets } from './reducers/user'
+import user, { userResets } from './reducers/user';
 import modal from './reducers/modal';
 import people from './reducers/people';
 import manageRaise from './reducers/manageRaise';
@@ -38,13 +38,21 @@ const manageRaiseConfig = {
   key: 'manageRaise',
   storage,
   blacklist: [
-    'results',
+    'records',
+    'public_records',
+    'manual_records',
     'get_status',
     'post_status',
     'publicPost_status',
     'postBoard_status',
     'getPublic_status',
-    'editNoteParams',
+    'postBoard_status',
+    'deleteBoard_status',
+    'getPublic_status',
+    'getBoardUUID_status',
+    'getFounderData_status',
+    'manualInvestorGet_status',
+    'manualInvestorPost_status',
   ],
   stateReconciler: autoMergeLevel2,
 };
