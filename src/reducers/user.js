@@ -3,14 +3,14 @@ import { getSafeVar, processErr } from '../utils';
 
 const defaults = {
   email: '',
+  investors: [],
   create_status: '',
   login_status: '',
   token: null,
   update_status: '',
   delete_status: '',
   reset_status: '',
-  password: '',
-  investors: [],
+  showAdvice: true,
 };
 
 export const userResets = {
@@ -21,8 +21,30 @@ export const userResets = {
   reset_status: '',
 };
 
+function mergeIDs(state, action) {
+  return [...new Set([
+    ...state.investors,
+    // add passes an id, the backend passes a following array.
+    ...(getSafeVar(() => action.id, [])),
+    ...(getSafeVar(() => action.data.following, [])),
+  ])];
+}
+
 export default function user(state = defaults, action) {
   switch (action.type) {
+    // used when the user is not logged in only.
+    case types.BOARD_ADD_COMPLETE: return {
+      ...state,
+      investors: action.params.investors || [],
+    };
+    case types.BOARD_REMOVE_COMPLETE: return {
+      ...state,
+      investors: action.params.investors || [],
+    };
+    case types.BOARD_SHOWADVICE: return {
+      ...state,
+      showAdvice: action.showAdvice,
+    };
     case types.USER_CREATE_REQUESTED: return {
       ...state,
       create_status: 'pending',
@@ -51,6 +73,7 @@ export default function user(state = defaults, action) {
       ...state,
       login_status: 'succeeded',
       token: action.data.token,
+      investors: mergeIDs(state, action),
     };
     case types.USER_LOGIN_FAILED: return {
       ...state,
@@ -71,7 +94,7 @@ export default function user(state = defaults, action) {
       ...state,
       get_status: 'succeeded',
       email: getSafeVar(() => action.data.profile.email, ''),
-      investors: getSafeVar(() => action.data.following, []),
+      investors: mergeIDs(state, action),
     };
     case types.USER_GET_PROFILE_FAILED: return {
       ...state,

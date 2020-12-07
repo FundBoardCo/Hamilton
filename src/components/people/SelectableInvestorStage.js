@@ -40,7 +40,7 @@ function Stage(props) {
 export default function SelectInvestorStage(props) {
   const { uuid } = props;
 
-  const investorIDs = useSelector(state => state.board.ids) || [];
+  const investorIDs = useSelector(state => state.user.investors) || [];
   const investorStatus = useSelector(state => state.manageRaise.records[uuid]) || {};
   const stageKeys = Object.keys(STAGEPROPS);
 

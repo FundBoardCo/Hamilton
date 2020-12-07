@@ -16,13 +16,14 @@ import { getSafeVar } from '../../utils';
 
 export default function Board() {
   const getBoardUUID_status = useSelector(state => state.manageRaise.getBoardUUID_status);
-  const investorIDs = useSelector(state => state.board.ids) || [];
+  const investorIDs = useSelector(state => state.user.investors) || [];
   const people = useSelector(state => state.people);
   const manualInvestorGet_status = useSelector(
     state => state.manageRaise.manualInvestorGet_status,
   );
   const manual_records = useSelector(state => state.manageRaise.manual_records) || [];
   const loggedIn = useSelector(state => state.user.token);
+  const email = useSelector(state=> state.user.email);
   const modalsSeen = useSelector(state => state.modal.modalsSeen) || [];
   const investorStatus_getStatus = useSelector(state => state.manageRaise.get_status);
   const investorStatus_records = useSelector(state => state.manageRaise.records);
@@ -37,8 +38,9 @@ export default function Board() {
   useEffect(() => {
     dispatch({
       type: types.USER_GET_MANUALINVESTORS_REQUESTED,
+      params: { email },
     });
-  }, [dispatch]);
+  }, [email, dispatch]);
 
   useEffect(() => {
     dispatch({

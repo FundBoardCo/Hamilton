@@ -39,8 +39,7 @@ import {
 const api = `https://${process.env.REACT_APP_ENV === 'DEV' ? 'staging-' : ''}api.fundboard.co/`;
 
 const getToken = state => state.user.token;
-const getBoard = state => state.board.ids;
-const getInvestors = state => state.user.investors;
+const getBoard = state => state.user.investors;
 
 const loginErrProps = { type: types.MODAL_SET_OPEN, model: 'login' };
 
@@ -75,11 +74,22 @@ function* workUserLogin(action) {
   try {
     const { params } = action;
     const { email } = params;
+    const board = yield select(getBoard);
+    const oldIDs = [...board];
     const results = yield call(userLogin, params);
     yield put({ type: types.USER_LOGIN_SUCCEEDED, data: results.data });
     window.heap.identify(email);
     window.heap.addUserProperties({ email });
-    yield put({ type: types.USER_GET_PROFILE_REQUESTED });
+    // if investors have been saved locally that are not returned in the login, post them now.
+    const resultIDs = results.data.following;
+    const newIDs = oldIDs.filter(i => !resultIDs.includes(i));
+    console.log(newIDs)
+    if (newIDs.length) {
+      const newParams = { investors: [...newIDs, ...resultIDs] };
+      yield put({ type: types.USER_UPDATE_REQUESTED, params: newParams });
+    } else {
+      yield put({ type: types.USER_GET_PROFILE_REQUESTED });
+    }
   } catch (error) {
     trackErr(error);
     yield put({ type: types.USER_LOGIN_FAILED, error });
@@ -144,12 +154,16 @@ function userUpdate(params) {
 function* workUserUpdate(action) {
   try {
     const { params } = action;
+    const board = yield select(getBoard);
     if (Array.isArray(params.investors)) {
       params.following = params.investors;
       delete params.investors;
       window.heap.addUserProperties({
         investorCount: params.following.length,
       });
+    } else {
+      // Always include the board in case that is what is erasing it on the backend.
+      params.following = [...board];
     }
     params.token = yield select(getToken);
     const results = yield call(userUpdate, params);
@@ -163,24 +177,6 @@ function* workUserUpdate(action) {
 
 function* watchUserUpdate() {
   yield takeEvery(types.USER_UPDATE_REQUESTED, workUserUpdate);
-}
-
-function* workUserGetProfileSucceeded() {
-  // any time the profile is received, if unmerged investors are on the board update the profile
-  const ids = yield select(getInvestors) || [];
-  const unmergedBoard = yield select(getBoard) || [];
-  if (ids.length && unmergedBoard.filter(b => !ids.includes(b)).length) {
-    yield put({ type: types.BOARD_MERGE, ids });
-    const board = yield select(getBoard) || [];
-    const params = {
-      investors: [...board],
-    };
-    yield put({ type: types.USER_UPDATE_REQUESTED, params });
-  }
-}
-
-function* watchUserGetProfileSucceeded() {
-  yield takeLatest(types.USER_GET_PROFILE_SUCCEEDED, workUserGetProfileSucceeded);
 }
 
 function getUserProfile(token) {
@@ -270,10 +266,12 @@ function* workBoardRemove(action) {
   const params = {
     investors: board.filter(i => i !== id),
   };
+  const boardParams = { ...params };
   try {
     if (token) {
       yield put({ type: types.USER_UPDATE_REQUESTED, params });
     }
+    yield put({ type: types.BOARD_REMOVE_COMPLETE, params: boardParams });
   } catch (error) {
     trackErr(error);
   }
@@ -286,15 +284,16 @@ function* watchBoardRemove() {
 function* workBoardAdd(action) {
   const token = yield select(getToken);
   const board = yield select(getBoard);
-  const { id, data } = action;
+  const { id } = action;
   const params = {
     investors: [...new Set([...board, id])],
   };
+  const boardParams = { ...params };
   try {
     if (token) {
       yield put({ type: types.USER_UPDATE_REQUESTED, params });
     }
-    yield put({ type: 'PEOPLE_UPDATE', data: [data] });
+    yield put({ type: types.BOARD_ADD_COMPLETE, params: boardParams });
   } catch (error) {
     trackErr(error);
   }
@@ -447,7 +446,6 @@ export default function* rootSaga() {
   yield fork(watchUserDelete);
   yield fork(watchUserReset);
   yield fork(watchUserGetProfile);
-  yield fork(watchUserGetProfileSucceeded);
   yield fork(watchInvestorStatusesGet);
   yield fork(watchPublicBoardGet);
   yield fork(watchBoardUUIDGet);

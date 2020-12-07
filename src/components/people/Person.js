@@ -30,7 +30,7 @@ export default function Person(props) {
   let percentageMatch = matches.percentage_match || 0;
   percentageMatch = `${Math.floor(percentageMatch * 100)}%`;
 
-  const investors = useSelector(state => state.board.ids) || [];
+  const investors = useSelector(state => state.user.investors) || [];
   const isOnBoard = investors.includes(uuid);
 
   const location = useLocation();

@@ -42,7 +42,9 @@ export default function Investor(props) {
 
   const [mode, setMode] = useState(initialMode);
 
-  const investors = useSelector(state => state.board.ids) || [];
+  const investors = useSelector(state => state.user.investors) || [];
+
+  console.log(investors)
 
   const isOnBoard = investors.includes(uuid);
 

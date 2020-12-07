@@ -87,20 +87,6 @@ export default function people(state = {}, action) {
         ...state,
         [action.id]: { ...state[action.id], investmentsStatus: processErr(action.error) },
       };
-    case types.PEOPLE_UPDATE:
-      // used with search for partial data
-      if (Array.isArray(data)) {
-        data.forEach(r => {
-          records[r.uuid] = {
-            ...state[r.uuid],
-            ...r,
-          };
-        });
-      }
-      return {
-        ...state,
-        ...records,
-      };
     case types.PERSON_PUT_INVALID_REQUESTED:
       return {
         ...state,

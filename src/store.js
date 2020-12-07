@@ -6,7 +6,6 @@ import autoMergeLevel2 from 'redux-persist/lib/stateReconciler/autoMergeLevel2';
 import createSagaMiddleware from 'redux-saga';
 import rootSaga from './sagas';
 import airtable from './reducers/airtable';
-import board from './reducers/board';
 import info from './reducers/info';
 import search from './reducers/search';
 import user, { userResets } from './reducers/user';
@@ -25,13 +24,6 @@ const airtableConfig = {
   storage,
   stateReconciler: hardSet,
   blacklist: ['feedback_status'],
-};
-
-const boardConfig = {
-  key: 'board',
-  storage,
-  blacklist: [],
-  stateReconciler: autoMergeLevel2,
 };
 
 const manageRaiseConfig = {
@@ -87,7 +79,6 @@ const userConfig = {
 
 const rootReducer = combineReducers({
   airtable: persistReducer(airtableConfig, airtable),
-  board: persistReducer(boardConfig, board),
   info,
   manageRaise: persistReducer(manageRaiseConfig, manageRaise),
   modal: persistReducer(modalConfig, modal),

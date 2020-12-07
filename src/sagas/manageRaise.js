@@ -435,10 +435,12 @@ export function* watchUserManualInvestorPost() {
 
 function* workUserManualInvestorsGet(action) {
   const { params = {} } = action;
+  let { email } = params;
   params.endpoint = 'investors';
 
   try {
-    const email = yield select(getEmail);
+    if (!email) email = yield select(getEmail);
+    console.log(email)
     params.filterByFormula = `{userid}="${email}"`;
     const results = yield call(getStatusData, params);
     // catch airtable errors

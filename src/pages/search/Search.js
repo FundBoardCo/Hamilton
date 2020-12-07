@@ -14,7 +14,7 @@ export default function Search() {
   const searchLocation = useSelector(state => state.search.location) || '';
   const searchResults = useSelector(state => state.search.results) || [];
   const searchStatus = useSelector(state => state.search.results_status) || '';
-  const investorIds = useSelector(state => state.board.ids) || [];
+  const investorIds = useSelector(state => state.user.investors) || [];
 
   const [detailsOpen, setDetailsOpen] = useState(false);
   const [page, setPage] = useState(1);
