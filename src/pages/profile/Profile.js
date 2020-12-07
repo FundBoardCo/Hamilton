@@ -140,10 +140,9 @@ export default function Profile() {
   const updateStatus = useSelector(state => state.user.update_status);
   const deleteStatus = useSelector(state => state.user.delete_status);
   const createBoardStatus = useSelector(state => state.manageRaise.postBoard_status);
-  const investorIDs = useSelector(state => state.board.ids) || [];
+  const investorIDs = useSelector(state => state.user.investors) || [];
 
   const initialInputState = {
-    email: user.email,
     password: '',
     name: founderProps.name || '',
     title: founderProps.primary_job_title || '',
@@ -162,7 +161,6 @@ export default function Profile() {
   };
 
   const [{
-    email,
     password,
     name,
     title,
@@ -181,13 +179,6 @@ export default function Profile() {
   }, setState] = useState(initialInputState);
 
   const accountInputs = {
-    email: {
-      label: 'Email Address',
-      type: 'email',
-      placeholder: 'email address',
-      feedback: true,
-      value: email,
-    },
     password: {
       label: 'New Password',
       type: 'password',
@@ -388,7 +379,6 @@ export default function Profile() {
     setValidated(true);
     if (form.checkValidity() !== false) {
       const params = {};
-      if (email !== user.email) params.email = email;
       if (password) params.password = password;
       updateAccount(params);
     }
@@ -526,6 +516,10 @@ export default function Profile() {
           onSubmit={handleSubmit}
         >
           <h2 className="sectionHead">Account Information</h2>
+          <div className="mb-2">
+            <b>Email Address: </b>
+            <span>{user.email}</span>
+          </div>
           {Object.keys(accountInputs).map(k => (
             <FormInput
               onChange={onInputChange}
