@@ -23,7 +23,7 @@ export default function Board() {
   );
   const manual_records = useSelector(state => state.manageRaise.manual_records) || [];
   const loggedIn = useSelector(state => state.user.token);
-  const email = useSelector(state=> state.user.email);
+  const email = useSelector(state => state.user.email);
   const modalsSeen = useSelector(state => state.modal.modalsSeen) || [];
   const investorStatus_getStatus = useSelector(state => state.manageRaise.get_status);
   const investorStatus_records = useSelector(state => state.manageRaise.records);
@@ -31,7 +31,10 @@ export default function Board() {
   const publicID = useSelector(state => state.manageRaise.publicUUID);
 
   const [sortBy, setSortBy] = useState('status');
+  const [sortNameUp, setSortNameUp] = useState(false);
+  const [sortStatusUp, setSortStatusUp] = useState(false);
   const [searchBy, setSearchBy] = useState('');
+  const [showArchived, setShowArchived] = useState(false);
 
   const dispatch = useDispatch();
 
@@ -78,7 +81,7 @@ export default function Board() {
     }
   }, [investorIDs, dispatch]);
 
-  const investorList = [];
+  let investorList = [];
   let toShowInvestorList;
   const csvList = [];
 
@@ -173,15 +176,37 @@ export default function Board() {
     csvList.push(csvPer);
   });
 
+  if (!showArchived) {
+    investorList = investorList.filter(i => i.investorStatus.stage !== 'archived');
+  }
+
   investorList.sort((a, b) => {
     if (sortBy === 'status') {
       const stageKeys = Object.keys(STAGEPROPS);
       const aStage = a.investorStatus.stage;
       const bStage = b.investorStatus.stage;
+      if (sortStatusUp) {
+        return stageKeys.indexOf(aStage) > stageKeys.indexOf(bStage) ? -1 : 1;
+      }
       return stageKeys.indexOf(aStage) > stageKeys.indexOf(bStage) ? 1 : -1;
+    }
+    if (sortNameUp) {
+      return a.name > b.name ? -1 : 1;
     }
     return a.name > b.name ? 1 : -1;
   });
+
+  if (sortBy === 'next') {
+    investorList = investorList.filter(i => {
+      let next = [];
+      const { investorStatus } = i;
+      const { notes } = investorStatus;
+      if (notes && Object.values(notes).length) {
+        next = Object.values(notes).filter(v => v.next);
+      }
+      return next.length;
+    });
+  }
 
   if (searchBy) {
     toShowInvestorList = investorList.filter(i => {
@@ -236,6 +261,30 @@ export default function Board() {
     modal: 'howToIntro',
   }), [dispatch]);
 
+  const toggleSortByName = () => {
+    if (sortBy === 'name') {
+      setSortNameUp(!sortNameUp);
+    } else {
+      setSortBy('name');
+    }
+  };
+
+  const toggleSortByStatus = () => {
+    if (sortBy === 'status') {
+      setSortStatusUp(!sortStatusUp);
+    } else {
+      setSortBy('status');
+    }
+  };
+
+  const toggleSortByNext = () => {
+    if (sortBy === 'next') {
+      setSortBy('name');
+    } else {
+      setSortBy('next');
+    }
+  };
+
   useEffect(() => {
     // if the how to intro modal has never been opened, open it
     // ToDo save to the server so it's maintained across browsers and devices.
@@ -283,23 +332,30 @@ export default function Board() {
                 <button
                   type="button"
                   className={sortBy === 'name' ? 'active' : ''}
-                  onClick={() => setSortBy('name')}
+                  onClick={toggleSortByName}
                 >
                   ABC
                 </button>
                 <button
                   type="button"
                   className={sortBy === 'status' ? 'active' : ''}
-                  onClick={() => setSortBy('status')}
+                  onClick={toggleSortByStatus}
                 >
                   Status
                 </button>
                 <button
                   type="button"
                   className={sortBy === 'next' ? 'active' : ''}
-                  onClick={() => setSortBy('next')}
+                  onClick={toggleSortByNext}
                 >
                   Next
+                </button>
+                <button
+                  type="button"
+                  className={showArchived ? 'active' : ''}
+                  onClick={() => setShowArchived(!showArchived)}
+                >
+                  Archived
                 </button>
               </div>
               <Button
@@ -367,6 +423,11 @@ export default function Board() {
               <Person key={i.uuid} {...personProps} />
             );
           })}
+          {toShowInvestorList.length < 1 && sortBy === 'next' && (
+            <div className="d-flex justify-content-center">
+              None of your investors have next steps yet. Open one to add a next step.
+            </div>
+          )}
         </div>
       )}
       {!loggedIn && (
