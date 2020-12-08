@@ -571,7 +571,7 @@ export default function Profile() {
                 <Form.Label>A Short Bio or Description</Form.Label>
                 <Form.Control
                   as="textarea"
-                  placeholder="More information about you that would be relevant to investors."
+                  placeholder="More information about you that would be relevant to someone making an intro."
                   name="desc"
                   value={desc}
                   onChange={e => onInputChange(e)}
