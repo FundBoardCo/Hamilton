@@ -8,7 +8,7 @@ import Form from 'react-bootstrap/Form';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import * as types from '../../actions/types';
 import DismissibleStatus from '../../components/DismissibleStatus';
-import { capitalizeFirstLetter } from '../../utils';
+import FormInput from '../../components/FormInput';
 
 function convertLinksFromAirTable(str) {
   let links = (str && str.split('^^^')) || [];
@@ -85,48 +85,6 @@ function LinkInput(props) {
   );
 }
 
-function FormInput(props) {
-  const {
-    iKey,
-    label,
-    type,
-    placeholder,
-    feedback,
-    onChange,
-    value,
-    formText,
-    min,
-  } = props;
-
-  const optionalProps = {};
-  if (min) optionalProps.min = min;
-
-  return (
-    <Form.Group controlId={`${iKey}Input`}>
-      <Form.Label>{label}</Form.Label>
-      <Form.Control
-        type={type || 'text'}
-        placeholder={placeholder}
-        name={iKey}
-        value={value}
-        onChange={e => onChange(e)}
-        data-track={`Profile${capitalizeFirstLetter(iKey)}`}
-        {...optionalProps}
-      />
-      {feedback && (
-      <Form.Control.Feedback type="invalid">
-        {`Please enter a valid ${placeholder}`}
-      </Form.Control.Feedback>
-      )}
-      {formText && (
-        <Form.Text className="text-muted">
-          {formText}
-        </Form.Text>
-      )}
-    </Form.Group>
-  );
-}
-
 export default function Profile() {
   const loggedIn = useSelector(state => state.user.token);
   const user = useSelector(state => state.user) || {};
@@ -135,7 +93,6 @@ export default function Profile() {
   const founderProps = useSelector(state => state.manageRaise.founderData[uuid]) || {};
   const postFounderStatus = founderProps.post_status;
   const searchRaise = useSelector(state => state.search.raise) || 100000;
-  const searchLocation = useSelector(state => state.search.location) || '';
   const searchRemote = useSelector(state => state.search.remote) || '';
   const updateStatus = useSelector(state => state.user.update_status);
   const deleteStatus = useSelector(state => state.user.delete_status);
@@ -156,7 +113,7 @@ export default function Profile() {
     links: convertLinksFromAirTable(founderProps.links),
     raise: founderProps.raise || searchRaise || 0,
     remote: founderProps.remote !== undefined ? founderProps.remote : searchRemote,
-    location: founderProps.location || searchLocation || '',
+    location: founderProps.location || '',
     teamSize: founderProps.team_size || 1,
   };
 
@@ -267,7 +224,12 @@ export default function Profile() {
     location: {
       label: 'Your Location (city, 2 letter state abbreviation)',
       placeholder: 'location',
-      formText: 'Use the format &ldquo;city name, 2 letter state abbreviation.&rdquo',
+      formText: 'Use the format "city name, 2 letter state abbreviation."',
+      value: location,
+    },
+    remote: {
+      label: 'We’re fully remote',
+      type: 'checkbox',
       value: remote,
     },
   };
@@ -282,8 +244,9 @@ export default function Profile() {
 
   const onInputChange = e => {
     // eslint-disable-next-line no-shadow
-    const { name, type } = e.target;
+    const { name, type, checked } = e.target;
     let { value } = e.target;
+    if (type === 'checkbox') value = !!checked;
     if (type === 'number') value = Number(value);
     setState(prevState => ({ ...prevState, [name]: value }));
   };
@@ -628,18 +591,6 @@ export default function Profile() {
                   {...publicInputs3[k]}
                 />
               ))}
-              <Form.Group
-                controlId="RemoteCheckbox"
-                className="mb-4"
-              >
-                <Form.Check
-                  type="checkbox"
-                  label="We're fully remote."
-                  checked={remote}
-                  onChange={e => onInputChange(e)}
-                  data-track="ProfileRemote"
-                />
-              </Form.Group>
               <DismissibleStatus
                 status={postFounderStatus}
                 statusPrefix="Updating Profile"
