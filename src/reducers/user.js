@@ -49,7 +49,7 @@ export default function user(state = defaults, action) {
       ...state,
       create_status: 'pending',
       token: null,
-      email: action.email,
+      email: action.params.email,
     };
     case types.USER_CREATE_SUCCEEDED: return {
       ...state,

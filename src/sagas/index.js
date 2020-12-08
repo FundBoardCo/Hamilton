@@ -74,6 +74,7 @@ function* workUserLogin(action) {
   try {
     const { params } = action;
     const { email } = params;
+    if (!email) throw new Error('An email value is required to log in.');
     const board = yield select(getBoard);
     const oldIDs = [...board];
     const results = yield call(userLogin, params);
@@ -83,7 +84,6 @@ function* workUserLogin(action) {
     // if investors have been saved locally that are not returned in the login, post them now.
     const resultIDs = results.data.following;
     const newIDs = oldIDs.filter(i => !resultIDs.includes(i));
-    console.log(newIDs)
     if (newIDs.length) {
       const newParams = { investors: [...newIDs, ...resultIDs] };
       yield put({ type: types.USER_UPDATE_REQUESTED, params: newParams });
@@ -120,6 +120,7 @@ function* workUserCreate(action) {
   try {
     const { params } = action;
     const { email } = params;
+    if (!email) throw new Error('An email value is required to create an account.');
     const results = yield call(userCreate, params);
     yield put({ type: types.USER_CREATE_SUCCEEDED, data: results.data });
     window.heap.identity(email);
