@@ -1,6 +1,7 @@
-import React, {useEffect} from 'react';
+import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import Modal from 'react-bootstrap/Modal';
+import { useHistory, useLocation } from 'react-router';
 import * as types from '../actions/types';
 import DismissibleStatus from '../components/DismissibleStatus';
 
@@ -16,6 +17,16 @@ export default function HowToIntro() {
       modal: null,
     });
   };
+
+  const history = useHistory();
+
+  const onGotoProfile = () => {
+    history.push('/profile');
+    closeModal();
+  };
+
+  const location = useLocation();
+  const path = location.pathname.substring(1).split('/')[0];
 
   return (
     <Modal
@@ -41,28 +52,25 @@ export default function HowToIntro() {
             <p>Your public, sharable FundBoard is being created.</p>
           )}
           {publicStatus === 'succeeded' && (
-            <p>Your public, sharable FundBoard is ready!</p>
+            <p>
+              Your FundBoard is ready to share with anyone that can connect you to your saved
+              investors. One intro-er can &rdquo;claim&ldquo; each investor to let you know
+              they will connect you.
+            </p>
           )}
-          <p>
-            You can share it with anyone you think might be able to connect you with one of the
-            investors on your board. They can &rdquo;claim&ldquo; an introduction and let you know
-            they are going to or already have connected you with an investor.
-          </p>
-          <p>
-            You can always edit who says they have introduced you to an investor, and add your own
-            information if you were connected outside of FundBoard.
-          </p>
-          <p>
-            All of the investors on your personal board have been published to your public
-            FundBoard. If you add more investors, they will be set as private until you share them.
-            You can mark shared investors as private at any time to take them off your public
-            FundBoard.
-          </p>
-          <p>
-            Don’t forget to
-            <a href="/profile">add details about you and your startup to your profile</a>
-            before sharing it!
-          </p>
+          {publicStatus === 'succeeded' && path !== 'profile' && (
+            <p className="d-flex">
+              Don’t forget to&nbsp;
+              <button
+                className="btn btn-link inlineBtn"
+                type="button"
+                onClick={onGotoProfile}
+              >
+                add details to your profile
+              </button>
+              &nbsp;before sharing it!
+            </p>
+          )}
           {publicStatus === 'succeeded' && (
             <p>
               Your public URL:&nbsp;

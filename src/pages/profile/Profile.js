@@ -292,6 +292,12 @@ export default function Profile() {
 
   useEffect(() => {
     dispatch({
+      type: types.USER_GET_BOARDUUID_REQUESTED,
+    });
+  }, [dispatch]);
+
+  useEffect(() => {
+    dispatch({
       type: types.USER_UPDATE_DISSMISSED,
     });
   }, [dispatch]);
@@ -299,6 +305,12 @@ export default function Profile() {
   useEffect(() => {
     dispatch({
       type: types.PUBLIC_GET_FOUNDERDATA_DISMISSED,
+    });
+  }, [dispatch]);
+
+  useEffect(() => {
+    dispatch({
+      type: types.USER_POST_PUBLICBOARD_DISMISSED,
     });
   }, [dispatch]);
 
@@ -530,6 +542,7 @@ export default function Profile() {
           ))}
           <DismissibleStatus
             status={updateStatus}
+            statusPrefix="Updating Account"
             dissmissAction={types.USER_UPDATE_DISSMISSED}
           />
           <div className="d-flex flex-grow-1 justify-content-end">
@@ -549,6 +562,7 @@ export default function Profile() {
           <DismissibleStatus
             status={getFounderStatus}
             showSuccess={false}
+            statusPrefix="Fetching Profile"
             dismissParams={{ uuid }}
             dissmissAction={types.PUBLIC_GET_FOUNDERDATA_DISMISSED}
           />
@@ -628,6 +642,7 @@ export default function Profile() {
               </Form.Group>
               <DismissibleStatus
                 status={postFounderStatus}
+                statusPrefix="Updating Profile"
                 dismissParams={{ uuid }}
                 dissmissAction={types.USER_POST_FOUNDERDATA_DISMISSED}
               />
@@ -659,7 +674,8 @@ export default function Profile() {
               </div>
               <DismissibleStatus
                 status={createBoardStatus}
-                dissmissAction={types.USER_POST_PUBLICBOARD_REQUESTED}
+                statusPrefix="Creating FundBoard"
+                dissmissAction={types.USER_POST_PUBLICBOARD_DISMISSED}
               />
             </div>
           )}
@@ -688,6 +704,7 @@ export default function Profile() {
           </p>
           <DismissibleStatus
             status={deleteStatus}
+            statusPrefix="Deleting Account"
             dissmissAction={types.USER_UPDATE_DISSMISSED}
           />
           <div className="d-flex flex-grow-1 justify-content-end">
