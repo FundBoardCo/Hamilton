@@ -44,8 +44,6 @@ export default function Investor(props) {
 
   const investors = useSelector(state => state.user.investors) || [];
 
-  console.log(investors)
-
   const isOnBoard = investors.includes(uuid);
 
   const dispatch = useDispatch();

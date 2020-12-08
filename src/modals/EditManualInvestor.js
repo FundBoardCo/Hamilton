@@ -124,6 +124,7 @@ export default function EditManualInvestor() {
         name,
         primary_job_title,
         primary_organization_name,
+        is_lead_investor,
         linkedin,
         twitter,
         permalink,
