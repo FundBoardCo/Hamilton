@@ -146,7 +146,7 @@ export default function Person(props) {
                 </span>
               </span>
               <span className="date">
-                {next.date ? moment(next.date).format('LLL') : ''}
+                {next.date ? `- ${moment(next.date).format('LLL')}` : ''}
               </span>
             </div>
           </div>

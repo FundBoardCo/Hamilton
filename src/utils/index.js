@@ -1,3 +1,5 @@
+import moment from "moment";
+
 export function processErr(err) {
   if (!err) return false;
   if (err.response && err.response.data) {
@@ -92,4 +94,8 @@ export function isLoginErr(err) {
 
 export function isPlainObject(obj) {
   return Object.prototype.toString.call(obj) === '[object Object]';
+}
+
+export function aFormDate(d) {
+  return moment(d).format('MMMM d, yyyy h:mma');
 }

@@ -2,9 +2,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { useDispatch } from 'react-redux';
 import { useLocation } from 'react-router';
-import moment from 'moment';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { capitalizeFirstLetter } from '../../utils';
+import { capitalizeFirstLetter, aFormDate } from '../../utils';
 import * as types from '../../actions/types';
 
 export default function Person(props) {
@@ -117,7 +116,7 @@ export default function Person(props) {
               {`Introduced ${
                 intro_name ? ` by ${intro_name}` : ''
               }${
-                intro_date ? ` on ${moment(intro_date).format('MMMM d, yyyy h:mma')}` : ''
+                intro_date ? ` on ${aFormDate(intro_date)}` : ''
               }`}
             </span>
           )}

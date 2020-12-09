@@ -4,7 +4,6 @@ import PropTypes from 'prop-types';
 import InputGroup from 'react-bootstrap/InputGroup';
 import FormControl from 'react-bootstrap/FormControl';
 import Button from 'react-bootstrap/Button';
-import moment from 'moment';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import InvestorNameTag from '../../components/people/PersonNameTag';
 import SelectableInvestorStage from '../../components/people/SelectableInvestorStage';
@@ -14,6 +13,7 @@ import EditNote from './EditNote';
 import Note from './Note';
 import EditIntro from './EditIntro';
 import { STAGEPROPS } from '../../constants';
+import { aFormDate } from '../../utils';
 
 export default function InvestorRaise(props) {
   const {
@@ -210,7 +210,7 @@ export default function InvestorRaise(props) {
                 </a>
               </div>
               <div className="mb-1">
-                {`On ${moment(investorStatus.intro_date).format('MMMM d, yyyy h:mma')}`}
+                {`On ${aFormDate(investorStatus.intro_date)}`}
               </div>
             </div>
             <div>

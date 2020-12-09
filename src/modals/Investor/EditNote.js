@@ -1,10 +1,10 @@
 import React, { useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import moment from 'moment';
 import DatePicker from 'react-datepicker';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import * as types from '../../actions/types';
+import { aFormDate } from '../../utils';
 
 const noteTypes = [
   {
@@ -68,7 +68,7 @@ export default function EditNote() {
         ...notes,
         [noteID]: {
           text: textVal,
-          date: dateVal,
+          date: ['next', 'waiting'].includes(typeVal) ? dateVal : aFormDate(dateVal),
           next: ['next', 'waiting'].includes(typeVal),
           waiting: typeVal === 'waiting',
         },
@@ -151,7 +151,7 @@ export default function EditNote() {
             showTimeSelect
             selected={dateVal}
             dateFormat="MMMM d, yyyy h:mm aa"
-            isClearable={typeVal === 'note'}
+            isClearable={!typeVal || typeVal === 'note'}
             onChange={d => onDateChange(d)}
           />
         </div>

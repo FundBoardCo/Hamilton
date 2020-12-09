@@ -234,7 +234,7 @@ function* workInvestorStatusPost(action) {
       const [firstNext] = next;
       params.next = getSafeVar(() => firstNext.text, '');
       params.next_date = getSafeVar(() => firstNext.date);
-      params.waiting = getSafeVar(() => firstNext.waiting, false);
+      params.waiting = !!getSafeVar(() => firstNext.waiting, false);
       parsedNotes = parsedNotes.map(n => `${n.text}${n.date ? `%%%${n.date}` : ''}`).join('^^^');
       params.notes = parsedNotes;
     }
