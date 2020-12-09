@@ -26,7 +26,7 @@ export default function Person(props) {
     primary_organization_name = '',
   } = props;
 
-  const { intro_name, intro_date, stage } = investorStatus;
+  const { intro_name, stage } = investorStatus;
   const notIntroed = !stage || ['none', 'added'].includes(stage);
 
   const primary_organization_logo = primary_organization.image_url || '';
@@ -109,15 +109,11 @@ export default function Person(props) {
         <div className="introText">
           {notIntroed ? (
             <span className="btn btn-link">
-              I can introduce this investor
+              I can connect them to this investor
             </span>
           ) : (
             <span>
-              {`Introduced ${
-                intro_name ? ` by ${intro_name}` : ''
-              }${
-                intro_date ? ` on ${aFormDate(intro_date)}` : ''
-              }`}
+              {`Connection offered by ${intro_name ? ` by ${intro_name}` : ''}`}
             </span>
           )}
         </div>

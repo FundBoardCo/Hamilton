@@ -97,7 +97,7 @@ export function isPlainObject(obj) {
 }
 
 export function aFormDate(d) {
-  return moment(d).format('MMMM d, yyyy h:mma');
+  return moment(d, [moment.ISO_8601, 'MMM DD, YYYY hh:mma']).format('MMMM DD, YYYY h:mma');
 }
 
 export function formatCur(val, currency = 'USD') {

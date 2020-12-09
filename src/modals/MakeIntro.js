@@ -39,10 +39,6 @@ export default function MakeIntro() {
     }
   };
 
-  const introTitle = isPublic
-    ? `Introduce ${founderProps.name} to ${investor.name}`
-    : `Introduction to ${investor.name}`;
-
   return (
     <Modal
       size="lg"
@@ -54,7 +50,7 @@ export default function MakeIntro() {
     >
       <Modal.Header closeButton>
         <Modal.Title>
-          <h4>{introTitle}</h4>
+          <h4>{`I can connect ${founderProps.name} to ${investor.name}`}</h4>
         </Modal.Title>
       </Modal.Header>
       <Modal.Body className="pt-0">

@@ -30,6 +30,9 @@ export default function InvestorRaise(props) {
     notes = {},
     amount = 0,
     published,
+    intro_date,
+    intro_name,
+    intro_email,
   } = investorStatus;
   const { advice } = STAGEPROPS[stage];
   const postStatus = useSelector(state => state.manageRaise.post_status) || '';
@@ -203,14 +206,14 @@ export default function InvestorRaise(props) {
         ) : (
           <div className="d-flex">
             <div className="flex-grow-1">
-              <div className="mb-1">{investorStatus.intro_name}</div>
+              <div className="mb-1">{intro_name}</div>
               <div className="mb-1">
-                <a href={`mailto://${investorStatus.intro_email}`}>
-                  {investorStatus.intro_email}
+                <a href={`mailto://${intro_email}`}>
+                  {intro_email}
                 </a>
               </div>
               <div className="mb-1">
-                {`On ${aFormDate(investorStatus.intro_date)}`}
+                {`On ${aFormDate(intro_date)}`}
               </div>
             </div>
             <div>

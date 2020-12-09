@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import DatePicker from 'react-datepicker';
+import { useLocation } from 'react-router';
 import * as types from '../../actions/types';
 import Status from '../../components/DismissibleStatus';
 
@@ -81,6 +82,9 @@ export default function EditIntro(props) {
   const publicFormProps = {};
   if (isPublic) publicFormProps.required = true;
 
+  const location = useLocation();
+  const isBoard = 'board' === location.pathname.substring(1).split('/')[0];
+
   return (
     <Form
       noValidate
@@ -114,7 +118,7 @@ export default function EditIntro(props) {
         />
         {isPublic && (
           <Form.Text>
-            Enter your email so this founder can contact you.&nbsp;
+            Enter your email so this founder can reach out to you.&nbsp;
             We won’t share or use it in any other way.
           </Form.Text>
         )}
@@ -122,22 +126,21 @@ export default function EditIntro(props) {
           Please enter a valid email address.
         </Form.Control.Feedback>
       </Form.Group>
-      <h5>
-        This introduction was made on:
-      </h5>
-      <div className="datePickerWrapper mb-2">
-        <DatePicker
-          showTimeSelect
-          selected={dateVal}
-          dateFormat="MMMM d, yyyy h:mm aa"
-          isClearable
-          onChange={d => onDateChange(d)}
-        />
-      </div>
-      {isPublic && (
-        <Form.Text className="mb-2">
-          Leave the date blank if will make the intro soon, but haven’t done it yet.
-        </Form.Text>
+      {!isPublic && isBoard && (
+        <div>
+          <h5>
+            This offer to connect was made on:
+          </h5>
+          <div className="datePickerWrapper mb-2">
+            <DatePicker
+              showTimeSelect
+              selected={dateVal}
+              dateFormat="MMMM d, yyyy h:mm aa"
+              isClearable
+              onChange={d => onDateChange(d)}
+            />
+          </div>
+        </div>
       )}
       <Status
         statusPrefix="Make Introduction:"

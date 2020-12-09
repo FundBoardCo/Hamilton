@@ -1,9 +1,9 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
-import moment from 'moment';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import * as types from '../../actions/types';
+import { aFormDate } from '../../utils';
 
 export default function Note(props) {
   const {
@@ -77,9 +77,7 @@ export default function Note(props) {
         <div className="content">
           {(date || next) && (
             <div className={`date ${waiting ? 'waiting' : ''}`}>
-              {`${next ? 'Next ' : ''}${
-                moment(date, [moment.ISO_8601, 'MMM DD, YYYY hh:mma']).format('MMMM DD, YYYY hh:mma') || ''
-              }`}
+              {`${next ? 'Next ' : ''}${aFormDate(date) || ''}`}
             </div>
           )}
           <div className="text">{text}</div>
