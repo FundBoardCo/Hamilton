@@ -154,7 +154,10 @@ export default function manageRaise(state = defaults, action) {
       hidden: data.hidden,
       notFound: data.notFound,
       publicUUID_recordID: data.publicUUID_recordID,
-      public_records: Array.isArray(data.records) ? convertRecords(data.records) : {},
+      public_records: Array.isArray(data.statusData.records)
+        ? convertRecords(data.statusData.records) : {},
+      manual_records: Array.isArray(data.manualData.records)
+        ? convertRecords(data.manualData.records) : {},
     };
     case types.PUBLIC_GET_BOARD_FAILED: return {
       ...state,

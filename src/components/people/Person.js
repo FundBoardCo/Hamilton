@@ -24,8 +24,12 @@ export default function Person(props) {
     investorStatus = {},
   } = props;
 
+  let {
+    primary_organization_name = '',
+  } = props;
+
   const primary_organization_logo = primary_organization.image_url || '';
-  const primary_organization_name = primary_organization.name || '';
+  primary_organization_name = primary_organization_name || primary_organization.name || '';
 
   let percentageMatch = matches.percentage_match || 0;
   percentageMatch = `${Math.floor(percentageMatch * 100)}%`;
@@ -180,6 +184,7 @@ Person.defaultProps = {
     linkedin: '',
     twitter: '',
   },
+  primary_organization_name: '',
   matches: {
     keywords: ['one', 'two'],
     raise: false,
@@ -206,6 +211,7 @@ Person.propTypes = {
     PropTypes.bool,
     PropTypes.number,
   ])),
+  primary_organization_name: PropTypes.string,
   matches: PropTypes.shape({
     keywords: PropTypes.arrayOf(PropTypes.string),
     raise: PropTypes.bool,

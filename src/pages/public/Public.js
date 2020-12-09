@@ -22,6 +22,7 @@ export default function Public(props) {
   const userPublicUUID = useSelector(state => state.manageRaise.publicUUID);
   const isMyPage = uuid === userPublicUUID;
   const public_records = useSelector(state => state.manageRaise.public_records) || {};
+  const manual_records = useSelector(state => state.manageRaise.manual_records) || {};
   const founderStatus = useSelector(state => state.manageRaise.getFounderData_status) || '';
   const founderProps = useSelector(state => state.manageRaise.founderData[uuid]) || {};
   const publicUUID_recordID = useSelector(state => state.manageRaise.publicUUID_recordID);
@@ -81,6 +82,12 @@ export default function Public(props) {
     dispatch({
       type: types.USER_POST_PUBLICBOARD_DISMISSED,
     });
+    dispatch({
+      type: types.PUBLIC_POST_INVESTORSTATUS_DISMISSED,
+    });
+    dispatch({
+      type: types.USER_POST_INVESTORSTATUS_DISMISSED,
+    });
   }, [dispatch]);
 
   useEffect(() => {
@@ -111,9 +118,11 @@ export default function Public(props) {
 
   investorIDs.forEach(i => {
     const person = people[i] ? { ...people[i] } : {};
+    const manual = manual_records[i] || {};
     const investorStatus = public_records[i] || {};
     investorList.push({
       ...person,
+      ...manual,
       uuid: i,
       investorStatus,
     });

@@ -4,13 +4,13 @@ import { getSafeVar, toQueryString } from '../utils';
 exports.handler = async event => {
   // call the emailMap table to get the email.
   const MAP_PARAMS = toQueryString(event.queryStringParameters);
-  const MAP_URL = 'https://api.airtable.com/v0/appGVqCRTs9ZDqcoR/emailMap';
+  const BASE_URL = 'https://api.airtable.com/v0/appGVqCRTs9ZDqcoR/';
   let STATUS_PARAMS = '';
-  const STATUS_URL = 'https://api.airtable.com/v0/appGVqCRTs9ZDqcoR/status';
+  let MANUAL_PARAMS = '';
   const { requestoremail } = event.headers;
 
   try {
-    const mapResponse = await fetch(`${MAP_URL}?${MAP_PARAMS}`,
+    const mapResponse = await fetch(`${BASE_URL}emailMap?${MAP_PARAMS}`,
       {
         method: 'GET',
         headers: {
@@ -29,8 +29,8 @@ exports.handler = async event => {
     const hide = getSafeVar(() => mapData.records[0].fields.hide);
     params.filterByFormula = `{userid}="${email}"`;
     STATUS_PARAMS = toQueryString(params);
-    // return only this if the founder has set hide to true.
-    let data = { publicUUID_recordID, hidden: true };
+    MANUAL_PARAMS = toQueryString(params);
+    const data = { publicUUID_recordID, hidden: hide };
     if (!email) {
       return {
         statusCode: 200,
@@ -39,7 +39,7 @@ exports.handler = async event => {
       };
     }
     if (!hide) {
-      const statusResponse = await fetch(`${STATUS_URL}?${STATUS_PARAMS}`,
+      const statusResponse = await fetch(`${BASE_URL}status?${STATUS_PARAMS}`,
         {
           method: 'GET',
           headers: {
@@ -47,20 +47,42 @@ exports.handler = async event => {
             'Content-Type': 'application/json',
           },
         });
-      data = await statusResponse.json();
-      data.publicUUID_recordID = publicUUID_recordID;
-      if (Array.isArray(data.records) && requestoremail !== email) {
+      const statusData = await statusResponse.json();
+      if (Array.isArray(statusData.records) && requestoremail !== email) {
         // remove sensitive data
-        data.records = data.records.map(r => {
+        statusData.records = statusData.records.map(r => {
           const newF = { ...r.fields } || {};
           delete newF.userid;
           delete newF.intro_email;
+          return {
+            ...r, // id is required to allow introers to add their intro
+            fields: newF,
+          };
+        });
+      }
+      data.statusData = statusData;
+
+      const manualResponse = await fetch(`${BASE_URL}investors?${MANUAL_PARAMS}`,
+        {
+          method: 'GET',
+          headers: {
+            Authorization: `Bearer ${process.env.AIRTABLE_APIKEY}`,
+            'Content-Type': 'application/json',
+          },
+        });
+      const manualData = await manualResponse.json();
+      if (Array.isArray(manualData.records) && requestoremail !== email) {
+        // remove sensitive data
+        manualData.records = manualData.records.map(r => {
+          const newF = { ...r.fields } || {};
+          delete newF.userid;
           return {
             ...r,
             fields: newF,
           };
         });
       }
+      data.manualData = manualData;
     }
     return {
       statusCode: 200,

@@ -440,7 +440,6 @@ function* workUserManualInvestorsGet(action) {
 
   try {
     if (!email) email = yield select(getEmail);
-    console.log(email)
     params.filterByFormula = `{userid}="${email}"`;
     const results = yield call(getStatusData, params);
     // catch airtable errors
