@@ -56,6 +56,10 @@ export default function Note(props) {
     updateStatus(params);
   };
 
+  let nextLabel = '';
+  if (next) nextLabel = 'To Do Next';
+  if (waiting) nextLabel= 'Waiting For'
+
   return (
     <div
       className="note"
@@ -77,7 +81,7 @@ export default function Note(props) {
         <div className="content">
           {(date || next) && (
             <div className={`date ${waiting ? 'waiting' : ''}`}>
-              {`${next ? 'Next ' : ''}${aFormDate(date) || ''}`}
+              {`${nextLabel} ${date ? `- ${aFormDate(date)}` : ''}`}
             </div>
           )}
           <div className="text">{text}</div>

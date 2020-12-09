@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { useDispatch } from 'react-redux';
 import { useLocation } from 'react-router';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { capitalizeFirstLetter, aFormDate } from '../../utils';
+import { capitalizeFirstLetter } from '../../utils';
 import * as types from '../../actions/types';
 
 export default function Person(props) {

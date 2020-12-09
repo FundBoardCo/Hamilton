@@ -112,7 +112,7 @@ export default function Person(props) {
             <div className="next sortedByNext">
               <span className="text">
                 <span className="text-danger">
-                  Next:&nbsp;
+                  To Do Next:&nbsp;
                 </span>
                 {next.text ? next.text : ''}
               </span>
@@ -138,7 +138,7 @@ export default function Person(props) {
             <div className="next">
               <span className="text">
                 <span className={next.waiting ? 'text-primary' : 'text-danger'}>
-                  {next.waiting ? 'Waiting' : 'Next'}
+                  {next.waiting ? 'Waiting for' : 'To Do Next'}
                   :&nbsp;
                 </span>
                 <span className={next.waiting ? 'text-primary' : ''}>

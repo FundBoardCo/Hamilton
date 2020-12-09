@@ -11,7 +11,7 @@ export default function MakeIntro() {
     || '';
   const openModal = useSelector(state => state.modal.openModal);
   const modalProps = useSelector(state => state.modal.modalProps);
-  const { isPublic, founderUUID, investor } = modalProps;
+  const { founderUUID, investor } = modalProps;
   const founderProps = useSelector(state => state.manageRaise.founderData[founderUUID])
     || {};
 

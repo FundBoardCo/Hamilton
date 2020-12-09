@@ -348,7 +348,7 @@ export default function Board() {
                   className={sortBy === 'next' ? 'active' : ''}
                   onClick={toggleSortByNext}
                 >
-                  Next
+                  To Do Next
                 </button>
                 <button
                   type="button"
