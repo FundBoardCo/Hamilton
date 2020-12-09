@@ -33,12 +33,13 @@ html#ov body {
         height: $pad6;
         flex-shrink: 0;
         padding: 0;
-        border: 0;
-        border-right: 1px solid $col-primary-light4;
+        border-width: 1px;
+        border-style: solid;
+        border-color: $col-primary-light4;
         background-size: cover;
         background-position: center;
         background-repeat: no-repeat;
-        background-color: $col-primary-light7;
+        background-color: $col-primary-light9;
 
         @media (min-width: $mediaLg) {
           width: $pad7;
@@ -199,7 +200,6 @@ html#ov body {
         .thumb {
           width: $pad5;
           height: $pad5;
-          border: none;
         }
 
         .content {
@@ -441,7 +441,7 @@ html#ov body {
                     overflow: hidden;
                     border-radius: $pad2;
                     border: 1px solid $col-primary-light4;
-                    background-color: $col-primary-light7;
+                    background-color: $col-primary-light9;
                     background-size: cover;
                     background-repeat: no-repeat;
                   }
