@@ -166,14 +166,16 @@ export default function Profile() {
     orgURL: {
       label: 'Your Startup’s Website',
       type: 'url',
-      placeholder: 'url',
+      placeholder: 'http://something.com',
       feedback: true,
       value: orgURL,
     },
     orgLogoURL: {
       label: 'A Link to Your Startup’s Logo',
       type: 'url',
-      placeholder: 'url',
+      placeholder: 'http://something.com/something.jpg',
+      formText: 'You should link to an image that is at least 100 x 100 px, but not larger than '
+        + '400 x 400.',
       feedback: true,
       value: orgLogoURL,
     },
