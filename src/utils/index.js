@@ -1,4 +1,4 @@
-import moment from "moment";
+import moment from 'moment';
 
 export function processErr(err) {
   if (!err) return false;
@@ -98,4 +98,13 @@ export function isPlainObject(obj) {
 
 export function aFormDate(d) {
   return moment(d).format('MMMM d, yyyy h:mma');
+}
+
+export function formatCur(val, currency = 'USD') {
+  return new Intl.NumberFormat('en', {
+    style: 'currency',
+    currency,
+  }).format(val)
+    // remove decimals and trailing international currency symbols
+    .replace(/\D00(?=\D*$)/, '');
 }

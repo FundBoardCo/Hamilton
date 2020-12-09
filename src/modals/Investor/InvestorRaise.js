@@ -13,7 +13,7 @@ import EditNote from './EditNote';
 import Note from './Note';
 import EditIntro from './EditIntro';
 import { STAGEPROPS } from '../../constants';
-import { aFormDate } from '../../utils';
+import { aFormDate, formatCur } from '../../utils';
 
 export default function InvestorRaise(props) {
   const {
@@ -89,7 +89,7 @@ export default function InvestorRaise(props) {
   const showAmount = ['negotiating', 'invested', 'leading'].includes(stage);
   let amountText = stage === 'negotiating'
     ? 'You are Asking Them to Invest' : 'Amount They Invested';
-  amountText = `${amountText}: $${amountValue}`;
+  amountText = `${amountText}: ${formatCur(amountValue)}`;
 
   return (
     <div>
