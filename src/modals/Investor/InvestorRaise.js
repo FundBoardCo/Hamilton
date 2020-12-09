@@ -88,7 +88,7 @@ export default function InvestorRaise(props) {
 
   const showAmount = ['negotiating', 'invested', 'leading'].includes(stage);
   let amountText = stage === 'negotiating'
-    ? 'You are Asking Them to Invest' : 'Amount They Invested';
+    ? 'Investment target' : 'Amount Invested';
   amountText = `${amountText}: ${formatCur(amountValue)}`;
 
   return (
