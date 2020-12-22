@@ -49,14 +49,18 @@ export default function InvestorData(props) {
     primary_organization_homepage,
   } = data;
 
+  const orglink = primary_organization.permalink
+    && `https://www.crunchbase.com/organization/${primary_organization.permalink}`;
+
   primary_organization_logo = primary_organization_logo
     || primary_organization.image_url
     || '';
   primary_organization_name = primary_organization_name
-    || primary_organization.name
+    || primary_organization.value
     || '';
   primary_organization_homepage = primary_organization_homepage
     || primary_organization.homepage
+    || orglink
     || '';
 
   const validationProps = {

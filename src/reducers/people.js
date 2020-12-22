@@ -1,9 +1,10 @@
 import * as types from '../actions/types';
 import { processErr } from '../utils';
+import investors from '../data/investors.json';
 
 export default function people(state = {}, action) {
   const records = {};
-  const { params = {}, data } = action;
+  const { params = {} } = action;
   const {
     uuid,
     id,
@@ -14,15 +15,17 @@ export default function people(state = {}, action) {
 
   switch (action.type) {
     case types.PEOPLE_GET_REQUEST:
-      if (ids) {
-        ids.forEach(i => {
-          records[i] = { ...state[i], getStatus: 'pending' };
-        });
-      }
       return {
         ...state,
-        ...records,
+        records: {
+          ...state.records,
+          [action.id]: {
+            ...investors[action.id],
+            getStatus: 'succeeded',
+          },
+        },
       };
+    /*
     case types.PEOPLE_GET_SUCCEEDED:
       if (ids && data && Array.isArray(data)) {
         ids.forEach(i => {
@@ -42,6 +45,7 @@ export default function people(state = {}, action) {
         ...state,
         ...records,
       };
+     */
     case types.PEOPLE_GET_FAILED:
       if (ids) {
         const err = processErr(action.error);

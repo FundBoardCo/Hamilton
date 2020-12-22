@@ -17,7 +17,7 @@ import { getSafeVar } from '../../utils';
 export default function Board() {
   const getBoardUUID_status = useSelector(state => state.manageRaise.getBoardUUID_status);
   const investorIDs = useSelector(state => state.user.investors) || [];
-  const people = useSelector(state => state.people);
+  const people = useSelector(state => state.people.records);
   const manualInvestorGet_status = useSelector(
     state => state.manageRaise.manualInvestorGet_status,
   );

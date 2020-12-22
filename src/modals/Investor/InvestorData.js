@@ -8,13 +8,16 @@ import { Timeline } from 'react-twitter-widgets';
 import moment from 'moment';
 import PersonStamp from '../../components/people/PersonStamp';
 import {
+  convertInvestedLocations,
   getSafeVar,
   statusIsError,
   convertKeyTags,
+  calcMatch,
 } from '../../utils';
-import * as types from '../../actions/types';
+// import * as types from '../../actions/types';
 import NameTag from '../../components/people/PersonNameTag';
 import RaiseBullet from '../../components/people/RaiseBullet';
+import {cb_founder_imagePrefix } from '../../constants';
 
 const matchData = [
   {
@@ -53,13 +56,13 @@ export default function InvestorData(props) {
     linkedin,
     twitter,
     raise_min,
-    raise_max,
+    // raise_max,
     raise_median,
-    matches,
     status,
     location_city,
     location_state,
-    investments = [],
+    startups = [],
+    // investments = [],
     // is_lead_investor = false,
     // is_open = false,
     // is_impact = false,
@@ -68,44 +71,48 @@ export default function InvestorData(props) {
 
   const twitterName = getSafeVar(() => twitter.substr(twitter.lastIndexOf('/') + 1), '');
 
+  const searchKeywords = useSelector(state => state.search.keywords);
   const searchRaise = useSelector(state => state.search.raise);
   const searchLocation = useSelector(state => state.search.location);
+  const searchedCityState = useSelector(state => state.search.searchedCityState);
+  const searchedLocationPairs = useSelector(state => state.search.searchedLocationPairs);
 
   const searchData = useSelector(state => state.search.results[uuid] || {});
 
-  let percentageMatch;
+  console.log(data);
 
-  if (!!matches && typeof matches === 'object' && Object.keys(matches).length) {
-    percentageMatch = matches.percentage_match || 0;
-    percentageMatch = `${Math.floor(percentageMatch * 100)}%`;
-    matches.raise = searchRaise >= raise_min && searchRaise <= raise_max;
-  }
+  const calcedMatches = calcMatch({
+    investor: { ...data },
+    keywords: searchKeywords,
+    raise: searchRaise,
+    searchedCityState,
+    searchedLocationPairs,
+  });
 
-  const parsedInvestors = {};
-  investments.forEach(i => {
-    if (Array.isArray(i.founders) && i.founders[0]) {
-      const founder = i.founders[0];
-      parsedInvestors[founder.permalink] = {
-        ...founder,
-        date: i.date,
-        org_name: i.startup_name,
-        org_permalink: i.startup_permalink,
-        logo_url: i.image_url,
-        amount: i.amount,
-      };
+  const { matches } = calcedMatches;
+
+  const percentageMatch = `${matches.percentage_match || 0}%`;
+
+  const founders = [];
+
+  startups.forEach(s => {
+    if (Array.isArray(s.founder_identifiers)) {
+      s.founder_identifiers.forEach(f => {
+        founders.push({
+          name: f.value,
+          permalink: f.permalink,
+          image_url: `${cb_founder_imagePrefix}${f.image_id}`,
+          org_name: s.name,
+          org_permalink: s.permalink,
+          logo_url: s.image_url,
+        });
+      });
     }
   });
 
   const [invalidOpen, setInvalidOpen] = useState(false);
 
   const dispatch = useDispatch();
-
-  useEffect(() => {
-    dispatch({
-      type: types.PEOPLE_GET_INVESTMENTS_REQUEST,
-      id: uuid,
-    });
-  }, [dispatch, uuid]);
 
   const reportInvalid = reason => dispatch({
     type: 'PERSON_PUT_INVALID_REQUESTED',
@@ -125,9 +132,18 @@ export default function InvestorData(props) {
     },
   });
 
-  let locationText = location_state ? `${location_city}, ${location_state}` : location_state;
-  locationText = locationText ? `They are located in ${locationText}.` : 'No location available.';
-  locationText = `${locationText} Investors are more likely to invest locally.`;
+  let locationText = convertInvestedLocations([`${location_city}_${location_state}`]);
+  locationText = locationText ? `They are located in ${locationText}` : '';
+
+  const investedInText = convertInvestedLocations(data.invested_locations);
+
+  if (investedInText) {
+    locationText = locationText
+      ? `${locationText}, and have invested in ${investedInText}.`
+      : `They have invested in ${investedInText}.`;
+  }
+
+  locationText = locationText || 'No locations for this investor were found.';
 
   const validationProps = {
     text: 'This investor has not been validated by FundBoard yet.',
@@ -208,18 +224,18 @@ export default function InvestorData(props) {
             />
             <RaiseBullet
               faIcon="map-marker-alt"
-              bool={matches.location_tier || !searchLocation}
+              bool={matches.location || !searchLocation}
               text={locationText}
             />
           </ul>
         </section>
       )}
-      {Array.isArray(investments) && investments.length > 0 && (
+      {Array.isArray(founders) && founders.length > 0 && (
         <section className="funded mb-4">
-          <h3 className="sectionHead">Founders they&apos;ve funded</h3>
+          <h3 className="sectionHead">Founders They&apos;ve Funded</h3>
           <div className="founders">
-            {Object.keys(parsedInvestors).map(k => (
-              <PersonStamp key={k} {...parsedInvestors[k]} />
+            {founders.map(k => (
+              <PersonStamp key={k.permalink} {...k} />
             ))}
           </div>
         </section>

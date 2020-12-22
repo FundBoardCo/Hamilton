@@ -21,10 +21,10 @@ export default function Investor(props) {
   const path = capitalizeFirstLetter(location.pathname.substring(1).split('/')[0]);
 
   const searchResults = useSelector(state => state.search.results) || {};
-  const people = useSelector(state => state.people) || {};
+  const people_records = useSelector(state => state.people.records) || {};
   const manual_records = useSelector(state => state.manageRaise.manual_records) || [];
   const sData = searchResults[uuid] || {};
-  const pData = people[uuid] || {};
+  const pData = people_records[uuid] || {};
   const mData = manual_records[uuid] || {};
   const manualRecordID = mData.id;
   const data = { ...pData, ...sData, ...mData };

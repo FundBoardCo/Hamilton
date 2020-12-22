@@ -32,7 +32,7 @@ export default function Person(props) {
   primary_organization_name = primary_organization_name || primary_organization.name || '';
 
   let percentageMatch = matches.percentage_match || 0;
-  percentageMatch = `${Math.floor(percentageMatch * 100)}%`;
+  percentageMatch = `${percentageMatch}%`;
 
   const investors = useSelector(state => state.user.investors) || [];
   const isOnBoard = investors.includes(uuid);

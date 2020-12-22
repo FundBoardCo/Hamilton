@@ -10,6 +10,7 @@ import { REHYDRATE } from 'redux-persist';
 import axios from 'axios';
 import {
   ZIPCODECLIENTKEY,
+  ZIPDISTANCE,
 } from '../constants';
 import {
   getSafeVar,
@@ -316,7 +317,7 @@ function* workGetExtraZipCodes(action) {
   const zipcode = action.location;
   const params = {
     zipcode,
-    miles: 10,
+    miles: ZIPDISTANCE,
   };
   try {
     if (!zipcode || typeof zipcode !== 'string' || zipcode.length !== 5) {
@@ -335,6 +336,7 @@ function* watchSearchSetZipCode() {
   yield takeLatest(types.SEARCH_SET_LOCATION, workGetExtraZipCodes);
 }
 
+/*
 function getPeopleResults(params) {
   const { id, token } = params;
   return axios({
@@ -360,6 +362,7 @@ function* workPeopleGetResults(action) {
 function* watchPeopleGetResults() {
   yield takeEvery(types.PEOPLE_GET_REQUEST, workPeopleGetResults);
 }
+ */
 
 function getPeopleInvestments(params) {
   const { id, token } = params;
@@ -397,7 +400,7 @@ function* workPeopleGetInvestments(action) {
 function* watchPeopleGetInvestments() {
   yield takeEvery(types.PEOPLE_GET_INVESTMENTS_REQUEST, workPeopleGetInvestments);
 }
-
+/*
 function requestSearchGetResults(params = {}) {
   return axios.get(`${api}search?${toQueryString(params)}`);
 }
@@ -417,6 +420,7 @@ function* workSearchGetResults(action) {
 function* watchSearchGetResults() {
   yield takeLatest('SEARCH_GET_RESULTS_REQUESTED', workSearchGetResults);
 }
+ */
 
 function workRehydrate(action) {
   const { key, payload } = action;
@@ -458,10 +462,10 @@ export default function* rootSaga() {
   yield fork(watchUserManualInvestorsGet);
   yield fork(watchUserPublicBoardPost);
   yield fork(watchPersonPutInvalid);
-  yield fork(watchPeopleGetResults);
+  // yield fork(watchPeopleGetResults);
   yield fork(watchPeopleGetInvestments);
   yield fork(watchSearchSetZipCode);
-  yield fork(watchSearchGetResults);
+  // yield fork(watchSearchGetResults);
   yield fork(watchSendFeedback);
   yield fork(watchGetInfo);
 }

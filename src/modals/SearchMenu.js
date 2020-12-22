@@ -3,9 +3,11 @@ import { useHistory } from 'react-router';
 import { useSelector, useDispatch } from 'react-redux';
 import Modal from 'react-bootstrap/Modal';
 import Form from 'react-bootstrap/Form';
+import InputGroup from 'react-bootstrap/InputGroup';
 import RangeSlider from 'react-bootstrap-range-slider';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Button from 'react-bootstrap/Button';
+import FormControl from 'react-bootstrap/FormControl';
 import { statusIsError, getSearchLocations } from '../utils';
 import * as types from '../actions/types';
 import { ZIPDISTANCE } from '../constants';
@@ -47,7 +49,6 @@ export default function SearchMenu() {
   const form = useRef(null);
 
   const airtableKeywords = useSelector(state => state.airtable.keywords) || {};
-  const wordsToShow = Array.isArray(airtableKeywords.data) ? airtableKeywords.data : [];
 
   const searchKeywords = useSelector(state => state.search.keywords) || [];
 
@@ -70,7 +71,16 @@ export default function SearchMenu() {
   const [validated, setValidated] = useState(false);
   const [isValid, setIsValid] = useState(false);
 
+  const [tileSearchFor, setTileSearchFor] = useState('');
   const [showTileWarning, setShowTileWarning] = useState(false);
+  let wordsToShow = Array.isArray(airtableKeywords.data)
+    ? airtableKeywords.data
+    : [];
+  if (tileSearchFor) {
+    wordsToShow = wordsToShow.filter(w => (
+      w.toLowerCase().includes(tileSearchFor.toLowerCase())
+    ));
+  }
 
   const dispatch = useDispatch();
 
@@ -169,6 +179,15 @@ export default function SearchMenu() {
     }
   }, [airtableKeywords.data, dispatch]);
 
+  useEffect(() => {
+    if (searchLocation) {
+      dispatch({
+        type: 'SEARCH_SET_LOCATION',
+        location: searchLocation,
+      });
+    }
+  }, [searchLocation, dispatch]);
+
   let extraZipcodesText = extraZipcodes_status;
 
   if (!searchLocation) {
@@ -215,6 +234,15 @@ export default function SearchMenu() {
             </Button>
           ))}
         </div>
+        <InputGroup className="mb-2">
+          <FormControl
+            type="text"
+            value={tileSearchFor}
+            placeholder="Search for a keyword"
+            onChange={e => setTileSearchFor(e.target.value)}
+            aria-label="Search for keyword to include in your search."
+          />
+        </InputGroup>
         <div className="tilesWrapper mb-5">
           <div className="tiles">
             {wordsToShow.map(w => {

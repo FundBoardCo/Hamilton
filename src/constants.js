@@ -4,7 +4,7 @@ export const INTROSEARCH_STAGES = ['keywords', 'raise', 'location'];
 
 export const ZIPCODECLIENTKEY = 'js-IQnw1s8a35CYiI4clJrcM1yIvqTyyciNZfDHMIrhOY2ViLWXTjzYVzYEdkPjwRqD';
 
-export const ZIPDISTANCE = '20';
+export const ZIPDISTANCE = '40';
 
 export const STAGEPROPS = {
   none: {
@@ -42,3 +42,6 @@ export const STAGEPROPS = {
     text: 'They are Archived',
   },
 };
+
+export const cb_founder_imagePrefix = 'https://res-3.cloudinary.com/crunchbase-production/image/upload/c_thumb,h_170,w_170,f_auto,g_faces,z_0.7,b_white,q_auto:eco/';
+export const cb_logo_imagePrefix = 'https://res-3.cloudinary.com/crunchbase-production/image/upload/c_lpad,h_170,w_170,f_auto,b_white,q_auto:eco/';
