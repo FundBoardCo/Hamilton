@@ -5,22 +5,29 @@ import {
   takeEvery,
   takeLatest,
 } from 'redux-saga/effects';
-import { trackErr } from '../utils';
+import {toQueryString, trackErr} from '../utils';
 import * as types from '../actions/types';
 
-function requestAirtableGetKeywords() {
-  return axios.get('/.netlify/functions/airtable_get_keywords');
+function requestAirtableGetKeywords(params) {
+  return axios.get(`/.netlify/functions/airtable_get_keywords?${toQueryString(params)}`);
 }
 
 function* workAirtableGetKeywords() {
+  const params = {};
+  let firstRun = true;
+
   try {
-    const results = yield call(requestAirtableGetKeywords);
-    // catch airtable errors
-    if (results.data.error) {
-      trackErr(results.data.error);
-      yield put({ type: types.AIRTABLE_GET_KEYWORDS_FAILED, error: results.data.error });
-    } else {
-      yield put({ type: types.AIRTABLE_GET_KEYWORDS_SUCCEEDED, data: results.data });
+    while (firstRun || params.offset) {
+      const results = yield call(requestAirtableGetKeywords, params);
+      firstRun = false;
+      // catch airtable errors
+      if (results.data.error) {
+        trackErr(results.data.error);
+        yield put({type: types.AIRTABLE_GET_KEYWORDS_FAILED, error: results.data.error});
+      } else {
+        params.offset = results.data.offset;
+        yield put({type: types.AIRTABLE_GET_KEYWORDS_SUCCEEDED, data: results.data});
+      }
     }
   } catch (error) {
     trackErr(error);

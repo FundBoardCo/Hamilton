@@ -1,8 +1,11 @@
 import fetch from 'node-fetch';
+import { toQueryString } from '../utils';
 
-exports.handler = async () => {
+exports.handler = async event => {
+  const PARAMS = toQueryString(event.queryStringParameters);
+
   try {
-    const response = await fetch('https://api.airtable.com/v0/app5hJojHQxyJ7ElS/Keywords',
+    const response = await fetch(`https://api.airtable.com/v0/app5hJojHQxyJ7ElS/keywords_new?${PARAMS}`,
       {
         method: 'GET',
         headers: {

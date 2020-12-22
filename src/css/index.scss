@@ -374,11 +374,12 @@ html#ov {
 
                   .tile {
                     flex: 1 1 auto;
-                    background-color: $col-light;
+                    background-color: $col-primary-light9;
                     border: 1px solid $col-primary-light3;
                     color: $col-primary-dark;
                     font-size: $h4;
                     text-align: center;
+                    max-height: 2.3em;
                     padding: $pad2;
                     border-radius: $pad2;
                     margin: $pad1;

@@ -3,6 +3,8 @@ import { useSelector, useDispatch } from 'react-redux';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Button from 'react-bootstrap/Button';
+import FormControl from 'react-bootstrap/FormControl';
+import InputGroup from 'react-bootstrap/InputGroup';
 import DismissibleStatus from '../../components/DismissibleStatus';
 import * as types from '../../actions/types';
 
@@ -10,9 +12,17 @@ export default function Keywords() {
   const searchKeywords = useSelector(state => state.search.keywords) || [];
   const airtableKeywords = useSelector(state => state.airtable.keywords) || {};
   const airtabelKeywordsStatus = airtableKeywords.status;
-  const wordsToShow = Array.isArray(airtableKeywords.data) ? airtableKeywords.data : [];
 
+  const [tileSearchFor, setTileSearchFor] = useState('');
   const [showTileWarning, setShowTileWarning] = useState(false);
+  let wordsToShow = Array.isArray(airtableKeywords.data)
+    ? airtableKeywords.data
+    : [];
+  if (tileSearchFor) {
+    wordsToShow = wordsToShow.filter(w => (
+      w.toLowerCase().includes(tileSearchFor.toLowerCase())
+    ));
+  }
 
   const dispatch = useDispatch();
 
@@ -68,10 +78,19 @@ export default function Keywords() {
             </Button>
           ))}
         </div>
+        <InputGroup className="mb-2 p-1">
+          <FormControl
+            type="text"
+            value={tileSearchFor}
+            placeholder="Search for a keyword"
+            onChange={e => setTileSearchFor(e.target.value)}
+            aria-label="Search for keyword to include in your search."
+          />
+        </InputGroup>
         <div className="tilesWrapper">
           <div className="tiles">
             {wordsToShow.map(w => {
-              const active = searchKeywords.includes(w);
+              const active = searchKeywords.includes(w.toLowerCase());
               return (
                 <button
                   className={`tile ${active ? 'active' : ''}`}

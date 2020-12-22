@@ -801,10 +801,9 @@ html#ov body {
 
             .tilesWrapper {
               border: 1px solid $col-primary;
-              padding: $pad2;
-              border-radius: $pad3;
+              border-radius: $pad1;
+              padding: $pad1;
               overflow: hidden;
-              background-color: $col-primary-light7;
               position: relative;
 
               .tiles {
@@ -821,7 +820,8 @@ html#ov body {
                   justify-content: center;
                   align-items: center;
                   width: 100%;
-                  background-color: $col-light;
+                  max-height: 2.3em;
+                  background-color: $col-text-light;
                   border: 1px solid $col-primary-light3;
                   color: $col-primary-dark;
                   font-size: 1em;
