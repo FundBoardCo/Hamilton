@@ -26,7 +26,7 @@ export default function EditNote() {
   const postStatus = useSelector(state => state.manageRaise.post_status);
   const noteParams = useSelector(state => state.manageRaise.editNoteParams);
   const { uuid } = noteParams;
-  const { noteID } = noteParams;
+  const { noteID = Date.now() } = noteParams;
 
   const investorStatus = useSelector(state => state.manageRaise.records[uuid]) || {};
   const { notes = {} } = investorStatus;
@@ -41,7 +41,7 @@ export default function EditNote() {
   let type = next ? 'next' : 'note';
   if (waiting) type = 'waiting';
 
-  const parsedDate = Number.isNaN(Date.parse(date)) ? Date.now() : new Date(date);
+  const parsedDate = Number.isNaN(Date.parse(date)) ? new Date() : new Date(date);
   const [textVal, setTextVal] = useState(text);
   const [dateVal, setDateVal] = useState(parsedDate);
   const [typeVal, setTypeVal] = useState(type);

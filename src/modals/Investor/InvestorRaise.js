@@ -213,7 +213,7 @@ export default function InvestorRaise(props) {
                 </a>
               </div>
               <div className="mb-1">
-                {`On ${aFormDate(intro_date)}`}
+                {intro_date && `On ${aFormDate(intro_date)}`}
               </div>
             </div>
             <div>

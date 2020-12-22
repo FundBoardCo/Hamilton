@@ -223,18 +223,19 @@ function createInvestorStatus(params) {
 
 function* workInvestorStatusPost(action) {
   try {
-    const { params } = action;
+    const params = { ...action.params };
     params.userid = yield select(getEmail);
     // process notes into airtable format
     const { notes } = params;
     if (notes) {
-      // extract the first next note, if any. There should be only one for Airtable.
-      const next = Object.values(notes).filter(v => v.next);
-      let parsedNotes = Object.values(notes).filter(v => !v.next);
-      const [firstNext] = next;
-      params.next = getSafeVar(() => firstNext.text, '');
-      params.next_date = getSafeVar(() => firstNext.date);
-      params.waiting = !!getSafeVar(() => firstNext.waiting, false);
+      // extract the last (most recent) next note, if any. There should be only one for Airtable.
+      const nextNotes = Object.values(notes).filter(v => v.next);
+      const lastNext = nextNotes.pop();
+      // parse the old next notes as if they were not next
+      let parsedNotes = [...Object.values(notes).filter(v => !v.next), ...nextNotes];
+      params.next = getSafeVar(() => lastNext.text, '');
+      params.next_date = getSafeVar(() => lastNext.date);
+      params.waiting = !!getSafeVar(() => lastNext.waiting, false);
       parsedNotes = parsedNotes.map(n => `${n.text}${n.date ? `%%%${n.date}` : ''}`).join('^^^');
       params.notes = parsedNotes;
     }
