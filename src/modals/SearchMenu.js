@@ -54,6 +54,8 @@ export default function SearchMenu() {
 
   const searchRaise = useSelector(state => state.search.raise) || 100000;
 
+  const searchedText = useSelector(state => state.search.searchedText);
+
   const searchLocation = useSelector(state => state.search.location) || '';
   // use local state to handle invalid entries without recording them
   const [locationValue, setLocationValue] = useState(searchLocation);
@@ -87,24 +89,33 @@ export default function SearchMenu() {
   const history = useHistory();
 
   const setKeywords = keywords => dispatch({
-    type: 'SEARCH_SET_KEYWORDS',
+    type: types.SEARCH_SET_KEYWORDS,
     keywords,
   });
 
   const setRaise = raise => dispatch({
-    type: 'SEARCH_SET_RAISE',
+    type: types.SEARCH_SET_RAISE,
     raise,
   });
 
   const setLocation = location => dispatch({
-    type: 'SEARCH_SET_LOCATION',
+    type: types.SEARCH_SET_LOCATION,
     location,
   });
 
   const setRemote = remote => dispatch({
-    type: 'SEARCH_SET_REMOTE',
+    type: types.SEARCH_SET_REMOTE,
     remote,
   });
+
+  const setSearchedText = text => dispatch({
+    type: types.SEARCH_SET_SEARCHTEXT,
+    text,
+  });
+
+  const onClickClearSearchText = () => {
+    setSearchedText('');
+  }
 
   const onTileClick = (word, active) => {
     if (active) {
@@ -216,6 +227,27 @@ export default function SearchMenu() {
       </Modal.Header>
       <Modal.Body>
         <SectionTitle
+          faIcon="search"
+          text="Search By Name or Organization"
+        />
+        <InputGroup className="mb-5">
+          <FormControl
+            type="text"
+            value={searchedText}
+            placeholder="Name or Organization"
+            onChange={e => setSearchedText(e.target.value)}
+            aria-label="Search for an investor by name or organization."
+          />
+          <InputGroup.Append>
+            <Button
+              variant="outline-primary"
+              onClick={onClickClearSearchText}
+            >
+              <FontAwesomeIcon className='mr-1 ml-1' icon="times" />
+            </Button>
+          </InputGroup.Append>
+        </InputGroup>
+        <SectionTitle
           text="My Keywords"
           faIcon="key"
           detailText={`${searchKeywords.length} selected`}
@@ -242,6 +274,14 @@ export default function SearchMenu() {
             onChange={e => setTileSearchFor(e.target.value)}
             aria-label="Search for keyword to include in your search."
           />
+          <InputGroup.Append>
+            <Button
+              variant="outline-primary"
+              onClick={() => setTileSearchFor('')}
+            >
+              <FontAwesomeIcon className="mr-1 ml-1" icon="times" />
+            </Button>
+          </InputGroup.Append>
         </InputGroup>
         <div className="tilesWrapper mb-5">
           <div className="tiles">

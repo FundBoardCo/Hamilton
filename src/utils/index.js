@@ -144,6 +144,7 @@ export function formatCur(val, currency = 'USD') {
 
 export function calcMatch(opts) {
   const {
+    searchedText,
     raise,
     searchedCityState,
     searchedLocationPairs,
@@ -152,6 +153,7 @@ export function calcMatch(opts) {
   } = opts;
 
   const {
+    name = '',
     investorLocation = '',
     invested_locations,
     raise_min = 0,
@@ -161,6 +163,8 @@ export function calcMatch(opts) {
     startupDescsBlob,
     num_partner_investments = 0,
     startups = [],
+    primary_organization_name = '',
+    primary_organization = {},
   } = investor;
 
   const iKeywords = investor.keywords;
@@ -239,6 +243,22 @@ export function calcMatch(opts) {
   percentageMatch += startAdd;
 
   percentageMatch = Math.floor((percentageMatch / 3) * 100);
+
+  if (searchedText) {
+    const searchFor = searchedText.toLowerCase();
+    let orgName = primary_organization_name
+      || primary_organization.name
+      || primary_organization.value
+      || '';
+    orgName = orgName.toLowerCase();
+    const invName = name.toLowerCase();
+
+    if (!invName.includes(searchFor) && !orgName.includes(searchFor)) {
+      percentageMatch = 0;
+    }
+  }
+
   matches.percentage_match = percentageMatch;
+
   return { matches };
 }

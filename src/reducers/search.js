@@ -13,6 +13,7 @@ const defaults = {
   extraLocations: [],
   searchedCityState: '',
   searchedLocationPairs: [],
+  searchedText: '',
   firstTime: true,
 };
 
@@ -61,6 +62,10 @@ export default function search(state = defaults, action) {
     case types.SEARCH_SET_REMOTE: return {
       ...state,
       remote: action.remote,
+    };
+    case types.SEARCH_SET_SEARCHTEXT: return {
+      ...state,
+      searchedText: action.text,
     };
     case types.SEARCH_GET_EXTRAZIPCODES_REQUESTED: return {
       ...state,
