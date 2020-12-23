@@ -25,11 +25,17 @@ export default function Person(props) {
   } = props;
 
   let {
-    primary_organization_name = '',
+    primary_organization_name,
+    primary_organization_logo,
   } = props;
 
-  const primary_organization_logo = primary_organization.image_url || '';
-  primary_organization_name = primary_organization_name || primary_organization.name || '';
+  primary_organization_logo = primary_organization_logo
+    || primary_organization.image_url
+    || '';
+  primary_organization_name = primary_organization_name
+    || primary_organization.name
+    || primary_organization.value
+    || '';
 
   let percentageMatch = matches.percentage_match || 0;
   percentageMatch = `${percentageMatch}%`;
@@ -185,6 +191,7 @@ Person.defaultProps = {
     twitter: '',
   },
   primary_organization_name: '',
+  primary_organization_logo: '',
   matches: {
     keywords: ['one', 'two'],
     raise: false,
@@ -212,6 +219,7 @@ Person.propTypes = {
     PropTypes.number,
   ])),
   primary_organization_name: PropTypes.string,
+  primary_organization_logo: PropTypes.string,
   matches: PropTypes.shape({
     keywords: PropTypes.arrayOf(PropTypes.string),
     raise: PropTypes.bool,
