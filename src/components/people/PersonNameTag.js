@@ -56,6 +56,7 @@ export default function InvestorData(props) {
     || primary_organization.image_url
     || '';
   primary_organization_name = primary_organization_name
+    || primary_organization.name
     || primary_organization.value
     || '';
   primary_organization_homepage = primary_organization_homepage
