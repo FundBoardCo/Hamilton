@@ -364,6 +364,7 @@ function* watchPeopleGetResults() {
 }
  */
 
+/*
 function getPeopleInvestments(params) {
   const { id, token } = params;
   return axios({
@@ -400,6 +401,7 @@ function* workPeopleGetInvestments(action) {
 function* watchPeopleGetInvestments() {
   yield takeEvery(types.PEOPLE_GET_INVESTMENTS_REQUEST, workPeopleGetInvestments);
 }
+ */
 /*
 function requestSearchGetResults(params = {}) {
   return axios.get(`${api}search?${toQueryString(params)}`);
@@ -463,7 +465,7 @@ export default function* rootSaga() {
   yield fork(watchUserPublicBoardPost);
   yield fork(watchPersonPutInvalid);
   // yield fork(watchPeopleGetResults);
-  yield fork(watchPeopleGetInvestments);
+  // yield fork(watchPeopleGetInvestments);
   yield fork(watchSearchSetZipCode);
   // yield fork(watchSearchGetResults);
   yield fork(watchSendFeedback);
