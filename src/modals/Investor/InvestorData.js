@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import PropTypes from 'prop-types';
 import Spinner from 'react-bootstrap/Spinner';
@@ -17,7 +17,7 @@ import {
 // import * as types from '../../actions/types';
 import NameTag from '../../components/people/PersonNameTag';
 import RaiseBullet from '../../components/people/RaiseBullet';
-import {cb_founder_imagePrefix } from '../../constants';
+import { cb_founder_imagePrefix } from '../../constants';
 
 const matchData = [
   {
@@ -78,8 +78,6 @@ export default function InvestorData(props) {
   const searchedLocationPairs = useSelector(state => state.search.searchedLocationPairs);
 
   const searchData = useSelector(state => state.search.results[uuid] || {});
-
-  console.log(data);
 
   const calcedMatches = calcMatch({
     investor: { ...data },
