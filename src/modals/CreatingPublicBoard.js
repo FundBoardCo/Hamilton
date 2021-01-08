@@ -77,7 +77,7 @@ export default function HowToIntro() {
               <a
                 href={`${window.location.protocol}//${window.location.host}/public/${publicID}`}
                 target="_blank"
-                rel="noreferrer"
+                rel="noopener noreferrer"
               >
                 {`${window.location.protocol}//${window.location.host}/public/${publicID}`}
               </a>
