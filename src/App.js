@@ -63,6 +63,7 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import 'react-datepicker/dist/react-datepicker.css';
+import Parse from 'parse';
 import Logo from './imgs/FundBoard_Logo.svg';
 import ScrollToTop from './components/ScrollToTop';
 import Intro from './pages/start/Intro';
@@ -129,8 +130,14 @@ library.add(
   faWifi,
 );
 
+Parse.serverURL = 'https://parseapi.back4app.com';
+Parse.initialize(
+  'FCVvEJKJSFUsOGRhK5qCcFdCtz7Fdi8DN4xzA3Vh',
+  'CxrimZZc8gtvVVzELog2sEp2dDh8tYpHis2pciCS',
+);
+
 function App() {
-  const loggedIn = useSelector(state => state.user.token);
+  const loggedIn = useSelector(state => state.user.sessionToken);
   const firstTime = useSelector(state => state.search.firstTime);
 
   const dispatch = useDispatch();

@@ -11,7 +11,7 @@ import Founder from './Founder';
 import EditManualInvestor from './EditManualInvestor';
 
 export default function ModalWrapper() {
-  const loggedIn = useSelector(state => state.user.token);
+  const loggedIn = useSelector(state => state.user.sessionToken);
   const openModal = useSelector(state => state.modal.openModal);
 
   return (

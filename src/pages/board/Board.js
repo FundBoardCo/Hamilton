@@ -22,7 +22,7 @@ export default function Board() {
     state => state.manageRaise.manualInvestorGet_status,
   );
   const manual_records = useSelector(state => state.manageRaise.manual_records) || {};
-  const loggedIn = useSelector(state => state.user.token);
+  const loggedIn = useSelector(state => state.user.sessionToken);
   const email = useSelector(state => state.user.email);
   const modalsSeen = useSelector(state => state.modal.modalsSeen) || [];
   const investorStatus_getStatus = useSelector(state => state.manageRaise.get_status);
