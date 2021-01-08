@@ -2,15 +2,32 @@ import * as types from '../actions/types';
 import { getSafeVar, processErr } from '../utils';
 
 const defaults = {
+  name: '',
   email: '',
   investors: [],
   create_status: '',
   login_status: '',
-  token: null,
+  sessionToken: null,
+  objectId: '',
   update_status: '',
   delete_status: '',
   reset_status: '',
   showAdvice: true,
+  primary_job_title: '',
+  primary_organization_name: '',
+  primary_organization_homepage: '',
+  primary_organization_logo: '',
+  description: '',
+  linkedin: '',
+  twitter: '',
+  permalink: '',
+  links: [],
+  raise: 0,
+  remote: false,
+  location_city: '',
+  location_state: '',
+  team_size: 0,
+  board_public: true,
 };
 
 export const userResets = {
@@ -48,13 +65,14 @@ export default function user(state = defaults, action) {
     case types.USER_CREATE_REQUESTED: return {
       ...state,
       create_status: 'pending',
-      token: null,
-      email: action.params.email,
+      sessionToken: null,
     };
     case types.USER_CREATE_SUCCEEDED: return {
       ...state,
       create_status: 'succeeded',
-      token: action.data.token,
+      email: action.data.email,
+      sessionToken: action.data.sessionToken,
+      objectId: action.data.objectId,
     };
     case types.USER_CREATE_FAILED: return {
       ...state,
@@ -67,13 +85,12 @@ export default function user(state = defaults, action) {
     case types.USER_LOGIN_REQUESTED: return {
       ...state,
       login_status: 'pending',
-      email: action.params.email,
     };
     case types.USER_LOGIN_SUCCEEDED: return {
       ...state,
       login_status: 'succeeded',
-      token: action.data.token,
       investors: mergeIDs(state, action),
+      ...action.data,
     };
     case types.USER_LOGIN_FAILED: return {
       ...state,
@@ -111,6 +128,7 @@ export default function user(state = defaults, action) {
     case types.USER_UPDATE_SUCCEEDED: return {
       ...state,
       update_status: 'succeeded',
+      ...action.data,
     };
     case types.USER_UPDATE_FAILED: return {
       ...state,
@@ -125,8 +143,7 @@ export default function user(state = defaults, action) {
       delete_status: 'pending',
     };
     case types.USER_DELETE_SUCCEEDED: return {
-      ...state,
-      token: null,
+      ...defaults,
       delete_status: 'succeeded',
     };
     case types.USER_DELETE_FAILED: return {

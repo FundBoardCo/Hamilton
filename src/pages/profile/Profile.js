@@ -10,25 +10,6 @@ import * as types from '../../actions/types';
 import DismissibleStatus from '../../components/DismissibleStatus';
 import FormInput from '../../components/FormInput';
 
-function convertLinksFromAirTable(str) {
-  let links = (str && str.split('^^^')) || [];
-  links = links.map(l => {
-    const s = l.split('%%%');
-    return {
-      text: s[0],
-      url: s[1],
-      key: Math.floor(Math.random() * Math.floor(1000000)),
-    };
-  });
-  return links;
-}
-
-function convertLinksToAirTable(arr) {
-  let linkString = Array.isArray(arr) ? arr : [];
-  linkString = linkString.reduce((acc, cv) => `${acc}${acc ? '^^^' : ''}${cv.text}%%%${cv.url}`, '');
-  return linkString;
-}
-
 function LinkInput(props) {
   const {
     text,
@@ -86,12 +67,12 @@ function LinkInput(props) {
 }
 
 export default function Profile() {
-  const loggedIn = useSelector(state => state.user.token);
+  const loggedIn = useSelector(state => state.user.sessionToken);
   const user = useSelector(state => state.user) || {};
-  const uuid = useSelector(state => state.manageRaise.publicUUID) || '';
-  const getFounderStatus = useSelector(state => state.manageRaise.getFounderData_status) || '';
-  const founderProps = useSelector(state => state.manageRaise.founderData[uuid]) || {};
-  const postFounderStatus = founderProps.post_status;
+  // const uuid = useSelector(state => state.manageRaise.publicUUID) || '';
+  // const getFounderStatus = useSelector(state => state.manageRaise.getFounderData_status) || '';
+  // const founderProps = useSelector(state => state.manageRaise.founderData[uuid]) || {};
+  // const postFounderStatus = founderProps.post_status;
   const searchRaise = useSelector(state => state.search.raise) || 100000;
   const searchRemote = useSelector(state => state.search.remote) || '';
   const updateStatus = useSelector(state => state.user.update_status);
@@ -101,20 +82,22 @@ export default function Profile() {
 
   const initialInputState = {
     password: '',
-    name: founderProps.name || '',
-    title: founderProps.primary_job_title || '',
-    orgName: founderProps.primary_organization_name || '',
-    orgURL: founderProps.primary_organization_homepage || '',
-    orgLogoURL: founderProps.primary_organization_logo || '',
-    desc: founderProps.description || '',
-    linkedin: founderProps.linkedin || '',
-    twitter: founderProps.twitter || '',
-    permalink: founderProps.permalink || '',
-    links: convertLinksFromAirTable(founderProps.links),
-    raise: founderProps.raise || searchRaise || 0,
-    remote: founderProps.remote !== undefined ? founderProps.remote : searchRemote,
-    location: founderProps.location || '',
-    teamSize: founderProps.team_size || 1,
+    name: user.name || '',
+    title: user.primary_job_title || '',
+    orgName: user.primary_organization_name || '',
+    orgURL: user.primary_organization_homepage || '',
+    orgLogoURL: user.primary_organization_logo || '',
+    desc: user.description || '',
+    linkedin: user.linkedin || '',
+    twitter: user.twitter || '',
+    permalink: user.permalink || '',
+    links: user.links || [],
+    raise: user.raise || searchRaise || 0,
+    remote: user.remote !== undefined ? user.remote : searchRemote,
+    location_city: user.location_city || '',
+    location_state: user.location_state || '',
+    team_size: user.team_size || 1,
+    board_public: user.board_public || true,
   };
 
   const [{
@@ -131,8 +114,10 @@ export default function Profile() {
     links,
     raise,
     remote,
-    location,
-    teamSize,
+    location_city,
+    location_state,
+    team_size,
+    board_public,
   }, setState] = useState(initialInputState);
 
   const accountInputs = {
@@ -215,19 +200,25 @@ export default function Profile() {
       formText: 'Plese enter a value of at least $100,000.',
       value: raise,
     },
-    teamSize: {
+    team_size: {
       label: 'How Many People Are On Your Team?',
       type: 'number',
       min: 1,
       placeholder: 'number equal to or higher than 1',
       feedback: true,
-      value: teamSize,
+      value: team_size,
     },
-    location: {
-      label: 'Your Location (city, 2 letter state abbreviation)',
-      placeholder: 'location',
-      formText: 'Use the format "city name, 2 letter state abbreviation."',
-      value: location,
+    location_city: {
+      label: 'Your City (HQ, or personal if fully remote)',
+      placeholder: 'City',
+      value: location_city,
+    },
+    location_state: {
+      label: 'Your State',
+      placeholder: 'XX',
+      formText: 'Use a 2 letter state abbreviation.',
+      value: location_state,
+      pattern: '[A-Z]{2}',
     },
     remote: {
       label: 'We’re fully remote',
@@ -257,19 +248,7 @@ export default function Profile() {
 
   useEffect(() => {
     dispatch({
-      type: types.USER_GET_BOARDUUID_REQUESTED,
-    });
-  }, [dispatch]);
-
-  useEffect(() => {
-    dispatch({
       type: types.USER_UPDATE_DISSMISSED,
-    });
-  }, [dispatch]);
-
-  useEffect(() => {
-    dispatch({
-      type: types.PUBLIC_GET_FOUNDERDATA_DISMISSED,
     });
   }, [dispatch]);
 
@@ -279,31 +258,8 @@ export default function Profile() {
     });
   }, [dispatch]);
 
-  useEffect(() => {
-    if (uuid) {
-      dispatch({
-        type: types.USER_POST_FOUNDERDATA_DISMISSED,
-        params: { uuid },
-      });
-    }
-  }, [uuid, dispatch]);
-
-  useEffect(() => {
-    if (uuid) {
-      dispatch({
-        type: types.PUBLIC_GET_FOUNDERDATA_REQUESTED,
-        uuid,
-      });
-    }
-  }, [uuid, dispatch]);
-
   const updateAccount = params => dispatch({
     type: types.USER_UPDATE_REQUESTED,
-    params,
-  });
-
-  const updateFounderData = params => dispatch({
-    type: types.USER_POST_FOUNDERDATA_REQUESTED,
     params,
   });
 
@@ -368,8 +324,6 @@ export default function Profile() {
     setPublicValidated(true);
     if (form.checkValidity() !== false) {
       const params = {
-        uuid,
-        id: founderProps.recordID,
         name,
         primary_job_title: title,
         primary_organization_name: orgName,
@@ -379,16 +333,18 @@ export default function Profile() {
         linkedin,
         twitter,
         permalink,
-        links: convertLinksToAirTable(links),
+        links,
         raise,
         remote: !!remote,
-        location,
-        team_size: teamSize,
+        location_city,
+        location_state,
+        team_size,
       };
-      updateFounderData(params);
+      updateAccount(params);
     }
   };
 
+  /*
   const onCreateBoardClick = () => {
     const addInvestors = investorIDs.map(i => ({ uuid: i }));
     dispatch({
@@ -406,6 +362,14 @@ export default function Profile() {
       type: types.MODAL_SET_OPEN,
       modal: 'creatingPublicBoard',
     });
+  };
+   */
+
+  const onTogglePublicBoard = () => {
+    const params = {
+      board_public: !board_public,
+    };
+    updateAccount(params);
   };
 
   const onLogoutClick = () => {
@@ -458,7 +422,7 @@ export default function Profile() {
     };
   }
 
-  if (postFounderStatus === 'pending') {
+  if (updateStatus === 'pending') {
     btnProps.updateFounderData = {
       ...btnProps.updateFounderData,
       text: 'updating...',
@@ -523,115 +487,104 @@ export default function Profile() {
         </Form>
         <section className="mb-4">
           <h2 className="sectionHead">Public Data</h2>
-          <p>Your profile will be shown on your public FundBoard when it’s published.</p>
-          <DismissibleStatus
-            status={getFounderStatus}
-            showSuccess={false}
-            statusPrefix="Fetching Profile"
-            dismissParams={{ uuid }}
-            dissmissAction={types.PUBLIC_GET_FOUNDERDATA_DISMISSED}
-          />
-          {uuid ? (
-            <Form
-              className="mb-4"
-              noValidate
-              validated={publicValidated}
-              onSubmit={handlePublicSubmit}
+          <p>Your profile will be shown on your public FundBoard.</p>
+          <Form
+            className="mb-4"
+            noValidate
+            validated={publicValidated}
+            onSubmit={handlePublicSubmit}
+          >
+            {Object.keys(publicInputs1).map(k => (
+              <FormInput
+                onChange={onInputChange}
+                key={k}
+                iKey={k}
+                {...publicInputs1[k]}
+              />
+            ))}
+            <Form.Group controlId="DescriptionInput">
+              <Form.Label>A Short Bio or Description</Form.Label>
+              <Form.Control
+                as="textarea"
+                placeholder="More information about you that would be relevant to someone making an intro."
+                name="desc"
+                value={desc}
+                onChange={e => onInputChange(e)}
+                data-track="ProfileDescription"
+              />
+            </Form.Group>
+            {Object.keys(publicInputs2).map(k => (
+              <FormInput
+                onChange={onInputChange}
+                key={k}
+                iKey={k}
+                {...publicInputs2[k]}
+              />
+            ))}
+            <h5>Additional Links</h5>
+            {links.map((l, i) => (
+              <LinkInput
+                text={l.text}
+                url={l.url}
+                key={l.key}
+                linkIndex={i}
+                onLinkTextChange={setLinkText}
+                onLinkURLChange={setLinkURL}
+                onLinkRemove={removeLink}
+              />
+            ))}
+            <Button
+              variant="link"
+              className="text-secondary mb-4"
+              type="button"
+              onClick={addLink}
             >
-              {Object.keys(publicInputs1).map(k => (
-                <FormInput
-                  onChange={onInputChange}
-                  key={k}
-                  iKey={k}
-                  {...publicInputs1[k]}
-                />
-              ))}
-              <Form.Group controlId="DescriptionInput">
-                <Form.Label>A Short Bio or Description</Form.Label>
-                <Form.Control
-                  as="textarea"
-                  placeholder="More information about you that would be relevant to someone making an intro."
-                  name="desc"
-                  value={desc}
-                  onChange={e => onInputChange(e)}
-                  data-track="ProfileDescription"
-                />
-              </Form.Group>
-              {Object.keys(publicInputs2).map(k => (
-                <FormInput
-                  onChange={onInputChange}
-                  key={k}
-                  iKey={k}
-                  {...publicInputs2[k]}
-                />
-              ))}
-              <h5>Additional Links</h5>
-              {links.map((l, i) => (
-                <LinkInput
-                  text={l.text}
-                  url={l.url}
-                  key={l.key}
-                  linkIndex={i}
-                  onLinkTextChange={setLinkText}
-                  onLinkURLChange={setLinkURL}
-                  onLinkRemove={removeLink}
-                />
-              ))}
+              Add another link
+            </Button>
+            {Object.keys(publicInputs3).map(k => (
+              <FormInput
+                onChange={onInputChange}
+                key={k}
+                iKey={k}
+                {...publicInputs3[k]}
+              />
+            ))}
+            <DismissibleStatus
+              status={updateStatus}
+              statusPrefix="Updating Profile"
+              dissmissAction={types.USER_UPDATE_DISSMISSED}
+            />
+            <div className="d-flex flex-grow-1 justify-content-end">
               <Button
-                variant="link"
-                className="text-secondary mb-4"
-                type="button"
-                onClick={addLink}
+                className="btnMobile100"
+                type="submit"
+                data-track="ProfileUpdateFounderData"
+                {...btnProps.updateFounderData}
               >
-                Add another link
+                {btnProps.updateFounderData.text}
               </Button>
-              {Object.keys(publicInputs3).map(k => (
-                <FormInput
-                  onChange={onInputChange}
-                  key={k}
-                  iKey={k}
-                  {...publicInputs3[k]}
-                />
-              ))}
-              <DismissibleStatus
-                status={postFounderStatus}
-                statusPrefix="Updating Profile"
-                dismissParams={{ uuid }}
-                dissmissAction={types.USER_POST_FOUNDERDATA_DISMISSED}
-              />
-              <div className="d-flex flex-grow-1 justify-content-end">
-                <Button
-                  className="btnMobile100"
-                  type="submit"
-                  data-track="ProfileUpdateFounderData"
-                  {...btnProps.updateFounderData}
-                >
-                  {btnProps.updateFounderData.text}
-                </Button>
-              </div>
-            </Form>
-          ) : (
-            <div>
-              <p className="text-primary">
-                Your FundBoard isn’t public yet, create one now to start filling in your profile.
-              </p>
-              <div className="d-flex">
-                <Button
-                  variant="secondary"
-                  className="txs-3 mr-2 ml-auto"
-                  disabled={createBoardStatus === 'pending'}
-                  onClick={onCreateBoardClick}
-                >
-                  Publish Your FundBoard
-                </Button>
-              </div>
-              <DismissibleStatus
-                status={createBoardStatus}
-                statusPrefix="Creating FundBoard"
-                dissmissAction={types.USER_POST_PUBLICBOARD_DISMISSED}
-              />
             </div>
-          )}
+          </Form>
+          <div>
+            <p className="text-primary">
+              {`Your FundBoard is ${board_public ? 'public' : 'hidden'}.`}
+            </p>
+            <div className="d-flex">
+              <Button
+                variant="secondary"
+                className="txs-3 mr-2 ml-auto"
+                disabled={updateStatus === 'pending'}
+                onClick={onTogglePublicBoard}
+              >
+                {`Make Your FundBoard ${board_public ? 'Public' : 'Private'}.`}
+              </Button>
+            </div>
+            <DismissibleStatus
+              status={updateStatus}
+              statusPrefix="Creating FundBoard"
+              dissmissAction={types.USER_UPDATE_DISSMISSED}
+            />
+          </div>
         </section>
         <section className="mb-4">
           <h2 className="sectionHead">Log Out</h2>

@@ -36,10 +36,18 @@ import {
   watchUserManualInvestorPost,
   watchUserManualInvestorsGet,
 } from './manageRaise';
+import {
+  watchUserCreate,
+  watchUserLogin,
+  watchUserReset,
+  watchUserLogout,
+  watchUserDelete,
+  watchUserUpdate,
+} from './user';
 
 const api = `https://${process.env.REACT_APP_ENV === 'DEV' ? 'staging-' : ''}api.fundboard.co/`;
 
-const getToken = state => state.user.token;
+const getToken = state => state.user.sessionToken;
 const getBoard = state => state.user.investors;
 
 const loginErrProps = { type: types.MODAL_SET_OPEN, model: 'login' };
@@ -61,124 +69,6 @@ function* workGetInfo(action) {
 
 function* watchGetInfo() {
   yield takeEvery(types.INFO_GET_REQUESTED, workGetInfo);
-}
-
-function userLogin(data = {}) {
-  return axios({
-    method: 'post',
-    url: `${api}login`,
-    data,
-  });
-}
-
-function* workUserLogin(action) {
-  try {
-    const { params } = action;
-    const { email } = params;
-    if (!email) throw new Error('An email value is required to log in.');
-    const board = yield select(getBoard);
-    const oldIDs = [...board];
-    const results = yield call(userLogin, params);
-    yield put({ type: types.USER_LOGIN_SUCCEEDED, data: results.data });
-    window.heap.identify(email);
-    window.heap.addUserProperties({ email });
-    // if investors have been saved locally that are not returned in the login, post them now.
-    const resultIDs = results.data.following;
-    const newIDs = oldIDs.filter(i => !resultIDs.includes(i));
-    if (newIDs.length) {
-      const newParams = { investors: [...newIDs, ...resultIDs] };
-      yield put({ type: types.USER_UPDATE_REQUESTED, params: newParams });
-    } else {
-      yield put({ type: types.USER_GET_PROFILE_REQUESTED });
-    }
-  } catch (error) {
-    trackErr(error);
-    yield put({ type: types.USER_LOGIN_FAILED, error });
-  }
-}
-
-function* watchUserLogin() {
-  yield takeLatest(types.USER_LOGIN_REQUESTED, workUserLogin);
-}
-
-function workUserLogout() {
-  window.heap.resetIdentity();
-}
-
-function* watchUserLogout() {
-  yield takeLatest(types.USER_LOGOUT, workUserLogout);
-}
-
-function userCreate(data = {}) {
-  return axios({
-    method: 'post',
-    url: `${api}create`,
-    data,
-  });
-}
-
-function* workUserCreate(action) {
-  try {
-    const { params } = action;
-    const { email } = params;
-    if (!email) throw new Error('An email value is required to create an account.');
-    const results = yield call(userCreate, params);
-    yield put({ type: types.USER_CREATE_SUCCEEDED, data: results.data });
-    window.heap.identity(email);
-    window.heap.addUserProperties({
-      email,
-    });
-    yield put({ type: types.USER_GET_PROFILE_REQUESTED });
-  } catch (error) {
-    trackErr(error);
-    yield put({ type: types.USER_CREATE_FAILED, error });
-  }
-}
-
-function* watchUserCreate() {
-  yield takeLatest(types.USER_CREATE_REQUESTED, workUserCreate);
-}
-
-function userUpdate(params) {
-  const { token } = params;
-  const data = { ...params };
-  delete data.token;
-  return axios({
-    method: 'post',
-    url: `${api}profile`,
-    data,
-    headers: {
-      Authorization: token,
-    },
-  });
-}
-
-function* workUserUpdate(action) {
-  try {
-    const { params } = action;
-    const board = yield select(getBoard);
-    if (Array.isArray(params.investors)) {
-      params.following = params.investors;
-      delete params.investors;
-      window.heap.addUserProperties({
-        investorCount: params.following.length,
-      });
-    } else {
-      // Always include the board in case that is what is erasing it on the backend.
-      params.following = [...board];
-    }
-    params.token = yield select(getToken);
-    const results = yield call(userUpdate, params);
-    yield put({ type: types.USER_UPDATE_SUCCEEDED, data: results.data });
-  } catch (error) {
-    trackErr(error);
-    if (isLoginErr(error)) yield put(loginErrProps);
-    yield put({ type: types.USER_UPDATE_FAILED, error });
-  }
-}
-
-function* watchUserUpdate() {
-  yield takeEvery(types.USER_UPDATE_REQUESTED, workUserUpdate);
 }
 
 function getUserProfile(token) {
@@ -210,55 +100,6 @@ function* workUserGetProfile() {
 
 function* watchUserGetProfile() {
   yield takeLatest(types.USER_GET_PROFILE_REQUESTED, workUserGetProfile);
-}
-
-function userDelete(token) {
-  return axios({
-    method: 'post',
-    url: `${api}profile/delete`,
-    headers: {
-      Authorization: token,
-    },
-  });
-}
-
-function* workUserDelete() {
-  try {
-    const token = yield select(getToken);
-    yield call(userDelete, token);
-    yield put({ type: types.USER_DELETE_SUCCEEDED });
-  } catch (error) {
-    trackErr(error);
-    if (isLoginErr(error)) yield put(loginErrProps);
-    yield put({ type: types.USER_DELETE_FAILED, error });
-  }
-}
-
-function* watchUserDelete() {
-  yield takeEvery(types.USER_DELETE_REQUESTED, workUserDelete);
-}
-
-function userReset(email) {
-  return axios({
-    method: 'post',
-    url: `${api}recover`,
-    data: { email },
-  });
-}
-
-function* workUserReset(action) {
-  try {
-    const { email } = action;
-    yield call(userReset, email);
-    yield put({ type: types.USER_RESETPASSWORD_SUCCEEDED });
-  } catch (error) {
-    trackErr(error);
-    yield put({ type: types.USER_RESETPASSWORD_FAILED, error });
-  }
-}
-
-function* watchUserReset() {
-  yield takeEvery(types.USER_RESETPASSWORD_REQUESTED, workUserReset);
 }
 
 function* workBoardRemove(action) {
@@ -336,34 +177,6 @@ function* watchSearchSetZipCode() {
   yield takeLatest(types.SEARCH_SET_LOCATION, workGetExtraZipCodes);
 }
 
-/*
-function getPeopleResults(params) {
-  const { id, token } = params;
-  return axios({
-    method: 'get',
-    url: `${api}investors?${toQueryString({ id })}`,
-    headers: {
-      Authorization: token,
-    },
-  });
-}
-
-function* workPeopleGetResults(action) {
-  const params = { id: action.id };
-  try {
-    params.token = yield select(getToken);
-    const results = yield call(getPeopleResults, params);
-    yield put({ type: types.PEOPLE_GET_SUCCEEDED, params, data: results.data });
-  } catch (error) {
-    yield put({ type: types.PEOPLE_GET_FAILED, params, error });
-  }
-}
-
-function* watchPeopleGetResults() {
-  yield takeEvery(types.PEOPLE_GET_REQUEST, workPeopleGetResults);
-}
- */
-
 function getPeopleInvestments(params) {
   const { id, token } = params;
   return axios({
@@ -400,27 +213,6 @@ function* workPeopleGetInvestments(action) {
 function* watchPeopleGetInvestments() {
   yield takeEvery(types.PEOPLE_GET_INVESTMENTS_REQUEST, workPeopleGetInvestments);
 }
-/*
-function requestSearchGetResults(params = {}) {
-  return axios.get(`${api}search?${toQueryString(params)}`);
-}
-
-function* workSearchGetResults(action) {
-  const { params } = action;
-  params.limit = params.limit || 3000;
-  try {
-    const results = yield call(requestSearchGetResults, params);
-    yield put({ type: 'SEARCH_GET_RESULTS_SUCCEEDED', data: results.data });
-  } catch (error) {
-    trackErr(error);
-    yield put({ type: 'SEARCH_GET_RESULTS_FAILED', error });
-  }
-}
-
-function* watchSearchGetResults() {
-  yield takeLatest('SEARCH_GET_RESULTS_REQUESTED', workSearchGetResults);
-}
- */
 
 function workRehydrate(action) {
   const { key, payload } = action;
