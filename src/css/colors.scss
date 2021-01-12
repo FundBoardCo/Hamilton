@@ -516,7 +516,9 @@ html#ov body {
   }
 
   .btn-outline-info {
-    @include btn-colors(transparent, $col-info, $col-info-light2, $col-info, $col-light);
+    border-width: 1px;
+    border-style: solid;
+    @include btn-colors($col-light, $col-info, $col-info-light2, $col-info, $col-light);
   }
 
   .btn-emp, .badge-emp {
