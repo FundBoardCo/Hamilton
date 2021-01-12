@@ -9,6 +9,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import * as types from '../../actions/types';
 import DismissibleStatus from '../../components/DismissibleStatus';
 import FormInput from '../../components/FormInput';
+import { minPlace } from '../../constants';
 
 function LinkInput(props) {
   const {
@@ -68,6 +69,8 @@ function LinkInput(props) {
 
 export default function Profile() {
   const loggedIn = useSelector(state => state.user.sessionToken);
+  const place = useSelector(state => state.user.place);
+  const allowIn = loggedIn && typeof place === 'number' && place <= minPlace;
   const user = useSelector(state => state.user) || {};
   const searchRaise = useSelector(state => state.search.raise) || 100000;
   const searchRemote = useSelector(state => state.search.remote) || '';
@@ -438,7 +441,7 @@ export default function Profile() {
 
   return (
     <Row id="PageProfile" className="pageContainer">
-      {loggedIn && (
+      {allowIn && (
       <Col xs={12} md={8} className="mr-auto ml-auto">
         <h1 className="text-center mb-4">My Profile</h1>
         <Form

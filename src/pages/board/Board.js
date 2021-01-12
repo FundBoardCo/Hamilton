@@ -11,7 +11,7 @@ import InputGroup from 'react-bootstrap/InputGroup';
 import Person from '../../components/people/Person';
 import * as types from '../../actions/types';
 import DismissibleStatus from '../../components/DismissibleStatus';
-import { STAGEPROPS } from '../../constants';
+import {minPlace, STAGEPROPS} from '../../constants';
 import { getSafeVar } from '../../utils';
 
 export default function Board() {
@@ -23,6 +23,8 @@ export default function Board() {
   );
   const manual_records = useSelector(state => state.manageRaise.manual_records) || {};
   const loggedIn = useSelector(state => state.user.sessionToken);
+  const place = useSelector(state => state.user.place);
+  const allowIn = loggedIn && typeof place === 'number' && place <= minPlace;
   const email = useSelector(state => state.user.email);
   const modalsSeen = useSelector(state => state.modal.modalsSeen) || [];
   const investorStatus_getStatus = useSelector(state => state.manageRaise.get_status);
@@ -295,7 +297,7 @@ export default function Board() {
 
   return (
     <Row id="PageBoard" className="pageContainer">
-      {loggedIn && (
+      {allowIn && (
         <div>
           <div className="boardDetailsBar">
             <div className="primaryDetails">
@@ -388,14 +390,16 @@ export default function Board() {
           )}
         </div>
       )}
-      <div className="d-flex mb-3">
-        <Button
-          variant="link"
-          onClick={onAddBoardClick}
-        >
-          Add an Investor Manually
-        </Button>
-      </div>
+      {allowIn && (
+        <div className="d-flex mb-3">
+          <Button
+            variant="link"
+            onClick={onAddBoardClick}
+          >
+            Add an Investor Manually
+          </Button>
+        </div>
+      )}
       <DismissibleStatus
         status={manualInvestorGet_status}
         showSuccess={false}
@@ -411,7 +415,7 @@ export default function Board() {
         showSuccess={false}
         dissmissAction={types.USER_GET_BOARDUUID_DISMISSED}
       />
-      {loggedIn && (
+      {allowIn && (
         <div className="results">
           {toShowInvestorList.map(i => {
             const personProps = {
@@ -435,7 +439,7 @@ export default function Board() {
           <h1 className="text-center">To see your FundBoard, you need to log in first.</h1>
         </Col>
       )}
-      {investorIDs.length === 0 && (
+      {allowIn && investorIDs.length === 0 && (
         <div>
           <p>
             You don’t have any investors saved yet.

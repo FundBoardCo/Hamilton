@@ -9,9 +9,13 @@ import CreatingPublicBoard from './CreatingPublicBoard';
 import MakeIntro from './MakeIntro';
 import Founder from './Founder';
 import EditManualInvestor from './EditManualInvestor';
+import WaitList from './WaitList';
+import { minPlace } from '../constants';
 
 export default function ModalWrapper() {
   const loggedIn = useSelector(state => state.user.sessionToken);
+  const place = useSelector(state => state.user.place);
+  const allowIn = typeof place === 'number' && place <= minPlace;
   const openModal = useSelector(state => state.modal.openModal);
 
   return (
@@ -26,6 +30,7 @@ export default function ModalWrapper() {
         component={Investor}
       />
       { !loggedIn && <Route path={['/board', '/profile']} component={Login} /> }
+      { loggedIn && !allowIn && <Route path={['/board', '/profile']} component={WaitList} /> }
       { !openModal && <Route path="/board/:uuid" component={Investor} /> }
       { openModal === 'login' && <Route path="/" component={Login} /> }
       { openModal === 'howToIntro' && <Route path="/board" component={HowToIntro} /> }
