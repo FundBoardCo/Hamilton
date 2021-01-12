@@ -187,11 +187,11 @@ export default function manageRaise(state = defaults, action) {
       ...state,
       getBoardUUID_status: '',
     };
-    case types.PUBLIC_GET_FOUNDERDATA_REQUESTED: return {
+    case types.PUBLIC_GET_PROFILE_REQUESTED: return {
       ...state,
       getFounderData_status: 'pending',
     };
-    case types.PUBLIC_GET_FOUNDERDATA_SUCCEEDED: return {
+    case types.PUBLIC_GET_PROFILE_SUCCEEDED: return {
       ...state,
       getFounderData_status: 'succeeded',
       founderData: {
@@ -206,11 +206,11 @@ export default function manageRaise(state = defaults, action) {
           : {},
       },
     };
-    case types.PUBLIC_GET_FOUNDERDATA_FAILED: return {
+    case types.PUBLIC_GET_PROFILE_FAILED: return {
       ...state,
       getFounderData_status: processErr(action.error),
     };
-    case types.PUBLIC_GET_FOUNDERDATA_DISMISSED: return {
+    case types.PUBLIC_GET_PROFILE_DISMISSED: return {
       ...state,
       getFounderData_status: '',
     };
@@ -283,7 +283,7 @@ export default function manageRaise(state = defaults, action) {
       manualInvestorPost_status: '',
     };
     /*
-    case types.USER_POST_FOUNDERDATA_REQUESTED: return {
+    case types.USER_POST_PROFILE_REQUESTED: return {
       ...state,
       founderData: {
         ...state.founderData,
@@ -293,7 +293,7 @@ export default function manageRaise(state = defaults, action) {
         },
       },
     };
-    case types.USER_POST_FOUNDERDATA_SUCCEEDED: return {
+    case types.USER_POST_PROFILE_SUCCEEDED: return {
       ...state,
       founderData: {
         ...state.founderData,
@@ -305,7 +305,7 @@ export default function manageRaise(state = defaults, action) {
         },
       },
     };
-    case types.USER_POST_FOUNDERDATA_FAILED: return {
+    case types.USER_POST_PROFILE_FAILED: return {
       ...state,
       founderData: {
         ...state.founderData,
@@ -317,7 +317,7 @@ export default function manageRaise(state = defaults, action) {
         },
       },
     };
-    case types.USER_POST_FOUNDERDATA_DISMISSED: return {
+    case types.USER_POST_PROFILE_DISMISSED: return {
       ...state,
       founderData: {
         ...state.founderData,

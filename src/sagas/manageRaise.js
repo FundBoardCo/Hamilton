@@ -232,20 +232,20 @@ function* workUserFounderDataPost(action) {
     if (results.data.error) {
       trackErr(results.data.error);
       yield put({
-        type: types.USER_POST_FOUNDERDATA_FAILED,
+        type: types.USER_POST_PROFILE_FAILED,
         uuid,
         error: results.data.error,
       });
     } else if (results.data.statusCode && results.data.statusCode === 500) {
       trackErr(results.data.body);
       yield put({
-        type: types.USER_POST_FOUNDERDATA_FAILED,
+        type: types.USER_POST_PROFILE_FAILED,
         uuid,
         error: results.data.body,
       });
     } else {
       yield put({
-        type: types.USER_POST_FOUNDERDATA_SUCCEEDED,
+        type: types.USER_POST_PROFILE_SUCCEEDED,
         uuid,
         data: results.data,
       });
@@ -253,7 +253,7 @@ function* workUserFounderDataPost(action) {
   } catch (error) {
     trackErr(error);
     yield put({
-      type: types.USER_POST_FOUNDERDATA_FAILED,
+      type: types.USER_POST_PROFILE_FAILED,
       uuid,
       error,
     });
@@ -261,7 +261,7 @@ function* workUserFounderDataPost(action) {
 }
 
 export function* watchUserFounderDataPost() {
-  yield takeLatest(types.USER_POST_FOUNDERDATA_REQUESTED, workUserFounderDataPost);
+  yield takeLatest(types.USER_POST_PROFILE_REQUESTED, workUserFounderDataPost);
 }
  */
 

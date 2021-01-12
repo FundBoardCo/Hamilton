@@ -75,29 +75,30 @@ export default function Profile() {
   const searchRaise = useSelector(state => state.search.raise) || 100000;
   const searchRemote = useSelector(state => state.search.remote) || '';
   const updateStatus = useSelector(state => state.user.update_status);
-  const updateFounderStatus = useSelector(state => state.user.update_founderData_status);
+  const updateProfileStatus = useSelector(state => state.user.updateProfile_status);
+  const getProfileStatus = useSelector(state => state.user.get_profile_status);
   const deleteStatus = useSelector(state => state.user.delete_status);
   const investorIDs = useSelector(state => state.user.investors) || [];
 
-  const { board_public } = user;
+  const { board_public, profile = {} } = user;
 
   const initialInputState = {
     password: '',
-    name: user.name || '',
-    title: user.primary_job_title || '',
-    orgName: user.primary_organization_name || '',
-    orgURL: user.primary_organization_homepage || '',
-    orgLogoURL: user.primary_organization_logo || '',
-    desc: user.description || '',
-    linkedin: user.linkedin || '',
-    twitter: user.twitter || '',
-    permalink: user.permalink || '',
-    links: user.links || [],
-    raise: user.raise || searchRaise || 0,
-    remote: user.remote !== undefined ? user.remote : searchRemote,
-    location_city: user.location_city || '',
-    location_state: user.location_state || '',
-    team_size: user.team_size || 1,
+    name: profile.name || '',
+    title: profile.primary_job_title || '',
+    orgName: profile.primary_organization_name || '',
+    orgURL: profile.primary_organization_homepage || '',
+    orgLogoURL: profile.primary_organization_logo || '',
+    desc: profile.description || '',
+    linkedin: profile.linkedin || '',
+    twitter: profile.twitter || '',
+    permalink: profile.permalink || '',
+    links: profile.links || [],
+    raise: profile.raise || searchRaise || 0,
+    remote: profile.remote !== undefined ? profile.remote : searchRemote,
+    location_city: profile.location_city || '',
+    location_state: profile.location_state || '',
+    team_size: profile.team_size || 1,
   };
 
   const [{
@@ -249,13 +250,19 @@ export default function Profile() {
 
   useEffect(() => {
     dispatch({
+      type: types.USER_GET_PROFILE_REQUESTED,
+    });
+  }, [dispatch]);
+
+  useEffect(() => {
+    dispatch({
       type: types.USER_UPDATE_DISSMISSED,
     });
   }, [dispatch]);
 
   useEffect(() => {
     dispatch({
-      type: types.USER_POST_FOUNDERDATA_DISMISSED,
+      type: types.USER_POST_PROFILE_DISMISSED,
     });
   }, [dispatch]);
 
@@ -271,7 +278,7 @@ export default function Profile() {
   });
 
   const updateFounderData = params => dispatch({
-    type: types.USER_POST_FOUNDERDATA_REQUESTED,
+    type: types.USER_POST_PROFILE_REQUESTED,
     params,
   });
 
@@ -502,6 +509,12 @@ export default function Profile() {
                 {`${showPublicInputs ? 'Hide' : 'Show'} Public Data Form`}
               </Button>
             </div>
+            <DismissibleStatus
+              status={getProfileStatus}
+              statusPrefix="Fetching Public Data"
+              showSuccess={false}
+              dissmissAction={types.USER_GET_PROFILE_DISMISSED}
+            />
             {currentUpdate === 'board' && (
               <DismissibleStatus
                 status={updateStatus}
@@ -590,9 +603,9 @@ export default function Profile() {
                 </Button>
               </div>
               <DismissibleStatus
-                status={updateFounderStatus}
+                status={updateProfileStatus}
                 statusPrefix="Updating FundBoard"
-                dissmissAction={types.USER_POST_FOUNDERDATA_DISMISSED}
+                dissmissAction={types.USER_POST_PROFILE_DISMISSED}
               />
             </Form>
           )}

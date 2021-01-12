@@ -1,7 +1,7 @@
 import Parse from 'parse';
 import {
   call,
-  put, select,
+  put,
   takeEvery,
   takeLatest,
 } from 'redux-saga/effects';
@@ -45,13 +45,13 @@ function* workGetFounder(action) {
   try {
     const results = yield call(getUser, uuid);
     const data = results.toJSON();
-    yield put({ type: types.PUBLIC_GET_FOUNDERDATA_SUCCEEDED, uuid, data });
+    yield put({ type: types.PUBLIC_GET_PROFILE_SUCCEEDED, uuid, data });
   } catch (error) {
     trackErr(error);
-    yield put({ type: types.PUBLIC_GET_FOUNDERDATA_FAILED, uuid, error });
+    yield put({ type: types.PUBLIC_GET_PROFILE_FAILED, uuid, error });
   }
 }
 
 export function* watchFounderDataGet() {
-  yield takeEvery(types.PUBLIC_GET_FOUNDERDATA_REQUESTED, workGetFounder);
+  yield takeEvery(types.PUBLIC_GET_PROFILE_REQUESTED, workGetFounder);
 }

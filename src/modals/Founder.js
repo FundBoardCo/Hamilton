@@ -55,7 +55,7 @@ export default function Founder() {
 
   useEffect(() => {
     dispatch({
-      type: types.PUBLIC_GET_FOUNDERDATA_REQUESTED,
+      type: types.PUBLIC_GET_PROFILE_REQUESTED,
       uuid,
     });
   }, [uuid, dispatch]);

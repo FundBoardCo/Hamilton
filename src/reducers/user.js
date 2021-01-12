@@ -2,7 +2,6 @@ import * as types from '../actions/types';
 import { getSafeVar, processErr } from '../utils';
 
 const defaults = {
-  name: '',
   email: '',
   investors: [],
   create_status: '',
@@ -13,23 +12,26 @@ const defaults = {
   update_status: '',
   delete_status: '',
   reset_status: '',
-  update_founderData_status: '',
+  updateProfile_status: '',
   showAdvice: true,
-  primary_job_title: '',
-  primary_organization_name: '',
-  primary_organization_homepage: '',
-  primary_organization_logo: '',
-  description: '',
-  linkedin: '',
-  twitter: '',
-  permalink: '',
-  links: [],
-  raise: 0,
-  remote: false,
-  location_city: '',
-  location_state: '',
-  team_size: 0,
   board_public: true,
+  get_profile_status: '',
+  profile: {
+    primary_job_title: '',
+    primary_organization_name: '',
+    primary_organization_homepage: '',
+    primary_organization_logo: '',
+    description: '',
+    linkedin: '',
+    twitter: '',
+    permalink: '',
+    links: [],
+    raise: 0,
+    remote: false,
+    location_city: '',
+    location_state: '',
+    team_size: 0,
+  },
 };
 
 export const userResets = {
@@ -122,22 +124,43 @@ export default function user(state = defaults, action) {
       ...state,
       update_status: '',
     };
-    case types.USER_POST_FOUNDERDATA_REQUESTED: return {
+    case types.USER_POST_PROFILE_REQUESTED: return {
       ...state,
-      update_founderData_status: 'pending',
+      updateProfile_status: 'pending',
     };
-    case types.USER_POST_FOUNDERDATA_SUCCEEDED: return {
+    case types.USER_POST_PROFILE_SUCCEEDED: return {
       ...state,
-      update_founderData_status: 'succeeded',
-      ...action.data,
+      updateProfile_status: 'succeeded',
+      profile: {
+        ...action.data,
+      },
     };
-    case types.USER_POST_FOUNDERDATA_FAILED: return {
+    case types.USER_POST_PROFILE_FAILED: return {
       ...state,
-      update_founderData_status: processErr(action.error),
+      updateProfile_status: processErr(action.error),
     };
-    case types.USER_POST_FOUNDERDATA_DISMISSED: return {
+    case types.USER_POST_PROFILE_DISMISSED: return {
       ...state,
-      update_founderData_status: '',
+      updateProfile_status: '',
+    };
+    case types.USER_GET_PROFILE_REQUESTED: return {
+      ...state,
+      get_profile_status: 'pending',
+    };
+    case types.USER_GET_PROFILE_SUCCEEDED: return {
+      ...state,
+      get_profile_status: 'succeeded',
+      profile: {
+        ...action.data,
+      },
+    };
+    case types.USER_GET_PROFILE_FAILED: return {
+      ...state,
+      get_profile_status: processErr(action.error),
+    };
+    case types.USER_GET_PROFILE_DISMISSED: return {
+      ...state,
+      get_profile_status: '',
     };
     case types.USER_DELETE_REQUESTED: return {
       ...state,

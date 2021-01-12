@@ -9,11 +9,11 @@ const defaults = {
 
 export default function founders(state = defaults, action) {
   switch (action.type) {
-    case types.PUBLIC_GET_FOUNDERDATA_REQUESTED: return {
+    case types.PUBLIC_GET_PROFILE_REQUESTED: return {
       ...state,
       get_status: 'pending',
     };
-    case types.PUBLIC_GET_FOUNDERDATA_SUCCEEDED: return {
+    case types.PUBLIC_GET_PROFILE_SUCCEEDED: return {
       ...state,
       get_status: 'succeeded',
       founders: {
@@ -21,11 +21,11 @@ export default function founders(state = defaults, action) {
         [action.objectId]: action.data,
       },
     };
-    case types.PUBLIC_GET_FOUNDERDATA_FAILED: return {
+    case types.PUBLIC_GET_PROFILE_FAILED: return {
       ...state,
       get_status: processErr(action.error),
     };
-    case types.PUBLIC_GET_FOUNDERDATA_DISMISSED: return {
+    case types.PUBLIC_GET_PROFILE_DISMISSED: return {
       ...state,
       get_status: '',
     };

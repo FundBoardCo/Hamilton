@@ -72,6 +72,7 @@ function* workUserLogin(action) {
     yield put({ type: types.USER_LOGIN_SUCCEEDED, data });
     window.heap.identify(email);
     window.heap.addUserProperties({ email });
+    yield put({ type: types.USER_GET_PROFILE_REQUESTED });
   } catch (error) {
     trackErr(error);
     yield put({ type: types.USER_LOGIN_FAILED, error });
@@ -185,20 +186,47 @@ function* workUserFounderDataPost(action) {
     const results = yield call(updateFounder, params);
     const data = results.toJSON();
     yield put({
-      type: types.USER_POST_FOUNDERDATA_SUCCEEDED,
+      type: types.USER_POST_PROFILE_SUCCEEDED,
       data,
     });
   } catch (error) {
     trackErr(error);
     yield put({
-      type: types.USER_POST_FOUNDERDATA_FAILED,
+      type: types.USER_POST_PROFILE_FAILED,
       error,
     });
   }
 }
 
 export function* watchUserFounderDataPost() {
-  yield takeLatest(types.USER_POST_FOUNDERDATA_REQUESTED, workUserFounderDataPost);
+  yield takeLatest(types.USER_POST_PROFILE_REQUESTED, workUserFounderDataPost);
+}
+
+async function getFounderData() {
+  console.log('get founder data');
+  return Parse.Cloud.run('getOwnProfile');
+}
+
+function* workUserFounderDataGet() {
+  console.log('work founder data');
+  try {
+    const results = yield call(getFounderData);
+    const data = results.toJSON();
+    yield put({
+      type: types.USER_GET_PROFILE_SUCCEEDED,
+      data,
+    });
+  } catch (error) {
+    trackErr(error);
+    yield put({
+      type: types.USER_GET_PROFILE_FAILED,
+      error,
+    });
+  }
+}
+
+export function* watchUserFounderDataGet() {
+  yield takeLatest(types.USER_GET_PROFILE_REQUESTED, workUserFounderDataGet);
 }
 
 function workUserLogout() {

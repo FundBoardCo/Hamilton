@@ -42,6 +42,7 @@ import {
   watchUserLogout,
   watchUserDelete,
   watchUserUpdate,
+  watchUserFounderDataGet,
   watchUserFounderDataPost,
 } from './user';
 
@@ -213,6 +214,7 @@ export default function* rootSaga() {
   yield fork(watchPublicBoardGet);
   yield fork(watchBoardUUIDGet);
   yield fork(watchFounderDataGet);
+  yield fork(watchUserFounderDataGet);
   yield fork(watchUserFounderDataPost);
   yield fork(watchPublicInvestorStatusUpdate);
   yield fork(watchInvestorStatusPost);

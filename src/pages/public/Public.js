@@ -49,7 +49,7 @@ export default function Public(props) {
       key: 'founder',
       status: founderStatus,
       showSuccess: false,
-      dissmissAction: types.PUBLIC_GET_FOUNDERDATA_DISMISSED,
+      dissmissAction: types.PUBLIC_GET_PROFILE_DISMISSED,
     },
     {
       key: 'board',
@@ -77,7 +77,7 @@ export default function Public(props) {
       type: types.PUBLIC_GET_BOARD_DISMISSED,
     });
     dispatch({
-      type: types.PUBLIC_GET_FOUNDERDATA_DISMISSED,
+      type: types.PUBLIC_GET_PROFILE_DISMISSED,
     });
     dispatch({
       type: types.USER_POST_PUBLICBOARD_DISMISSED,
@@ -99,7 +99,7 @@ export default function Public(props) {
 
   useEffect(() => {
     dispatch({
-      type: types.PUBLIC_GET_FOUNDERDATA_REQUESTED,
+      type: types.PUBLIC_GET_PROFILE_REQUESTED,
       uuid,
     });
   }, [uuid, dispatch]);
