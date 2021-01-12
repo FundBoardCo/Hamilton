@@ -17,7 +17,7 @@ export default function Public(props) {
   const { params } = match;
   const { uuid } = params;
 
-  const getStatus = useSelector(state => state.manageRaise.getPublic_status);
+  const getStatus = useSelector(state => state.founders.get_status);
   const boardStatus = useSelector(state => state.manageRaise.postBoard_status);
   const userPublicUUID = useSelector(state => state.manageRaise.publicUUID);
   const isMyPage = uuid === userPublicUUID;

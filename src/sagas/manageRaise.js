@@ -89,32 +89,6 @@ export function* watchInvestorStatusesGet() {
   yield takeEvery(types.USER_GET_INVESTORSTATUSES_REQUESTED, workInvestorStatusesGet);
 }
 
-function* workFounderDataGet(action) {
-  const { uuid } = action;
-  const params = {
-    filterByFormula: `{uuid}="${uuid}"`,
-    endpoint: 'founders',
-  };
-  try {
-    if (!uuid) throw new Error('UUID required to get founder data.');
-    const results = yield call(getStatusData, params);
-    // catch airtable errors
-    if (results.data.error) {
-      trackErr(results.data.error);
-      yield put({ type: types.PUBLIC_GET_FOUNDERDATA_FAILED, uuid, error: results.data.error });
-    } else {
-      yield put({ type: types.PUBLIC_GET_FOUNDERDATA_SUCCEEDED, uuid, data: results.data });
-    }
-  } catch (error) {
-    trackErr(error);
-    yield put({ type: types.PUBLIC_GET_FOUNDERDATA_FAILED, uuid, error });
-  }
-}
-
-export function* watchFounderDataGet() {
-  yield takeEvery(types.PUBLIC_GET_FOUNDERDATA_REQUESTED, workFounderDataGet);
-}
-
 function requestPublicBoard(params) {
   const getParams = params;
   const { requestoremail } = params;
@@ -127,33 +101,6 @@ function requestPublicBoard(params) {
       requestoremail,
     },
   });
-}
-
-function* workPublicBoardGet(action) {
-  const { uuid } = action;
-  const requestoremail = yield select(getEmail);
-  const params = {
-    requestoremail,
-    filterByFormula: `{uuid}="${uuid}"`,
-  };
-  try {
-    if (!uuid) throw new Error('UUID required to get public board.');
-    const results = yield call(requestPublicBoard, params);
-    // catch airtable errors
-    if (results.data.error) {
-      trackErr(results.data.error);
-      yield put({ type: types.PUBLIC_GET_BOARD_FAILED, error: results.data.error });
-    } else {
-      yield put({ type: types.PUBLIC_GET_BOARD_SUCCEEDED, data: results.data });
-    }
-  } catch (error) {
-    trackErr(error);
-    yield put({ type: types.PUBLIC_GET_BOARD_FAILED, error });
-  }
-}
-
-export function* watchPublicBoardGet() {
-  yield takeLatest(types.PUBLIC_GET_BOARD_REQUESTED, workPublicBoardGet);
 }
 
 function* workBoardUUIDGet() {
@@ -272,7 +219,7 @@ function* workInvestorStatusPost(action) {
 export function* watchInvestorStatusPost() {
   yield takeEvery(types.USER_POST_INVESTORSTATUS_REQUESTED, workInvestorStatusPost);
 }
-
+/*
 function* workUserFounderDataPost(action) {
   const { params } = action;
   const { uuid } = params;
@@ -316,6 +263,7 @@ function* workUserFounderDataPost(action) {
 export function* watchUserFounderDataPost() {
   yield takeLatest(types.USER_POST_FOUNDERDATA_REQUESTED, workUserFounderDataPost);
 }
+ */
 
 function postBulkInvestors(params) {
   const data = { records: [] };

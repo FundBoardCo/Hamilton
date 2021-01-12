@@ -282,6 +282,7 @@ export default function manageRaise(state = defaults, action) {
       ...state,
       manualInvestorPost_status: '',
     };
+    /*
     case types.USER_POST_FOUNDERDATA_REQUESTED: return {
       ...state,
       founderData: {
@@ -326,6 +327,7 @@ export default function manageRaise(state = defaults, action) {
         },
       },
     };
+     */
     case types.USER_LOGOUT: return {
       ...defaults,
     };

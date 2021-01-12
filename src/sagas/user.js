@@ -5,23 +5,29 @@ import {
   select,
   takeLatest,
 } from 'redux-saga/effects';
+import { v5 as uuidv5 } from 'uuid';
 import { isPlainObject, trackErr } from '../utils';
 import * as types from '../actions/types';
 
 const getUserObjectId = state => state.user.objectId;
+const getEmail = state => state.user.email;
+
+async function userInit() {
+  return Parse.Cloud.run('initUser');
+}
 
 async function userCreate(params) {
   const { email, password } = params;
   if (!email) throw new Error('A valid email address is required.');
   if (!password) throw new Error('A valid password is required.');
 
-  const user = new Parse.User();
+  const User = new Parse.User();
 
-  user.set('username', email);
-  user.set('email', email);
-  user.set('password', password);
+  User.set('username', email);
+  User.set('email', email);
+  User.set('password', password);
 
-  return user.signUp();
+  return User.signUp();
 }
 
 function* workUserCreate(action) {
@@ -31,6 +37,8 @@ function* workUserCreate(action) {
     const results = yield call(userCreate, params);
     const data = results.toJSON();
     const { email } = data;
+    const init = yield call(userInit);
+    data.place = init.toJSON().place;
     yield put({ type: types.USER_CREATE_SUCCEEDED, data });
     window.heap.identify(email);
     window.heap.addUserProperties({ email });
@@ -59,6 +67,8 @@ function* workUserLogin(action) {
     const results = yield call(userLogin, params);
     const data = results.toJSON();
     const { email } = data;
+    const init = yield call(userInit);
+    data.place = init.toJSON().place;
     yield put({ type: types.USER_LOGIN_SUCCEEDED, data });
     window.heap.identify(email);
     window.heap.addUserProperties({ email });
@@ -99,8 +109,8 @@ async function userDelete(params) {
   const { objectId } = params;
   if (!objectId) throw new Error('User object ID was not found.');
 
-  const user = new Parse.User();
-  const query = new Parse.Query(user);
+  const User = new Parse.User();
+  const query = new Parse.Query(User);
   return query.get(objectId)
     .then(u => u.destroy(),
       err => {
@@ -130,8 +140,8 @@ async function userUpdate(params) {
   if (!objectId) throw new Error('User object ID was not found.');
   if (!isPlainObject(updates)) throw new Error('Updates must be a plain object.');
 
-  const user = new Parse.User();
-  const query = new Parse.Query(user);
+  const User = new Parse.User();
+  const query = new Parse.Query(User);
   return query.get(objectId)
     .then(u => {
       Object.keys(updates).forEach(k => (u.set(k, updates[k])));
@@ -160,6 +170,35 @@ function* workUserUpdate(action) {
 
 export function* watchUserUpdate() {
   yield takeLatest(types.USER_UPDATE_REQUESTED, workUserUpdate);
+}
+
+async function updateFounder(params) {
+  return Parse.Cloud.run('updateProfile', params);
+}
+
+function* workUserFounderDataPost(action) {
+  const { params } = action;
+  const email = yield select(getEmail);
+  params.uuid = params.uuid || uuidv5(email, '4c0db00b-f035-4b07-884d-c9139c7a91b5');
+
+  try {
+    const results = yield call(updateFounder, params);
+    const data = results.toJSON();
+    yield put({
+      type: types.USER_POST_FOUNDERDATA_SUCCEEDED,
+      data,
+    });
+  } catch (error) {
+    trackErr(error);
+    yield put({
+      type: types.USER_POST_FOUNDERDATA_FAILED,
+      error,
+    });
+  }
+}
+
+export function* watchUserFounderDataPost() {
+  yield takeLatest(types.USER_POST_FOUNDERDATA_REQUESTED, workUserFounderDataPost);
 }
 
 function workUserLogout() {

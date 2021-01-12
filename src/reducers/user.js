@@ -9,9 +9,11 @@ const defaults = {
   login_status: '',
   sessionToken: null,
   objectId: '',
+  init_status: '',
   update_status: '',
   delete_status: '',
   reset_status: '',
+  update_founderData_status: '',
   showAdvice: true,
   primary_job_title: '',
   primary_organization_name: '',
@@ -103,24 +105,6 @@ export default function user(state = defaults, action) {
     case types.USER_LOGOUT: return {
       ...defaults,
     };
-    case types.USER_GET_PROFILE_REQUESTED: return {
-      ...state,
-      get_status: 'pending',
-    };
-    case types.USER_GET_PROFILE_SUCCEEDED: return {
-      ...state,
-      get_status: 'succeeded',
-      email: getSafeVar(() => action.data.profile.email, ''),
-      investors: mergeIDs(state, action),
-    };
-    case types.USER_GET_PROFILE_FAILED: return {
-      ...state,
-      get_status: processErr(action.error),
-    };
-    case types.USER_GET_PROFILE_DISMISSED: return {
-      ...state,
-      get_status: '',
-    };
     case types.USER_UPDATE_REQUESTED: return {
       ...state,
       update_status: 'pending',
@@ -137,6 +121,23 @@ export default function user(state = defaults, action) {
     case types.USER_UPDATE_DISSMISSED: return {
       ...state,
       update_status: '',
+    };
+    case types.USER_POST_FOUNDERDATA_REQUESTED: return {
+      ...state,
+      update_founderData_status: 'pending',
+    };
+    case types.USER_POST_FOUNDERDATA_SUCCEEDED: return {
+      ...state,
+      update_founderData_status: 'succeeded',
+      ...action.data,
+    };
+    case types.USER_POST_FOUNDERDATA_FAILED: return {
+      ...state,
+      update_founderData_status: processErr(action.error),
+    };
+    case types.USER_POST_FOUNDERDATA_DISMISSED: return {
+      ...state,
+      update_founderData_status: '',
     };
     case types.USER_DELETE_REQUESTED: return {
       ...state,

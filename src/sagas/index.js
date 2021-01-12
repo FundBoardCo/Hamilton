@@ -13,9 +13,7 @@ import {
   ZIPDISTANCE,
 } from '../constants';
 import {
-  getSafeVar,
   trackErr,
-  isLoginErr,
   toQueryString,
 } from '../utils';
 import * as types from '../actions/types';
@@ -25,14 +23,15 @@ import {
   watchAirtableGetKeywords,
 } from './airtable';
 import {
-  watchInvestorStatusesGet,
+  watchFounderDataGet,
   watchPublicBoardGet,
+} from './founders';
+import {
+  watchInvestorStatusesGet,
   watchBoardUUIDGet,
   watchInvestorStatusPost,
   watchUserPublicBoardPost,
   watchPublicInvestorStatusUpdate,
-  watchFounderDataGet,
-  watchUserFounderDataPost,
   watchUserManualInvestorPost,
   watchUserManualInvestorsGet,
 } from './manageRaise';
@@ -43,14 +42,13 @@ import {
   watchUserLogout,
   watchUserDelete,
   watchUserUpdate,
+  watchUserFounderDataPost,
 } from './user';
 
 const api = `https://${process.env.REACT_APP_ENV === 'DEV' ? 'staging-' : ''}api.fundboard.co/`;
 
 const getToken = state => state.user.sessionToken;
 const getBoard = state => state.user.investors;
-
-const loginErrProps = { type: types.MODAL_SET_OPEN, model: 'login' };
 
 function getInfo(params) {
   return axios.get(`/.netlify/functions/webflow_get_blog?${toQueryString(params)}`);
@@ -69,37 +67,6 @@ function* workGetInfo(action) {
 
 function* watchGetInfo() {
   yield takeEvery(types.INFO_GET_REQUESTED, workGetInfo);
-}
-
-function getUserProfile(token) {
-  return axios({
-    method: 'get',
-    url: `${api}profile`,
-    headers: {
-      Authorization: token,
-    },
-  });
-}
-
-function* workUserGetProfile() {
-  try {
-    const token = yield select(getToken);
-    const results = yield call(getUserProfile, token);
-    const ids = getSafeVar(() => results.data.following, []);
-    const investorCount = Array.isArray(ids) && ids.length;
-    yield put({ type: types.USER_GET_PROFILE_SUCCEEDED, data: results.data });
-    window.heap.addUserProperties({
-      investorCount,
-    });
-  } catch (error) {
-    trackErr(error);
-    if (isLoginErr(error)) yield put(loginErrProps);
-    yield put({ type: types.USER_GET_PROFILE_FAILED, error });
-  }
-}
-
-function* watchUserGetProfile() {
-  yield takeLatest(types.USER_GET_PROFILE_REQUESTED, workUserGetProfile);
 }
 
 function* workBoardRemove(action) {
@@ -242,7 +209,6 @@ export default function* rootSaga() {
   yield fork(watchUserUpdate);
   yield fork(watchUserDelete);
   yield fork(watchUserReset);
-  yield fork(watchUserGetProfile);
   yield fork(watchInvestorStatusesGet);
   yield fork(watchPublicBoardGet);
   yield fork(watchBoardUUIDGet);
