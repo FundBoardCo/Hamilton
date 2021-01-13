@@ -79,8 +79,6 @@ export default function InvestorData(props) {
 
   const searchData = useSelector(state => state.search.results[uuid] || {});
 
-  console.log(data);
-
   const calcedMatches = calcMatch({
     investor: { ...data },
     keywords: searchKeywords,

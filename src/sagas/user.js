@@ -10,6 +10,7 @@ import { isPlainObject, trackErr } from '../utils';
 import * as types from '../actions/types';
 
 const getUserObjectId = state => state.user.objectId;
+const getUserUUID = state => state.user.uuid;
 
 async function userInit() {
   return Parse.Cloud.run('initUser');
@@ -177,15 +178,16 @@ export function* watchUserUpdate() {
   yield takeLatest(types.USER_UPDATE_REQUESTED, workUserUpdate);
 }
 
-async function updateFounder(params) {
+async function updateProfile(params) {
   return Parse.Cloud.run('updateProfile', params);
 }
 
-function* workUserFounderDataPost(action) {
+function* workUserProfileDataPost(action) {
   const { params } = action;
+  params.uuid = yield select(getUserUUID);
 
   try {
-    const results = yield call(updateFounder, params);
+    const results = yield call(updateProfile, params);
     const data = results.toJSON();
     yield put({
       type: types.USER_POST_PROFILE_SUCCEEDED,
@@ -200,17 +202,17 @@ function* workUserFounderDataPost(action) {
   }
 }
 
-export function* watchUserFounderDataPost() {
-  yield takeLatest(types.USER_POST_PROFILE_REQUESTED, workUserFounderDataPost);
+export function* watchUserProfileDataPost() {
+  yield takeLatest(types.USER_POST_PROFILE_REQUESTED, workUserProfileDataPost);
 }
 
-async function getFounderData() {
+async function getProfileData() {
   return Parse.Cloud.run('getOwnProfile');
 }
 
-function* workUserFounderDataGet() {
+function* workUserProfileDataGet() {
   try {
-    const results = yield call(getFounderData);
+    const results = yield call(getProfileData);
     const data = results && typeof results.toJSON === 'function' ? results.toJSON() : {};
     yield put({
       type: types.USER_GET_PROFILE_SUCCEEDED,
@@ -225,8 +227,8 @@ function* workUserFounderDataGet() {
   }
 }
 
-export function* watchUserFounderDataGet() {
-  yield takeLatest(types.USER_GET_PROFILE_REQUESTED, workUserFounderDataGet);
+export function* watchUserProfileDataGet() {
+  yield takeLatest(types.USER_GET_PROFILE_REQUESTED, workUserProfileDataGet);
 }
 
 function workUserLogout() {

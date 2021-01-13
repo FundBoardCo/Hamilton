@@ -39,7 +39,7 @@ function getUser(objectId) {
   return query.get(objectId);
 }
 
-function* workGetFounder(action) {
+function* workGetProfile(action) {
   const { uuid } = action;
 
   try {
@@ -52,6 +52,6 @@ function* workGetFounder(action) {
   }
 }
 
-export function* watchFounderDataGet() {
-  yield takeEvery(types.PUBLIC_GET_PROFILE_REQUESTED, workGetFounder);
+export function* watchProfileDataGet() {
+  yield takeEvery(types.PUBLIC_GET_PROFILE_REQUESTED, workGetProfile);
 }

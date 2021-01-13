@@ -23,11 +23,14 @@ import {
   watchAirtableGetKeywords,
 } from './airtable';
 import {
-  watchFounderDataGet,
+  watchProfileDataGet,
   watchPublicBoardGet,
 } from './founders';
 import {
-  watchInvestorStatusesGet,
+  watchUserGetOwnInvestors,
+  watchUserPostInvestor,
+} from './investors';
+import {
   watchBoardUUIDGet,
   watchInvestorStatusPost,
   watchUserPublicBoardPost,
@@ -42,8 +45,8 @@ import {
   watchUserLogout,
   watchUserDelete,
   watchUserUpdate,
-  watchUserFounderDataGet,
-  watchUserFounderDataPost,
+  watchUserProfileDataGet,
+  watchUserProfileDataPost,
 } from './user';
 
 const api = `https://${process.env.REACT_APP_ENV === 'DEV' ? 'staging-' : ''}api.fundboard.co/`;
@@ -70,6 +73,7 @@ function* watchGetInfo() {
   yield takeEvery(types.INFO_GET_REQUESTED, workGetInfo);
 }
 
+/*
 function* workBoardRemove(action) {
   const token = yield select(getToken);
   const board = yield select(getBoard);
@@ -91,7 +95,9 @@ function* workBoardRemove(action) {
 function* watchBoardRemove() {
   yield takeLatest(types.BOARD_REMOVE, workBoardRemove);
 }
+ */
 
+/*
 function* workBoardAdd(action) {
   const token = yield select(getToken);
   const board = yield select(getBoard);
@@ -113,6 +119,7 @@ function* workBoardAdd(action) {
 function* watchBoardAdd() {
   yield takeLatest(types.BOARD_ADD, workBoardAdd);
 }
+ */
 
 function getExtraZipCodes(params) {
   const { zipcode, miles } = params;
@@ -202,20 +209,19 @@ function* watchRehydrate() {
 export default function* rootSaga() {
   yield fork(watchRehydrate);
   yield fork(watchAirtableGetKeywords);
-  yield fork(watchBoardAdd);
-  yield fork(watchBoardRemove);
   yield fork(watchUserCreate);
   yield fork(watchUserLogin);
   yield fork(watchUserLogout);
   yield fork(watchUserUpdate);
   yield fork(watchUserDelete);
   yield fork(watchUserReset);
-  yield fork(watchInvestorStatusesGet);
+  yield fork(watchUserGetOwnInvestors);
+  yield fork(watchUserPostInvestor);
   yield fork(watchPublicBoardGet);
   yield fork(watchBoardUUIDGet);
-  yield fork(watchFounderDataGet);
-  yield fork(watchUserFounderDataGet);
-  yield fork(watchUserFounderDataPost);
+  yield fork(watchProfileDataGet);
+  yield fork(watchUserProfileDataGet);
+  yield fork(watchUserProfileDataPost);
   yield fork(watchPublicInvestorStatusUpdate);
   yield fork(watchInvestorStatusPost);
   yield fork(watchUserManualInvestorPost);

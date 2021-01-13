@@ -262,3 +262,11 @@ export function calcMatch(opts) {
 
   return { matches };
 }
+
+export function parseB4AObject(result) {
+  return result && typeof result.toJSON === 'function' ? result.toJSON() : {};
+}
+
+export function parseB4AArray(arr) {
+  return arr.map(a => parseB4AObject(a));
+}

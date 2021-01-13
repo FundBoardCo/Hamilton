@@ -11,26 +11,22 @@ import InputGroup from 'react-bootstrap/InputGroup';
 import Person from '../../components/people/Person';
 import * as types from '../../actions/types';
 import DismissibleStatus from '../../components/DismissibleStatus';
-import {MINPLACE, STAGEPROPS} from '../../constants';
+import { MINPLACE, STAGEPROPS } from '../../constants';
 import { getSafeVar } from '../../utils';
 
 export default function Board() {
-  const getBoardUUID_status = useSelector(state => state.manageRaise.getBoardUUID_status);
-  const investorIDs = useSelector(state => state.user.investors) || [];
   const people = useSelector(state => state.people.records);
-  const manualInvestorGet_status = useSelector(
-    state => state.manageRaise.manualInvestorGet_status,
+  const getOwnInvestorsStatus = useSelector(
+    state => state.investors.getOwnInvestors_status,
   );
-  const manual_records = useSelector(state => state.manageRaise.manual_records) || {};
+  const ownInvestors = useSelector(state => state.investors.ownInvestors) || {};
   const loggedIn = useSelector(state => state.user.sessionToken);
   const place = useSelector(state => state.user.place);
   const allowIn = loggedIn && typeof place === 'number' && place <= MINPLACE;
   const email = useSelector(state => state.user.email);
   const modalsSeen = useSelector(state => state.modal.modalsSeen) || [];
-  const investorStatus_getStatus = useSelector(state => state.manageRaise.get_status);
-  const investorStatus_records = useSelector(state => state.manageRaise.records);
-  const boardNotFound = useSelector(state => state.manageRaise.notFound);
-  const publicID = useSelector(state => state.manageRaise.publicUUID);
+  const publicUUID = useSelector(state => state.user.uuid);
+  const boardPublic = useSelector(state => state.user.board_public);
 
   const [sortBy, setSortBy] = useState('status');
   const [sortNameUp, setSortNameUp] = useState(false);
@@ -61,27 +57,15 @@ export default function Board() {
 
   useEffect(() => {
     dispatch({
-      type: types.PUBLIC_GET_BOARD_REQUESTED,
-      uuid: publicID,
+      type: types.PEOPLE_GET_REQUEST,
     });
-  }, [publicID, dispatch]);
+  }, [dispatch]);
 
   useEffect(() => {
-    if (investorIDs.length) {
-      dispatch({
-        type: types.PEOPLE_GET_REQUEST,
-        id: investorIDs,
-      });
-    }
-  }, [investorIDs, dispatch]);
-
-  useEffect(() => {
-    if (investorIDs.length) {
-      dispatch({
-        type: types.USER_GET_INVESTORSTATUSES_REQUESTED,
-      });
-    }
-  }, [investorIDs, dispatch]);
+    dispatch({
+      type: types.USER_GET_INVESTORS_REQUESTED,
+    });
+  }, [dispatch]);
 
   let investorList = [];
   let toShowInvestorList;
@@ -107,9 +91,9 @@ export default function Board() {
   firstLine.CrunchBase = '';
   csvList.push(firstLine);
 
-  investorIDs.forEach(i => {
+  Object.keys(ownInvestors).forEach(i => {
     const person = people[i] ? { ...people[i] } : {};
-    const investorStatus = investorStatus_records[i] || {};
+    const investorStatus = ownInvestors[i] || {};
     investorList.push({
       ...person,
       uuid: i,
@@ -142,39 +126,6 @@ export default function Board() {
     csvPer.LinkedIn = person.linkedin || '';
     csvPer.Twitter = person.twitter || '';
     csvPer.CrunchBase = person.permalink ? `https://www.crunchbase.com/person/${person.permalink}` : '';
-    csvList.push(csvPer);
-  });
-
-  Object.keys(manual_records).forEach(k => {
-    const investorStatus = investorStatus_records[k] || {};
-    const r = manual_records[k];
-    investorList.push({
-      ...r,
-      investorStatus,
-    });
-    const noteValues = investorStatus.notes ? Object.values(investorStatus.notes) : [];
-    const notesForCSV = noteValues
-      .filter(n => !n.next).map(n => `${n.text} ${n.date || ''}`).join(' || ');
-    const nextForCSV = noteValues
-      .filter(n => n.next).map(n => `${n.text} ${n.date || ''}`).join(' || ');
-    const csvPer = {};
-    csvPer['Investor Name'] = r.name || '';
-    csvPer.Title = r.primary_job_title || '';
-    csvPer.Organization = r.primary_organization_name || '';
-    csvPer.Priority = '';
-    csvPer['Introed By'] = investorStatus.intro_name || '';
-    csvPer['Introer Email'] = investorStatus.intro_email || '';
-    csvPer['Date of Intro'] = investorStatus.intro_date || '';
-    csvPer.Stage = investorStatus.stage;
-    csvPer.Amount = investorStatus.amount || '';
-    csvPer['Next Steps'] = nextForCSV;
-    csvPer.Notes = notesForCSV;
-    csvPer['Potential Lead'] = r.is_lead_investor ? 'Yes' : '';
-    csvPer['Open to Direct Outreach'] = '';
-    csvPer.Location = r.location;
-    csvPer.LinkedIn = r.linkedin || '';
-    csvPer.Twitter = r.twitter || '';
-    csvPer.CrunchBase = r.permalink ? `https://www.crunchbase.com/person/${r.permalink}` : '';
     csvList.push(csvPer);
   });
 
@@ -229,26 +180,15 @@ export default function Board() {
 
   const history = useHistory();
 
-  const onBoardClick = () => {
-    if (!publicID || boardNotFound) {
-      dispatch({
-        type: types.USER_POST_PUBLICBOARD_REQUESTED,
-        params: {
-          id: false,
-          addInvestors: investorList.filter(i => !Object.keys(i.investorStatus).length),
-          investorParams: {
-            stage: 'added',
-            published: true,
-          },
-        },
-      });
-      dispatch({
-        type: types.MODAL_SET_OPEN,
-        modal: 'creatingPublicBoard',
-      });
-    } else {
-      history.push(`/public/${publicID}`);
-    }
+  const onBoardOpenClick = () => {
+    history.push(`/public/${publicUUID}`);
+  };
+
+  const onBoardToggleClick = () => {
+    dispatch({
+      type: types.USER_UPDATE_REQUESTED,
+      params: { board_public: !boardPublic },
+    });
   };
 
   const onAddBoardClick = () => {
@@ -302,7 +242,7 @@ export default function Board() {
           <div className="boardDetailsBar">
             <div className="primaryDetails">
               <span>
-                {`My Fundboard: ${investorIDs.length}`}
+                {`My Fundboard: ${Object.keys(ownInvestors).length}`}
                 <span className="d-none d-md-inline">&nbsp;Potential Lead</span>
                 <span className="d-none d-xs-inline">&nbsp;Investors</span>
               </span>
@@ -319,7 +259,7 @@ export default function Board() {
                 className="primaryDetailsLink"
                 variant="link"
                 onClick={onCSVClick}
-                disabled={investorIDs.length === 0}
+                disabled={Object.keys(ownInvestors).length === 0}
                 data-track="BoardDownload"
               >
                 <span className="ml-2">Download</span>
@@ -359,13 +299,26 @@ export default function Board() {
                 Archived
               </button>
             </div>
+            {boardPublic && (
+              <Button
+                variant="link"
+                className="txs-3 mr-2"
+                onClick={onBoardOpenClick}
+              >
+                <span>
+                  Public FundBoard
+                  &nbsp;
+                </span>
+                <span className="d-none d-sm-inline">Board</span>
+              </Button>
+            )}
             <Button
-              variant={publicID ? 'outline-secondary' : 'secondary'}
+              variant={boardPublic ? 'outline-secondary' : 'secondary'}
               className="txs-3 mr-2"
-              onClick={onBoardClick}
+              onClick={onBoardToggleClick}
             >
               <span>
-                {publicID ? 'Public' : 'Share'}
+                {boardPublic ? 'Make Private' : 'Make Public'}
                 &nbsp;
               </span>
               <span className="d-none d-sm-inline">Board</span>
@@ -399,19 +352,9 @@ export default function Board() {
         </div>
       )}
       <DismissibleStatus
-        status={manualInvestorGet_status}
+        status={getOwnInvestorsStatus}
         showSuccess={false}
-        dissmissAction={types.USER_GET_MANUALINVESTORS_DISMISSED}
-      />
-      <DismissibleStatus
-        status={investorStatus_getStatus}
-        showSuccess={false}
-        dissmissAction={types.USER_GET_INVESTORSTATUSES_DISMISSED}
-      />
-      <DismissibleStatus
-        status={getBoardUUID_status}
-        showSuccess={false}
-        dissmissAction={types.USER_GET_BOARDUUID_DISMISSED}
+        dissmissAction={types.USER_GET_INVESTORS_DISMISSED}
       />
       {allowIn && (
         <div className="results">
@@ -437,7 +380,7 @@ export default function Board() {
           <h1 className="text-center">To see your FundBoard, you need to log in first.</h1>
         </Col>
       )}
-      {allowIn && investorIDs.length === 0 && (
+      {allowIn && Object.keys(ownInvestors).length === 0 && (
         <div>
           <p>
             You don’t have any investors saved yet.

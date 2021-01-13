@@ -75,6 +75,7 @@ export default function manageRaise(state = defaults, action) {
   const { data } = action;
 
   switch (action.type) {
+    /*
     case types.USER_GET_INVESTORSTATUSES_REQUESTED: return {
       ...state,
       get_status: 'pending',
@@ -93,6 +94,7 @@ export default function manageRaise(state = defaults, action) {
       ...state,
       get_status: '',
     };
+     */
     case types.USER_POST_INVESTORSTATUS_REQUESTED: return {
       ...state,
       post_status: 'pending',

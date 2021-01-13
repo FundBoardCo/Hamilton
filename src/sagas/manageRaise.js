@@ -62,6 +62,7 @@ function postStatusData(params) {
   });
 }
 
+/*
 function requestInvestorStatuses(params) {
   return axios.get(`/.netlify/functions/airtable_get_investorStatuses?${toQueryString(params)}`);
 }
@@ -88,6 +89,7 @@ function* workInvestorStatusesGet() {
 export function* watchInvestorStatusesGet() {
   yield takeEvery(types.USER_GET_INVESTORSTATUSES_REQUESTED, workInvestorStatusesGet);
 }
+ */
 
 function requestPublicBoard(params) {
   const getParams = params;

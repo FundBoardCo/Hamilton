@@ -3,7 +3,6 @@ import { getSafeVar, processErr } from '../utils';
 
 const defaults = {
   email: '',
-  investors: [],
   create_status: '',
   login_status: '',
   sessionToken: null,
@@ -58,15 +57,6 @@ function mergeIDs(state, action) {
 
 export default function user(state = defaults, action) {
   switch (action.type) {
-    // used when the user is not logged in only.
-    case types.BOARD_ADD_COMPLETE: return {
-      ...state,
-      investors: action.params.investors || [],
-    };
-    case types.BOARD_REMOVE_COMPLETE: return {
-      ...state,
-      investors: action.params.investors || [],
-    };
     case types.BOARD_SHOWADVICE: return {
       ...state,
       showAdvice: action.showAdvice,
