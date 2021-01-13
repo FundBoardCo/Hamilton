@@ -57,7 +57,7 @@ export default function Public(props) {
       dissmissAction: types.USER_POST_PUBLICBOARD_DISMISSED,
     },
     {
-      key: 'publiPost',
+      key: 'publicPost',
       status: publicPostStatus,
       statusPrefix: 'Make Introduction:',
       dissmissAction: publicDismissPost,
