@@ -11,7 +11,7 @@ import InputGroup from 'react-bootstrap/InputGroup';
 import Person from '../../components/people/Person';
 import * as types from '../../actions/types';
 import DismissibleStatus from '../../components/DismissibleStatus';
-import {minPlace, STAGEPROPS} from '../../constants';
+import {MINPLACE, STAGEPROPS} from '../../constants';
 import { getSafeVar } from '../../utils';
 
 export default function Board() {
@@ -24,7 +24,7 @@ export default function Board() {
   const manual_records = useSelector(state => state.manageRaise.manual_records) || {};
   const loggedIn = useSelector(state => state.user.sessionToken);
   const place = useSelector(state => state.user.place);
-  const allowIn = loggedIn && typeof place === 'number' && place <= minPlace;
+  const allowIn = loggedIn && typeof place === 'number' && place <= MINPLACE;
   const email = useSelector(state => state.user.email);
   const modalsSeen = useSelector(state => state.modal.modalsSeen) || [];
   const investorStatus_getStatus = useSelector(state => state.manageRaise.get_status);
@@ -327,67 +327,65 @@ export default function Board() {
               </Button>
             </div>
           </div>
-          {investorIDs.length > 0 && (
-            <div className="d-flex justify-content-end justify-content-lg-end align-items-center mb-3">
-              <div className="sortBar">
-                <span className="label">Sort By:</span>
-                <button
-                  type="button"
-                  className={sortBy === 'name' ? 'active' : ''}
-                  onClick={toggleSortByName}
-                >
-                  ABC
-                </button>
-                <button
-                  type="button"
-                  className={sortBy === 'status' ? 'active' : ''}
-                  onClick={toggleSortByStatus}
-                >
-                  Status
-                </button>
-                <button
-                  type="button"
-                  className={sortBy === 'next' ? 'active' : ''}
-                  onClick={toggleSortByNext}
-                >
-                  To Do Next
-                </button>
-                <button
-                  type="button"
-                  className={showArchived ? 'active' : ''}
-                  onClick={() => setShowArchived(!showArchived)}
-                >
-                  Archived
-                </button>
-              </div>
-              <Button
-                variant={publicID ? 'outline-secondary' : 'secondary'}
-                className="txs-3 mr-2"
-                onClick={onBoardClick}
+          <div className="d-flex justify-content-end justify-content-lg-end align-items-center mb-3">
+            <div className="sortBar">
+              <span className="label">Sort By:</span>
+              <button
+                type="button"
+                className={sortBy === 'name' ? 'active' : ''}
+                onClick={toggleSortByName}
               >
-                <span>
-                  {publicID ? 'Public' : 'Share'}
-                  &nbsp;
-                </span>
-                <span className="d-none d-sm-inline">Board</span>
-              </Button>
-              <div className="searchBar">
-                <InputGroup>
-                  <InputGroup.Prepend>
-                    <InputGroup.Text>
-                      Search
-                    </InputGroup.Text>
-                  </InputGroup.Prepend>
-                  <FormControl
-                    type="text"
-                    value={searchBy}
-                    onChange={e => setSearchBy(e.target.value)}
-                    aria-label="Search for an investor by name or organization."
-                  />
-                </InputGroup>
-              </div>
+                ABC
+              </button>
+              <button
+                type="button"
+                className={sortBy === 'status' ? 'active' : ''}
+                onClick={toggleSortByStatus}
+              >
+                Status
+              </button>
+              <button
+                type="button"
+                className={sortBy === 'next' ? 'active' : ''}
+                onClick={toggleSortByNext}
+              >
+                To Do Next
+              </button>
+              <button
+                type="button"
+                className={showArchived ? 'active' : ''}
+                onClick={() => setShowArchived(!showArchived)}
+              >
+                Archived
+              </button>
             </div>
-          )}
+            <Button
+              variant={publicID ? 'outline-secondary' : 'secondary'}
+              className="txs-3 mr-2"
+              onClick={onBoardClick}
+            >
+              <span>
+                {publicID ? 'Public' : 'Share'}
+                &nbsp;
+              </span>
+              <span className="d-none d-sm-inline">Board</span>
+            </Button>
+            <div className="searchBar">
+              <InputGroup>
+                <InputGroup.Prepend>
+                  <InputGroup.Text>
+                    Search
+                  </InputGroup.Text>
+                </InputGroup.Prepend>
+                <FormControl
+                  type="text"
+                  value={searchBy}
+                  onChange={e => setSearchBy(e.target.value)}
+                  aria-label="Search for an investor by name or organization."
+                />
+              </InputGroup>
+            </div>
+          </div>
         </div>
       )}
       {allowIn && (

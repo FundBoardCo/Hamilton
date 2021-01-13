@@ -9,7 +9,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import * as types from '../../actions/types';
 import DismissibleStatus from '../../components/DismissibleStatus';
 import FormInput from '../../components/FormInput';
-import { minPlace } from '../../constants';
+import { MINPLACE } from '../../constants';
 
 function LinkInput(props) {
   const {
@@ -70,7 +70,7 @@ function LinkInput(props) {
 export default function Profile() {
   const loggedIn = useSelector(state => state.user.sessionToken);
   const place = useSelector(state => state.user.place);
-  const allowIn = loggedIn && typeof place === 'number' && place <= minPlace;
+  const allowIn = loggedIn && typeof place === 'number' && place <= MINPLACE;
   const user = useSelector(state => state.user) || {};
   const searchRaise = useSelector(state => state.search.raise) || 100000;
   const searchRemote = useSelector(state => state.search.remote) || '';
@@ -448,7 +448,6 @@ export default function Profile() {
 
   return (
     <Row id="PageProfile" className="pageContainer">
-      {allowIn && (
       <Col xs={12} md={8} className="mr-auto ml-auto">
         <h1 className="text-center mb-4">My Profile</h1>
         <Form
@@ -488,128 +487,130 @@ export default function Profile() {
             </Button>
           </div>
         </Form>
-        <section className="mb-4">
-          <h2 className="sectionHead">Public Data (Optional)</h2>
-          <p>Your profile will be shown on your public FundBoard.</p>
-          <div>
-            <div className="d-flex justify-content-end mb-2">
-              <Button
-                variant="outline-secondary"
-                className="txs-1 mr-2"
-                disabled={updateStatus === 'pending'}
-                onClick={onTogglePublicBoard}
-              >
-                {`Make Your FundBoard ${board_public ? 'Private' : 'Public'}.`}
-              </Button>
-              <Button
-                variant="outline-info"
-                className="txs-1"
-                onClick={() => setShowPublicInputs(!showPublicInputs)}
-              >
-                {`${showPublicInputs ? 'Hide' : 'Show'} Public Data Form`}
-              </Button>
-            </div>
-            <DismissibleStatus
-              status={getProfileStatus}
-              statusPrefix="Fetching Public Data"
-              showSuccess={false}
-              dissmissAction={types.USER_GET_PROFILE_DISMISSED}
-            />
-            {currentUpdate === 'board' && (
-              <DismissibleStatus
-                status={updateStatus}
-                statusPrefix="Updating FundBoard"
-                dissmissAction={types.USER_UPDATE_DISSMISSED}
-              />
-            )}
-          </div>
-          {showPublicInputs && (
-            <Form
-              className="mb-4"
-              noValidate
-              validated={publicValidated}
-              onSubmit={handlePublicSubmit}
-            >
-              {Object.keys(publicInputs1).map(k => (
-                <FormInput
-                  onChange={onInputChange}
-                  key={k}
-                  iKey={k}
-                  {...publicInputs1[k]}
-                />
-              ))}
-              <Form.Group controlId="DescriptionInput">
-                <Form.Label>A Short Bio or Description</Form.Label>
-                <Form.Control
-                  as="textarea"
-                  placeholder="More information about you that would be relevant to someone making an intro."
-                  name="desc"
-                  value={desc}
-                  onChange={e => onInputChange(e)}
-                  data-track="ProfileDescription"
-                />
-              </Form.Group>
-              {Object.keys(publicInputs2).map(k => (
-                <FormInput
-                  onChange={onInputChange}
-                  key={k}
-                  iKey={k}
-                  {...publicInputs2[k]}
-                />
-              ))}
-              <h5>Additional Links</h5>
-              {links.map((l, i) => (
-                <LinkInput
-                  text={l.text}
-                  url={l.url}
-                  key={l.key}
-                  linkIndex={i}
-                  onLinkTextChange={setLinkText}
-                  onLinkURLChange={setLinkURL}
-                  onLinkRemove={removeLink}
-                />
-              ))}
-              <Button
-                variant="link"
-                className="text-secondary mb-4"
-                type="button"
-                onClick={addLink}
-              >
-                Add another link
-              </Button>
-              {Object.keys(publicInputs3).map(k => (
-                <FormInput
-                  onChange={onInputChange}
-                  key={k}
-                  iKey={k}
-                  {...publicInputs3[k]}
-                />
-              ))}
-              {currentUpdate === 'public' && (
-                <DismissibleStatus
-                  status={updateStatus}
-                  statusPrefix="Updating Profile"
-                  dissmissAction={types.USER_UPDATE_DISSMISSED}
-                />
-              )}
-              <div className="d-flex flex-grow-1 justify-content-end">
+        {allowIn && (
+          <section className="mb-4">
+            <h2 className="sectionHead">Public Data (Optional)</h2>
+            <p>Your profile will be shown on your public FundBoard.</p>
+            <div>
+              <div className="d-flex justify-content-end mb-2">
                 <Button
-                  className="btnMobile100"
-                  type="submit"
-                  data-track="ProfileUpdateFounderData"
-                  {...btnProps.updateFounderData}
+                  variant="outline-secondary"
+                  className="txs-1 mr-2"
+                  disabled={updateStatus === 'pending'}
+                  onClick={onTogglePublicBoard}
                 >
-                  {btnProps.updateFounderData.text}
+                  {`Make Your FundBoard ${board_public ? 'Private' : 'Public'}.`}
+                </Button>
+                <Button
+                  variant="outline-info"
+                  className="txs-1"
+                  onClick={() => setShowPublicInputs(!showPublicInputs)}
+                >
+                  {`${showPublicInputs ? 'Hide' : 'Show'} Public Data Form`}
                 </Button>
               </div>
               <DismissibleStatus
-                status={updateProfileStatus}
-                statusPrefix="Updating FundBoard"
-                dissmissAction={types.USER_POST_PROFILE_DISMISSED}
+                status={getProfileStatus}
+                statusPrefix="Fetching Public Data"
+                showSuccess={false}
+                dissmissAction={types.USER_GET_PROFILE_DISMISSED}
               />
-            </Form>
-          )}
-        </section>
+              {currentUpdate === 'board' && (
+                <DismissibleStatus
+                  status={updateStatus}
+                  statusPrefix="Updating FundBoard"
+                  dissmissAction={types.USER_UPDATE_DISSMISSED}
+                />
+              )}
+            </div>
+            {showPublicInputs && (
+              <Form
+                className="mb-4"
+                noValidate
+                validated={publicValidated}
+                onSubmit={handlePublicSubmit}
+              >
+                {Object.keys(publicInputs1).map(k => (
+                  <FormInput
+                    onChange={onInputChange}
+                    key={k}
+                    iKey={k}
+                    {...publicInputs1[k]}
+                  />
+                ))}
+                <Form.Group controlId="DescriptionInput">
+                  <Form.Label>A Short Bio or Description</Form.Label>
+                  <Form.Control
+                    as="textarea"
+                    placeholder="More information about you that would be relevant to someone making an intro."
+                    name="desc"
+                    value={desc}
+                    onChange={e => onInputChange(e)}
+                    data-track="ProfileDescription"
+                  />
+                </Form.Group>
+                {Object.keys(publicInputs2).map(k => (
+                  <FormInput
+                    onChange={onInputChange}
+                    key={k}
+                    iKey={k}
+                    {...publicInputs2[k]}
+                  />
+                ))}
+                <h5>Additional Links</h5>
+                {links.map((l, i) => (
+                  <LinkInput
+                    text={l.text}
+                    url={l.url}
+                    key={l.key}
+                    linkIndex={i}
+                    onLinkTextChange={setLinkText}
+                    onLinkURLChange={setLinkURL}
+                    onLinkRemove={removeLink}
+                  />
+                ))}
+                <Button
+                  variant="link"
+                  className="text-secondary mb-4"
+                  type="button"
+                  onClick={addLink}
+                >
+                  Add another link
+                </Button>
+                {Object.keys(publicInputs3).map(k => (
+                  <FormInput
+                    onChange={onInputChange}
+                    key={k}
+                    iKey={k}
+                    {...publicInputs3[k]}
+                  />
+                ))}
+                {currentUpdate === 'public' && (
+                  <DismissibleStatus
+                    status={updateStatus}
+                    statusPrefix="Updating Profile"
+                    dissmissAction={types.USER_UPDATE_DISSMISSED}
+                  />
+                )}
+                <div className="d-flex flex-grow-1 justify-content-end">
+                  <Button
+                    className="btnMobile100"
+                    type="submit"
+                    data-track="ProfileUpdateFounderData"
+                    {...btnProps.updateFounderData}
+                  >
+                    {btnProps.updateFounderData.text}
+                  </Button>
+                </div>
+                <DismissibleStatus
+                  status={updateProfileStatus}
+                  statusPrefix="Updating FundBoard"
+                  dissmissAction={types.USER_POST_PROFILE_DISMISSED}
+                />
+              </Form>
+            )}
+          </section>
+        )}
         <section className="mb-4">
           <h2 className="sectionHead">Log Out</h2>
           <p>Click the button below to log out of your account.</p>
@@ -649,7 +650,6 @@ export default function Profile() {
           </div>
         </section>
       </Col>
-      )}
     </Row>
   );
 }
