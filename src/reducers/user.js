@@ -15,8 +15,10 @@ const defaults = {
   updateProfile_status: '',
   showAdvice: true,
   board_public: true,
+  uuid: '',
   get_profile_status: '',
   profile: {
+    name: '',
     primary_job_title: '',
     primary_organization_name: '',
     primary_organization_homepage: '',
@@ -37,9 +39,12 @@ const defaults = {
 export const userResets = {
   create_status: '',
   login_status: '',
+  init_status: '',
   update_status: '',
   delete_status: '',
   reset_status: '',
+  updateProfile_status: '',
+  get_profile_status: '',
 };
 
 function mergeIDs(state, action) {
@@ -74,9 +79,7 @@ export default function user(state = defaults, action) {
     case types.USER_CREATE_SUCCEEDED: return {
       ...state,
       create_status: 'succeeded',
-      email: action.data.email,
-      sessionToken: action.data.sessionToken,
-      objectId: action.data.objectId,
+      ...action.data,
     };
     case types.USER_CREATE_FAILED: return {
       ...state,
