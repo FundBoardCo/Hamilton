@@ -10,33 +10,36 @@ import { isPlainObject, trackErr } from '../utils';
 import * as types from '../actions/types';
 
 const getUserObjectId = state => state.user.objectId;
-const getEmail = state => state.user.email;
 
 async function userInit() {
   return Parse.Cloud.run('initUser');
 }
 
 async function userCreate(params) {
-  const { email, password } = params;
+  const { email, password, uuid } = params;
   if (!email) throw new Error('A valid email address is required.');
   if (!password) throw new Error('A valid password is required.');
+  if (!uuid) throw new Error('A valid uuid is required.');
 
+  Parse.User.logOut();
   const User = new Parse.User();
 
   User.set('username', email);
   User.set('email', email);
   User.set('password', password);
+  User.set('uuid', uuid);
 
   return User.signUp();
 }
 
 function* workUserCreate(action) {
   const { params } = action;
+  const { email } = params;
+  params.uuid = params.uuid || uuidv5(email, '4c0db00b-f035-4b07-884d-c9139c7a91b5');
 
   try {
     const results = yield call(userCreate, params);
     const data = results.toJSON();
-    const { email } = data;
     const init = yield call(userInit);
     data.place = init.toJSON().place;
     yield put({ type: types.USER_CREATE_SUCCEEDED, data });
@@ -57,6 +60,7 @@ async function userLogin(params) {
   if (!username) throw new Error('A valid username is required.');
   if (!password) throw new Error('A valid password is required.');
 
+  Parse.User.logOut();
   return Parse.User.logIn(username, password);
 }
 
@@ -179,8 +183,6 @@ async function updateFounder(params) {
 
 function* workUserFounderDataPost(action) {
   const { params } = action;
-  const email = yield select(getEmail);
-  params.uuid = params.uuid || uuidv5(email, '4c0db00b-f035-4b07-884d-c9139c7a91b5');
 
   try {
     const results = yield call(updateFounder, params);
@@ -203,15 +205,13 @@ export function* watchUserFounderDataPost() {
 }
 
 async function getFounderData() {
-  console.log('get founder data');
   return Parse.Cloud.run('getOwnProfile');
 }
 
 function* workUserFounderDataGet() {
-  console.log('work founder data');
   try {
     const results = yield call(getFounderData);
-    const data = results.toJSON();
+    const data = results && typeof results.toJSON === 'function' ? results.toJSON() : {};
     yield put({
       type: types.USER_GET_PROFILE_SUCCEEDED,
       data,
@@ -230,6 +230,7 @@ export function* watchUserFounderDataGet() {
 }
 
 function workUserLogout() {
+  Parse.User.logOut();
   window.heap.resetIdentity();
 }
 
