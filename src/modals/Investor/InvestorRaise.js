@@ -38,7 +38,7 @@ export default function InvestorRaise(props) {
   } = intro;
   const { advice } = STAGEPROPS[stage];
   const postStatus = useSelector(state => state.investors.postOwnInvestor_status) || '';
-  const noteParams = useSelector(state => state.manageRaise.editNoteParams);
+  const noteParams = useSelector(state => state.investors.editNoteParams);
 
   const [amountValue, setAmount] = useState(amount);
   const [showEditAmount, setShowEditAmount] = useState(false);

@@ -58,6 +58,8 @@ function* workUserPostInvestor(action) {
       type: types.USER_POST_INVESTOR_SUCCEEDED,
       data,
     });
+    // close the edit component by setting the edited note to null
+    yield put({ type: types.USER_SET_EDITNOTE, params: { noteID: null } });
   } catch (error) {
     trackErr(error);
     yield put({

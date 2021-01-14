@@ -5,6 +5,7 @@ import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import * as types from '../../actions/types';
 import { aFormDate } from '../../utils';
+import moment from "moment";
 
 const noteTypes = [
   {
@@ -23,14 +24,13 @@ const noteTypes = [
 
 export default function EditNote() {
   const form = useRef(null);
-  const postStatus = useSelector(state => state.manageRaise.post_status);
-  const noteParams = useSelector(state => state.manageRaise.editNoteParams);
+  const postStatus = useSelector(state => state.investors.postOwnInvestor_status);
+  const noteParams = useSelector(state => state.investors.editNoteParams);
   const { uuid } = noteParams;
   const { noteID = Date.now() } = noteParams;
 
-  const investorStatus = useSelector(state => state.manageRaise.records[uuid]) || {};
-  const { notes = {} } = investorStatus;
-  const investorID = investorStatus.id;
+  const investorStatus = useSelector(state => state.investors.ownInvestors[uuid]) || {};
+  const { notes = {}, objectId } = investorStatus;
   const toEdit = notes[noteID] || {};
   const {
     text,
@@ -62,13 +62,13 @@ export default function EditNote() {
 
   const onSave = () => {
     const params = {
-      id: investorID,
+      objectId,
       uuid,
       notes: {
         ...notes,
         [noteID]: {
           text: textVal,
-          date: ['next', 'waiting'].includes(typeVal) ? dateVal : aFormDate(dateVal),
+          date: aFormDate(moment(dateVal)),
           next: ['next', 'waiting'].includes(typeVal),
           waiting: typeVal === 'waiting',
         },
@@ -87,7 +87,7 @@ export default function EditNote() {
     delete newNotes[noteID];
 
     const params = {
-      id: investorID,
+      objectId,
       uuid,
       notes: { ...newNotes },
     };

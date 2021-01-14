@@ -6,6 +6,7 @@ export const investorsResets = {
   getPublicInvestors_status: '',
   postOwnInvestor_status: '',
   postSafeAddInvestors_status: '',
+  editNoteParams: {},
 };
 
 const defaults = {
@@ -87,6 +88,10 @@ export default function user(state = defaults, action) {
     case types.USER_POST_SAFEADDINVESTORS_DISMISSED: return {
       ...state,
       postSafeAddInvestors_status: '',
+    };
+    case types.USER_SET_EDITNOTE: return {
+      ...state,
+      editNoteParams: { ...action.params },
     };
     case types.USER_LOGOUT: return {
       ...defaults,

@@ -11,9 +11,8 @@ export default function Note(props) {
     uuid,
   } = props;
 
-  const investorStatus = useSelector(state => state.manageRaise.records[uuid]);
-  const { notes } = investorStatus;
-  const investorID = investorStatus.id;
+  const investorStatus = useSelector(state => state.investors.ownInvestors[uuid]) || {};
+  const { notes, objectId } = investorStatus;
   const noteData = notes[noteID] || {};
 
   const {
@@ -41,7 +40,7 @@ export default function Note(props) {
 
   const onCompleteNote = () => {
     const params = {
-      id: investorID,
+      objectId,
       uuid,
       notes: {
         ...notes,
@@ -58,7 +57,7 @@ export default function Note(props) {
 
   let nextLabel = '';
   if (next) nextLabel = 'To Do Next';
-  if (waiting) nextLabel= 'Waiting For'
+  if (waiting) nextLabel = 'Waiting For';
 
   return (
     <div
