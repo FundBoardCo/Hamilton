@@ -18,7 +18,7 @@ export default function Public(props) {
   const { uuid } = params;
 
   const getStatus = useSelector(state => state.founders.get_status);
-  const boardStatus = useSelector(state => state.manageRaise.postBoard_status);
+  // const boardStatus = useSelector(state => state.manageRaise.postBoard_status);
   const userPublicUUID = useSelector(state => state.manageRaise.publicUUID);
   const isMyPage = uuid === userPublicUUID;
   const public_records = useSelector(state => state.manageRaise.public_records) || {};
@@ -30,9 +30,9 @@ export default function Public(props) {
   const investorIDs = Object.keys(public_records);
   const people = useSelector(state => state.people);
   const publicPostStatus = useSelector(state => state.manageRaise.publicPost_status);
-  const publicDismissPost = types.PUBLIC_POST_INVESTORSTATUS_DISMISSED;
-  const privatePostStatus = useSelector(state => state.manageRaise.post_status);
-  const privateDismissPost = types.USER_POST_INVESTORSTATUS_DISMISSED;
+  const publicDismissPost = types.PUBLIC_POST_INVESTOR_DISMISSED;
+  // const privatePostStatus = useSelector(state => state.manageRaise.post_status);
+  // const privateDismissPost = types.USER_POST_INVESTORSTATUS_DISMISSED;
 
   const [sortBy, setSortBy] = useState('status');
   const [searchBy, setSearchBy] = useState('');
@@ -51,23 +51,27 @@ export default function Public(props) {
       showSuccess: false,
       dissmissAction: types.PUBLIC_GET_PROFILE_DISMISSED,
     },
+    /*
     {
       key: 'board',
       status: boardStatus,
       dissmissAction: types.USER_POST_PUBLICBOARD_DISMISSED,
     },
+     */
     {
       key: 'publicPost',
       status: publicPostStatus,
       statusPrefix: 'Make Introduction:',
       dissmissAction: publicDismissPost,
     },
+    /*
     {
       key: 'privatePost',
       status: privatePostStatus,
       statusPrefix: 'Make Introduction:',
       dissmissAction: privateDismissPost,
     },
+    */
   ];
 
   const dispatch = useDispatch();
@@ -79,15 +83,19 @@ export default function Public(props) {
     dispatch({
       type: types.PUBLIC_GET_PROFILE_DISMISSED,
     });
+    /*
     dispatch({
       type: types.USER_POST_PUBLICBOARD_DISMISSED,
     });
+    */
     dispatch({
-      type: types.PUBLIC_POST_INVESTORSTATUS_DISMISSED,
+      type: types.PUBLIC_POST_INVESTOR_DISMISSED,
     });
+    /*
     dispatch({
       type: types.USER_POST_INVESTORSTATUS_DISMISSED,
     });
+    */
   }, [dispatch]);
 
   useEffect(() => {

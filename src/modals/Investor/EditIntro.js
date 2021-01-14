@@ -1,5 +1,6 @@
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
+import moment from 'moment';
 import PropTypes from 'prop-types';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
@@ -7,24 +8,28 @@ import DatePicker from 'react-datepicker';
 import { useLocation } from 'react-router';
 import * as types from '../../actions/types';
 import Status from '../../components/DismissibleStatus';
+import { aFormDate } from '../../utils';
 
 export default function EditIntro(props) {
   const form = useRef(null);
 
   const {
-    id,
+    objectId,
     isPublic,
     onSubmit,
     onCancel,
+    intro,
+    stage,
+  } = props;
+  const {
     intro_name = '',
     intro_email = '',
     intro_date,
-    stage,
-  } = props;
+  } = intro;
 
   const parsedDate = Number.isNaN(Date.parse(intro_date)) ? Date.now() : new Date(intro_date);
 
-  const postStatus = useSelector(state => state.manageRaise.publicPost_status) || '';
+  const postStatus = useSelector(state => state.investors.postOwnInvestor_status) || '';
 
   const [validated, setValidated] = useState(false);
 
@@ -34,10 +39,18 @@ export default function EditIntro(props) {
 
   const dispatch = useDispatch();
 
+  useEffect(() => {
+    dispatch({
+      type: isPublic
+        ? types.PUBLIC_POST_INVESTOR_DISMISSED
+        : types.USER_POST_INVESTOR_DISMISSED,
+    });
+  }, [isPublic, dispatch]);
+
   const updateStatus = params => dispatch({
     type: isPublic
-      ? types.PUBLIC_POST_INVESTORSTATUS_REQUESTED
-      : types.USER_POST_INVESTORSTATUS_REQUESTED,
+      ? types.PUBLIC_POST_INVESTOR_REQUESTED
+      : types.USER_POST_INVESTOR_REQUESTED,
     params,
   });
 
@@ -52,10 +65,12 @@ export default function EditIntro(props) {
     }
     if (formNode.checkValidity() !== false) {
       const p = {
-        id,
-        intro_name: nameVal,
-        intro_email: emailVal,
-        intro_date: dateVal,
+        objectId,
+        intro: {
+          intro_name: nameVal,
+          intro_email: emailVal,
+          intro_date: aFormDate(moment(dateVal)),
+        },
         ...publicProps,
       };
       updateStatus(p);
@@ -83,7 +98,7 @@ export default function EditIntro(props) {
   if (isPublic) publicFormProps.required = true;
 
   const location = useLocation();
-  const isBoard = 'board' === location.pathname.substring(1).split('/')[0];
+  const isBoard = location.pathname.substring(1).split('/')[0] === 'board';
 
   return (
     <Form
@@ -145,7 +160,9 @@ export default function EditIntro(props) {
       <Status
         statusPrefix="Make Introduction:"
         status={postStatus}
-        dissmissAction={types.PUBLIC_POST_INVESTORSTATUS_DISMISSED}
+        dissmissAction={
+          isPublic ? types.PUBLIC_POST_INVESTOR_DISMISSED : types.USER_POST_INVESTOR_DISMISSED
+        }
       />
       <div className="footerBtnWrapper mt-3">
         <Button
@@ -170,23 +187,27 @@ export default function EditIntro(props) {
 }
 
 EditIntro.defaultProps = {
-  id: '',
+  objectId: '',
   isPublic: false,
   onSubmit: {},
   onCancel: {},
-  intro_name: '',
-  intro_email: '',
-  intro_date: '',
+  intro: {
+    intro_name: '',
+    intro_email: '',
+    intro_date: '',
+  },
   stage: '',
 };
 
 EditIntro.propTypes = {
-  id: PropTypes.string,
+  objectId: PropTypes.string,
   isPublic: PropTypes.bool,
   onSubmit: PropTypes.func,
   onCancel: PropTypes.func,
-  intro_name: PropTypes.string,
-  intro_email: PropTypes.string,
-  intro_date: PropTypes.string,
+  intro: PropTypes.shape({
+    intro_name: PropTypes.string,
+    intro_email: PropTypes.string,
+    intro_date: PropTypes.string,
+  }),
   stage: PropTypes.string,
 };

@@ -22,7 +22,7 @@ const defaults = {
   hidden: false,
   notFound: false,
 };
-
+/*
 let parsedRecord = {};
 
 function parseOneRecord(action) {
@@ -34,6 +34,7 @@ function parseOneRecord(action) {
       ...action.data.records[0].fields,
     } : {};
 }
+ */
 
 function convertRecords(recs) {
   const newRecs = {};
@@ -71,7 +72,7 @@ function convertRecords(recs) {
 }
 
 export default function manageRaise(state = defaults, action) {
-  let newRecords = {};
+  // let newRecords = {};
   const { data } = action;
 
   switch (action.type) {
@@ -94,7 +95,6 @@ export default function manageRaise(state = defaults, action) {
       ...state,
       get_status: '',
     };
-     */
     case types.USER_POST_INVESTORSTATUS_REQUESTED: return {
       ...state,
       post_status: 'pending',
@@ -146,6 +146,7 @@ export default function manageRaise(state = defaults, action) {
       ...state,
       postBoard_status: '',
     };
+     */
     case types.PUBLIC_GET_BOARD_REQUESTED: return {
       ...state,
       getPublic_status: 'pending',
@@ -169,6 +170,7 @@ export default function manageRaise(state = defaults, action) {
       ...state,
       getPublic_status: '',
     };
+    /*
     case types.USER_GET_BOARDUUID_REQUESTED: return {
       ...state,
       getBoardUUID_status: 'pending',
@@ -189,6 +191,7 @@ export default function manageRaise(state = defaults, action) {
       ...state,
       getBoardUUID_status: '',
     };
+     */
     case types.PUBLIC_GET_PROFILE_REQUESTED: return {
       ...state,
       getFounderData_status: 'pending',
@@ -216,11 +219,12 @@ export default function manageRaise(state = defaults, action) {
       ...state,
       getFounderData_status: '',
     };
-    case types.PUBLIC_POST_INVESTORSTATUS_REQUESTED: return {
+    /*
+    case types.PUBLIC_POST_INVESTOR_REQUESTED: return {
       ...state,
       publicPost_status: 'pending',
     };
-    case types.PUBLIC_POST_INVESTORSTATUS_SUCCEEDED:
+    case types.PUBLIC_POST_INVESTOR_SUCCEEDED:
       newRecords = Array.isArray(data.records) ? convertRecords(data.records) : {};
       return {
         ...state,
@@ -230,11 +234,11 @@ export default function manageRaise(state = defaults, action) {
           ...newRecords,
         },
       };
-    case types.PUBLIC_POST_INVESTORSTATUS_FAILED: return {
+    case types.PUBLIC_POST_INVESTOR_FAILED: return {
       ...state,
       publicPost_status: processErr(action.error),
     };
-    case types.PUBLIC_POST_INVESTORSTATUS_DISMISSED: return {
+    case types.PUBLIC_POST_INVESTOR_DISMISSED: return {
       ...state,
       publicPost_status: '',
     };
@@ -284,7 +288,6 @@ export default function manageRaise(state = defaults, action) {
       ...state,
       manualInvestorPost_status: '',
     };
-    /*
     case types.USER_POST_PROFILE_REQUESTED: return {
       ...state,
       founderData: {

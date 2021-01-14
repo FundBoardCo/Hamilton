@@ -3,7 +3,6 @@ import {
   call,
   put,
   select,
-  takeEvery,
   takeLatest,
 } from 'redux-saga/effects';
 import { v4 as uuidv4, v5 as uuidv5 } from 'uuid';
@@ -130,6 +129,7 @@ export function* watchBoardUUIDGet() {
   yield takeLatest(types.USER_GET_BOARDUUID_REQUESTED, workBoardUUIDGet);
 }
 
+/*
 function updateInvestorStatus(params) {
   const postParams = { ...params };
   const { id } = params;
@@ -221,6 +221,7 @@ function* workInvestorStatusPost(action) {
 export function* watchInvestorStatusPost() {
   yield takeEvery(types.USER_POST_INVESTORSTATUS_REQUESTED, workInvestorStatusPost);
 }
+ */
 /*
 function* workUserFounderDataPost(action) {
   const { params } = action;
@@ -424,13 +425,13 @@ function* workPublicInvestorStatusUpdate(action) {
     // catch airtable errors
     if (results.data.error) {
       trackErr(results.data.error);
-      yield put({ type: types.PUBLIC_POST_INVESTORSTATUS_FAILED, error: results.data.error });
+      yield put({ type: types.PUBLIC_POST_INVESTOR_FAILED, error: results.data.error });
     } else if (results.data.statusCode && results.data.statusCode === 500) {
       trackErr(results.data.body);
-      yield put({ type: types.PUBLIC_POST_INVESTORSTATUS_FAILED, error: results.data.body });
+      yield put({ type: types.PUBLIC_POST_INVESTOR_FAILED, error: results.data.body });
     } else {
       yield put({
-        type: types.PUBLIC_POST_INVESTORSTATUS_SUCCEEDED,
+        type: types.PUBLIC_POST_INVESTOR_SUCCEEDED,
         data: results.data,
       });
       /* there is a chance of a race condition here, if someone manually closes the modal while it
@@ -446,10 +447,10 @@ function* workPublicInvestorStatusUpdate(action) {
     }
   } catch (error) {
     trackErr(error);
-    yield put({ type: types.PUBLIC_POST_INVESTORSTATUS_FAILED, error });
+    yield put({ type: types.PUBLIC_POST_INVESTOR_FAILED, error });
   }
 }
 
 export function* watchPublicInvestorStatusUpdate() {
-  yield takeLatest(types.PUBLIC_POST_INVESTORSTATUS_REQUESTED, workPublicInvestorStatusUpdate);
+  yield takeLatest(types.PUBLIC_POST_INVESTOR_REQUESTED, workPublicInvestorStatusUpdate);
 }

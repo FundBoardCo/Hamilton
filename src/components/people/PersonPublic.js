@@ -41,7 +41,7 @@ export default function Person(props) {
   const clickPerson = () => {
     if (notIntroed) {
       dispatch({
-        type: types.PUBLIC_POST_INVESTORSTATUS_DISMISSED,
+        type: types.PUBLIC_POST_INVESTOR_DISMISSED,
       });
       dispatch({
         type: types.MODAL_SET_OPEN,

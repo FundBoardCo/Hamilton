@@ -24,9 +24,10 @@ export default function Investor(props) {
   const userUUID = useSelector(state => state.user.uuid);
   const searchResults = useSelector(state => state.search.results) || {};
   const people_records = useSelector(state => state.people.records) || {};
+  const investorStatus = useSelector(state => state.investors.ownInvestors[uuid]) || {};
   const sData = searchResults[uuid] || {};
   const pData = people_records[uuid] || {};
-  const data = { ...pData, ...sData };
+  const data = { ...pData, ...sData, ...investorStatus };
   const loggedOutInvestorIDs = useSelector(state => state.investors.loggedOutInvestorIDs) || [];
   const ownInvestors = useSelector(state => state.investors.ownInvestors) || {};
 
@@ -131,6 +132,7 @@ export default function Investor(props) {
         <DismissibleStatus
           status={getStatus}
           showSuccess={false}
+          statusPrefix="Loading investor data"
           dissmissAction={types.PEOPLE_GET_DISMISS}
           dismissParams={{ ids: [uuid] }}
         />

@@ -5,7 +5,7 @@ import {
   select,
   takeLatest,
 } from 'redux-saga/effects';
-import { v5 as uuidv5 } from 'uuid';
+import { v4 as uuidv4 } from 'uuid';
 import {
   isPlainObject,
   trackErr,
@@ -46,6 +46,7 @@ async function postInvestor(params) {
 
 function* workUserPostInvestor(action) {
   const { params } = action;
+  if (!params.uuid && !params.objectId) params.uuid = uuidv4();
 
   try {
     if (!params || !isPlainObject(params) || !Object.keys(params).length) {
@@ -94,7 +95,7 @@ function* workUserSafeAdd() {
   } catch (error) {
     trackErr(error);
     yield put({
-      type: types.USER_POST_INVESTORSTATUS_FAILED,
+      type: types.USER_POST_SAFEADDINVESTORS_FAILED,
       error,
     });
   }

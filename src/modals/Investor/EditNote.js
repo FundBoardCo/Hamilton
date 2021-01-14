@@ -51,7 +51,7 @@ export default function EditNote() {
   const dispatch = useDispatch();
 
   const updateStatus = params => dispatch({
-    type: types.USER_POST_INVESTORSTATUS_REQUESTED,
+    type: types.USER_POST_INVESTOR_REQUESTED,
     params,
   });
 

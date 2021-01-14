@@ -23,7 +23,6 @@ export default function Board() {
   const loggedIn = useSelector(state => state.user.sessionToken);
   const place = useSelector(state => state.user.place);
   const allowIn = loggedIn && typeof place === 'number' && place <= MINPLACE;
-  const email = useSelector(state => state.user.email);
   const modalsSeen = useSelector(state => state.modal.modalsSeen) || [];
   const publicUUID = useSelector(state => state.user.uuid);
   const boardPublic = useSelector(state => state.user.board_public);

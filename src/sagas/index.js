@@ -33,7 +33,6 @@ import {
 } from './investors';
 import {
   watchBoardUUIDGet,
-  watchInvestorStatusPost,
   watchUserPublicBoardPost,
   watchPublicInvestorStatusUpdate,
   watchUserManualInvestorPost,
@@ -53,7 +52,6 @@ import {
 const api = `https://${process.env.REACT_APP_ENV === 'DEV' ? 'staging-' : ''}api.fundboard.co/`;
 
 const getToken = state => state.user.sessionToken;
-const getBoard = state => state.user.investors;
 
 function getInfo(params) {
   return axios.get(`/.netlify/functions/webflow_get_blog?${toQueryString(params)}`);
@@ -225,7 +223,6 @@ export default function* rootSaga() {
   yield fork(watchUserProfileDataGet);
   yield fork(watchUserProfileDataPost);
   yield fork(watchPublicInvestorStatusUpdate);
-  yield fork(watchInvestorStatusPost);
   yield fork(watchUserManualInvestorPost);
   yield fork(watchUserManualInvestorsGet);
   yield fork(watchUserPublicBoardPost);
