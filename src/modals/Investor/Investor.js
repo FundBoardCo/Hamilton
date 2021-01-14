@@ -29,7 +29,6 @@ export default function Investor(props) {
   const data = { ...pData, ...sData };
   const loggedOutInvestorIDs = useSelector(state => state.investors.loggedOutInvestorIDs) || [];
   const ownInvestors = useSelector(state => state.investors.ownInvestors) || {};
-  console.log(ownInvestors);
 
   const subProps = {
     uuid,
@@ -46,7 +45,6 @@ export default function Investor(props) {
   const nonArchivedOwnInvestors = Object.keys(ownInvestors).filter(i => (
     ownInvestors[i].stage !== 'archived'
   ));
-  console.log(nonArchivedOwnInvestors);
   const investors = [...loggedOutInvestorIDs, ...nonArchivedOwnInvestors];
 
   const isOnBoard = investors.includes(uuid);
@@ -84,7 +82,8 @@ export default function Investor(props) {
     params: {
       uuid,
       stage: 'added',
-      profileID: userUUID,
+      profileUUID: userUUID,
+      name: data.name,
     },
   });
 
@@ -94,7 +93,7 @@ export default function Investor(props) {
     params: {
       uuid,
       stage: 'archived',
-      profileID: userUUID,
+      profileUUID: userUUID,
     },
   });
 

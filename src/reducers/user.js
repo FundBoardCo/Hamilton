@@ -1,5 +1,5 @@
 import * as types from '../actions/types';
-import { getSafeVar, processErr } from '../utils';
+import { processErr } from '../utils';
 
 const defaults = {
   email: '',
@@ -46,15 +46,6 @@ export const userResets = {
   get_profile_status: '',
 };
 
-function mergeIDs(state, action) {
-  return [...new Set([
-    ...state.investors,
-    // add passes an id, the backend passes a following array.
-    ...(getSafeVar(() => action.id, [])),
-    ...(getSafeVar(() => action.data.following, [])),
-  ])];
-}
-
 export default function user(state = defaults, action) {
   switch (action.type) {
     case types.BOARD_SHOWADVICE: return {
@@ -86,7 +77,6 @@ export default function user(state = defaults, action) {
     case types.USER_LOGIN_SUCCEEDED: return {
       ...state,
       login_status: 'succeeded',
-      investors: mergeIDs(state, action),
       ...action.data,
     };
     case types.USER_LOGIN_FAILED: return {

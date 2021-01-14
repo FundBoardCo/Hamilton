@@ -29,6 +29,7 @@ import {
 import {
   watchUserGetOwnInvestors,
   watchUserPostInvestor,
+  watchUserSafeAdd,
 } from './investors';
 import {
   watchBoardUUIDGet,
@@ -217,6 +218,7 @@ export default function* rootSaga() {
   yield fork(watchUserReset);
   yield fork(watchUserGetOwnInvestors);
   yield fork(watchUserPostInvestor);
+  yield fork(watchUserSafeAdd);
   yield fork(watchPublicBoardGet);
   yield fork(watchBoardUUIDGet);
   yield fork(watchProfileDataGet);

@@ -5,6 +5,7 @@ export const investorsResets = {
   getOwnInvestors_status: '',
   getPublicInvestors_status: '',
   postOwnInvestor_status: '',
+  postSafeAddInvestors_status: '',
 };
 
 const defaults = {
@@ -32,10 +33,6 @@ export default function user(state = defaults, action) {
     case types.BOARD_REMOVE: return {
       ...state,
       loggedOutInvestorIDs: state.loggedOutInvestorIDs.filter(i => i !== action.uuid),
-    };
-    case types.BOARD_MERGED: return {
-      ...state,
-      loggedOutInvestorIDs: [],
     };
     case types.USER_GET_INVESTORS_REQUESTED: return {
       ...state,
@@ -73,6 +70,23 @@ export default function user(state = defaults, action) {
     case types.USER_POST_INVESTOR_DISMISSED: return {
       ...state,
       postOwnInvestor_status: '',
+    };
+    case types.USER_POST_SAFEADDINVESTORS_REQUESTED: return {
+      ...state,
+      postSafeAddInvestors_status: 'pending',
+    };
+    case types.USER_POST_SAFEADDINVESTORS_SUCCEEDED: return {
+      ...state,
+      postSafeAddInvestors_status: 'succeeded',
+      loggedOutInvestorIDs: [],
+    };
+    case types.USER_POST_SAFEADDINVESTORS_FAILED: return {
+      ...state,
+      postSafeAddInvestors_status: processErr(action.error),
+    };
+    case types.USER_POST_SAFEADDINVESTORS_DISMISSED: return {
+      ...state,
+      postSafeAddInvestors_status: '',
     };
     case types.USER_LOGOUT: return {
       ...defaults,

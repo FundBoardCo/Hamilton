@@ -13,6 +13,9 @@ import {
 } from '../utils';
 import * as types from '../actions/types';
 
+const getLoggedOutInvestorIDs = state => state.investors.loggedOutInvestorIDs;
+const getUserUUID = state => state.user.uuid;
+
 async function getOwnInvestors() {
   return Parse.Cloud.run('getOwnInvestors');
 }
@@ -65,4 +68,38 @@ function* workUserPostInvestor(action) {
 
 export function* watchUserPostInvestor() {
   yield takeLatest(types.USER_POST_INVESTOR_REQUESTED, workUserPostInvestor);
+}
+
+async function safeAdd(params) {
+  return Parse.Cloud.run('bulkAddInvestors', params);
+}
+
+function* workUserSafeAdd() {
+  const profileUUID = yield select(getUserUUID);
+  const uuids = yield select(getLoggedOutInvestorIDs);
+  const investors = uuids.map(u => ({
+    uuid: u,
+    stage: 'added',
+    profileUUID,
+  }));
+  const params = { investors };
+
+  try {
+    const data = yield call(safeAdd, params);
+    yield put({
+      type: types.USER_POST_SAFEADDINVESTORS_SUCCEEDED,
+      data,
+    });
+    yield put({ type: types.USER_GET_INVESTORS_REQUESTED });
+  } catch (error) {
+    trackErr(error);
+    yield put({
+      type: types.USER_POST_INVESTORSTATUS_FAILED,
+      error,
+    });
+  }
+}
+
+export function* watchUserSafeAdd() {
+  yield takeLatest(types.USER_POST_SAFEADDINVESTORS_REQUESTED, workUserSafeAdd);
 }

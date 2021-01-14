@@ -38,19 +38,6 @@ export default function Board() {
 
   useEffect(() => {
     dispatch({
-      type: types.USER_GET_MANUALINVESTORS_REQUESTED,
-      params: { email },
-    });
-  }, [email, dispatch]);
-
-  useEffect(() => {
-    dispatch({
-      type: types.USER_GET_BOARDUUID_REQUESTED,
-    });
-  }, [dispatch]);
-
-  useEffect(() => {
-    dispatch({
       type: types.USER_GET_PROFILE_REQUESTED,
     });
   }, [dispatch]);

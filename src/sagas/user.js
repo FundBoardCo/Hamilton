@@ -46,6 +46,8 @@ function* workUserCreate(action) {
     yield put({ type: types.USER_CREATE_SUCCEEDED, data });
     window.heap.identify(email);
     window.heap.addUserProperties({ email });
+    // safe add any investors saved locally
+    yield put({ type: types.USER_POST_SAFEADDINVESTORS_REQUESTED });
   } catch (error) {
     trackErr(error);
     yield put({ type: types.USER_CREATE_FAILED, error });
@@ -78,6 +80,8 @@ function* workUserLogin(action) {
     window.heap.identify(email);
     window.heap.addUserProperties({ email });
     yield put({ type: types.USER_GET_PROFILE_REQUESTED });
+    // safe add any investors saved locally
+    yield put({ type: types.USER_POST_SAFEADDINVESTORS_REQUESTED });
   } catch (error) {
     trackErr(error);
     yield put({ type: types.USER_LOGIN_FAILED, error });
