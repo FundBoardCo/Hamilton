@@ -14,6 +14,7 @@ export default function EditIntro(props) {
   const form = useRef(null);
 
   const {
+    uuid,
     objectId,
     isPublic,
     onSubmit,
@@ -42,14 +43,14 @@ export default function EditIntro(props) {
   useEffect(() => {
     dispatch({
       type: isPublic
-        ? types.PUBLIC_POST_INVESTOR_DISMISSED
+        ? types.PUBLIC_POST_INTRO_DISMISSED
         : types.USER_POST_INVESTOR_DISMISSED,
     });
   }, [isPublic, dispatch]);
 
   const updateStatus = params => dispatch({
     type: isPublic
-      ? types.PUBLIC_POST_INVESTOR_REQUESTED
+      ? types.PUBLIC_POST_INTRO_REQUESTED
       : types.USER_POST_INVESTOR_REQUESTED,
     params,
   });
@@ -66,6 +67,7 @@ export default function EditIntro(props) {
     if (formNode.checkValidity() !== false) {
       const p = {
         objectId,
+        uuid,
         intro: {
           intro_name: nameVal,
           intro_email: emailVal,
@@ -161,7 +163,7 @@ export default function EditIntro(props) {
         statusPrefix="Make Introduction:"
         status={postStatus}
         dissmissAction={
-          isPublic ? types.PUBLIC_POST_INVESTOR_DISMISSED : types.USER_POST_INVESTOR_DISMISSED
+          isPublic ? types.PUBLIC_POST_INTRO_DISMISSED : types.USER_POST_INVESTOR_DISMISSED
         }
       />
       <div className="footerBtnWrapper mt-3">
@@ -187,6 +189,7 @@ export default function EditIntro(props) {
 }
 
 EditIntro.defaultProps = {
+  uuid: '',
   objectId: '',
   isPublic: false,
   onSubmit: {},
@@ -200,6 +203,7 @@ EditIntro.defaultProps = {
 };
 
 EditIntro.propTypes = {
+  uuid: PropTypes.string,
   objectId: PropTypes.string,
   isPublic: PropTypes.bool,
   onSubmit: PropTypes.func,

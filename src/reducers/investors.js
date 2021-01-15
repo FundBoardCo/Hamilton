@@ -3,7 +3,6 @@ import { parseB4AArray, processErr } from '../utils';
 
 export const investorsResets = {
   getOwnInvestors_status: '',
-  getPublicInvestors_status: '',
   postOwnInvestor_status: '',
   postSafeAddInvestors_status: '',
   editNoteParams: {},
@@ -12,7 +11,6 @@ export const investorsResets = {
 const defaults = {
   ...investorsResets,
   ownInvestors: {},
-  publicInvestors: {},
   loggedOutInvestorIDs: [],
 };
 

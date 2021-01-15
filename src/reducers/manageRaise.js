@@ -147,11 +147,12 @@ export default function manageRaise(state = defaults, action) {
       postBoard_status: '',
     };
      */
-    case types.PUBLIC_GET_BOARD_REQUESTED: return {
+      /*
+    case types.PUBLIC_GET_INVESTORS_REQUESTED: return {
       ...state,
       getPublic_status: 'pending',
     };
-    case types.PUBLIC_GET_BOARD_SUCCEEDED: return {
+    case types.PUBLIC_GET_INVESTORS_SUCCEEDED: return {
       ...state,
       getPublic_status: 'succeeded',
       hidden: data.hidden,
@@ -162,14 +163,15 @@ export default function manageRaise(state = defaults, action) {
       manual_records: Array.isArray(data.manualData.records)
         ? convertRecords(data.manualData.records) : {},
     };
-    case types.PUBLIC_GET_BOARD_FAILED: return {
+    case types.PUBLIC_GET_INVESTORS_FAILED: return {
       ...state,
       getPublic_status: processErr(action.error),
     };
-    case types.PUBLIC_GET_BOARD_DISMISSED: return {
+    case types.PUBLIC_GET_INVESTORS_DISMISSED: return {
       ...state,
       getPublic_status: '',
     };
+    */
     /*
     case types.USER_GET_BOARDUUID_REQUESTED: return {
       ...state,

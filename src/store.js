@@ -6,7 +6,7 @@ import autoMergeLevel2 from 'redux-persist/lib/stateReconciler/autoMergeLevel2';
 import createSagaMiddleware from 'redux-saga';
 import rootSaga from './sagas';
 import airtable from './reducers/airtable';
-import founder from './reducers/founders';
+import founders, { founderResets } from './reducers/founders';
 import info from './reducers/info';
 import investors, { investorsResets } from './reducers/investors';
 import search from './reducers/search';
@@ -26,6 +26,12 @@ const airtableConfig = {
   storage,
   stateReconciler: hardSet,
   blacklist: ['feedback_status'],
+};
+
+const foundersConfig = {
+  key: 'founders',
+  storage,
+  blacklist: Object.keys(founderResets),
 };
 
 const investorsConfig = {
@@ -88,7 +94,7 @@ const userConfig = {
 const rootReducer = combineReducers({
   airtable: persistReducer(airtableConfig, airtable),
   info,
-  founder,
+  founders: persistReducer(foundersConfig, founders),
   investors: persistReducer(investorsConfig, investors),
   manageRaise: persistReducer(manageRaiseConfig, manageRaise),
   modal: persistReducer(modalConfig, modal),

@@ -26,7 +26,8 @@ export default function Person(props) {
     primary_organization_name = '',
   } = props;
 
-  const { intro_name, stage } = investorStatus;
+  const { intro = {}, stage } = investorStatus;
+  const { intro_name = '' } = intro;
   const notIntroed = !stage || ['none', 'added'].includes(stage);
 
   const primary_organization_logo = primary_organization.image_url || '';
@@ -41,7 +42,7 @@ export default function Person(props) {
   const clickPerson = () => {
     if (notIntroed) {
       dispatch({
-        type: types.PUBLIC_POST_INVESTOR_DISMISSED,
+        type: types.PUBLIC_POST_INTRO_DISMISSED,
       });
       dispatch({
         type: types.MODAL_SET_OPEN,
@@ -113,7 +114,7 @@ export default function Person(props) {
             </span>
           ) : (
             <span>
-              {`Connection offered by ${intro_name ? ` by ${intro_name}` : ''}`}
+              {intro_name ? `Connection offered by ${intro_name}` : ''}
             </span>
           )}
         </div>

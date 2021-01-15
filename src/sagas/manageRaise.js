@@ -416,7 +416,7 @@ function* workUserManualInvestorsGet(action) {
 export function* watchUserManualInvestorsGet() {
   yield takeLatest(types.USER_GET_MANUALINVESTORS_REQUESTED, workUserManualInvestorsGet);
 }
-
+/*
 function* workPublicInvestorStatusUpdate(action) {
   const { params } = action;
   params.endpoint = 'status';
@@ -434,9 +434,7 @@ function* workPublicInvestorStatusUpdate(action) {
         type: types.PUBLIC_POST_INVESTOR_SUCCEEDED,
         data: results.data,
       });
-      /* there is a chance of a race condition here, if someone manually closes the modal while it
-         is being submitted then opens it again. That's probably fine.
-       */
+
       const openModal = yield select(getModalOpen);
       if (openModal === 'makeIntro') {
         yield put({
@@ -454,3 +452,4 @@ function* workPublicInvestorStatusUpdate(action) {
 export function* watchPublicInvestorStatusUpdate() {
   yield takeLatest(types.PUBLIC_POST_INVESTOR_REQUESTED, workPublicInvestorStatusUpdate);
 }
+*/

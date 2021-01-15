@@ -17,20 +17,24 @@ export default function Public(props) {
   const { params } = match;
   const { uuid } = params;
 
-  const getStatus = useSelector(state => state.founders.get_status);
+  const people = useSelector(state => state.people.records);
+  const userPublicUUID = useSelector(state => state.user.uuid);
+  const test = useSelector(state => state.user);
+  console.log(test);
+  const userStatus = useSelector(state => state.user.update_status);
+
+  const founderStatus = useSelector(state => state.founders.get_profile_status);
+  const profile = useSelector(state => state.founders.publicFounders[uuid]) || {};
   // const boardStatus = useSelector(state => state.manageRaise.postBoard_status);
-  const userPublicUUID = useSelector(state => state.manageRaise.publicUUID);
+
   const isMyPage = uuid === userPublicUUID;
-  const public_records = useSelector(state => state.manageRaise.public_records) || {};
-  const manual_records = useSelector(state => state.manageRaise.manual_records) || {};
-  const founderStatus = useSelector(state => state.manageRaise.getFounderData_status) || '';
-  const founderProps = useSelector(state => state.manageRaise.founderData[uuid]) || {};
-  const publicUUID_recordID = useSelector(state => state.manageRaise.publicUUID_recordID);
-  const boardHidden = useSelector(state => state.manageRaise.hidden);
+  const public_records = useSelector(state => state.founders.publicInvestors) || {};
+  console.log(public_records);
+  const getInvestorsStatus = useSelector(state => state.founders.get_investors_status) || '';
+  const boardPublic = useSelector(state => state.user.board_public);
   const investorIDs = Object.keys(public_records);
-  const people = useSelector(state => state.people);
-  const publicPostStatus = useSelector(state => state.manageRaise.publicPost_status);
-  const publicDismissPost = types.PUBLIC_POST_INVESTOR_DISMISSED;
+  const publicPostIntro = useSelector(state => state.founders.post_intro_status);
+  const publicDismissPost = types.PUBLIC_POST_INTRO_DISMISSED;
   // const privatePostStatus = useSelector(state => state.manageRaise.post_status);
   // const privateDismissPost = types.USER_POST_INVESTORSTATUS_DISMISSED;
 
@@ -41,14 +45,23 @@ export default function Public(props) {
   const statusBars = [
     {
       key: 'get',
-      status: getStatus,
+      status: getInvestorsStatus,
       showSuccess: false,
-      dissmissAction: types.PUBLIC_GET_BOARD_DISMISSED,
+      statusPrefix: 'Investors',
+      dissmissAction: types.PUBLIC_GET_INVESTORS_DISMISSED,
     },
     {
       key: 'founder',
       status: founderStatus,
       showSuccess: false,
+      statusPrefix: 'Founder data',
+      dissmissAction: types.PUBLIC_GET_PROFILE_DISMISSED,
+    },
+    {
+      key: 'user',
+      status: userStatus,
+      showSuccess: false,
+      statusPrefix: 'User',
       dissmissAction: types.PUBLIC_GET_PROFILE_DISMISSED,
     },
     /*
@@ -60,7 +73,7 @@ export default function Public(props) {
      */
     {
       key: 'publicPost',
-      status: publicPostStatus,
+      status: publicPostIntro,
       statusPrefix: 'Make Introduction:',
       dissmissAction: publicDismissPost,
     },
@@ -78,10 +91,13 @@ export default function Public(props) {
 
   useEffect(() => {
     dispatch({
-      type: types.PUBLIC_GET_BOARD_DISMISSED,
+      type: types.PUBLIC_GET_INVESTORS_DISMISSED,
     });
     dispatch({
       type: types.PUBLIC_GET_PROFILE_DISMISSED,
+    });
+    dispatch({
+      type: types.USER_UPDATE_DISSMISSED,
     });
     /*
     dispatch({
@@ -89,7 +105,7 @@ export default function Public(props) {
     });
     */
     dispatch({
-      type: types.PUBLIC_POST_INVESTOR_DISMISSED,
+      type: types.PUBLIC_POST_INTRO_DISMISSED,
     });
     /*
     dispatch({
@@ -100,10 +116,10 @@ export default function Public(props) {
 
   useEffect(() => {
     dispatch({
-      type: types.PUBLIC_GET_BOARD_REQUESTED,
+      type: types.PUBLIC_GET_INVESTORS_REQUESTED,
       uuid,
     });
-  }, [uuid, boardHidden, dispatch]);
+  }, [uuid, dispatch]);
 
   useEffect(() => {
     dispatch({
@@ -126,15 +142,15 @@ export default function Public(props) {
 
   investorIDs.forEach(i => {
     const person = people[i] ? { ...people[i] } : {};
-    const manual = manual_records[i] || {};
     const investorStatus = public_records[i] || {};
     investorList.push({
       ...person,
-      ...manual,
+      ...investorStatus, // merge in manual edits
       uuid: i,
       investorStatus,
     });
   });
+  console.log(investorList);
 
   investorList.sort((a, b) => {
     if (sortBy === 'status') {
@@ -147,7 +163,7 @@ export default function Public(props) {
   });
 
   const toShowInvestorList = investorList.filter(i => {
-    let include = i.investorStatus.published;
+    let include = true;
     if (searchBy) {
       const org = getSafeVar(() => i.primary_organization.name, '');
       include = i.name.toLowerCase().includes(searchBy.toLowerCase())
@@ -155,14 +171,13 @@ export default function Public(props) {
     }
     return include;
   });
+  console.log(toShowInvestorList);
 
   const toggleHideBoard = () => {
     dispatch({
-      type: types.USER_POST_PUBLICBOARD_REQUESTED,
+      type: types.USER_UPDATE_REQUESTED,
       params: {
-        uuid,
-        hide: !boardHidden,
-        id: publicUUID_recordID,
+        board_public: !boardPublic,
       },
     });
   };
@@ -177,7 +192,7 @@ export default function Public(props) {
   };
 
   const onToggleHideBoardClick = () => {
-    if (boardHidden) {
+    if (!boardPublic) {
       toggleHideBoard();
     } else {
       setShowConfirmHide(true);
@@ -188,7 +203,7 @@ export default function Public(props) {
     dispatch({
       type: types.MODAL_SET_OPEN,
       modal: 'founder',
-      modalProps: { ...founderProps, uuid },
+      modalProps: { ...profile, uuid },
     });
   };
 
@@ -214,12 +229,28 @@ export default function Public(props) {
   return (
     <Row id="PageBoard" className="pageContainer public">
       {showConfirmHide && <GenericModal {...confirmDeleteProps} />}
-      {(boardHidden ? (
+      <div>
         <div className="boardDetailsBar">
           <div className="primaryDetails">
-            <span>
-              This FundBoard is not currently public.
-            </span>
+            {profile.name ? (
+              <span className="d-flex">
+                <span className="d-none d-md-inline">
+                  Welcome to the FundBoard of&nbsp;
+                </span>
+                <button
+                  className="btn btn-text"
+                  type="button"
+                  onClick={onClickShowProfile}
+                >
+                  <b className="bold text-secondary">{profile.name}</b>
+                </button>
+                <span className="d-none d-md-inline">
+                  !
+                </span>
+              </span>
+            ) : (
+              <span>Welcome!</span>
+            )}
             {isMyPage && (
               <span className="txs-1">
                 <Button
@@ -227,109 +258,70 @@ export default function Public(props) {
                   className="txs-1 toggleHideLink"
                   onClick={onToggleHideBoardClick}
                 >
-                  {`${boardHidden ? 'Show' : 'Hide'} Public Board`}
+                  {`${boardPublic ? 'Hide' : 'Show'} Public Board`}
                 </Button>
               </span>
             )}
           </div>
         </div>
-      ) : (
-        <div>
-          <div className="boardDetailsBar">
-            <div className="primaryDetails">
-              {founderProps.name ? (
-                <span className="d-flex">
-                  <span className="d-none d-md-inline">
-                    Welcome to the FundBoard of&nbsp;
-                  </span>
-                  <button
-                    className="btn btn-text"
-                    type="button"
-                    onClick={onClickShowProfile}
-                  >
-                    <b className="bold text-secondary">{founderProps.name}</b>
-                  </button>
-                  <span className="d-none d-md-inline">
-                    !
-                  </span>
-                </span>
-              ) : (
-                <span>Welcome! This founder has not saved their profile data yet.</span>
-              )}
-              {isMyPage && (
-                <span className="txs-1">
-                  <Button
-                    variant="link"
-                    className="txs-1 toggleHideLink"
-                    onClick={onToggleHideBoardClick}
-                  >
-                    {`${boardHidden ? 'Show' : 'Hide'} Public Board`}
-                  </Button>
-                </span>
-              )}
+        {investorIDs.length > 0 && (
+          <div className="d-flex justify-content-end justify-content-lg-end align-items-center mb-3">
+            <div className="sortBar">
+              <span className="label">Sort By:</span>
+              <button
+                type="button"
+                className={sortBy === 'name' ? 'active' : ''}
+                onClick={() => setSortBy('name')}
+              >
+                ABC
+              </button>
+              <button
+                type="button"
+                className={sortBy === 'status' ? 'active' : ''}
+                onClick={() => setSortBy('status')}
+              >
+                Status
+              </button>
+            </div>
+            <div className="searchBar">
+              <InputGroup>
+                <InputGroup.Prepend>
+                  <InputGroup.Text>
+                    Search
+                  </InputGroup.Text>
+                </InputGroup.Prepend>
+                <FormControl
+                  type="text"
+                  value={searchBy}
+                  onChange={e => setSearchBy(e.target.value)}
+                  aria-label="Search for an investor by name or organization."
+                />
+              </InputGroup>
             </div>
           </div>
-          {investorIDs.length > 0 && (
-            <div className="d-flex justify-content-end justify-content-lg-end align-items-center mb-3">
-              <div className="sortBar">
-                <span className="label">Sort By:</span>
-                <button
-                  type="button"
-                  className={sortBy === 'name' ? 'active' : ''}
-                  onClick={() => setSortBy('name')}
-                >
-                  ABC
-                </button>
-                <button
-                  type="button"
-                  className={sortBy === 'status' ? 'active' : ''}
-                  onClick={() => setSortBy('status')}
-                >
-                  Status
-                </button>
-              </div>
-              <div className="searchBar">
-                <InputGroup>
-                  <InputGroup.Prepend>
-                    <InputGroup.Text>
-                      Search
-                    </InputGroup.Text>
-                  </InputGroup.Prepend>
-                  <FormControl
-                    type="text"
-                    value={searchBy}
-                    onChange={e => setSearchBy(e.target.value)}
-                    aria-label="Search for an investor by name or organization."
-                  />
-                </InputGroup>
-              </div>
-            </div>
-          )}
-        </div>
-      ))}
+        )}
+      </div>
       {statusBars.map(s => <DismissibleStatus {...s} />)}
-      {!boardHidden && (
-        <div>
-          <div className="results">
-            {toShowInvestorList.map(i => {
-              const personProps = {
-                ...i,
-                sortedBy: sortBy,
-                founderUUID: uuid,
-                isMyPage,
-              };
-              return (
-                <PersonPublic key={i.uuid} {...personProps} />
-              );
-            })}
-          </div>
-          {toShowInvestorList.length === 0 && (
-            <div>
-              This founder doesn’t have any investors shared publically yet.
-            </div>
-          )}
+      <div>
+        <div className="results">
+          {toShowInvestorList.map(i => {
+            const personProps = {
+              ...i,
+              sortedBy: sortBy,
+              founderUUID: uuid,
+              isMyPage,
+            };
+            return (
+              <PersonPublic key={i.uuid} {...personProps} />
+            );
+          })}
         </div>
-      )}
+        {toShowInvestorList.length === 0 && (
+          <div>
+            This founder doesn’t have any investors shared publically yet.
+          </div>
+        )}
+      </div>
     </Row>
   );
 }

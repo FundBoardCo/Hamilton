@@ -15,6 +15,7 @@ import { MINPLACE, STAGEPROPS } from '../../constants';
 import { getSafeVar } from '../../utils';
 
 export default function Board() {
+  const userUpdateStatus = useSelector(state => state.user.update_status);
   const people = useSelector(state => state.people.records);
   const getOwnInvestorsStatus = useSelector(
     state => state.investors.getOwnInvestors_status,
@@ -327,6 +328,11 @@ export default function Board() {
           </div>
         </div>
       )}
+      <DismissibleStatus
+        status={userUpdateStatus}
+        showSuccess={false}
+        dissmissAction={types.USER_UPDATE_DISSMISSED}
+      />
       {allowIn && (
         <div className="d-flex mb-3">
           <Button
@@ -347,6 +353,7 @@ export default function Board() {
           {toShowInvestorList.map(i => {
             const personProps = {
               ...i,
+              ...i.investorStatus,
               isBoard: true,
               sortedBy: sortBy,
             };

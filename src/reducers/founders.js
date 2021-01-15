@@ -1,11 +1,26 @@
 import * as types from '../actions/types';
-import { processErr } from '../utils';
+import { parseB4AArray, processErr } from '../utils';
+
+export const founderResets = {
+  get_profile_status: '',
+  get_investors_status: '',
+  post_status: '',
+  post_intro_status: '',
+};
 
 const defaults = {
-  get_status: '',
-  post_status: '',
-  founders: {},
+  ...founderResets,
+  publicFounders: {},
+  publicInvestors: {},
 };
+
+function convertToKeyedByUUID(arr) {
+  const obj = {};
+  arr.forEach(a => {
+    obj[a.uuid] = { ...a };
+  });
+  return obj;
+}
 
 export default function founders(state = defaults, action) {
   switch (action.type) {
@@ -16,9 +31,9 @@ export default function founders(state = defaults, action) {
     case types.PUBLIC_GET_PROFILE_SUCCEEDED: return {
       ...state,
       get_status: 'succeeded',
-      founders: {
-        ...state.founders,
-        [action.objectId]: action.data,
+      publicFounders: {
+        ...state.publicFounders,
+        [action.uuid]: action.data,
       },
     };
     case types.PUBLIC_GET_PROFILE_FAILED: return {
@@ -28,6 +43,46 @@ export default function founders(state = defaults, action) {
     case types.PUBLIC_GET_PROFILE_DISMISSED: return {
       ...state,
       get_status: '',
+    };
+    case types.PUBLIC_GET_INVESTORS_REQUESTED: return {
+      ...state,
+      get_investors_status: 'pending',
+    };
+    case types.PUBLIC_GET_INVESTORS_SUCCEEDED: return {
+      ...state,
+      get_investors_status: 'succeeded',
+      publicInvestors: convertToKeyedByUUID(parseB4AArray(action.data)),
+    };
+    case types.PUBLIC_GET_INVESTORS_FAILED: return {
+      ...state,
+      get_investors_status: processErr(action.error),
+    };
+    case types.PUBLIC_GET_INVESTORS_DISMISSED: return {
+      ...state,
+      get_investors_status: '',
+    };
+    case types.PUBLIC_POST_INTRO_REQUESTED: return {
+      ...state,
+      post_intro_status: 'pending',
+    };
+    case types.PUBLIC_POST_INTRO_SUCCEEDED: return {
+      ...state,
+      post_intro_status: 'succeeded',
+      publicInvestors: {
+        ...state.publicInvestors,
+        [action.uuid]: action.data,
+      },
+    };
+    case types.PUBLIC_POST_INTRO_FAILED: return {
+      ...state,
+      post_intro_status: processErr(action.error),
+    };
+    case types.PUBLIC_POST_INTRO_DISMISSED: return {
+      ...state,
+      post_intro_status: '',
+    };
+    case types.USER_LOGOUT: return {
+      ...defaults,
     };
     default: return state;
   }

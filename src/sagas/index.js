@@ -25,6 +25,7 @@ import {
 import {
   watchProfileDataGet,
   watchPublicBoardGet,
+  watchPostIntro,
 } from './founders';
 import {
   watchUserGetOwnInvestors,
@@ -34,7 +35,6 @@ import {
 import {
   watchBoardUUIDGet,
   watchUserPublicBoardPost,
-  watchPublicInvestorStatusUpdate,
   watchUserManualInvestorPost,
   watchUserManualInvestorsGet,
 } from './manageRaise';
@@ -222,7 +222,7 @@ export default function* rootSaga() {
   yield fork(watchProfileDataGet);
   yield fork(watchUserProfileDataGet);
   yield fork(watchUserProfileDataPost);
-  yield fork(watchPublicInvestorStatusUpdate);
+  yield fork(watchPostIntro);
   yield fork(watchUserManualInvestorPost);
   yield fork(watchUserManualInvestorsGet);
   yield fork(watchUserPublicBoardPost);
