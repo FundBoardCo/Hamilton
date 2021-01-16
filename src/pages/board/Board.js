@@ -8,13 +8,12 @@ import Button from 'react-bootstrap/Button';
 import Col from 'react-bootstrap/Col';
 import FormControl from 'react-bootstrap/FormControl';
 import InputGroup from 'react-bootstrap/InputGroup';
-import { useLocation } from 'react-router';
 import Person from '../../components/people/Person';
 import * as types from '../../actions/types';
 import DismissibleStatus from '../../components/DismissibleStatus';
 import { MINPLACE, STAGEPROPS } from '../../constants';
 import { getSafeVar } from '../../utils';
-import GenericModal from "../../modals/GenericModal";
+import GenericModal from '../../modals/GenericModal';
 
 export default function Board() {
   const userUpdateStatus = useSelector(state => state.user.update_status);
@@ -29,7 +28,6 @@ export default function Board() {
   const modalsSeen = useSelector(state => state.modal.modalsSeen) || [];
   const publicUUID = useSelector(state => state.user.uuid);
   const boardPublicViewed = useSelector(state => state.user.board_public_viewed);
-  console.log(boardPublicViewed);
 
   const [sortBy, setSortBy] = useState('status');
   const [sortNameUp, setSortNameUp] = useState(false);

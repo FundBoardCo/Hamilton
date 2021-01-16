@@ -19,8 +19,6 @@ export default function Public(props) {
 
   const people = useSelector(state => state.people.records);
   const userPublicUUID = useSelector(state => state.user.uuid);
-  const test = useSelector(state => state.user);
-  console.log(test);
   const userStatus = useSelector(state => state.user.update_status);
 
   const founderStatus = useSelector(state => state.founders.get_profile_status);
@@ -29,7 +27,6 @@ export default function Public(props) {
 
   const isMyPage = uuid === userPublicUUID;
   const public_records = useSelector(state => state.founders.publicInvestors) || {};
-  console.log(public_records);
   const getInvestorsStatus = useSelector(state => state.founders.get_investors_status) || '';
   const boardPublic = useSelector(state => state.user.board_public);
   const investorIDs = Object.keys(public_records);
