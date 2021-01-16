@@ -8,11 +8,13 @@ import Button from 'react-bootstrap/Button';
 import Col from 'react-bootstrap/Col';
 import FormControl from 'react-bootstrap/FormControl';
 import InputGroup from 'react-bootstrap/InputGroup';
+import { useLocation } from 'react-router';
 import Person from '../../components/people/Person';
 import * as types from '../../actions/types';
 import DismissibleStatus from '../../components/DismissibleStatus';
 import { MINPLACE, STAGEPROPS } from '../../constants';
 import { getSafeVar } from '../../utils';
+import GenericModal from "../../modals/GenericModal";
 
 export default function Board() {
   const userUpdateStatus = useSelector(state => state.user.update_status);
@@ -26,7 +28,8 @@ export default function Board() {
   const allowIn = loggedIn && typeof place === 'number' && place <= MINPLACE;
   const modalsSeen = useSelector(state => state.modal.modalsSeen) || [];
   const publicUUID = useSelector(state => state.user.uuid);
-  const boardPublic = useSelector(state => state.user.board_public);
+  const boardPublicViewed = useSelector(state => state.user.board_public_viewed);
+  console.log(boardPublicViewed);
 
   const [sortBy, setSortBy] = useState('status');
   const [sortNameUp, setSortNameUp] = useState(false);
@@ -168,14 +171,11 @@ export default function Board() {
   const history = useHistory();
 
   const onBoardOpenClick = () => {
-    history.push(`/public/${publicUUID}`);
-  };
-
-  const onBoardToggleClick = () => {
     dispatch({
       type: types.USER_UPDATE_REQUESTED,
-      params: { board_public: !boardPublic },
+      params: { board_public_viewed: true },
     });
+    history.push(`/public/${publicUUID}`);
   };
 
   const onAddBoardClick = () => {
@@ -222,8 +222,23 @@ export default function Board() {
     }
   }, [showHowToIntro, modalsSeen]);
 
+  const shareYourBoardProps = {
+    title: 'Share Your Public FundBoard',
+    text: `You can share your public FundBoard with contacts that can introduce you to the investors
+on it at ${window.location.origin}/public/${publicUUID}.`,
+    buttons: [
+      {
+        key: 'public',
+        text: 'Open Public FundBoard',
+        variant: 'link',
+        onClick: onBoardOpenClick,
+      },
+    ],
+  };
+
   return (
     <Row id="PageBoard" className="pageContainer">
+      {!boardPublicViewed && <GenericModal {...shareYourBoardProps} />}
       {allowIn && (
         <div>
           <div className="boardDetailsBar">
@@ -286,26 +301,13 @@ export default function Board() {
                 Archived
               </button>
             </div>
-            {boardPublic && (
-              <Button
-                variant="link"
-                className="txs-3 mr-2"
-                onClick={onBoardOpenClick}
-              >
-                <span>
-                  Public FundBoard
-                  &nbsp;
-                </span>
-                <span className="d-none d-sm-inline">Board</span>
-              </Button>
-            )}
             <Button
-              variant={boardPublic ? 'outline-secondary' : 'secondary'}
+              variant="link"
               className="txs-3 mr-2"
-              onClick={onBoardToggleClick}
+              onClick={onBoardOpenClick}
             >
               <span>
-                {boardPublic ? 'Make Private' : 'Make Public'}
+                Public FundBoard
                 &nbsp;
               </span>
               <span className="d-none d-sm-inline">Board</span>

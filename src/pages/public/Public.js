@@ -209,7 +209,7 @@ export default function Public(props) {
 
   const confirmDeleteProps = {
     title: 'Are You Sure?',
-    text: 'This will hide your public board, and make all links to it inoperable.',
+    text: 'This will hide the investors on your public board. Links to your board will still work.',
     buttons: [
       {
         key: 'cancel',
@@ -219,7 +219,7 @@ export default function Public(props) {
       },
       {
         key: 'confirm',
-        text: 'Yes, Hide My Board',
+        text: 'Yes, Hide My Investors',
         variant: 'success',
         onClick: onConfirmHideClick,
       },
@@ -258,7 +258,7 @@ export default function Public(props) {
                   className="txs-1 toggleHideLink"
                   onClick={onToggleHideBoardClick}
                 >
-                  {`${boardPublic ? 'Hide' : 'Show'} Public Board`}
+                  {`${boardPublic ? 'Hide' : 'Show'} Public Investor List`}
                 </Button>
               </span>
             )}
@@ -304,7 +304,7 @@ export default function Public(props) {
       {statusBars.map(s => <DismissibleStatus {...s} />)}
       <div>
         <div className="results">
-          {toShowInvestorList.map(i => {
+          {boardPublic && toShowInvestorList.map(i => {
             const personProps = {
               ...i,
               sortedBy: sortBy,
@@ -316,9 +316,9 @@ export default function Public(props) {
             );
           })}
         </div>
-        {toShowInvestorList.length === 0 && (
+        {(!boardPublic || toShowInvestorList.length === 0) && (
           <div>
-            This founder doesn’t have any investors shared publically yet.
+            This founder doesn’t have any investors shared publicly yet.
           </div>
         )}
       </div>
