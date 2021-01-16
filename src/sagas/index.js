@@ -2,7 +2,6 @@ import {
   put,
   call,
   fork,
-  select,
   takeEvery,
   takeLatest,
 } from 'redux-saga/effects';
@@ -48,10 +47,6 @@ import {
   watchUserProfileDataGet,
   watchUserProfileDataPost,
 } from './user';
-
-const api = `https://${process.env.REACT_APP_ENV === 'DEV' ? 'staging-' : ''}api.fundboard.co/`;
-
-const getToken = state => state.user.sessionToken;
 
 function getInfo(params) {
   return axios.get(`/.netlify/functions/webflow_get_blog?${toQueryString(params)}`);
@@ -151,43 +146,6 @@ function* watchSearchSetZipCode() {
   yield takeLatest(types.SEARCH_SET_LOCATION, workGetExtraZipCodes);
 }
 
-function getPeopleInvestments(params) {
-  const { id, token } = params;
-  return axios({
-    method: 'get',
-    url: `${api}investments?${toQueryString({ id })}`,
-    headers: {
-      Authorization: token,
-    },
-  });
-}
-
-function* workPeopleGetInvestments(action) {
-  const { id } = action;
-  const params = { id };
-  try {
-    params.token = yield select(getToken);
-    const results = yield call(getPeopleInvestments, params);
-    yield put({
-      type: types.PEOPLE_GET_INVESTMENTS_SUCCEEDED,
-      params,
-      id,
-      data: results.data,
-    });
-  } catch (error) {
-    yield put({
-      type: types.PEOPLE_GET_INVESTMENTS_FAILED,
-      id,
-      params,
-      error,
-    });
-  }
-}
-
-function* watchPeopleGetInvestments() {
-  yield takeEvery(types.PEOPLE_GET_INVESTMENTS_REQUEST, workPeopleGetInvestments);
-}
-
 function workRehydrate(action) {
   const { key, payload } = action;
   const { token, email, investors } = payload;
@@ -227,10 +185,7 @@ export default function* rootSaga() {
   yield fork(watchUserManualInvestorsGet);
   yield fork(watchUserPublicBoardPost);
   yield fork(watchPersonPutInvalid);
-  // yield fork(watchPeopleGetResults);
-  yield fork(watchPeopleGetInvestments);
   yield fork(watchSearchSetZipCode);
-  // yield fork(watchSearchGetResults);
   yield fork(watchSendFeedback);
   yield fork(watchGetInfo);
 }
