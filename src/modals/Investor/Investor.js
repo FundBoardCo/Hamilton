@@ -20,20 +20,21 @@ export default function Investor(props) {
   const location = useLocation();
   const path = capitalizeFirstLetter(location.pathname.substring(1).split('/')[0]);
 
+  const loggedIn = useSelector(state => state.user.sessionToken);
+  const userUUID = useSelector(state => state.user.uuid);
   const searchResults = useSelector(state => state.search.results) || {};
   const people_records = useSelector(state => state.people.records) || {};
-  const manual_records = useSelector(state => state.manageRaise.manual_records) || [];
+  const investorStatus = useSelector(state => state.investors.ownInvestors[uuid]) || {};
   const sData = searchResults[uuid] || {};
   const pData = people_records[uuid] || {};
-  const mData = manual_records[uuid] || {};
-  const manualRecordID = mData.id;
-  const data = { ...pData, ...sData, ...mData };
+  const data = { ...pData, ...sData, ...investorStatus };
+  const loggedOutInvestorIDs = useSelector(state => state.investors.loggedOutInvestorIDs) || [];
+  const ownInvestors = useSelector(state => state.investors.ownInvestors) || {};
 
   const subProps = {
     uuid,
     data,
     path,
-    manualRecordID,
   };
 
   const { name, getStatus } = data;
@@ -42,7 +43,10 @@ export default function Investor(props) {
 
   const [mode, setMode] = useState(initialMode);
 
-  const investors = useSelector(state => state.user.investors) || [];
+  const nonArchivedOwnInvestors = Object.keys(ownInvestors).filter(i => (
+    ownInvestors[i].stage !== 'archived'
+  ));
+  const investors = [...loggedOutInvestorIDs, ...nonArchivedOwnInvestors];
 
   const isOnBoard = investors.includes(uuid);
 
@@ -55,6 +59,14 @@ export default function Investor(props) {
     });
   }, [dispatch, uuid]);
 
+  useEffect(() => {
+    if (loggedIn) {
+      dispatch({
+        type: types.USER_GET_INVESTORS_REQUESTED,
+      });
+    }
+  }, [dispatch, loggedIn]);
+
   const onToggleMode = () => {
     setMode(mode === 'data' ? 'raise' : 'data');
   };
@@ -66,13 +78,24 @@ export default function Investor(props) {
   };
 
   const addInvestor = () => dispatch({
-    type: 'BOARD_ADD',
-    id: uuid,
+    type: loggedIn ? types.USER_POST_INVESTOR_REQUESTED : types.BOARD_ADD,
+    uuid,
+    params: {
+      uuid,
+      stage: 'added',
+      profileUUID: userUUID,
+      name: data.name,
+    },
   });
 
   const removeInvestor = () => dispatch({
-    type: 'BOARD_REMOVE',
-    id: uuid,
+    type: loggedIn ? types.USER_POST_INVESTOR_REQUESTED : types.BOARD_REMOVE,
+    uuid,
+    params: {
+      uuid,
+      stage: 'archived',
+      profileUUID: userUUID,
+    },
   });
 
   const toggleInvestor = () => {
@@ -109,6 +132,7 @@ export default function Investor(props) {
         <DismissibleStatus
           status={getStatus}
           showSuccess={false}
+          statusPrefix="Loading investor data"
           dissmissAction={types.PEOPLE_GET_DISMISS}
           dismissParams={{ ids: [uuid] }}
         />

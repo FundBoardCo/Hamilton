@@ -40,20 +40,11 @@ function Stage(props) {
 export default function SelectInvestorStage(props) {
   const { uuid } = props;
 
-  const investorIDs = useSelector(state => state.user.investors) || [];
-  const investorStatus = useSelector(state => state.manageRaise.records[uuid]) || {};
+  const investorStatus = useSelector(state => state.investors.ownInvestors[uuid]) || {};
+  const userUUID = useSelector(state => state.user.uuid);
   const stageKeys = Object.keys(STAGEPROPS);
 
-  const { id } = investorStatus;
-  let { stage } = investorStatus;
-
-  if (!stage) {
-    if (investorIDs.includes(uuid)) {
-      stage = 'added';
-    } else {
-      stage = 'none';
-    }
-  }
+  const { objectId, stage = 'added' } = investorStatus;
 
   const currentIndex = stageKeys.indexOf(stage);
 
@@ -62,15 +53,16 @@ export default function SelectInvestorStage(props) {
   const dispatch = useDispatch();
 
   const updateStatus = params => dispatch({
-    type: types.USER_POST_INVESTORSTATUS_REQUESTED,
+    type: types.USER_POST_INVESTOR_REQUESTED,
     params,
   });
 
   const onSelected = newStage => {
     const params = {
-      id,
+      objectId,
       stage: newStage,
       uuid,
+      profileUUID: userUUID,
     };
     updateStatus(params);
     setOpen(false);

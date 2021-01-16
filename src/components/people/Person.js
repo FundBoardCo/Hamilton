@@ -2,10 +2,13 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
 import { useHistory, useLocation } from 'react-router';
-import moment from 'moment';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { capitalizeFirstLetter } from '../../utils';
 import StageIcon from './StageIcon';
+
+function randomKey() {
+  return String(Math.floor(Math.random() * 100000000));
+}
 
 export default function Person(props) {
   const {
@@ -57,7 +60,7 @@ export default function Person(props) {
   let { notes } = investorStatus;
   let next = {};
   if (notes && Object.values(notes).length) {
-    [next = {}] = Object.values(notes).filter(v => v.next);
+    next = Object.values(notes).filter(v => v.next);
     notes = Object.values(notes).filter(v => !v.next);
   } else {
     // Sometimes notes gets saved as an object somehow?
@@ -76,7 +79,7 @@ export default function Person(props) {
     validationProps.faIcon = 'ban';
   }
 
-  if (sortedBy === 'next' && !next.text) return null;
+  if (sortedBy === 'next' && !next.length) return null;
 
   return (
     <div className={`personWrapper ${isBoard ? 'Board' : ''}`}>
@@ -114,19 +117,19 @@ export default function Person(props) {
               </div>
             </div>
           )}
-          {sortedBy === 'next' && next.text && (
-            <div className="next sortedByNext">
+          {sortedBy === 'next' && next.length && next.map(n => (
+            <div className="next sortedByNext" key={randomKey()}>
               <span className="text">
                 <span className="text-danger">
                   To Do Next:&nbsp;
                 </span>
-                {next.text ? next.text : ''}
+                {n.text ? n.text : ''}
               </span>
               <span className="date">
-                {next.date ? moment(next.date).format('LLL') : ''}
+                {n.date ? n.date : ''}
               </span>
             </div>
-          )}
+          ))}
         </div>
         <div className="controls">
           <StageIcon stage={investorStage} withText />
@@ -141,20 +144,22 @@ export default function Person(props) {
             <div className="notes text-primary">
               {`Notes(${notes.length})${notes.length > 0 ? `: ${notes[0].text}` : ''}`}
             </div>
-            <div className="next">
-              <span className="text">
-                <span className={next.waiting ? 'text-primary' : 'text-danger'}>
-                  {next.waiting ? 'Waiting for' : 'To Do Next'}
-                  :&nbsp;
+            {next.length && next.map(n => (
+              <div className="next" key={randomKey()}>
+                <span className="text">
+                  <span className={n.waiting ? 'text-primary' : 'text-danger'}>
+                    {n.waiting ? 'Waiting for' : 'To Do Next'}
+                    :&nbsp;
+                  </span>
+                  <span className={n.waiting ? 'text-primary' : ''}>
+                    {n.text ? n.text : ''}
+                  </span>
                 </span>
-                <span className={next.waiting ? 'text-primary' : ''}>
-                  {next.text ? next.text : ''}
+                <span className="date">
+                  {n.date ? n.date : ''}
                 </span>
-              </span>
-              <span className="date">
-                {next.date ? `- ${moment(next.date).format('LLL')}` : ''}
-              </span>
-            </div>
+              </div>
+            ))}
           </div>
           <div className="published">
             {investorStatus.published ? (

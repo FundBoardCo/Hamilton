@@ -22,7 +22,7 @@ const defaults = {
   hidden: false,
   notFound: false,
 };
-
+/*
 let parsedRecord = {};
 
 function parseOneRecord(action) {
@@ -34,6 +34,7 @@ function parseOneRecord(action) {
       ...action.data.records[0].fields,
     } : {};
 }
+ */
 
 function convertRecords(recs) {
   const newRecs = {};
@@ -71,10 +72,11 @@ function convertRecords(recs) {
 }
 
 export default function manageRaise(state = defaults, action) {
-  let newRecords = {};
+  // let newRecords = {};
   const { data } = action;
 
   switch (action.type) {
+    /*
     case types.USER_GET_INVESTORSTATUSES_REQUESTED: return {
       ...state,
       get_status: 'pending',
@@ -144,11 +146,13 @@ export default function manageRaise(state = defaults, action) {
       ...state,
       postBoard_status: '',
     };
-    case types.PUBLIC_GET_BOARD_REQUESTED: return {
+     */
+      /*
+    case types.PUBLIC_GET_INVESTORS_REQUESTED: return {
       ...state,
       getPublic_status: 'pending',
     };
-    case types.PUBLIC_GET_BOARD_SUCCEEDED: return {
+    case types.PUBLIC_GET_INVESTORS_SUCCEEDED: return {
       ...state,
       getPublic_status: 'succeeded',
       hidden: data.hidden,
@@ -159,14 +163,16 @@ export default function manageRaise(state = defaults, action) {
       manual_records: Array.isArray(data.manualData.records)
         ? convertRecords(data.manualData.records) : {},
     };
-    case types.PUBLIC_GET_BOARD_FAILED: return {
+    case types.PUBLIC_GET_INVESTORS_FAILED: return {
       ...state,
       getPublic_status: processErr(action.error),
     };
-    case types.PUBLIC_GET_BOARD_DISMISSED: return {
+    case types.PUBLIC_GET_INVESTORS_DISMISSED: return {
       ...state,
       getPublic_status: '',
     };
+    */
+    /*
     case types.USER_GET_BOARDUUID_REQUESTED: return {
       ...state,
       getBoardUUID_status: 'pending',
@@ -187,11 +193,12 @@ export default function manageRaise(state = defaults, action) {
       ...state,
       getBoardUUID_status: '',
     };
-    case types.PUBLIC_GET_FOUNDERDATA_REQUESTED: return {
+     */
+    case types.PUBLIC_GET_PROFILE_REQUESTED: return {
       ...state,
       getFounderData_status: 'pending',
     };
-    case types.PUBLIC_GET_FOUNDERDATA_SUCCEEDED: return {
+    case types.PUBLIC_GET_PROFILE_SUCCEEDED: return {
       ...state,
       getFounderData_status: 'succeeded',
       founderData: {
@@ -206,19 +213,20 @@ export default function manageRaise(state = defaults, action) {
           : {},
       },
     };
-    case types.PUBLIC_GET_FOUNDERDATA_FAILED: return {
+    case types.PUBLIC_GET_PROFILE_FAILED: return {
       ...state,
       getFounderData_status: processErr(action.error),
     };
-    case types.PUBLIC_GET_FOUNDERDATA_DISMISSED: return {
+    case types.PUBLIC_GET_PROFILE_DISMISSED: return {
       ...state,
       getFounderData_status: '',
     };
-    case types.PUBLIC_POST_INVESTORSTATUS_REQUESTED: return {
+    /*
+    case types.PUBLIC_POST_INVESTOR_REQUESTED: return {
       ...state,
       publicPost_status: 'pending',
     };
-    case types.PUBLIC_POST_INVESTORSTATUS_SUCCEEDED:
+    case types.PUBLIC_POST_INVESTOR_SUCCEEDED:
       newRecords = Array.isArray(data.records) ? convertRecords(data.records) : {};
       return {
         ...state,
@@ -228,11 +236,11 @@ export default function manageRaise(state = defaults, action) {
           ...newRecords,
         },
       };
-    case types.PUBLIC_POST_INVESTORSTATUS_FAILED: return {
+    case types.PUBLIC_POST_INVESTOR_FAILED: return {
       ...state,
       publicPost_status: processErr(action.error),
     };
-    case types.PUBLIC_POST_INVESTORSTATUS_DISMISSED: return {
+    case types.PUBLIC_POST_INVESTOR_DISMISSED: return {
       ...state,
       publicPost_status: '',
     };
@@ -282,7 +290,7 @@ export default function manageRaise(state = defaults, action) {
       ...state,
       manualInvestorPost_status: '',
     };
-    case types.USER_POST_FOUNDERDATA_REQUESTED: return {
+    case types.USER_POST_PROFILE_REQUESTED: return {
       ...state,
       founderData: {
         ...state.founderData,
@@ -292,7 +300,7 @@ export default function manageRaise(state = defaults, action) {
         },
       },
     };
-    case types.USER_POST_FOUNDERDATA_SUCCEEDED: return {
+    case types.USER_POST_PROFILE_SUCCEEDED: return {
       ...state,
       founderData: {
         ...state.founderData,
@@ -304,7 +312,7 @@ export default function manageRaise(state = defaults, action) {
         },
       },
     };
-    case types.USER_POST_FOUNDERDATA_FAILED: return {
+    case types.USER_POST_PROFILE_FAILED: return {
       ...state,
       founderData: {
         ...state.founderData,
@@ -316,7 +324,7 @@ export default function manageRaise(state = defaults, action) {
         },
       },
     };
-    case types.USER_POST_FOUNDERDATA_DISMISSED: return {
+    case types.USER_POST_PROFILE_DISMISSED: return {
       ...state,
       founderData: {
         ...state.founderData,
@@ -326,6 +334,7 @@ export default function manageRaise(state = defaults, action) {
         },
       },
     };
+     */
     case types.USER_LOGOUT: return {
       ...defaults,
     };

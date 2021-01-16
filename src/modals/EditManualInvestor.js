@@ -7,11 +7,17 @@ import * as types from '../actions/types';
 import DismissibleStatus from '../components/DismissibleStatus';
 import FormInput from '../components/FormInput';
 
-export default function EditManualInvestor() {
-  const postStatus = useSelector(state => state.manageRaise.manualInvestorPost_status);
-  const modalProps = useSelector(state => state.modal.modalProps);
+function parseCBLink(str) {
+  if (!str) return '';
+  return str.replace('http://crunchbase.com/person/', '');
+}
 
-  const { uuid, recordID } = modalProps;
+export default function EditManualInvestor() {
+  const postStatus = useSelector(state => state.investors.postOwnInvestor_status) || '';
+  const modalProps = useSelector(state => state.modal.modalProps);
+  const userUUID = useSelector(state => state.user.uuid);
+
+  const {uuid, objectId} = modalProps;
 
   const [validated, setValidated] = useState(false);
 
@@ -19,18 +25,26 @@ export default function EditManualInvestor() {
 
   useEffect(() => {
     dispatch({
-      type: types.USER_POST_MANUALINVESTOR_DISMISSED,
+      type: types.USER_POST_INVESTOR_DISMISSED,
     });
   }, [dispatch]);
+
+  const pOrgName = modalProps.primary_organization_name
+    || (modalProps.primary_organization && modalProps.primary_organization.value)
+    || '';
+
+  let cbLink = modalProps.permalink;
+  if (cbLink && !cbLink.startsWith('http://crunchbase.com/person/')) {
+    cbLink = `http://crunchbase.com/person/${cbLink}`;
+  }
 
   const initialInputState = {
     name: modalProps.name,
     primary_job_title: modalProps.primary_job_title,
-    primary_organization_name: modalProps.primary_organization_name,
-    is_lead_investor: modalProps.is_lead_investor,
+    primary_organization_name: pOrgName,
     linkedin: modalProps.linkedin,
     twitter: modalProps.twitter,
-    permalink: modalProps.permalink,
+    permalink: cbLink,
     location_city: modalProps.location_city,
     location_state: modalProps.location_state,
   };
@@ -120,19 +134,21 @@ export default function EditManualInvestor() {
     if (form.checkValidity() !== false) {
       const params = {
         uuid,
-        id: recordID,
+        objectId,
         name,
         primary_job_title,
         primary_organization_name,
         is_lead_investor,
         linkedin,
         twitter,
-        permalink,
+        permalink: parseCBLink(permalink),
         location_city,
         location_state,
+        profileUUID: userUUID,
+        manuelEdit: true,
       };
       dispatch({
-        type: types.USER_POST_MANUALINVESTOR_REQUESTED,
+        type: types.USER_POST_INVESTOR_REQUESTED,
         params,
       });
     }
@@ -173,7 +189,7 @@ export default function EditManualInvestor() {
         <DismissibleStatus
           statusPrefix="Saving investor data:"
           status={postStatus}
-          dissmissAction={types.USER_POST_MANUALINVESTOR_DISMISSED}
+          dissmissAction={types.USER_POST_INVESTOR_DISMISSED}
         />
         <Form
           className="mb-4"

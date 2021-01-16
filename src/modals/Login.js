@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import { useHistory } from 'react-router';
 import { useSelector, useDispatch } from 'react-redux';
 import Form from 'react-bootstrap/Form';
@@ -12,7 +12,7 @@ let prevMode = '';
 export default function Login() {
   const user = useSelector(state => state.user) || {};
   const {
-    email,
+    email = '',
     create_status,
     login_status,
     reset_status,
@@ -30,6 +30,24 @@ export default function Login() {
 
   const dispatch = useDispatch();
 
+  useEffect(() => {
+    dispatch({
+      type: types.USER_LOGIN_DISSMISSED,
+    });
+  }, [dispatch]);
+
+  useEffect(() => {
+    dispatch({
+      type: types.USER_CREATE_DISSMISSED,
+    });
+  }, [dispatch]);
+
+  useEffect(() => {
+    dispatch({
+      type: types.USER_RESETPASSWORD_DISSMISSED,
+    });
+  }, [dispatch]);
+
   const create = () => dispatch({
     type: types.USER_CREATE_REQUESTED,
     params: { email: emailValue, password },
@@ -37,7 +55,7 @@ export default function Login() {
 
   const login = () => dispatch({
     type: types.USER_LOGIN_REQUESTED,
-    params: { email: emailValue, password },
+    params: { username: emailValue, password },
   });
 
   const reset = () => dispatch({
@@ -264,6 +282,7 @@ export default function Login() {
           <Status
             statusPrefix="Reset password:"
             status={reset_status}
+            dissmissAction={types.USER_RESETPASSWORD_DISSMISSED}
           />
           <div className="footerBtnWrapper">
             <Button

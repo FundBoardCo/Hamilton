@@ -3,7 +3,6 @@ import {
   call,
   put,
   select,
-  takeEvery,
   takeLatest,
 } from 'redux-saga/effects';
 import { v4 as uuidv4, v5 as uuidv5 } from 'uuid';
@@ -62,6 +61,7 @@ function postStatusData(params) {
   });
 }
 
+/*
 function requestInvestorStatuses(params) {
   return axios.get(`/.netlify/functions/airtable_get_investorStatuses?${toQueryString(params)}`);
 }
@@ -88,32 +88,7 @@ function* workInvestorStatusesGet() {
 export function* watchInvestorStatusesGet() {
   yield takeEvery(types.USER_GET_INVESTORSTATUSES_REQUESTED, workInvestorStatusesGet);
 }
-
-function* workFounderDataGet(action) {
-  const { uuid } = action;
-  const params = {
-    filterByFormula: `{uuid}="${uuid}"`,
-    endpoint: 'founders',
-  };
-  try {
-    if (!uuid) throw new Error('UUID required to get founder data.');
-    const results = yield call(getStatusData, params);
-    // catch airtable errors
-    if (results.data.error) {
-      trackErr(results.data.error);
-      yield put({ type: types.PUBLIC_GET_FOUNDERDATA_FAILED, uuid, error: results.data.error });
-    } else {
-      yield put({ type: types.PUBLIC_GET_FOUNDERDATA_SUCCEEDED, uuid, data: results.data });
-    }
-  } catch (error) {
-    trackErr(error);
-    yield put({ type: types.PUBLIC_GET_FOUNDERDATA_FAILED, uuid, error });
-  }
-}
-
-export function* watchFounderDataGet() {
-  yield takeEvery(types.PUBLIC_GET_FOUNDERDATA_REQUESTED, workFounderDataGet);
-}
+ */
 
 function requestPublicBoard(params) {
   const getParams = params;
@@ -127,33 +102,6 @@ function requestPublicBoard(params) {
       requestoremail,
     },
   });
-}
-
-function* workPublicBoardGet(action) {
-  const { uuid } = action;
-  const requestoremail = yield select(getEmail);
-  const params = {
-    requestoremail,
-    filterByFormula: `{uuid}="${uuid}"`,
-  };
-  try {
-    if (!uuid) throw new Error('UUID required to get public board.');
-    const results = yield call(requestPublicBoard, params);
-    // catch airtable errors
-    if (results.data.error) {
-      trackErr(results.data.error);
-      yield put({ type: types.PUBLIC_GET_BOARD_FAILED, error: results.data.error });
-    } else {
-      yield put({ type: types.PUBLIC_GET_BOARD_SUCCEEDED, data: results.data });
-    }
-  } catch (error) {
-    trackErr(error);
-    yield put({ type: types.PUBLIC_GET_BOARD_FAILED, error });
-  }
-}
-
-export function* watchPublicBoardGet() {
-  yield takeLatest(types.PUBLIC_GET_BOARD_REQUESTED, workPublicBoardGet);
 }
 
 function* workBoardUUIDGet() {
@@ -181,6 +129,7 @@ export function* watchBoardUUIDGet() {
   yield takeLatest(types.USER_GET_BOARDUUID_REQUESTED, workBoardUUIDGet);
 }
 
+/*
 function updateInvestorStatus(params) {
   const postParams = { ...params };
   const { id } = params;
@@ -272,7 +221,8 @@ function* workInvestorStatusPost(action) {
 export function* watchInvestorStatusPost() {
   yield takeEvery(types.USER_POST_INVESTORSTATUS_REQUESTED, workInvestorStatusPost);
 }
-
+ */
+/*
 function* workUserFounderDataPost(action) {
   const { params } = action;
   const { uuid } = params;
@@ -285,20 +235,20 @@ function* workUserFounderDataPost(action) {
     if (results.data.error) {
       trackErr(results.data.error);
       yield put({
-        type: types.USER_POST_FOUNDERDATA_FAILED,
+        type: types.USER_POST_PROFILE_FAILED,
         uuid,
         error: results.data.error,
       });
     } else if (results.data.statusCode && results.data.statusCode === 500) {
       trackErr(results.data.body);
       yield put({
-        type: types.USER_POST_FOUNDERDATA_FAILED,
+        type: types.USER_POST_PROFILE_FAILED,
         uuid,
         error: results.data.body,
       });
     } else {
       yield put({
-        type: types.USER_POST_FOUNDERDATA_SUCCEEDED,
+        type: types.USER_POST_PROFILE_SUCCEEDED,
         uuid,
         data: results.data,
       });
@@ -306,7 +256,7 @@ function* workUserFounderDataPost(action) {
   } catch (error) {
     trackErr(error);
     yield put({
-      type: types.USER_POST_FOUNDERDATA_FAILED,
+      type: types.USER_POST_PROFILE_FAILED,
       uuid,
       error,
     });
@@ -314,8 +264,9 @@ function* workUserFounderDataPost(action) {
 }
 
 export function* watchUserFounderDataPost() {
-  yield takeLatest(types.USER_POST_FOUNDERDATA_REQUESTED, workUserFounderDataPost);
+  yield takeLatest(types.USER_POST_PROFILE_REQUESTED, workUserFounderDataPost);
 }
+ */
 
 function postBulkInvestors(params) {
   const data = { records: [] };
@@ -465,7 +416,7 @@ function* workUserManualInvestorsGet(action) {
 export function* watchUserManualInvestorsGet() {
   yield takeLatest(types.USER_GET_MANUALINVESTORS_REQUESTED, workUserManualInvestorsGet);
 }
-
+/*
 function* workPublicInvestorStatusUpdate(action) {
   const { params } = action;
   params.endpoint = 'status';
@@ -474,18 +425,16 @@ function* workPublicInvestorStatusUpdate(action) {
     // catch airtable errors
     if (results.data.error) {
       trackErr(results.data.error);
-      yield put({ type: types.PUBLIC_POST_INVESTORSTATUS_FAILED, error: results.data.error });
+      yield put({ type: types.PUBLIC_POST_INVESTOR_FAILED, error: results.data.error });
     } else if (results.data.statusCode && results.data.statusCode === 500) {
       trackErr(results.data.body);
-      yield put({ type: types.PUBLIC_POST_INVESTORSTATUS_FAILED, error: results.data.body });
+      yield put({ type: types.PUBLIC_POST_INVESTOR_FAILED, error: results.data.body });
     } else {
       yield put({
-        type: types.PUBLIC_POST_INVESTORSTATUS_SUCCEEDED,
+        type: types.PUBLIC_POST_INVESTOR_SUCCEEDED,
         data: results.data,
       });
-      /* there is a chance of a race condition here, if someone manually closes the modal while it
-         is being submitted then opens it again. That's probably fine.
-       */
+
       const openModal = yield select(getModalOpen);
       if (openModal === 'makeIntro') {
         yield put({
@@ -496,10 +445,11 @@ function* workPublicInvestorStatusUpdate(action) {
     }
   } catch (error) {
     trackErr(error);
-    yield put({ type: types.PUBLIC_POST_INVESTORSTATUS_FAILED, error });
+    yield put({ type: types.PUBLIC_POST_INVESTOR_FAILED, error });
   }
 }
 
 export function* watchPublicInvestorStatusUpdate() {
-  yield takeLatest(types.PUBLIC_POST_INVESTORSTATUS_REQUESTED, workPublicInvestorStatusUpdate);
+  yield takeLatest(types.PUBLIC_POST_INVESTOR_REQUESTED, workPublicInvestorStatusUpdate);
 }
+*/

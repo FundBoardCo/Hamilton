@@ -11,24 +11,23 @@ import InputGroup from 'react-bootstrap/InputGroup';
 import Person from '../../components/people/Person';
 import * as types from '../../actions/types';
 import DismissibleStatus from '../../components/DismissibleStatus';
-import { STAGEPROPS } from '../../constants';
+import { MINPLACE, STAGEPROPS } from '../../constants';
 import { getSafeVar } from '../../utils';
+import GenericModal from '../../modals/GenericModal';
 
 export default function Board() {
-  const getBoardUUID_status = useSelector(state => state.manageRaise.getBoardUUID_status);
-  const investorIDs = useSelector(state => state.user.investors) || [];
+  const userUpdateStatus = useSelector(state => state.user.update_status);
   const people = useSelector(state => state.people.records);
-  const manualInvestorGet_status = useSelector(
-    state => state.manageRaise.manualInvestorGet_status,
+  const getOwnInvestorsStatus = useSelector(
+    state => state.investors.getOwnInvestors_status,
   );
-  const manual_records = useSelector(state => state.manageRaise.manual_records) || {};
-  const loggedIn = useSelector(state => state.user.token);
-  const email = useSelector(state => state.user.email);
+  const ownInvestors = useSelector(state => state.investors.ownInvestors) || {};
+  const loggedIn = useSelector(state => state.user.sessionToken);
+  const place = useSelector(state => state.user.place);
+  const allowIn = loggedIn && typeof place === 'number' && place <= MINPLACE;
   const modalsSeen = useSelector(state => state.modal.modalsSeen) || [];
-  const investorStatus_getStatus = useSelector(state => state.manageRaise.get_status);
-  const investorStatus_records = useSelector(state => state.manageRaise.records);
-  const boardNotFound = useSelector(state => state.manageRaise.notFound);
-  const publicID = useSelector(state => state.manageRaise.publicUUID);
+  const publicUUID = useSelector(state => state.user.uuid);
+  const boardPublicViewed = useSelector(state => state.user.board_public_viewed);
 
   const [sortBy, setSortBy] = useState('status');
   const [sortNameUp, setSortNameUp] = useState(false);
@@ -40,46 +39,21 @@ export default function Board() {
 
   useEffect(() => {
     dispatch({
-      type: types.USER_GET_MANUALINVESTORS_REQUESTED,
-      params: { email },
-    });
-  }, [email, dispatch]);
-
-  useEffect(() => {
-    dispatch({
-      type: types.USER_GET_BOARDUUID_REQUESTED,
-    });
-  }, [dispatch]);
-
-  useEffect(() => {
-    dispatch({
       type: types.USER_GET_PROFILE_REQUESTED,
     });
   }, [dispatch]);
 
   useEffect(() => {
     dispatch({
-      type: types.PUBLIC_GET_BOARD_REQUESTED,
-      uuid: publicID,
+      type: types.PEOPLE_GET_REQUEST,
     });
-  }, [publicID, dispatch]);
+  }, [dispatch]);
 
   useEffect(() => {
-    if (investorIDs.length) {
-      dispatch({
-        type: types.PEOPLE_GET_REQUEST,
-        id: investorIDs,
-      });
-    }
-  }, [investorIDs, dispatch]);
-
-  useEffect(() => {
-    if (investorIDs.length) {
-      dispatch({
-        type: types.USER_GET_INVESTORSTATUSES_REQUESTED,
-      });
-    }
-  }, [investorIDs, dispatch]);
+    dispatch({
+      type: types.USER_GET_INVESTORS_REQUESTED,
+    });
+  }, [dispatch]);
 
   let investorList = [];
   let toShowInvestorList;
@@ -105,9 +79,9 @@ export default function Board() {
   firstLine.CrunchBase = '';
   csvList.push(firstLine);
 
-  investorIDs.forEach(i => {
+  Object.keys(ownInvestors).forEach(i => {
     const person = people[i] ? { ...people[i] } : {};
-    const investorStatus = investorStatus_records[i] || {};
+    const investorStatus = ownInvestors[i] || {};
     investorList.push({
       ...person,
       uuid: i,
@@ -140,39 +114,6 @@ export default function Board() {
     csvPer.LinkedIn = person.linkedin || '';
     csvPer.Twitter = person.twitter || '';
     csvPer.CrunchBase = person.permalink ? `https://www.crunchbase.com/person/${person.permalink}` : '';
-    csvList.push(csvPer);
-  });
-
-  Object.keys(manual_records).forEach(k => {
-    const investorStatus = investorStatus_records[k] || {};
-    const r = manual_records[k];
-    investorList.push({
-      ...r,
-      investorStatus,
-    });
-    const noteValues = investorStatus.notes ? Object.values(investorStatus.notes) : [];
-    const notesForCSV = noteValues
-      .filter(n => !n.next).map(n => `${n.text} ${n.date || ''}`).join(' || ');
-    const nextForCSV = noteValues
-      .filter(n => n.next).map(n => `${n.text} ${n.date || ''}`).join(' || ');
-    const csvPer = {};
-    csvPer['Investor Name'] = r.name || '';
-    csvPer.Title = r.primary_job_title || '';
-    csvPer.Organization = r.primary_organization_name || '';
-    csvPer.Priority = '';
-    csvPer['Introed By'] = investorStatus.intro_name || '';
-    csvPer['Introer Email'] = investorStatus.intro_email || '';
-    csvPer['Date of Intro'] = investorStatus.intro_date || '';
-    csvPer.Stage = investorStatus.stage;
-    csvPer.Amount = investorStatus.amount || '';
-    csvPer['Next Steps'] = nextForCSV;
-    csvPer.Notes = notesForCSV;
-    csvPer['Potential Lead'] = r.is_lead_investor ? 'Yes' : '';
-    csvPer['Open to Direct Outreach'] = '';
-    csvPer.Location = r.location;
-    csvPer.LinkedIn = r.linkedin || '';
-    csvPer.Twitter = r.twitter || '';
-    csvPer.CrunchBase = r.permalink ? `https://www.crunchbase.com/person/${r.permalink}` : '';
     csvList.push(csvPer);
   });
 
@@ -227,26 +168,12 @@ export default function Board() {
 
   const history = useHistory();
 
-  const onBoardClick = () => {
-    if (!publicID || boardNotFound) {
-      dispatch({
-        type: types.USER_POST_PUBLICBOARD_REQUESTED,
-        params: {
-          id: false,
-          addInvestors: investorList.filter(i => !Object.keys(i.investorStatus).length),
-          investorParams: {
-            stage: 'added',
-            published: true,
-          },
-        },
-      });
-      dispatch({
-        type: types.MODAL_SET_OPEN,
-        modal: 'creatingPublicBoard',
-      });
-    } else {
-      history.push(`/public/${publicID}`);
-    }
+  const onBoardOpenClick = () => {
+    dispatch({
+      type: types.USER_UPDATE_REQUESTED,
+      params: { board_public_viewed: true },
+    });
+    history.push(`/public/${publicUUID}`);
   };
 
   const onAddBoardClick = () => {
@@ -293,14 +220,29 @@ export default function Board() {
     }
   }, [showHowToIntro, modalsSeen]);
 
+  const shareYourBoardProps = {
+    title: 'Share Your Public FundBoard',
+    text: `You can share your public FundBoard with contacts that can introduce you to the investors
+on it at ${window.location.origin}/public/${publicUUID}.`,
+    buttons: [
+      {
+        key: 'public',
+        text: 'Open Public FundBoard',
+        variant: 'link',
+        onClick: onBoardOpenClick,
+      },
+    ],
+  };
+
   return (
     <Row id="PageBoard" className="pageContainer">
-      {loggedIn && (
+      {!boardPublicViewed && <GenericModal {...shareYourBoardProps} />}
+      {allowIn && (
         <div>
           <div className="boardDetailsBar">
             <div className="primaryDetails">
               <span>
-                {`My Fundboard: ${investorIDs.length}`}
+                {`My Fundboard: ${Object.keys(ownInvestors).length}`}
                 <span className="d-none d-md-inline">&nbsp;Potential Lead</span>
                 <span className="d-none d-xs-inline">&nbsp;Investors</span>
               </span>
@@ -317,7 +259,7 @@ export default function Board() {
                 className="primaryDetailsLink"
                 variant="link"
                 onClick={onCSVClick}
-                disabled={investorIDs.length === 0}
+                disabled={Object.keys(ownInvestors).length === 0}
                 data-track="BoardDownload"
               >
                 <span className="ml-2">Download</span>
@@ -325,97 +267,93 @@ export default function Board() {
               </Button>
             </div>
           </div>
-          {investorIDs.length > 0 && (
-            <div className="d-flex justify-content-end justify-content-lg-end align-items-center mb-3">
-              <div className="sortBar">
-                <span className="label">Sort By:</span>
-                <button
-                  type="button"
-                  className={sortBy === 'name' ? 'active' : ''}
-                  onClick={toggleSortByName}
-                >
-                  ABC
-                </button>
-                <button
-                  type="button"
-                  className={sortBy === 'status' ? 'active' : ''}
-                  onClick={toggleSortByStatus}
-                >
-                  Status
-                </button>
-                <button
-                  type="button"
-                  className={sortBy === 'next' ? 'active' : ''}
-                  onClick={toggleSortByNext}
-                >
-                  To Do Next
-                </button>
-                <button
-                  type="button"
-                  className={showArchived ? 'active' : ''}
-                  onClick={() => setShowArchived(!showArchived)}
-                >
-                  Archived
-                </button>
-              </div>
-              <Button
-                variant={publicID ? 'outline-secondary' : 'secondary'}
-                className="txs-3 mr-2"
-                onClick={onBoardClick}
+          <div className="d-flex justify-content-end justify-content-lg-end align-items-center mb-3">
+            <div className="sortBar">
+              <span className="label">Sort By:</span>
+              <button
+                type="button"
+                className={sortBy === 'name' ? 'active' : ''}
+                onClick={toggleSortByName}
               >
-                <span>
-                  {publicID ? 'Public' : 'Share'}
-                  &nbsp;
-                </span>
-                <span className="d-none d-sm-inline">Board</span>
-              </Button>
-              <div className="searchBar">
-                <InputGroup>
-                  <InputGroup.Prepend>
-                    <InputGroup.Text>
-                      Search
-                    </InputGroup.Text>
-                  </InputGroup.Prepend>
-                  <FormControl
-                    type="text"
-                    value={searchBy}
-                    onChange={e => setSearchBy(e.target.value)}
-                    aria-label="Search for an investor by name or organization."
-                  />
-                </InputGroup>
-              </div>
+                ABC
+              </button>
+              <button
+                type="button"
+                className={sortBy === 'status' ? 'active' : ''}
+                onClick={toggleSortByStatus}
+              >
+                Status
+              </button>
+              <button
+                type="button"
+                className={sortBy === 'next' ? 'active' : ''}
+                onClick={toggleSortByNext}
+              >
+                To Do Next
+              </button>
+              <button
+                type="button"
+                className={showArchived ? 'active' : ''}
+                onClick={() => setShowArchived(!showArchived)}
+              >
+                Archived
+              </button>
             </div>
-          )}
+            <Button
+              variant="link"
+              className="txs-3 mr-2"
+              onClick={onBoardOpenClick}
+            >
+              <span>
+                Public FundBoard
+                &nbsp;
+              </span>
+              <span className="d-none d-sm-inline">Board</span>
+            </Button>
+            <div className="searchBar">
+              <InputGroup>
+                <InputGroup.Prepend>
+                  <InputGroup.Text>
+                    Search
+                  </InputGroup.Text>
+                </InputGroup.Prepend>
+                <FormControl
+                  type="text"
+                  value={searchBy}
+                  onChange={e => setSearchBy(e.target.value)}
+                  aria-label="Search for an investor by name or organization."
+                />
+              </InputGroup>
+            </div>
+          </div>
         </div>
       )}
-      <div className="d-flex mb-3">
-        <Button
-          variant="link"
-          onClick={onAddBoardClick}
-        >
-          Add an Investor Manually
-        </Button>
-      </div>
       <DismissibleStatus
-        status={manualInvestorGet_status}
+        status={userUpdateStatus}
         showSuccess={false}
-        dissmissAction={types.USER_GET_MANUALINVESTORS_DISMISSED}
+        dissmissAction={types.USER_UPDATE_DISSMISSED}
       />
+      {allowIn && (
+        <div className="d-flex mb-3">
+          <Button
+            variant="link"
+            onClick={onAddBoardClick}
+          >
+            Add an Investor Manually
+          </Button>
+        </div>
+      )}
       <DismissibleStatus
-        status={investorStatus_getStatus}
+        status={getOwnInvestorsStatus}
         showSuccess={false}
-        dissmissAction={types.USER_GET_INVESTORSTATUSES_DISMISSED}
+        dissmissAction={types.USER_GET_INVESTORS_DISMISSED}
       />
-      <DismissibleStatus
-        status={getBoardUUID_status}
-        showSuccess={false}
-        dissmissAction={types.USER_GET_BOARDUUID_DISMISSED}
-      />
-      {loggedIn && (
+      {allowIn && (
         <div className="results">
           {toShowInvestorList.map(i => {
             const personProps = {
               ...i,
+              ...i.investorStatus,
               isBoard: true,
               sortedBy: sortBy,
             };
@@ -435,7 +373,7 @@ export default function Board() {
           <h1 className="text-center">To see your FundBoard, you need to log in first.</h1>
         </Col>
       )}
-      {investorIDs.length === 0 && (
+      {allowIn && Object.keys(ownInvestors).length === 0 && (
         <div>
           <p>
             You don’t have any investors saved yet.

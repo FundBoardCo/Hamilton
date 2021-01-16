@@ -115,7 +115,7 @@ export default function SearchMenu() {
 
   const onClickClearSearchText = () => {
     setSearchedText('');
-  }
+  };
 
   const onTileClick = (word, active) => {
     if (active) {
@@ -243,7 +243,7 @@ export default function SearchMenu() {
               variant="outline-primary"
               onClick={onClickClearSearchText}
             >
-              <FontAwesomeIcon className='mr-1 ml-1' icon="times" />
+              <FontAwesomeIcon className="mr-1 ml-1" icon="times" />
             </Button>
           </InputGroup.Append>
         </InputGroup>

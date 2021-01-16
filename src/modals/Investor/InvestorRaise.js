@@ -20,23 +20,25 @@ export default function InvestorRaise(props) {
     uuid,
     data = {},
     path,
-    manualRecordID,
   } = props;
 
-  const investorStatus = useSelector(state => state.manageRaise.records[uuid]) || {};
   const {
-    id,
+    objectId,
     stage = 'added',
     notes = {},
     amount = 0,
     published,
+    intro = {},
+  } = data;
+
+  const {
     intro_date,
     intro_name,
     intro_email,
-  } = investorStatus;
+  } = intro;
   const { advice } = STAGEPROPS[stage];
-  const postStatus = useSelector(state => state.manageRaise.post_status) || '';
-  const noteParams = useSelector(state => state.manageRaise.editNoteParams);
+  const postStatus = useSelector(state => state.investors.postOwnInvestor_status) || '';
+  const noteParams = useSelector(state => state.investors.editNoteParams);
 
   const [amountValue, setAmount] = useState(amount);
   const [showEditAmount, setShowEditAmount] = useState(false);
@@ -45,7 +47,7 @@ export default function InvestorRaise(props) {
   const dispatch = useDispatch();
 
   const updateStatus = params => dispatch({
-    type: types.USER_POST_INVESTORSTATUS_REQUESTED,
+    type: types.USER_POST_INVESTOR_REQUESTED,
     params,
   });
 
@@ -56,8 +58,7 @@ export default function InvestorRaise(props) {
 
   const onSaveAmount = () => {
     const params = {
-      id,
-      uuid,
+      objectId,
       amount: amountValue,
     };
     updateStatus(params);
@@ -66,8 +67,7 @@ export default function InvestorRaise(props) {
 
   const onTogglePublish = () => {
     const params = {
-      id,
-      uuid,
+      objectId,
       published: !published,
     };
     updateStatus(params);
@@ -79,8 +79,6 @@ export default function InvestorRaise(props) {
       modal: 'editInvestor',
       modalProps: {
         ...data,
-        uuid,
-        recordID: manualRecordID,
       },
     });
   };
@@ -100,18 +98,17 @@ export default function InvestorRaise(props) {
       <DismissibleStatus
         status={postStatus}
         showSuccess={false}
-        dissmissAction={types.USER_POST_INVESTORSTATUS_DISMISSED}
+        statusPrefix="Updating investor"
+        dissmissAction={types.USER_POST_INVESTOR_DISMISSED}
       />
-      {manualRecordID && (
-        <div>
-          <Button
-            variant="link"
-            onClick={onEditManualClick}
-          >
-            Edit Manually Entered Investor
-          </Button>
-        </div>
-      )}
+      <div>
+        <Button
+          variant="link"
+          onClick={onEditManualClick}
+        >
+          Edit Investor
+        </Button>
+      </div>
       <section className="mb-3">
         <div className="mt-3">
           <SelectableInvestorStage uuid={uuid} />
@@ -199,7 +196,7 @@ export default function InvestorRaise(props) {
         <h2 className="sectionHead">Introduced By</h2>
         {showEditIntro ? (
           <EditIntro
-            {...investorStatus}
+            {...data}
             onSubmit={() => setShowEditIntro(false)}
             onCancel={() => setShowEditIntro(false)}
           />
@@ -263,7 +260,6 @@ InvestorRaise.defaultProps = {
   uuid: '',
   data: {},
   path: '',
-  manualRecordID: '',
 };
 
 InvestorRaise.propTypes = {
@@ -273,5 +269,4 @@ InvestorRaise.propTypes = {
       .oneOfType([PropTypes.bool, PropTypes.string, PropTypes.objectOf(PropTypes.string)])),
   }),
   path: PropTypes.string,
-  manualRecordID: PropTypes.string,
 };

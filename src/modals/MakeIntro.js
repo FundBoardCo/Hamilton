@@ -19,7 +19,7 @@ export default function MakeIntro() {
 
   useEffect(() => {
     dispatch({
-      type: types.PUBLIC_GET_FOUNDERDATA_REQUESTED,
+      type: types.PUBLIC_GET_PROFILE_REQUESTED,
       uuid: founderUUID,
     });
   }, [founderUUID, dispatch]);
@@ -58,7 +58,7 @@ export default function MakeIntro() {
           statusPrefix="Founder data:"
           showSuccess={false}
           status={founderStatus}
-          dissmissAction={types.PUBLIC_GET_FOUNDERDATA_DISMISSED}
+          dissmissAction={types.PUBLIC_GET_PROFILE_DISMISSED}
         />
         <EditIntro
           {...modalProps}
