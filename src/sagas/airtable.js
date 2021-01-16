@@ -5,7 +5,7 @@ import {
   takeEvery,
   takeLatest,
 } from 'redux-saga/effects';
-import {toQueryString, trackErr} from '../utils';
+import { toQueryString, trackErr } from '../utils';
 import * as types from '../actions/types';
 
 function requestAirtableGetKeywords(params) {
@@ -23,10 +23,10 @@ function* workAirtableGetKeywords() {
       // catch airtable errors
       if (results.data.error) {
         trackErr(results.data.error);
-        yield put({type: types.AIRTABLE_GET_KEYWORDS_FAILED, error: results.data.error});
+        yield put({ type: types.AIRTABLE_GET_KEYWORDS_FAILED, error: results.data.error });
       } else {
         params.offset = results.data.offset;
-        yield put({type: types.AIRTABLE_GET_KEYWORDS_SUCCEEDED, data: results.data});
+        yield put({ type: types.AIRTABLE_GET_KEYWORDS_SUCCEEDED, data: results.data });
       }
     }
   } catch (error) {

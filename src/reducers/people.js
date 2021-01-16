@@ -67,23 +67,30 @@ export default function people(state = {}, action) {
         ...state,
         ...records,
       };
+      /*
     case types.PEOPLE_GET_INVESTMENTS_REQUEST:
       return {
         ...state,
-        [action.id]: {
-          ...state[action.id],
-          investmentsStatus: 'pending',
-          investments: [],
+        records: {
+          ...state.records,
+          [action.id]: {
+            ...state.records[action.id],
+            investmentsStatus: 'pending',
+            investments: [],
+          },
         },
       };
     case types.PEOPLE_GET_INVESTMENTS_SUCCEEDED:
       // TODO: filter out different investments in the same founder/startup
       return {
         ...state,
-        [action.id]: {
-          ...state[action.id],
-          investmentsStatus: 'succeeded',
-          investments: action.data,
+        records: {
+          ...state.records,
+          [action.id]: {
+            ...state.records[action.id],
+            investmentsStatus: 'succeeded',
+            investments: action.data,
+          },
         },
       };
     case types.PEOPLE_GET_INVESTMENTS_FAILED:
@@ -91,30 +98,40 @@ export default function people(state = {}, action) {
         ...state,
         [action.id]: { ...state[action.id], investmentsStatus: processErr(action.error) },
       };
+       */
     case types.PERSON_PUT_INVALID_REQUESTED:
       return {
         ...state,
-        [uuid]: {
-          ...state[uuid],
-          invalid_reason: reason,
-          invalid_status: 'pending',
+        records: {
+          ...state.records,
+          [uuid]: {
+            ...state.records[uuid],
+            invalid_reason: reason,
+            invalid_status: 'pending',
+          },
         },
       };
     case types.PERSON_PUT_INVALID_SUCCEEDED:
       return {
         ...state,
-        [uuid]: {
-          ...state[uuid],
-          invalid: true,
-          invalid_status: 'succeeded',
+        records: {
+          ...state.records,
+          [uuid]: {
+            ...state.records[uuid],
+            invalid: true,
+            invalid_status: 'succeeded',
+          },
         },
       };
     case types.PERSON_PUT_INVALID_FAILED:
       return {
         ...state,
-        [uuid]: {
-          ...state[uuid],
-          invalid_status: processErr(action.error),
+        records: {
+          ...state.records,
+          [uuid]: {
+            ...state.records[uuid],
+            invalid_status: processErr(action.error),
+          },
         },
       };
     case types.PERSON_CLEAR_INVALID:
