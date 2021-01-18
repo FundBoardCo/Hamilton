@@ -3,6 +3,7 @@ import { parseB4AArray, processErr } from '../utils';
 
 export const founderResets = {
   get_profile_status: '',
+  get_user_status: '',
   get_investors_status: '',
   post_status: '',
   post_intro_status: '',
@@ -26,23 +27,49 @@ export default function founders(state = defaults, action) {
   switch (action.type) {
     case types.PUBLIC_GET_PROFILE_REQUESTED: return {
       ...state,
-      get_status: 'pending',
+      get_profile_status: 'pending',
     };
     case types.PUBLIC_GET_PROFILE_SUCCEEDED: return {
       ...state,
-      get_status: 'succeeded',
+      get_profile_status: 'succeeded',
       publicFounders: {
         ...state.publicFounders,
-        [action.uuid]: action.data,
+        [action.uuid]: {
+          ...state.publicFounders[action.uuid],
+          ...action.data,
+        },
       },
     };
     case types.PUBLIC_GET_PROFILE_FAILED: return {
       ...state,
-      get_status: processErr(action.error),
+      get_profile_status: processErr(action.error),
     };
     case types.PUBLIC_GET_PROFILE_DISMISSED: return {
       ...state,
-      get_status: '',
+      get_profile_status: '',
+    };
+    case types.PUBLIC_GET_USER_REQUESTED: return {
+      ...state,
+      get_user_status: 'pending',
+    };
+    case types.PUBLIC_GET_USER_SUCCEEDED: return {
+      ...state,
+      get_user_status: 'succeeded',
+      publicFounders: {
+        ...state.publicFounders,
+        [action.uuid]: {
+          ...state.publicFounders[action.uuid],
+          ...action.data,
+        },
+      },
+    };
+    case types.PUBLIC_GET_USER_FAILED: return {
+      ...state,
+      get_user_status: processErr(action.error),
+    };
+    case types.PUBLIC_GET_USER_DISMISSED: return {
+      ...state,
+      get_user_status: '',
     };
     case types.PUBLIC_GET_INVESTORS_REQUESTED: return {
       ...state,

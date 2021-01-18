@@ -266,12 +266,6 @@ export default function Profile() {
     });
   }, [dispatch]);
 
-  useEffect(() => {
-    dispatch({
-      type: types.USER_POST_PUBLICBOARD_DISMISSED,
-    });
-  }, [dispatch]);
-
   const updateAccount = params => dispatch({
     type: types.USER_UPDATE_REQUESTED,
     params,

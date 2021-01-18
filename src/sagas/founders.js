@@ -13,7 +13,7 @@ function getPublicBoard(params) {
   return Parse.Cloud.run('getPublicInvestors', params);
 }
 
-function* workPublicBoardGet(action) {
+function* workPublicInvestorsGet(action) {
   const { uuid } = action;
   const params = { uuid };
 
@@ -26,11 +26,11 @@ function* workPublicBoardGet(action) {
   }
 }
 
-export function* watchPublicBoardGet() {
-  yield takeLatest(types.PUBLIC_GET_INVESTORS_REQUESTED, workPublicBoardGet);
+export function* watchPublicInvestorsGet() {
+  yield takeLatest(types.PUBLIC_GET_INVESTORS_REQUESTED, workPublicInvestorsGet);
 }
 
-function getPublicUser(params) {
+function getPublicProfile(params) {
   if (!params.uuid) throw new Error('A UUID is required.');
   return Parse.Cloud.run('getPublicProfile', params);
 }
@@ -40,7 +40,7 @@ function* workGetProfile(action) {
   const params = { uuid };
 
   try {
-    const results = yield call(getPublicUser, params);
+    const results = yield call(getPublicProfile, params);
     const data = results && results.toJSON ? results.toJSON() : {};
     yield put({ type: types.PUBLIC_GET_PROFILE_SUCCEEDED, uuid, data });
   } catch (error) {
@@ -51,6 +51,29 @@ function* workGetProfile(action) {
 
 export function* watchProfileDataGet() {
   yield takeEvery(types.PUBLIC_GET_PROFILE_REQUESTED, workGetProfile);
+}
+
+function getPublicUser(params) {
+  if (!params.uuid) throw new Error('A UUID is required.');
+  return Parse.Cloud.run('getPublicUser', params);
+}
+
+function* workGetUser(action) {
+  const { uuid } = action;
+  const params = { uuid };
+
+  try {
+    const results = yield call(getPublicUser, params);
+    const data = results && results.toJSON ? results.toJSON() : {};
+    yield put({ type: types.PUBLIC_GET_USER_SUCCEEDED, uuid, data });
+  } catch (error) {
+    trackErr(error);
+    yield put({ type: types.PUBLIC_GET_USER_FAILED, uuid, error });
+  }
+}
+
+export function* watchPublicUserGet() {
+  yield takeEvery(types.PUBLIC_GET_USER_REQUESTED, workGetUser);
 }
 
 function postIntro(params) {
