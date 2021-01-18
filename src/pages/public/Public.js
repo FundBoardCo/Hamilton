@@ -18,6 +18,8 @@ export default function Public(props) {
   const { uuid } = params;
 
   const people = useSelector(state => state.people.records) || {};
+  console.log(people);
+  const peopleGetStatus = useSelector(state => state.people.get_status);
   const userPublicUUID = useSelector(state => state.user.uuid);
   const userUpdateStatus = useSelector(state => state.user.update_status);
 
@@ -31,7 +33,6 @@ export default function Public(props) {
   const public_records = useSelector(state => state.founders.publicInvestors) || {};
   const investorIDs = Object.keys(public_records) || [];
   const publicPostIntro = useSelector(state => state.founders.post_intro_status);
-  const publicDismissPost = types.PUBLIC_POST_INTRO_DISMISSED;
 
   const [sortBy, setSortBy] = useState('status');
   const [searchBy, setSearchBy] = useState('');
@@ -70,16 +71,15 @@ export default function Public(props) {
       key: 'publicPost',
       status: publicPostIntro,
       statusPrefix: 'Make Introduction:',
-      dissmissAction: publicDismissPost,
+      dissmissAction: types.PUBLIC_POST_INTRO_DISMISSED,
     },
-    /*
     {
-      key: 'privatePost',
-      status: privatePostStatus,
-      statusPrefix: 'Make Introduction:',
-      dissmissAction: privateDismissPost,
+      key: 'peopleGet',
+      status: peopleGetStatus,
+      showSuccess: false,
+      statusPrefix: 'People Records:',
+      dissmissAction: types.PEOPLE_GET_DISMISS,
     },
-    */
   ];
 
   const dispatch = useDispatch();
@@ -128,7 +128,7 @@ export default function Public(props) {
     if (ids.length) {
       dispatch({
         type: types.PEOPLE_GET_REQUEST,
-        id: ids,
+        ids,
       });
     }
   }, [public_records, dispatch]);
@@ -138,6 +138,7 @@ export default function Public(props) {
   if (Array.isArray(investorIDs)) {
     investorIDs.forEach(i => {
       const person = people[i] ? { ...people[i] } : {};
+      console.log(person);
       const investorStatus = public_records[i] || {};
       investorList.push({
         ...person,

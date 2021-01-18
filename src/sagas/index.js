@@ -46,6 +46,9 @@ import {
   watchUserProfileDataGet,
   watchUserProfileDataPost,
 } from './user';
+import {
+  watchPeopleGet,
+} from './people';
 
 function getInfo(params) {
   return axios.get(`/.netlify/functions/webflow_get_blog?${toQueryString(params)}`);
@@ -138,4 +141,5 @@ export default function* rootSaga() {
   yield fork(watchSearchSetZipCode);
   yield fork(watchSendFeedback);
   yield fork(watchGetInfo);
+  yield fork(watchPeopleGet);
 }

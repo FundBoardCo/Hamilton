@@ -55,7 +55,7 @@ export default function Investor(props) {
   useEffect(() => {
     dispatch({
       type: types.PEOPLE_GET_REQUEST,
-      id: uuid,
+      ids: [uuid],
     });
   }, [dispatch, uuid]);
 

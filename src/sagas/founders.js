@@ -6,7 +6,7 @@ import {
   takeLatest,
 } from 'redux-saga/effects';
 import * as types from '../actions/types';
-import {isPlainObject, trackErr} from '../utils';
+import { isPlainObject, trackErr } from '../utils';
 
 function getPublicBoard(params) {
   if (!params.uuid) throw new Error('A UUID is required.');

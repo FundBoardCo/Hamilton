@@ -44,10 +44,14 @@ export default function Board() {
   }, [dispatch]);
 
   useEffect(() => {
-    dispatch({
-      type: types.PEOPLE_GET_REQUEST,
-    });
-  }, [dispatch]);
+    const ids = Object.keys(ownInvestors);
+    if (ids.length) {
+      dispatch({
+        type: types.PEOPLE_GET_REQUEST,
+        ids,
+      });
+    }
+  }, [ownInvestors, dispatch]);
 
   useEffect(() => {
     dispatch({
