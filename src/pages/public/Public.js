@@ -123,6 +123,16 @@ export default function Public(props) {
     });
   }, [uuid, dispatch]);
 
+  useEffect(() => {
+    const ids = Object.keys(public_records);
+    if (ids.length) {
+      dispatch({
+        type: types.PEOPLE_GET_REQUEST,
+        ids,
+      });
+    }
+  }, [public_records, dispatch]);
+
   const investorList = [];
 
   if (Array.isArray(investorIDs)) {

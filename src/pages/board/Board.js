@@ -44,6 +44,16 @@ export default function Board() {
   }, [dispatch]);
 
   useEffect(() => {
+    const ids = Object.keys(ownInvestors);
+    if (ids.length) {
+      dispatch({
+        type: types.PEOPLE_GET_REQUEST,
+        ids,
+      });
+    }
+  }, [ownInvestors, dispatch]);
+
+  useEffect(() => {
     dispatch({
       type: types.USER_GET_INVESTORS_REQUESTED,
     });

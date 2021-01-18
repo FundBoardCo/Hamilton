@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React from 'react';
 import {
   BrowserRouter as Router,
   Route,
@@ -141,13 +141,6 @@ function App() {
   const firstTime = useSelector(state => state.search.firstTime);
 
   const dispatch = useDispatch();
-
-  // Always load the people object so it's available for other views.
-  useEffect(() => {
-    dispatch({
-      type: types.PEOPLE_GET_REQUEST,
-    });
-  }, [dispatch]);
 
   const onShowLogin = () => dispatch({
     type: types.MODAL_SET_OPEN,

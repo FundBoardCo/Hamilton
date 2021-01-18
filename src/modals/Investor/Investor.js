@@ -53,6 +53,13 @@ export default function Investor(props) {
   const dispatch = useDispatch();
 
   useEffect(() => {
+    dispatch({
+      type: types.PEOPLE_GET_REQUEST,
+      ids: [uuid],
+    });
+  }, [dispatch, uuid]);
+
+  useEffect(() => {
     if (loggedIn) {
       dispatch({
         type: types.USER_GET_INVESTORS_REQUESTED,
