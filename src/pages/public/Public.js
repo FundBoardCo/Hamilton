@@ -135,11 +135,8 @@ export default function Public(props) {
 
   const investorList = [];
 
-  console.log(investorIDs);
   if (Array.isArray(investorIDs)) {
-    // protect this from possible bad data.
     investorIDs.forEach(i => {
-      console.log(i);
       const person = people[i] ? { ...people[i] } : {};
       const investorStatus = public_records[i] || {};
       investorList.push({
