@@ -17,7 +17,7 @@ export default function Public(props) {
   const { params } = match;
   const { uuid } = params;
 
-  const people = useSelector(state => state.people.records);
+  const people = useSelector(state => state.people.records) || {};
   const userPublicUUID = useSelector(state => state.user.uuid);
   const userUpdateStatus = useSelector(state => state.user.update_status);
 
