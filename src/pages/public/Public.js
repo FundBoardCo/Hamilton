@@ -19,21 +19,19 @@ export default function Public(props) {
 
   const people = useSelector(state => state.people.records);
   const userPublicUUID = useSelector(state => state.user.uuid);
-  const userStatus = useSelector(state => state.user.update_status);
+  const userUpdateStatus = useSelector(state => state.user.update_status);
 
-  const founderStatus = useSelector(state => state.founders.get_profile_status);
+  const publicProfileStatus = useSelector(state => state.founders.get_profile_status);
+  const publicUserStatus = useSelector(state => state.founders.get_user_status);
   const profile = useSelector(state => state.founders.publicFounders[uuid]) || {};
-  // const boardStatus = useSelector(state => state.manageRaise.postBoard_status);
-
   const isMyPage = uuid === userPublicUUID;
-  const public_records = useSelector(state => state.founders.publicInvestors) || {};
+
+  const boardPublic = profile.board_public;
   const getInvestorsStatus = useSelector(state => state.founders.get_investors_status) || '';
-  const boardPublic = useSelector(state => state.user.board_public);
+  const public_records = useSelector(state => state.founders.publicInvestors) || {};
   const investorIDs = Object.keys(public_records);
   const publicPostIntro = useSelector(state => state.founders.post_intro_status);
   const publicDismissPost = types.PUBLIC_POST_INTRO_DISMISSED;
-  // const privatePostStatus = useSelector(state => state.manageRaise.post_status);
-  // const privateDismissPost = types.USER_POST_INVESTORSTATUS_DISMISSED;
 
   const [sortBy, setSortBy] = useState('status');
   const [searchBy, setSearchBy] = useState('');
@@ -48,26 +46,26 @@ export default function Public(props) {
       dissmissAction: types.PUBLIC_GET_INVESTORS_DISMISSED,
     },
     {
-      key: 'founder',
-      status: founderStatus,
+      key: 'founderUser',
+      status: publicUserStatus,
       showSuccess: false,
-      statusPrefix: 'Founder data',
+      statusPrefix: 'Founder user data',
+      dissmissAction: types.PUBLIC_GET_USER_DISMISSED,
+    },
+    {
+      key: 'founderProfile',
+      status: publicProfileStatus,
+      showSuccess: false,
+      statusPrefix: 'Founder profile data',
       dissmissAction: types.PUBLIC_GET_PROFILE_DISMISSED,
     },
     {
       key: 'user',
-      status: userStatus,
+      status: userUpdateStatus,
       showSuccess: false,
       statusPrefix: 'User',
-      dissmissAction: types.PUBLIC_GET_PROFILE_DISMISSED,
+      dissmissAction: types.USER_UPDATE_DISSMISSED,
     },
-    /*
-    {
-      key: 'board',
-      status: boardStatus,
-      dissmissAction: types.USER_POST_PUBLICBOARD_DISMISSED,
-    },
-     */
     {
       key: 'publicPost',
       status: publicPostIntro,
@@ -94,26 +92,26 @@ export default function Public(props) {
       type: types.PUBLIC_GET_PROFILE_DISMISSED,
     });
     dispatch({
+      type: types.PUBLIC_GET_USER_DISMISSED,
+    });
+    dispatch({
       type: types.USER_UPDATE_DISSMISSED,
     });
-    /*
-    dispatch({
-      type: types.USER_POST_PUBLICBOARD_DISMISSED,
-    });
-    */
     dispatch({
       type: types.PUBLIC_POST_INTRO_DISMISSED,
     });
-    /*
-    dispatch({
-      type: types.USER_POST_INVESTORSTATUS_DISMISSED,
-    });
-    */
   }, [dispatch]);
 
   useEffect(() => {
     dispatch({
       type: types.PUBLIC_GET_INVESTORS_REQUESTED,
+      uuid,
+    });
+  }, [uuid, dispatch]);
+
+  useEffect(() => {
+    dispatch({
+      type: types.PUBLIC_GET_USER_REQUESTED,
       uuid,
     });
   }, [uuid, dispatch]);
@@ -147,7 +145,6 @@ export default function Public(props) {
       investorStatus,
     });
   });
-  console.log(investorList);
 
   investorList.sort((a, b) => {
     if (sortBy === 'status') {
@@ -168,7 +165,6 @@ export default function Public(props) {
     }
     return include;
   });
-  console.log(toShowInvestorList);
 
   const toggleHideBoard = () => {
     dispatch({

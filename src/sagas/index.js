@@ -23,7 +23,8 @@ import {
 } from './airtable';
 import {
   watchProfileDataGet,
-  watchPublicBoardGet,
+  watchPublicUserGet,
+  watchPublicInvestorsGet,
   watchPostIntro,
 } from './founders';
 import {
@@ -32,8 +33,6 @@ import {
   watchUserSafeAdd,
 } from './investors';
 import {
-  watchBoardUUIDGet,
-  watchUserPublicBoardPost,
   watchUserManualInvestorPost,
   watchUserManualInvestorsGet,
 } from './manageRaise';
@@ -66,54 +65,6 @@ function* workGetInfo(action) {
 function* watchGetInfo() {
   yield takeEvery(types.INFO_GET_REQUESTED, workGetInfo);
 }
-
-/*
-function* workBoardRemove(action) {
-  const token = yield select(getToken);
-  const board = yield select(getBoard);
-  const { id } = action;
-  const params = {
-    investors: board.filter(i => i !== id),
-  };
-  const boardParams = { ...params };
-  try {
-    if (token) {
-      yield put({ type: types.USER_UPDATE_REQUESTED, params });
-    }
-    yield put({ type: types.BOARD_REMOVE_COMPLETE, params: boardParams });
-  } catch (error) {
-    trackErr(error);
-  }
-}
-
-function* watchBoardRemove() {
-  yield takeLatest(types.BOARD_REMOVE, workBoardRemove);
-}
- */
-
-/*
-function* workBoardAdd(action) {
-  const token = yield select(getToken);
-  const board = yield select(getBoard);
-  const { id } = action;
-  const params = {
-    investors: [...new Set([...board, id])],
-  };
-  const boardParams = { ...params };
-  try {
-    if (token) {
-      yield put({ type: types.USER_UPDATE_REQUESTED, params });
-    }
-    yield put({ type: types.BOARD_ADD_COMPLETE, params: boardParams });
-  } catch (error) {
-    trackErr(error);
-  }
-}
-
-function* watchBoardAdd() {
-  yield takeLatest(types.BOARD_ADD, workBoardAdd);
-}
- */
 
 function getExtraZipCodes(params) {
   const { zipcode, miles } = params;
@@ -175,15 +126,14 @@ export default function* rootSaga() {
   yield fork(watchUserGetOwnInvestors);
   yield fork(watchUserPostInvestor);
   yield fork(watchUserSafeAdd);
-  yield fork(watchPublicBoardGet);
-  yield fork(watchBoardUUIDGet);
+  yield fork(watchPublicInvestorsGet);
   yield fork(watchProfileDataGet);
+  yield fork(watchPublicUserGet);
   yield fork(watchUserProfileDataGet);
   yield fork(watchUserProfileDataPost);
   yield fork(watchPostIntro);
   yield fork(watchUserManualInvestorPost);
   yield fork(watchUserManualInvestorsGet);
-  yield fork(watchUserPublicBoardPost);
   yield fork(watchPersonPutInvalid);
   yield fork(watchSearchSetZipCode);
   yield fork(watchSendFeedback);
