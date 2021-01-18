@@ -13,18 +13,17 @@ function extractRecords(ids) {
 }
 
 export const peopleResets = {
+  records: {},
 };
 
 const defaults = {
   ...peopleResets,
-  records: {},
 };
 
 export default function people(state = defaults, action) {
   const { params = {} } = action;
   const {
     uuid,
-    id,
     reason,
   } = params;
 
@@ -75,11 +74,14 @@ export default function people(state = defaults, action) {
     case types.PERSON_CLEAR_INVALID:
       return {
         ...state,
-        [uuid]: {
-          ...state[uuid],
-          invalid: false,
-          invalid_reason: '',
-          invalid_status: '',
+        records: {
+          ...state.records,
+          [uuid]: {
+            ...state.records[uuid],
+            invalid: false,
+            invalid_reason: '',
+            invalid_status: '',
+          },
         },
       };
     default: return state;

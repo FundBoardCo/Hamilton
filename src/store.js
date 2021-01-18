@@ -12,7 +12,7 @@ import investors, { investorsResets } from './reducers/investors';
 import search from './reducers/search';
 import user, { userResets } from './reducers/user';
 import modal from './reducers/modal';
-import people from './reducers/people';
+import people, { peopleResets } from './reducers/people';
 import manageRaise from './reducers/manageRaise';
 
 const persistConfig = {
@@ -73,7 +73,7 @@ const modalConfig = {
 const peopleConfig = {
   key: 'people',
   storage,
-  blacklist: [],
+  blacklist: Object.keys(peopleResets),
   stateReconciler: autoMergeLevel2,
 };
 
