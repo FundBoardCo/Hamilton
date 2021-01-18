@@ -30,22 +30,16 @@ export default function Founder() {
     permalink,
     raise,
     remote,
-    location,
+    location_city,
+    location_state,
+    links,
     team_size,
   } = modalProps;
 
-  let { links } = modalProps;
-  // convert from AirTable
-  links = (links && links.split('^^^')) || [];
-  links = links.map(l => {
-    const s = l.split('%%%');
-    return {
-      text: s[0],
-      url: s[1],
-    };
-  });
+  const location_joiner = location_city && location_state ? ', ' : '';
+  const location = `${location_city}${location_joiner}${location_state}`;
 
-  const userPublicUUID = useSelector(state => state.manageRaise.publicUUID);
+  const userPublicUUID = useSelector(state => state.user.uuid);
   const isMyPage = uuid === userPublicUUID;
 
   const pathLocation = useLocation();
