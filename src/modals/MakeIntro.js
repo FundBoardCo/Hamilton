@@ -7,12 +7,12 @@ import Status from '../components/DismissibleStatus';
 import EditIntro from './Investor/EditIntro';
 
 export default function MakeIntro() {
-  const founderStatus = useSelector(state => state.manageRaise.getFounderData_status)
-    || '';
   const openModal = useSelector(state => state.modal.openModal);
   const modalProps = useSelector(state => state.modal.modalProps);
   const { founderUUID, investor } = modalProps;
-  const founderProps = useSelector(state => state.manageRaise.founderData[founderUUID])
+  const founderStatus = useSelector(state => state.founders.get_profile_status)
+    || '';
+  const founderProps = useSelector(state => state.founders.publicFounders[founderUUID])
     || {};
 
   const dispatch = useDispatch();
@@ -50,7 +50,7 @@ export default function MakeIntro() {
     >
       <Modal.Header closeButton>
         <Modal.Title>
-          <h4>{`I can connect ${founderProps.name} to ${investor.name}`}</h4>
+          <h4>{`I can connect ${founderProps.name || 'this founder'} to ${investor.name}`}</h4>
         </Modal.Title>
       </Modal.Header>
       <Modal.Body className="pt-0">
