@@ -1,19 +1,9 @@
 import * as types from '../actions/types';
 import { processErr } from '../utils';
-import investors from '../data/investors.json';
-
-function extractRecords(ids) {
-  const results = {};
-  if (Array.isArray(ids)) {
-    ids.forEach(i => {
-      results[i] = investors[i];
-    });
-  }
-  return results;
-}
 
 export const peopleResets = {
   records: {},
+  get_status: '',
 };
 
 const defaults = {
@@ -31,10 +21,26 @@ export default function people(state = defaults, action) {
     case types.PEOPLE_GET_REQUEST:
       return {
         ...state,
+        get_status: 'pending',
+      };
+    case types.PEOPLE_GET_SUCCEEDED:
+      return {
+        ...state,
+        get_status: 'succeeded',
         records: {
           ...state.records,
-          ...extractRecords(action.ids),
+          ...action.data,
         },
+      };
+    case types.PEOPLE_GET_FAILED:
+      return {
+        ...state,
+        get_status: processErr(action.error),
+      };
+    case types.PEOPLE_GET_DISMISS:
+      return {
+        ...state,
+        get_status: '',
       };
     case types.PERSON_PUT_INVALID_REQUESTED:
       return {
