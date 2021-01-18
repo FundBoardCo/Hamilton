@@ -18,7 +18,6 @@ export default function Public(props) {
   const { uuid } = params;
 
   const people = useSelector(state => state.people.records) || {};
-  console.log(people);
   const peopleGetStatus = useSelector(state => state.people.get_status);
   const userPublicUUID = useSelector(state => state.user.uuid);
   const userUpdateStatus = useSelector(state => state.user.update_status);
@@ -138,7 +137,6 @@ export default function Public(props) {
   if (Array.isArray(investorIDs)) {
     investorIDs.forEach(i => {
       const person = people[i] ? { ...people[i] } : {};
-      console.log(person);
       const investorStatus = public_records[i] || {};
       investorList.push({
         ...person,
