@@ -29,7 +29,7 @@ export default function Public(props) {
   const boardPublic = profile.board_public;
   const getInvestorsStatus = useSelector(state => state.founders.get_investors_status) || '';
   const public_records = useSelector(state => state.founders.publicInvestors) || {};
-  const investorIDs = Object.keys(public_records);
+  const investorIDs = Object.keys(public_records) || [];
   const publicPostIntro = useSelector(state => state.founders.post_intro_status);
   const publicDismissPost = types.PUBLIC_POST_INTRO_DISMISSED;
 
@@ -135,16 +135,19 @@ export default function Public(props) {
 
   const investorList = [];
 
-  investorIDs.forEach(i => {
-    const person = people[i] ? { ...people[i] } : {};
-    const investorStatus = public_records[i] || {};
-    investorList.push({
-      ...person,
-      ...investorStatus, // merge in manual edits
-      uuid: i,
-      investorStatus,
+  if (Array.isArray(investorIDs)) {
+    // protect this from possible bad data.
+    investorIDs.forEach(i => {
+      const person = people[i] ? {...people[i]} : {};
+      const investorStatus = public_records[i] || {};
+      investorList.push({
+        ...person,
+        ...investorStatus, // merge in manual edits
+        uuid: i,
+        investorStatus,
+      });
     });
-  });
+  }
 
   investorList.sort((a, b) => {
     if (sortBy === 'status') {
