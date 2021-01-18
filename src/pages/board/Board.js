@@ -45,12 +45,6 @@ export default function Board() {
 
   useEffect(() => {
     dispatch({
-      type: types.PEOPLE_GET_REQUEST,
-    });
-  }, [dispatch]);
-
-  useEffect(() => {
-    dispatch({
       type: types.USER_GET_INVESTORS_REQUESTED,
     });
   }, [dispatch]);
