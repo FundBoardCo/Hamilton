@@ -23,6 +23,13 @@ function convertToKeyedByUUID(arr) {
   return obj;
 }
 
+/*
+TODO: currently we're getting the public investors, and then writing intros to them with just the
+uuids, which is dangerous because if we get investors for a different founder they may have the same
+uuids, but different information. It's OK for now because the act of getting the new investors wipes
+out the old investor data.
+ */
+
 export default function founders(state = defaults, action) {
   switch (action.type) {
     case types.PUBLIC_GET_PROFILE_REQUESTED: return {
