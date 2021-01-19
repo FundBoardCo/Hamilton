@@ -24,7 +24,7 @@ export default function MakeIntro() {
         uuid: founderUUID,
       });
     }
-  }, [founderUUID, dispatch]);
+  }, [founderProps, founderUUID, dispatch]);
 
   const unSetModal = () => dispatch({
     type: types.MODAL_SET_OPEN,

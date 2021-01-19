@@ -8,6 +8,7 @@ import * as types from '../../actions/types';
 
 export default function Person(props) {
   const {
+    objectId,
     uuid,
     name,
     image_url = '',
@@ -49,6 +50,7 @@ export default function Person(props) {
         modal: 'makeIntro',
         modalProps: {
           ...investorStatus,
+          objectId,
           isPublic: !isMyPage,
           investor: {
             name,
@@ -124,6 +126,7 @@ export default function Person(props) {
 }
 
 Person.defaultProps = {
+  objectId: '',
   uuid: 'not found',
   name: '',
   image_url: '',
@@ -153,6 +156,7 @@ Person.defaultProps = {
 };
 
 Person.propTypes = {
+  objectId: PropTypes.string,
   uuid: PropTypes.string,
   name: PropTypes.string,
   image_url: PropTypes.string,
