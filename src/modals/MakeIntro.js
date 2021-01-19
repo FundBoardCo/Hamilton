@@ -18,10 +18,12 @@ export default function MakeIntro() {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    dispatch({
-      type: types.PUBLIC_GET_PROFILE_REQUESTED,
-      uuid: founderUUID,
-    });
+    if (!Object.keys(founderProps).length) {
+      dispatch({
+        type: types.PUBLIC_GET_PROFILE_REQUESTED,
+        uuid: founderUUID,
+      });
+    }
   }, [founderUUID, dispatch]);
 
   const unSetModal = () => dispatch({
