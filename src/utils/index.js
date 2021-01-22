@@ -29,6 +29,16 @@ export function capitalizeFirstLetter(str) {
   return `${str.charAt(0).toUpperCase()}${str.slice(1)}`;
 }
 
+export function capitalizeFirstLetters(str) {
+  if (typeof str !== 'string') return '';
+  const words = str.split(' ');
+  let phrase = '';
+  words.forEach(w => {
+    phrase = `${phrase} ${capitalizeFirstLetter(w)}`;
+  });
+  return phrase;
+}
+
 export function convertInvestedLocations(arr) {
   if (!Array.isArray(arr)) return '';
   const newArr = [];
