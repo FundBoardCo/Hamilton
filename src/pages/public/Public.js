@@ -1,8 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import Row from 'react-bootstrap/Row';
-import FormControl from 'react-bootstrap/FormControl';
-import InputGroup from 'react-bootstrap/InputGroup';
 import PropTypes from 'prop-types';
 import Button from 'react-bootstrap/Button';
 import PersonPublic from '../../components/people/PersonPublic';
@@ -10,7 +8,6 @@ import * as types from '../../actions/types';
 import DismissibleStatus from '../../components/DismissibleStatus';
 import GenericModal from '../../modals/GenericModal';
 import { STAGEPROPS } from '../../constants';
-import { getSafeVar } from '../../utils';
 
 export default function Public(props) {
   const { match } = props;
@@ -34,8 +31,6 @@ export default function Public(props) {
   const investorIDs = Object.keys(public_records) || [];
   const publicPostIntro = useSelector(state => state.founders.post_intro_status);
 
-  const [sortBy, setSortBy] = useState('status');
-  const [searchBy, setSearchBy] = useState('');
   const [showConfirmHide, setShowConfirmHide] = useState(false);
 
   const statusBars = [
@@ -148,24 +143,16 @@ export default function Public(props) {
     });
   }
 
-  investorList.sort((a, b) => {
-    if (sortBy === 'status') {
-      const stageKeys = Object.keys(STAGEPROPS);
-      const aStage = a.investorStatus.stage;
-      const bStage = b.investorStatus.stage;
-      return stageKeys.indexOf(aStage) > stageKeys.indexOf(bStage) ? 1 : -1;
-    }
-    return a.name > b.name ? 1 : -1;
-  });
+  investorList.sort((a, b) => (a.name.toLowerCase() > b.name.toLowerCase() ? -1 : 1));
 
-  const toShowInvestorList = investorList.filter(i => {
-    let include = true;
-    if (searchBy) {
-      const org = getSafeVar(() => i.primary_organization.name, '');
-      include = i.name.toLowerCase().includes(searchBy.toLowerCase())
-        || org.toLowerCase().includes(searchBy.toLowerCase());
-    }
-    return include;
+  investorList.sort((a, b) => {
+    const stageKeys = Object.keys(STAGEPROPS);
+    const aStage = a.investorStatus.stage;
+    const bStage = b.investorStatus.stage;
+    let aRank = stageKeys.indexOf(aStage);
+    if (['none', 'added'].includes(aStage)) aRank = 0;
+    const bRank = stageKeys.indexOf(bStage);
+    return aRank > bRank ? 1 : -1;
   });
 
   const toggleHideBoard = () => {
@@ -259,50 +246,13 @@ export default function Public(props) {
             )}
           </div>
         </div>
-        {investorIDs.length > 0 && (
-          <div className="d-flex justify-content-end justify-content-lg-end align-items-center mb-3">
-            <div className="sortBar">
-              <span className="label">Sort By:</span>
-              <button
-                type="button"
-                className={sortBy === 'name' ? 'active' : ''}
-                onClick={() => setSortBy('name')}
-              >
-                ABC
-              </button>
-              <button
-                type="button"
-                className={sortBy === 'status' ? 'active' : ''}
-                onClick={() => setSortBy('status')}
-              >
-                Status
-              </button>
-            </div>
-            <div className="searchBar">
-              <InputGroup>
-                <InputGroup.Prepend>
-                  <InputGroup.Text>
-                    Search
-                  </InputGroup.Text>
-                </InputGroup.Prepend>
-                <FormControl
-                  type="text"
-                  value={searchBy}
-                  onChange={e => setSearchBy(e.target.value)}
-                  aria-label="Search for an investor by name or organization."
-                />
-              </InputGroup>
-            </div>
-          </div>
-        )}
       </div>
       {statusBars.map(s => <DismissibleStatus {...s} />)}
       <div>
         <div className="results">
-          {boardPublic && toShowInvestorList.map(i => {
+          {boardPublic && investorList.map(i => {
             const personProps = {
               ...i,
-              sortedBy: sortBy,
               founderUUID: uuid,
               userEmail,
               isMyPage,
@@ -312,7 +262,7 @@ export default function Public(props) {
             );
           })}
         </div>
-        {(!boardPublic || toShowInvestorList.length === 0) && (
+        {(!boardPublic || investorList.length === 0) && (
           <div>
             This founder doesn’t have any investors shared publicly yet.
           </div>
