@@ -489,7 +489,7 @@ export default function Profile() {
               <div className="d-flex justify-content-end mb-2">
                 <Button
                   variant="outline-secondary"
-                  className="txs-1 mr-2"
+                  className="txs-2 mr-2 txs-md-1"
                   disabled={updateStatus === 'pending'}
                   onClick={onTogglePublicBoard}
                 >
@@ -497,7 +497,7 @@ export default function Profile() {
                 </Button>
                 <Button
                   variant="outline-info"
-                  className="txs-1"
+                  className="txs-2 tx-md-1"
                   onClick={() => setShowPublicInputs(!showPublicInputs)}
                 >
                   {`${showPublicInputs ? 'Hide' : 'Show'} Public Data Form`}
