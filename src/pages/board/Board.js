@@ -89,6 +89,7 @@ export default function Board() {
     investorList.push({
       ...person,
       uuid: i,
+      ...investorStatus, // merges in manual data
       investorStatus,
     });
     const org = person.primary_organization || {};
@@ -135,10 +136,12 @@ export default function Board() {
       }
       return stageKeys.indexOf(aStage) > stageKeys.indexOf(bStage) ? 1 : -1;
     }
+    const aName = (a.name && a.name.toLowerCase()) || '';
+    const bName = (b.name && b.name.toLowerCase()) || '';
     if (sortNameUp) {
-      return a.name > b.name ? -1 : 1;
+      return aName > bName ? -1 : 1;
     }
-    return a.name > b.name ? 1 : -1;
+    return aName > bName ? 1 : -1;
   });
 
   if (sortBy === 'next') {
@@ -246,19 +249,8 @@ on it at ${window.location.origin}/public/${publicUUID}.`,
           <div className="boardDetailsBar">
             <div className="primaryDetails">
               <span>
-                {`My Fundboard: ${Object.keys(ownInvestors).length}`}
-                <span className="d-none d-md-inline">&nbsp;Potential Lead</span>
-                <span className="d-none d-xs-inline">&nbsp;Investors</span>
+                My FundBoard
               </span>
-              <Button
-                className="ml-auto mr-2 primaryDetailsLink"
-                variant="link"
-                onClick={showHowToIntro}
-                data-track="BoardGetFunded"
-              >
-                <span className="ml-2">Next</span>
-                <span className="d-none d-sm-inline">&nbsp;Steps</span>
-              </Button>
               <Button
                 className="primaryDetailsLink"
                 variant="link"

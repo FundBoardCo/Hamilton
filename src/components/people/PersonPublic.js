@@ -30,7 +30,7 @@ export default function Person(props) {
   } = props;
 
   const { intros = {}, stage } = investorStatus;
-  const connected = !stage || ['none', 'added'].includes(stage);
+  const notConnected = !stage || ['none', 'added'].includes(stage);
   const introedByUser = Object.keys(intros).map(k => intros[k].intro_email).includes(userEmail);
 
   let introNamesText = '';
@@ -52,7 +52,7 @@ export default function Person(props) {
   const dispatch = useDispatch();
 
   const clickPerson = () => {
-    if (!connected && !introedByUser) {
+    if (notConnected && !introedByUser) {
       dispatch({
         type: types.PUBLIC_POST_INTRO_DISMISSED,
       });
@@ -95,7 +95,7 @@ export default function Person(props) {
         className="person"
         onClick={clickPerson}
         type="button"
-        disabled={connected || introedByUser}
+        disabled={!notConnected || introedByUser}
         data-track={`${capPath}Person`}
       >
         <div className="thumb" style={{ backgroundImage: `url(${image_url})` }} />

@@ -72,13 +72,13 @@ export default function Profile() {
   const place = useSelector(state => state.user.place);
   const allowIn = loggedIn && typeof place === 'number' && place <= MINPLACE;
   const user = useSelector(state => state.user) || {};
+  const email = useSelector(state => state.user.email) || '';
   const searchRaise = useSelector(state => state.search.raise) || 100000;
   const searchRemote = useSelector(state => state.search.remote) || '';
   const updateStatus = useSelector(state => state.user.update_status);
   const updateProfileStatus = useSelector(state => state.user.updateProfile_status);
   const getProfileStatus = useSelector(state => state.user.get_profile_status);
   const deleteStatus = useSelector(state => state.user.delete_status);
-  const investorIDs = useSelector(state => state.user.investors) || [];
 
   const { board_public, profile = {} } = user;
 
@@ -285,7 +285,7 @@ export default function Profile() {
 
   const deleteAccount = () => dispatch({
     type: types.USER_DELETE_REQUESTED,
-    email: user.email,
+    email,
   });
 
   const setLinkText = (text, index) => {
@@ -453,7 +453,7 @@ export default function Profile() {
           <h2 className="sectionHead">Account Information</h2>
           <div className="mb-2">
             <b>Email Address: </b>
-            <span>{user.email}</span>
+            <span>{email}</span>
           </div>
           {Object.keys(accountInputs).map(k => (
             <FormInput
@@ -489,7 +489,7 @@ export default function Profile() {
               <div className="d-flex justify-content-end mb-2">
                 <Button
                   variant="outline-secondary"
-                  className="txs-1 mr-2"
+                  className="txs-2 mr-2 txs-md-1"
                   disabled={updateStatus === 'pending'}
                   onClick={onTogglePublicBoard}
                 >
@@ -497,7 +497,7 @@ export default function Profile() {
                 </Button>
                 <Button
                   variant="outline-info"
-                  className="txs-1"
+                  className="txs-2 tx-md-1"
                   onClick={() => setShowPublicInputs(!showPublicInputs)}
                 >
                   {`${showPublicInputs ? 'Hide' : 'Show'} Public Data Form`}
