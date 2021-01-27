@@ -20,6 +20,7 @@ export default function Public(props) {
   const people = useSelector(state => state.people.records) || {};
   const peopleGetStatus = useSelector(state => state.people.get_status);
   const userPublicUUID = useSelector(state => state.user.uuid);
+  const userEmail = useSelector(state => state.user.email);
   const userUpdateStatus = useSelector(state => state.user.update_status);
 
   const publicProfileStatus = useSelector(state => state.founders.get_profile_status);
@@ -303,6 +304,7 @@ export default function Public(props) {
               ...i,
               sortedBy: sortBy,
               founderUUID: uuid,
+              userEmail,
               isMyPage,
             };
             return (

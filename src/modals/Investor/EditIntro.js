@@ -10,6 +10,11 @@ import * as types from '../../actions/types';
 import Status from '../../components/DismissibleStatus';
 import { aFormDate } from '../../utils';
 
+function checkUniqueIntro(email, intros) {
+  const emails = Object.keys(intros).map(k => intros[k].intro_email);
+  return !emails.includes(email);
+}
+
 export default function EditIntro(props) {
   const form = useRef(null);
 
@@ -20,23 +25,31 @@ export default function EditIntro(props) {
     onSubmit,
     onCancel,
     intro,
-    stage,
+    intros = {},
+    toEdit,
   } = props;
   const {
     intro_name = '',
     intro_email = '',
-    intro_date,
+    intro_date = '',
   } = intro;
 
   const parsedDate = Number.isNaN(Date.parse(intro_date)) ? Date.now() : new Date(intro_date);
 
-  const postStatus = useSelector(state => state.investors.postOwnInvestor_status) || '';
+  const privateStatus = useSelector(state => state.investors.postOwnInvestor_status);
+  const publicStatus = useSelector(state => state.founders.post_intro_status);
+  const postStatus = isPublic ? publicStatus : privateStatus;
+  const userEmail = useSelector(state => state.user.email) || '';
 
   const [validated, setValidated] = useState(false);
 
+  // If not editing an email and it is not the user's own page, use their email if known.
+  const defaultEmail = intro_email || (isPublic && userEmail) || '';
+
   const [nameVal, setNameVal] = useState(intro_name);
-  const [emailVal, setEmailVal] = useState(intro_email);
+  const [emailVal, setEmailVal] = useState(defaultEmail);
   const [dateVal, setDateVal] = useState(parsedDate);
+  const [showNotUnique, setShowNotUnique] = useState(false);
 
   const dispatch = useDispatch();
 
@@ -55,28 +68,37 @@ export default function EditIntro(props) {
     params,
   });
 
+  const updateEmail = email => dispatch({
+    type: types.USER_LOCAL_UPDATE_REQUESTED,
+    data: { email },
+  });
+
   const handleSubmit = event => {
     const formNode = form.current;
     event.preventDefault();
     event.stopPropagation();
     setValidated(true);
-    const publicProps = {};
-    if (isPublic || !stage || ['none', 'added'].includes(stage)) {
-      publicProps.stage = 'connected';
-    }
-    if (formNode.checkValidity() !== false) {
-      const p = {
-        objectId,
-        uuid,
-        intro: {
-          intro_name: nameVal,
-          intro_email: emailVal,
-          intro_date: aFormDate(moment(dateVal)),
-        },
-        ...publicProps,
-      };
-      updateStatus(p);
-      if (onSubmit) onSubmit();
+    if (checkUniqueIntro(emailVal, intros)) {
+      if (showNotUnique) setShowNotUnique(false);
+      if (formNode.checkValidity() !== false) {
+        const p = {
+          objectId,
+          uuid,
+          intros: {
+            ...intros,
+            [toEdit]: {
+              intro_name: nameVal,
+              intro_email: emailVal,
+              intro_date: aFormDate(moment(dateVal)),
+            },
+          },
+        };
+        updateStatus(p);
+        if (!userEmail) updateEmail(emailVal);
+        if (onSubmit) onSubmit();
+      }
+    } else {
+      setShowNotUnique(true);
     }
   };
 
@@ -166,6 +188,11 @@ export default function EditIntro(props) {
           isPublic ? types.PUBLIC_POST_INTRO_DISMISSED : types.USER_POST_INVESTOR_DISMISSED
         }
       />
+      <Status
+        statusPrefix="Error:"
+        status={showNotUnique ? 'This offer has already been made. You can\'t offer the same introduction twice.' : ''}
+        show={showNotUnique}
+      />
       <div className="footerBtnWrapper mt-3">
         <Button
           variant="danger"
@@ -189,29 +216,26 @@ export default function EditIntro(props) {
 }
 
 EditIntro.defaultProps = {
-  uuid: '',
-  objectId: '',
   isPublic: false,
-  onSubmit: {},
-  onCancel: {},
   intro: {
     intro_name: '',
     intro_email: '',
     intro_date: '',
   },
-  stage: '',
+  intros: {},
 };
 
 EditIntro.propTypes = {
-  uuid: PropTypes.string,
-  objectId: PropTypes.string,
+  uuid: PropTypes.string.isRequired,
+  objectId: PropTypes.string.isRequired,
   isPublic: PropTypes.bool,
-  onSubmit: PropTypes.func,
-  onCancel: PropTypes.func,
+  onSubmit: PropTypes.func.isRequired,
+  onCancel: PropTypes.func.isRequired,
   intro: PropTypes.shape({
     intro_name: PropTypes.string,
     intro_email: PropTypes.string,
     intro_date: PropTypes.string,
   }),
-  stage: PropTypes.string,
+  intros: PropTypes.objectOf(PropTypes.objectOf(PropTypes.string)),
+  toEdit: PropTypes.string.isRequired,
 };

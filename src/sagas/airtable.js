@@ -18,6 +18,7 @@ function* workAirtableGetKeywords() {
 
   try {
     while (firstRun || params.offset) {
+      // loop this as many times as needed to get all the results.
       const results = yield call(requestAirtableGetKeywords, params);
       firstRun = false;
       // catch airtable errors
