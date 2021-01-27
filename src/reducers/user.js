@@ -107,6 +107,10 @@ export default function user(state = defaults, action) {
       ...state,
       update_status: '',
     };
+    case types.USER_LOCAL_UPDATE_REQUESTED: return {
+      ...state,
+      ...action.data,
+    };
     case types.USER_POST_PROFILE_REQUESTED: return {
       ...state,
       updateProfile_status: 'pending',

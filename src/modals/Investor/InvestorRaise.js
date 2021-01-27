@@ -5,6 +5,7 @@ import InputGroup from 'react-bootstrap/InputGroup';
 import FormControl from 'react-bootstrap/FormControl';
 import Button from 'react-bootstrap/Button';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { v4 as uuidv4 } from 'uuid';
 import InvestorNameTag from '../../components/people/PersonNameTag';
 import SelectableInvestorStage from '../../components/people/SelectableInvestorStage';
 import * as types from '../../actions/types';
@@ -13,7 +14,8 @@ import EditNote from './EditNote';
 import Note from './Note';
 import EditIntro from './EditIntro';
 import { STAGEPROPS } from '../../constants';
-import { aFormDate, formatCur } from '../../utils';
+import { formatCur } from '../../utils';
+import Intro from './Intro';
 
 export default function InvestorRaise(props) {
   const {
@@ -28,14 +30,9 @@ export default function InvestorRaise(props) {
     notes = {},
     amount = 0,
     published,
-    intro = {},
+    intros = {},
   } = data;
 
-  const {
-    intro_date,
-    intro_name,
-    intro_email,
-  } = intro;
   const { advice } = STAGEPROPS[stage];
   const postStatus = useSelector(state => state.investors.postOwnInvestor_status) || '';
   const noteParams = useSelector(state => state.investors.editNoteParams);
@@ -43,6 +40,7 @@ export default function InvestorRaise(props) {
   const [amountValue, setAmount] = useState(amount);
   const [showEditAmount, setShowEditAmount] = useState(false);
   const [showEditIntro, setShowEditIntro] = useState(false);
+  const [introToEdit, setIntroToEdit] = useState();
 
   const dispatch = useDispatch();
 
@@ -85,6 +83,21 @@ export default function InvestorRaise(props) {
 
   const onNewNote = () => {
     setNoteID({ noteID: String(Math.floor(Math.random() * 100000000)), uuid });
+  };
+
+  const onClickEditIntro = introID => {
+    setShowEditIntro(introID);
+    setIntroToEdit(intros[introID] || {});
+  };
+
+  const onDeleteIntro = introID => {
+    const newIntros = { ...intros };
+    delete newIntros[introID];
+    const params = {
+      objectId,
+      intros: newIntros,
+    };
+    updateStatus(params);
   };
 
   const showAmount = ['negotiating', 'invested', 'leading'].includes(stage);
@@ -194,33 +207,42 @@ export default function InvestorRaise(props) {
       </section>
       <section className="mb-3">
         <h2 className="sectionHead">Introduced By</h2>
-        {showEditIntro ? (
+        {!showEditIntro && Object.keys(intros).map(k => {
+          const i = intros[k];
+          const introProps = {
+            ...i,
+            uuid: k,
+            onClick: onClickEditIntro,
+            onDelete: onDeleteIntro,
+          };
+          return <Intro key={k} {...introProps} />;
+        })}
+        {showEditIntro && introToEdit ? (
           <EditIntro
             {...data}
+            intros={{ ...intros }}
+            toEdit={showEditIntro}
+            intro={introToEdit}
             onSubmit={() => setShowEditIntro(false)}
             onCancel={() => setShowEditIntro(false)}
           />
         ) : (
-          <div className="d-flex">
-            <div className="flex-grow-1">
-              <div className="mb-1">{intro_name}</div>
-              <div className="mb-1">
-                <a href={`mailto://${intro_email}`}>
-                  {intro_email}
-                </a>
+          <div>
+            <div className="d-flex mb-2">
+              <div className="flex-grow-1">
+                <div className="mb-1">
+                  Add New Intro
+                </div>
               </div>
-              <div className="mb-1">
-                {intro_date && `On ${aFormDate(intro_date)}`}
+              <div>
+                <button
+                  className="btn iconBtn text-primary"
+                  type="button"
+                  onClick={() => onClickEditIntro(uuidv4())}
+                >
+                  <FontAwesomeIcon icon="edit" className="txs-2" />
+                </button>
               </div>
-            </div>
-            <div>
-              <button
-                className="btn iconBtn text-primary"
-                type="button"
-                onClick={() => setShowEditIntro(true)}
-              >
-                <FontAwesomeIcon icon="edit" className="txs-2" />
-              </button>
             </div>
           </div>
         )}

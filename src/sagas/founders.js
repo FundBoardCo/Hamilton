@@ -78,7 +78,7 @@ export function* watchPublicUserGet() {
 
 function postIntro(params) {
   if (!params.objectId) throw new Error('A ObjectId is required.');
-  if (!params.intro || !isPlainObject(params.intro)) throw new Error('An intro object is required.');
+  if (!params.intros || !isPlainObject(params.intros)) throw new Error('An intros object is required.');
   return Parse.Cloud.run('claimIntro', params);
 }
 

@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { useDispatch } from 'react-redux';
 import { useLocation } from 'react-router';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { v4 as uuidv4 } from 'uuid';
 import { capitalizeFirstLetter } from '../../utils';
 import * as types from '../../actions/types';
 
@@ -21,15 +22,25 @@ export default function Person(props) {
     investorStatus = {},
     founderUUID,
     isMyPage,
+    userEmail,
   } = props;
 
   let {
     primary_organization_name = '',
   } = props;
 
-  const { intro = {}, stage } = investorStatus;
-  const { intro_name = '' } = intro;
-  const notIntroed = !stage || ['none', 'added'].includes(stage);
+  const { intros = {}, stage } = investorStatus;
+  const connected = !stage || ['none', 'added'].includes(stage);
+  const introedByUser = Object.keys(intros).map(k => intros[k].intro_email).includes(userEmail);
+
+  let introNamesText = '';
+  const introKeys = Object.keys(intros);
+  const lastIntroName = introKeys.length ? intros[introKeys[0]].intro_name : '';
+  if (introKeys.length === 1) {
+    introNamesText = `Connection offered by ${lastIntroName}.`;
+  } else if (introKeys.length > 1) {
+    introNamesText = `${introKeys.length} connections offered, last offer by ${lastIntroName}.`;
+  }
 
   const primary_organization_logo = primary_organization.image_url || '';
   primary_organization_name = primary_organization_name || primary_organization.name || '';
@@ -41,7 +52,7 @@ export default function Person(props) {
   const dispatch = useDispatch();
 
   const clickPerson = () => {
-    if (notIntroed) {
+    if (!connected && !introedByUser) {
       dispatch({
         type: types.PUBLIC_POST_INTRO_DISMISSED,
       });
@@ -58,6 +69,9 @@ export default function Person(props) {
             primary_organization_name,
           },
           founderUUID,
+          userEmail,
+          toEdit: uuidv4(),
+          intro: {},
         },
       });
     }
@@ -81,7 +95,7 @@ export default function Person(props) {
         className="person"
         onClick={clickPerson}
         type="button"
-        disabled={!notIntroed}
+        disabled={connected || introedByUser}
         data-track={`${capPath}Person`}
       >
         <div className="thumb" style={{ backgroundImage: `url(${image_url})` }} />
@@ -109,16 +123,15 @@ export default function Person(props) {
             </div>
           </div>
         </div>
-        <div className="introText">
-          {notIntroed ? (
-            <span className="btn btn-link">
-              I can connect them to this investor
-            </span>
-          ) : (
-            <span>
-              {intro_name ? `Connection offered by ${intro_name}` : ''}
-            </span>
+        <div className="introText d-flex flex-column">
+          {introNamesText && (
+            <div className="mb-2">
+              {introNamesText}
+            </div>
           )}
+          <div>
+            {introedByUser ? 'You have offered to connect them.' : 'I can connect them to this investor.'}
+          </div>
         </div>
       </button>
     </div>
@@ -153,6 +166,7 @@ Person.defaultProps = {
   investorStatus: {},
   founderUUID: '',
   isMyPage: false,
+  userEmail: '',
 };
 
 Person.propTypes = {
@@ -185,4 +199,5 @@ Person.propTypes = {
   }),
   founderUUID: PropTypes.string,
   isMyPage: PropTypes.bool,
+  userEmail: PropTypes.string,
 };
