@@ -40,40 +40,8 @@ export function* watchUserGetOwnInvestors() {
   yield takeLatest(types.USER_GET_INVESTORS_REQUESTED, workUserGetOwnInvestors);
 }
 
-async function postInvestor(params) {
-  return Parse.Cloud.run('updateInvestor', params);
-}
-
-function* workUserPostInvestor(action) {
-  const { params } = action;
-  if (!params.uuid && !params.objectId) params.uuid = uuidv4();
-
-  try {
-    if (!params || !isPlainObject(params) || !Object.keys(params).length) {
-      throw new Error('Params are required to save the investor.');
-    }
-    const result = yield call(postInvestor, params);
-    const data = parseB4AObject(result);
-    yield put({
-      type: types.USER_POST_INVESTOR_SUCCEEDED,
-      data,
-    });
-    // close the edit component by setting the edited note to null
-    yield put({ type: types.USER_SET_EDITNOTE, params: { noteID: null } });
-  } catch (error) {
-    trackErr(error);
-    yield put({
-      type: types.USER_POST_INVESTOR_FAILED,
-      error,
-    });
-  }
-}
-
-export function* watchUserPostInvestor() {
-  yield takeLatest(types.USER_POST_INVESTOR_REQUESTED, workUserPostInvestor);
-}
-
 async function safeAdd(params) {
+  if (!Array.isArray(params.investors)) throw new Error('An investors array is required.');
   return Parse.Cloud.run('bulkAddInvestors', params);
 }
 
@@ -105,4 +73,47 @@ function* workUserSafeAdd() {
 
 export function* watchUserSafeAdd() {
   yield takeLatest(types.USER_POST_SAFEADDINVESTORS_REQUESTED, workUserSafeAdd);
+}
+
+async function postInvestor(params) {
+  return Parse.Cloud.run('updateInvestor', params);
+}
+
+function* workUserPostInvestor(action) {
+  const { params } = action;
+  if (!params.uuid && !params.objectId) params.uuid = uuidv4();
+
+  try {
+    if (!params || !isPlainObject(params) || !Object.keys(params).length) {
+      throw new Error('Params are required to save the investor.');
+    }
+    let result;
+    if (params.objectId) {
+      result = yield call(postInvestor, params);
+    } else {
+      // use safeAdd if they don't exist yet.
+      // This might cause updates to fail if they do exist.
+      const safeParams = {
+        investors: [{ ...params }],
+      };
+      result = yield call(safeAdd, safeParams);
+    }
+    const data = parseB4AObject(result);
+    yield put({
+      type: types.USER_POST_INVESTOR_SUCCEEDED,
+      data,
+    });
+    // close the edit component by setting the edited note to null
+    yield put({ type: types.USER_SET_EDITNOTE, params: { noteID: null } });
+  } catch (error) {
+    trackErr(error);
+    yield put({
+      type: types.USER_POST_INVESTOR_FAILED,
+      error,
+    });
+  }
+}
+
+export function* watchUserPostInvestor() {
+  yield takeLatest(types.USER_POST_INVESTOR_REQUESTED, workUserPostInvestor);
 }
