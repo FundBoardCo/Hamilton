@@ -45,7 +45,7 @@ export default function Investor(props) {
 
   const isOnBoard = investors.includes(uuid);
 
-  const [mode, setMode] = useState(isOnBoard ? 'raise' : 'data');
+  const [mode, setMode] = useState(isOnBoard && loggedIn ? 'raise' : 'data');
 
   const dispatch = useDispatch();
 
@@ -87,7 +87,9 @@ export default function Investor(props) {
         name: data.name,
       },
     });
-    onToggleMode('raise');
+    if (loggedIn) {
+      onToggleMode('raise');
+    }
   };
 
   const removeInvestor = () => dispatch({
@@ -142,7 +144,7 @@ export default function Investor(props) {
         {mode === 'raise' && <InvestorRaise {...subProps} /> }
       </Modal.Body>
       <Modal.Footer>
-        {isOnBoard ? (
+        {isOnBoard && loggedIn ? (
           <button
             className="addBtn bg-primary"
             type="button"
