@@ -1,8 +1,6 @@
 import { createStore, applyMiddleware, combineReducers } from 'redux';
 import { persistStore, persistReducer } from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
-import hardSet from 'redux-persist/lib/stateReconciler/hardSet';
-import autoMergeLevel2 from 'redux-persist/lib/stateReconciler/autoMergeLevel2';
 import createSagaMiddleware from 'redux-saga';
 import rootSaga from './sagas';
 import airtable from './reducers/airtable';
@@ -15,6 +13,10 @@ import modal from './reducers/modal';
 import people, { peopleResets } from './reducers/people';
 import manageRaise from './reducers/manageRaise';
 
+const configDefaults = {
+  storage,
+};
+
 const persistConfig = {
   key: 'root',
   storage,
@@ -22,27 +24,26 @@ const persistConfig = {
 };
 
 const airtableConfig = {
+  ...configDefaults,
   key: 'airtable',
-  storage,
-  stateReconciler: hardSet,
   blacklist: ['feedback_status'],
 };
 
 const foundersConfig = {
+  ...configDefaults,
   key: 'founders',
-  storage,
   blacklist: Object.keys(founderResets),
 };
 
 const investorsConfig = {
+  ...configDefaults,
   key: 'investors',
-  storage,
   blacklist: Object.keys(investorsResets),
 };
 
 const manageRaiseConfig = {
+  ...configDefaults,
   key: 'manageRaise',
-  storage,
   blacklist: [
     'records',
     'public_records',
@@ -60,35 +61,29 @@ const manageRaiseConfig = {
     'manualInvestorGet_status',
     'manualInvestorPost_status',
   ],
-  stateReconciler: autoMergeLevel2,
 };
 
 const modalConfig = {
+  ...configDefaults,
   key: 'modal',
-  storage,
-  blacklist: [],
-  stateReconciler: autoMergeLevel2,
 };
 
 const peopleConfig = {
+  ...configDefaults,
   key: 'people',
-  storage,
   blacklist: Object.keys(peopleResets),
-  stateReconciler: autoMergeLevel2,
 };
 
 const searchConfig = {
+  ...configDefaults,
   key: 'search',
-  storage,
   blacklist: ['results', 'results_status', 'extraZipcodes_status'],
-  stateReconciler: autoMergeLevel2,
 };
 
 const userConfig = {
+  ...configDefaults,
   key: 'user',
-  storage,
   blacklist: Object.keys(userResets),
-  stateReconciler: autoMergeLevel2,
 };
 
 const rootReducer = combineReducers({
