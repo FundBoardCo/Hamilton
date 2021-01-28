@@ -26,7 +26,7 @@ export default function Board() {
   const place = useSelector(state => state.user.place);
   const allowIn = loggedIn && typeof place === 'number' && place <= MINPLACE;
   const modalsSeen = useSelector(state => state.modal.modalsSeen) || [];
-  const publicUUID = useSelector(state => state.user.uuid);
+  const userUUID = useSelector(state => state.user.uuid);
   const boardPublicViewed = useSelector(state => state.user.board_public_viewed);
 
   const [sortBy, setSortBy] = useState('status');
@@ -180,7 +180,7 @@ export default function Board() {
       type: types.USER_UPDATE_REQUESTED,
       params: { board_public_viewed: true },
     });
-    history.push(`/public/${publicUUID}`);
+    history.push(`/public/${userUUID}`);
   };
 
   const onAddBoardClick = () => {
@@ -230,7 +230,7 @@ export default function Board() {
   const shareYourBoardProps = {
     title: 'Share Your Public FundBoard',
     text: `You can share your public FundBoard with contacts that can introduce you to the investors
-on it at ${window.location.origin}/public/${publicUUID}.`,
+on it at ${window.location.origin}/public/${userUUID}.`,
     buttons: [
       {
         key: 'public',
