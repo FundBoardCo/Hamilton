@@ -103,7 +103,7 @@ function* watchSearchSetZipCode() {
 }
 
 function workRehydrate(action) {
-  const { key, payload } = action;
+  const { key, payload = {} } = action;
   const { token, email } = payload;
   if (key === 'user' && token && email) {
     window.heap.identify(email);
