@@ -98,24 +98,30 @@ export default function Public(props) {
   }, [dispatch]);
 
   useEffect(() => {
-    dispatch({
-      type: types.PUBLIC_GET_INVESTORS_REQUESTED,
-      uuid,
-    });
+    if (uuid) {
+      dispatch({
+        type: types.PUBLIC_GET_INVESTORS_REQUESTED,
+        uuid,
+      });
+    }
   }, [uuid, dispatch]);
 
   useEffect(() => {
-    dispatch({
-      type: types.PUBLIC_GET_USER_REQUESTED,
-      uuid,
-    });
+    if (uuid) {
+      dispatch({
+        type: types.PUBLIC_GET_USER_REQUESTED,
+        uuid,
+      });
+    }
   }, [uuid, dispatch]);
 
   useEffect(() => {
-    dispatch({
-      type: types.PUBLIC_GET_PROFILE_REQUESTED,
-      uuid,
-    });
+    if (uuid) {
+      dispatch({
+        type: types.PUBLIC_GET_PROFILE_REQUESTED,
+        uuid,
+      });
+    }
   }, [uuid, dispatch]);
 
   useEffect(() => {
@@ -266,9 +272,14 @@ export default function Public(props) {
             );
           })}
         </div>
-        {(!boardPublic || investorList.length === 0) && (
+        {uuid && (!boardPublic || investorList.length === 0) && (
           <div>
             This founder doesn’t have any investors shared publicly yet.
+          </div>
+        )}
+        {!uuid && (
+          <div>
+            {'This is a generic public FundBoard. It should have a user\'s ID in the URL.'}
           </div>
         )}
       </div>
