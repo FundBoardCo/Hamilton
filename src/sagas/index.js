@@ -1,7 +1,9 @@
 import {
-  put,
+  all,
   call,
   fork,
+  put,
+  take,
   takeEvery,
   takeLatest,
 } from 'redux-saga/effects';
@@ -102,44 +104,41 @@ function* watchSearchSetZipCode() {
 
 function workRehydrate(action) {
   const { key, payload } = action;
-  const { token, email, investors } = payload;
-  const investorCount = Array.isArray(investors) && investors.length;
+  const { token, email } = payload;
   if (key === 'user' && token && email) {
     window.heap.identify(email);
     window.heap.addUserProperties({
       email,
-      investorCount,
     });
   }
 }
 
-function* watchRehydrate() {
-  yield takeLatest(REHYDRATE, workRehydrate);
-}
-
 export default function* rootSaga() {
-  yield fork(watchRehydrate);
-  yield fork(watchAirtableGetKeywords);
-  yield fork(watchUserCreate);
-  yield fork(watchUserLogin);
-  yield fork(watchUserLogout);
-  yield fork(watchUserUpdate);
-  yield fork(watchUserDelete);
-  yield fork(watchUserReset);
-  yield fork(watchUserGetOwnInvestors);
-  yield fork(watchUserPostInvestor);
-  yield fork(watchUserSafeAdd);
-  yield fork(watchPublicInvestorsGet);
-  yield fork(watchProfileDataGet);
-  yield fork(watchPublicUserGet);
-  yield fork(watchUserProfileDataGet);
-  yield fork(watchUserProfileDataPost);
-  yield fork(watchPostIntro);
-  yield fork(watchUserManualInvestorPost);
-  yield fork(watchUserManualInvestorsGet);
-  yield fork(watchPersonPutInvalid);
-  yield fork(watchSearchSetZipCode);
-  yield fork(watchSendFeedback);
-  yield fork(watchGetInfo);
-  yield fork(watchPeopleGet);
+  // prevent all other sagas until rehydration is complete
+  yield takeLatest(REHYDRATE, workRehydrate);
+  yield all([
+    fork(watchAirtableGetKeywords),
+    fork(watchUserCreate),
+    fork(watchUserLogin),
+    fork(watchUserLogout),
+    fork(watchUserUpdate),
+    fork(watchUserDelete),
+    fork(watchUserReset),
+    fork(watchUserGetOwnInvestors),
+    fork(watchUserPostInvestor),
+    fork(watchUserSafeAdd),
+    fork(watchPublicInvestorsGet),
+    fork(watchProfileDataGet),
+    fork(watchPublicUserGet),
+    fork(watchUserProfileDataGet),
+    fork(watchUserProfileDataPost),
+    fork(watchPostIntro),
+    fork(watchUserManualInvestorPost),
+    fork(watchUserManualInvestorsGet),
+    fork(watchPersonPutInvalid),
+    fork(watchSearchSetZipCode),
+    fork(watchSendFeedback),
+    fork(watchGetInfo),
+    fork(watchPeopleGet),
+  ]);
 }
