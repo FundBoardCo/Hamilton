@@ -143,7 +143,11 @@ export default function Public(props) {
     });
   }
 
-  investorList.sort((a, b) => (a.name.toLowerCase() > b.name.toLowerCase() ? -1 : 1));
+  investorList.sort((a, b) => {
+    const aName = (a.name && a.name.toLowerCase()) || '';
+    const bName = (b.name && b.name.toLowerCase()) || '';
+    return aName > bName ? -1 : 1;
+  });
 
   investorList.sort((a, b) => {
     const stageKeys = Object.keys(STAGEPROPS);
