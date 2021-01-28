@@ -122,7 +122,7 @@ export default function InvestorRaise(props) {
           Edit Investor
         </Button>
       </div>
-      <section className="mb-3">
+      <section className="mb-4">
         <div className="mt-3">
           <SelectableInvestorStage uuid={uuid} />
         </div>
@@ -184,28 +184,7 @@ export default function InvestorRaise(props) {
           <div>{`${advice}`}</div>
         )}
       </section>
-      <section className="mb-3">
-        <h2 className="sectionHead">
-          {published ? 'Published' : 'Private'}
-        </h2>
-        <div className="d-flex">
-          <p>
-            You can change whether this investor is visible on your public board by publishing or
-            unpublishing them.
-          </p>
-          <span className="flex-shrink-0 ml-2">
-            <Button
-              variant="link"
-              className={published ? 'primary' : 'warning'}
-              onClick={onTogglePublish}
-            >
-              <FontAwesomeIcon className="mr-2" icon={published ? 'eye-slash' : 'eye'} />
-              {published ? 'Make Private' : 'Publish'}
-            </Button>
-          </span>
-        </div>
-      </section>
-      <section className="mb-3">
+      <section className="mb-4">
         <h2 className="sectionHead">Introduced By</h2>
         {!showEditIntro && Object.keys(intros).map(k => {
           const i = intros[k];
@@ -247,7 +226,7 @@ export default function InvestorRaise(props) {
           </div>
         )}
       </section>
-      <section>
+      <section className="mb-4">
         <h2 className="sectionHead">Notes & Next Steps</h2>
         <div className="editWrapper">
           {noteParams.noteID && <EditNote />}
@@ -273,6 +252,26 @@ export default function InvestorRaise(props) {
             Add a note or next step
           </Button>
         )}
+      </section>
+      <section className="mb-4">
+        <h2 className="sectionHead">
+          {published ? 'Public' : 'Private'}
+        </h2>
+        <div className="d-flex">
+          <p>
+            Change whether this investor is visible on your public board.
+          </p>
+          <span className="flex-shrink-0 ml-2">
+            <Button
+              variant="link"
+              className={published ? 'primary' : 'warning'}
+              onClick={onTogglePublish}
+            >
+              <FontAwesomeIcon className="mr-2" icon={published ? 'eye-slash' : 'eye'} />
+              {published ? 'Make Private' : 'Make Public'}
+            </Button>
+          </span>
+        </div>
       </section>
     </div>
   );

@@ -96,12 +96,13 @@ function* workUserPostInvestor(action) {
       const safeParams = {
         investors: [{ ...params }],
       };
-      result = yield call(safeAdd, safeParams);
+      [result] = yield call(safeAdd, safeParams); // safeAdd returns an array.
     }
     const data = parseB4AObject(result);
     yield put({
       type: types.USER_POST_INVESTOR_SUCCEEDED,
       data,
+      uuid: params.uuid,
     });
     // close the edit component by setting the edited note to null
     yield put({ type: types.USER_SET_EDITNOTE, params: { noteID: null } });
