@@ -233,6 +233,7 @@ function App() {
               <Route path="/search" component={Search} />
               <Route path="/profile" component={Profile} />
               <Route path="/talk" component={Talk} />
+              <Route path="/public/:uuid" component={Public} />
               <Route path="/public" component={Public} />
               <Route component={NotFound} />
             </Switch>

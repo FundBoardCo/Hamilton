@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import { useHistory } from 'react-router';
 import { useSelector, useDispatch } from 'react-redux';
 import Form from 'react-bootstrap/Form';
@@ -19,8 +19,10 @@ export default function Login() {
   } = user;
 
   const openModal = useSelector(state => state.modal.openModal);
+  const modalProps = useSelector(state => state.modal.modalProps);
+  const { extraText, initialMode } = modalProps;
 
-  const [mode, setMode] = useState('login');
+  const [mode, setMode] = useState(initialMode || 'login');
 
   const [validated, setValidated] = useState(false);
   const [started, setStarted] = useState(false);
@@ -214,6 +216,11 @@ export default function Login() {
         </Modal.Title>
       </Modal.Header>
       <Modal.Body>
+        {extraText && (
+          <div>
+            {extraText}
+          </div>
+        )}
         <Form
           noValidate
           validated={started && validated}
