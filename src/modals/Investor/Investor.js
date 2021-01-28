@@ -39,16 +39,13 @@ export default function Investor(props) {
 
   const { name, getStatus } = data;
 
-  const initialMode = path === 'Board' ? 'raise' : 'data';
+  const ownInvestorsIDs = Object.keys(ownInvestors);
 
-  const [mode, setMode] = useState(initialMode);
-
-  const nonArchivedOwnInvestors = Object.keys(ownInvestors).filter(i => (
-    ownInvestors[i].stage !== 'archived'
-  ));
-  const investors = [...loggedOutInvestorIDs, ...nonArchivedOwnInvestors];
+  const investors = [...loggedOutInvestorIDs, ...ownInvestorsIDs];
 
   const isOnBoard = investors.includes(uuid);
+
+  const [mode, setMode] = useState(isOnBoard && loggedIn ? 'raise' : 'data');
 
   const dispatch = useDispatch();
 
@@ -67,8 +64,10 @@ export default function Investor(props) {
     }
   }, [dispatch, loggedIn]);
 
-  const onToggleMode = () => {
-    setMode(mode === 'data' ? 'raise' : 'data');
+  const onToggleMode = m => {
+    let newMode = m;
+    if (!newMode) newMode = mode === 'data' ? 'raise' : 'data';
+    setMode(newMode);
   };
 
   const history = useHistory();
@@ -77,16 +76,21 @@ export default function Investor(props) {
     history.goBack();
   };
 
-  const addInvestor = () => dispatch({
-    type: loggedIn ? types.USER_POST_INVESTOR_REQUESTED : types.BOARD_ADD,
-    uuid,
-    params: {
+  const addInvestor = () => {
+    dispatch({
+      type: loggedIn ? types.USER_POST_INVESTOR_REQUESTED : types.BOARD_ADD,
       uuid,
-      stage: 'added',
-      profileUUID: userUUID,
-      name: data.name,
-    },
-  });
+      params: {
+        uuid,
+        stage: 'added',
+        profileUUID: userUUID,
+        name: data.name,
+      },
+    });
+    if (loggedIn) {
+      onToggleMode('raise');
+    }
+  };
 
   const removeInvestor = () => dispatch({
     type: loggedIn ? types.USER_POST_INVESTOR_REQUESTED : types.BOARD_REMOVE,
@@ -140,17 +144,16 @@ export default function Investor(props) {
         {mode === 'raise' && <InvestorRaise {...subProps} /> }
       </Modal.Body>
       <Modal.Footer>
-        {path === 'Board' && (
+        {isOnBoard && loggedIn ? (
           <button
             className="addBtn bg-primary"
             type="button"
-            onClick={onToggleMode}
+            onClick={() => onToggleMode()}
             data-track={`BoardInvestorToggleFrom-${mode}`}
           >
             {mode === 'data' ? 'Show Raise Progress' : 'Show Investor Data'}
           </button>
-        )}
-        {path !== 'Board' && (
+        ) : (
           <button
             className={`addBtn ${addBtnProps.bgCol}`}
             type="button"

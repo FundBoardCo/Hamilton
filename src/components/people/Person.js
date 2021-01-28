@@ -43,8 +43,9 @@ export default function Person(props) {
   let percentageMatch = matches.percentage_match || 0;
   percentageMatch = `${percentageMatch}%`;
 
-  const investors = useSelector(state => state.user.investors) || [];
-  const isOnBoard = investors.includes(uuid);
+  const ownInvestors = useSelector(state => state.investors.ownInvestors) || {};
+  const investorIds = Object.keys(ownInvestors);
+  const isOnBoard = investorIds.includes(uuid);
 
   const location = useLocation();
   const path = location.pathname.substring(1).split('/')[0];
@@ -56,7 +57,7 @@ export default function Person(props) {
     history.push(`/${path}/${uuid}`);
   };
 
-  const investorStage = isBoard ? investorStatus.stage || 'added' : isOnBoard && 'added';
+  const investorStage = investorStatus.stage || (isOnBoard && 'added');
   let { notes } = investorStatus;
   let next = {};
   if (notes && Object.values(notes).length) {
@@ -165,7 +166,7 @@ export default function Person(props) {
             {investorStatus.published ? (
               <span>
                 <FontAwesomeIcon icon="eye" className="mr-1" />
-                <span>Published</span>
+                <span>Public</span>
               </span>
             ) : (
               <span>

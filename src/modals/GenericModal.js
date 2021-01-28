@@ -8,7 +8,9 @@ import * as types from '../actions/types';
 
 export default function GenericModal(props) {
   const openModal = useSelector(state => state.modal.openModal);
-  const { title, text, buttons } = props;
+  const modalProps = useSelector(state => state.modal.modalProps);
+  const combinedProps = { ...props, ...modalProps };
+  const { title, text, buttons } = combinedProps;
 
   const history = useHistory();
 

@@ -16,14 +16,17 @@ export default function Public(props) {
 
   const people = useSelector(state => state.people.records) || {};
   const peopleGetStatus = useSelector(state => state.people.get_status);
-  const userPublicUUID = useSelector(state => state.user.uuid);
   const userEmail = useSelector(state => state.user.email);
   const userUpdateStatus = useSelector(state => state.user.update_status);
 
   const publicProfileStatus = useSelector(state => state.founders.get_profile_status);
   const publicUserStatus = useSelector(state => state.founders.get_user_status);
-  const profile = useSelector(state => state.founders.publicFounders[uuid]) || {};
-  const isMyPage = uuid === userPublicUUID;
+
+  const founder = useSelector(state => state.founders.publicFounders[uuid]) || {};
+  const user = useSelector(state => state.user) || {};
+  const pageUUID = uuid || user.uuid;
+  const isMyPage = pageUUID === user.uuid;
+  const profile = isMyPage ? { ...user } : { ...founder };
 
   const boardPublic = profile.board_public;
   const getInvestorsStatus = useSelector(state => state.founders.get_investors_status) || '';
@@ -98,25 +101,31 @@ export default function Public(props) {
   }, [dispatch]);
 
   useEffect(() => {
-    dispatch({
-      type: types.PUBLIC_GET_INVESTORS_REQUESTED,
-      uuid,
-    });
-  }, [uuid, dispatch]);
+    if (pageUUID) {
+      dispatch({
+        type: types.PUBLIC_GET_INVESTORS_REQUESTED,
+        uuid: pageUUID,
+      });
+    }
+  }, [pageUUID, dispatch]);
 
   useEffect(() => {
-    dispatch({
-      type: types.PUBLIC_GET_USER_REQUESTED,
-      uuid,
-    });
-  }, [uuid, dispatch]);
+    if (pageUUID) {
+      dispatch({
+        type: types.PUBLIC_GET_USER_REQUESTED,
+        uuid: pageUUID,
+      });
+    }
+  }, [pageUUID, dispatch]);
 
   useEffect(() => {
-    dispatch({
-      type: types.PUBLIC_GET_PROFILE_REQUESTED,
-      uuid,
-    });
-  }, [uuid, dispatch]);
+    if (pageUUID) {
+      dispatch({
+        type: types.PUBLIC_GET_PROFILE_REQUESTED,
+        uuid: pageUUID,
+      });
+    }
+  }, [pageUUID, dispatch]);
 
   useEffect(() => {
     const ids = Object.keys(public_records);
@@ -189,9 +198,23 @@ export default function Public(props) {
     dispatch({
       type: types.MODAL_SET_OPEN,
       modal: 'founder',
-      modalProps: { ...profile, uuid },
+      modalProps: { ...profile, uuid: pageUUID },
     });
   };
+
+  // force login if no the user isn't logged in, otherwise add the uuid to the URL.
+  if (!uuid && pageUUID) {
+    window.history.replaceState(null, 'public', `/public/${pageUUID}`);
+  } else if (!pageUUID) {
+    dispatch({
+      type: types.MODAL_SET_OPEN,
+      modal: 'login',
+      modalProps: {
+        initialMode: 'create',
+        extraText: 'Create an account to get a sharable FundBoard.',
+      },
+    });
+  }
 
   const confirmDeleteProps = {
     title: 'Are You Sure?',
@@ -257,7 +280,7 @@ export default function Public(props) {
           {boardPublic && investorList.map(i => {
             const personProps = {
               ...i,
-              founderUUID: uuid,
+              founderUUID: pageUUID,
               userEmail,
               isMyPage,
             };
@@ -266,9 +289,14 @@ export default function Public(props) {
             );
           })}
         </div>
-        {(!boardPublic || investorList.length === 0) && (
+        {pageUUID && (!boardPublic || investorList.length === 0) && (
           <div>
             This founder doesn’t have any investors shared publicly yet.
+          </div>
+        )}
+        {!pageUUID && (
+          <div>
+            {'This is a generic public FundBoard. It should have a user\'s ID in the URL.'}
           </div>
         )}
       </div>
