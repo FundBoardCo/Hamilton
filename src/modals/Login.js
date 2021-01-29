@@ -158,7 +158,7 @@ export default function Login() {
   if (mode === 'create') {
     btnProps.login = {
       variant: 'text',
-      text: 'Cancel',
+      text: 'Login',
       type: 'button',
       onClick: onLoginClick,
     };
