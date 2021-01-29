@@ -22,11 +22,10 @@ export default function Public(props) {
   const publicProfileStatus = useSelector(state => state.founders.get_profile_status);
   const publicUserStatus = useSelector(state => state.founders.get_user_status);
 
-  const founder = useSelector(state => state.founders.publicFounders[uuid]) || {};
   const user = useSelector(state => state.user) || {};
   const pageUUID = uuid || user.uuid;
+  const profile = useSelector(state => state.founders.publicFounders[pageUUID]) || {};
   const isMyPage = pageUUID === user.uuid;
-  const profile = isMyPage ? { ...user } : { ...founder };
 
   const boardPublic = profile.board_public;
   const getInvestorsStatus = useSelector(state => state.founders.get_investors_status) || '';
@@ -238,44 +237,63 @@ export default function Public(props) {
   return (
     <Row id="PageBoard" className="pageContainer public">
       {showConfirmHide && <GenericModal {...confirmDeleteProps} />}
-      <div>
-        <div className="boardDetailsBar">
-          <div className="primaryDetails">
-            {profile.name ? (
-              <span className="d-flex">
-                <span className="d-none d-md-inline">
-                  Welcome to the FundBoard of&nbsp;
+      <div className="boardDetailsBar">
+        <div className="primaryDetails">
+          <div className="d-flex w-100">
+            <div className="d-none d-md-block flex-grow-1">
+              <Button
+                variant="text"
+                className="text-left titleLink"
+                type="button"
+                onClick={onClickShowProfile}
+              >
+                {`Welcome to the FundBoard of ${profile.name || '_____'}`}
+              </Button>
+            </div>
+            <div className="d-md-none flex-grow-1">
+              <button
+                className="btn btn-txt titleLink text-left d-inline"
+                type="button"
+                onClick={onClickShowProfile}
+              >
+                {profile.name || '_____'}
+                <span className="d-md-none">
+                  ’s FundBoard
                 </span>
-                <button
-                  className="btn btn-text"
-                  type="button"
-                  onClick={onClickShowProfile}
-                >
-                  <b className="bold text-secondary">{profile.name}</b>
-                </button>
-                <span className="d-none d-md-inline">
-                  !
-                </span>
-              </span>
-            ) : (
-              <span>Welcome!</span>
-            )}
+              </button>
+            </div>
             {isMyPage && (
-              <span className="txs-1">
-                <Button
-                  variant="link"
-                  className="txs-1 toggleHideLink"
-                  onClick={onToggleHideBoardClick}
+              <div>
+                <a
+                  href="/board"
+                  className="btn btn-link text-secondary-light3 txs-3 text-nowrap"
                 >
-                  {`${boardPublic ? 'Hide' : 'Show'} Public Investor List`}
-                </Button>
-              </span>
+                  Edit Board
+                </a>
+              </div>
             )}
           </div>
         </div>
       </div>
       {statusBars.map(s => <DismissibleStatus {...s} />)}
       <div>
+        {isMyPage && (
+          <div className="d-flex mb-3">
+            <a
+              href="/profile"
+              className="mr-2"
+            >
+              Edit Profile
+            </a>
+            <Button
+              variant="link"
+              className="txs-1 toggleHideLink ml-auto"
+              onClick={onToggleHideBoardClick}
+            >
+              {`${boardPublic ? 'Hide' : 'Show'} Public Investor List`}
+            </Button>
+          </div>
+        )}
         <div className="results">
           {boardPublic && investorList.map(i => {
             const personProps = {

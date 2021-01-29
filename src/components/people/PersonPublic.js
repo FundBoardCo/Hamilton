@@ -129,9 +129,15 @@ export default function Person(props) {
               {introNamesText}
             </div>
           )}
-          <div>
-            {introedByUser ? 'You have offered to connect them.' : 'I can connect them to this investor.'}
-          </div>
+          {notConnected ? (
+            <div>
+              {introedByUser ? 'You have offered to connect them.' : 'I can connect them to this investor.'}
+            </div>
+          ) : (
+            <div>
+              This investor has been connected.
+            </div>
+          )}
         </div>
       </button>
     </div>

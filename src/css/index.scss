@@ -586,14 +586,9 @@ html#ov {
         }
 
         #PageBoard {
-          margin-top: 44px;
 
           .boardDetailsBar {
-            position: fixed;
-            z-index: 10;
-            top: 0;
-            left: 0;
-            right: 0;
+            margin: -15px -15px 15px -15px;
 
             .primaryDetails {
               color: $col-text-light;
@@ -604,6 +599,13 @@ html#ov {
               display: flex;
               justify-content: space-between;
               align-items: center;
+
+              .titleLink {
+                font-weight: 700;
+                line-height: 1.2;
+                color: $col-text-light;
+                margin-bottom: 0.15em; // equalize bottom space with line-height 1.5 board title
+              }
 
               .primaryDetailsLink {
                 font-size: $txSm;
@@ -721,6 +723,13 @@ html#ov {
           }
 
           @media (min-width: $mediaMd) {
+            .boardDetailsBar {
+              .primaryDetails {
+                .titleLink {
+                  color: $col-text;
+                }
+              }
+            }
 
             .results {
               padding-bottom: 0;
