@@ -90,16 +90,17 @@ export default function Search() {
         </div>
       </div>
       <div className="mb-3 txs-2 tx-md-tx3">
-        {searchResults.length > 0 && (
-          <span>
-            {`You have ${investorIds.length} investors on your FundBoard. Click on an investor to learn more about them and save them to your `}
-            <a href="/board">board.</a>
+        {investorIds.length > 0 ? (
+          <span className="txs-3">
+            {`You have ${investorIds.length} investors on your FundBoard. `}
+            <a href="/public">
+              <strong>Share it now to start getting introductions.</strong>
+            </a>
           </span>
-        )}
-        {searchResults.length === 0 && (
+        ) : (
           <span>
             {`You have ${investorIds.length} investors on your FundBoard. Start a new search to find matching investors to save to your `}
-            <a href="/board">board.</a>
+            <a href="/public">board.</a>
           </span>
         )}
       </div>
