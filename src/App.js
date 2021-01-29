@@ -156,7 +156,7 @@ function App() {
           <a href="/" className="navBrand">
             <img className="navLogo" src={Logo} alt="FundBoard Logo" />
             <span className="navName">FundBoard</span>
-            <span className="navVersion">Alpha 0.1.4</span>
+            <span className="navVersion">Beta 0.1</span>
           </a>
           <Nav className="ml-auto" defaultActiveKey={window.location.pathname}>
             {(!firstTime || loggedIn) && (
