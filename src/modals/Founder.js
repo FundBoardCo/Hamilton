@@ -30,8 +30,8 @@ export default function Founder() {
     permalink,
     raise,
     remote,
-    location_city,
-    location_state,
+    location_city = '',
+    location_state = '',
     links,
     team_size,
   } = modalProps;

@@ -445,7 +445,7 @@ export default function Profile() {
       <Col xs={12} md={8} className="mr-auto ml-auto">
         <h1 className="text-center mb-4">My Profile</h1>
         <Form
-          className="mb-4"
+          className="mb-5 mb-md-4"
           noValidate
           validated={validated}
           onSubmit={handleSubmit}
@@ -482,8 +482,8 @@ export default function Profile() {
           </div>
         </Form>
         {allowIn && (
-          <section className="mb-4">
-            <h2 className="sectionHead">Public Data (Optional)</h2>
+          <section className="mb-5 mb-md-4">
+            <h2 className="sectionHead">Profile (Optional)</h2>
             <p>Your profile will be shown on your public FundBoard.</p>
             <div>
               <div className="d-flex justify-content-end mb-2">
@@ -519,7 +519,7 @@ export default function Profile() {
             </div>
             {showPublicInputs && (
               <Form
-                className="mb-4"
+                className="mb-5 mb-md-4"
                 noValidate
                 validated={publicValidated}
                 onSubmit={handlePublicSubmit}
@@ -605,7 +605,7 @@ export default function Profile() {
             )}
           </section>
         )}
-        <section className="mb-4">
+        <section className="mb-5 mb-md-4">
           <h2 className="sectionHead">Log Out</h2>
           <p>Click the button below to log out of your account.</p>
           <div className="d-flex flex-grow-1 justify-content-end">
@@ -619,7 +619,7 @@ export default function Profile() {
             </Button>
           </div>
         </section>
-        <section className="mb-4">
+        <section className="mb-5 mb-md-4">
           <h2 className="sectionHead">Delete Account</h2>
           <p>Click the button below to permanently delete your account.</p>
           <p>

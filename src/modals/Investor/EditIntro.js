@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import DatePicker from 'react-datepicker';
-import { useLocation } from 'react-router';
+import { useHistory, useLocation } from 'react-router';
 import * as types from '../../actions/types';
 import Status from '../../components/DismissibleStatus';
 import { aFormDate } from '../../utils';
@@ -118,6 +118,16 @@ export default function EditIntro(props) {
     onCancel();
   };
 
+  const history = useHistory();
+
+  const onOpenOnBoardClick = () => {
+    dispatch({
+      type: types.MODAL_SET_OPEN,
+      modal: null,
+    });
+    history.push(`/board/${uuid}`);
+  };
+
   const publicFormProps = {};
   if (isPublic) publicFormProps.required = true;
 
@@ -180,6 +190,16 @@ export default function EditIntro(props) {
             />
           </div>
         </div>
+      )}
+      {!isPublic && (
+        <Button
+          variant="link"
+          className="mb-2"
+          data-track="MakeIntro-OpenOnBoard"
+          onClick={onOpenOnBoardClick}
+        >
+          Edit on my private board
+        </Button>
       )}
       <Status
         statusPrefix="Make Introduction:"

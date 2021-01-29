@@ -176,10 +176,12 @@ export default function Board() {
   const history = useHistory();
 
   const onBoardOpenClick = () => {
+    /* remove for now, since everyone will have seen their public board
     dispatch({
       type: types.USER_UPDATE_REQUESTED,
       params: { board_public_viewed: true },
     });
+     */
     history.push(`/public/${userUUID}`);
   };
 
@@ -249,17 +251,14 @@ on it at ${window.location.origin}/public/${userUUID}.`,
           <div className="boardDetailsBar">
             <div className="primaryDetails">
               <span>
-                My FundBoard
+                Edit FundBoard
               </span>
               <Button
-                className="primaryDetailsLink"
                 variant="link"
-                onClick={onCSVClick}
-                disabled={Object.keys(ownInvestors).length === 0}
-                data-track="BoardDownload"
+                className="txs-3 ml-auto text-secondary-light3"
+                onClick={onBoardOpenClick}
               >
-                <span className="ml-2">Download</span>
-                <span className="d-none d-sm-inline">&nbsp;My Investors</span>
+                Public FundBoard
               </Button>
             </div>
           </div>
@@ -295,17 +294,6 @@ on it at ${window.location.origin}/public/${userUUID}.`,
                 Archived
               </button>
             </div>
-            <Button
-              variant="link"
-              className="txs-3 mr-2"
-              onClick={onBoardOpenClick}
-            >
-              <span>
-                Public FundBoard
-                &nbsp;
-              </span>
-              <span className="d-none d-sm-inline">Board</span>
-            </Button>
             <div className="searchBar">
               <InputGroup>
                 <InputGroup.Prepend>
@@ -335,7 +323,17 @@ on it at ${window.location.origin}/public/${userUUID}.`,
             variant="link"
             onClick={onAddBoardClick}
           >
-            Add an Investor Manually
+            Add Manual Investor
+          </Button>
+          <Button
+            className="ml-auto"
+            variant="link"
+            onClick={onCSVClick}
+            disabled={Object.keys(ownInvestors).length === 0}
+            data-track="BoardDownload"
+          >
+            <span className="ml-2">Download</span>
+            <span className="d-none d-sm-inline">&nbsp;My Investors</span>
           </Button>
         </div>
       )}
