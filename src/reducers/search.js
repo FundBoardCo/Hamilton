@@ -2,9 +2,13 @@ import * as types from '../actions/types';
 import { calcMatch, processErr } from '../utils';
 import investors from '../data/investors.json';
 
-const defaults = {
+export const searchResets = {
   results_status: '',
   extraZipcodes_status: '',
+};
+
+const defaults = {
+  ...searchResets,
   results: [],
   keywords: [],
   raise: 100000,

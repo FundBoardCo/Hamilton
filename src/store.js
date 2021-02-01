@@ -7,7 +7,7 @@ import airtable from './reducers/airtable';
 import founders, { founderResets } from './reducers/founders';
 import info from './reducers/info';
 import investors, { investorsResets } from './reducers/investors';
-import search from './reducers/search';
+import search, { searchResets } from './reducers/search';
 import user, { userResets } from './reducers/user';
 import modal from './reducers/modal';
 import people, { peopleResets } from './reducers/people';
@@ -77,7 +77,7 @@ const peopleConfig = {
 const searchConfig = {
   ...configDefaults,
   key: 'search',
-  blacklist: ['results', 'results_status', 'extraZipcodes_status'],
+  blacklist: Object.keys(searchResets),
 };
 
 const userConfig = {
