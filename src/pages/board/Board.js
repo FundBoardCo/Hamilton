@@ -13,7 +13,6 @@ import * as types from '../../actions/types';
 import DismissibleStatus from '../../components/DismissibleStatus';
 import { MINPLACE, STAGEPROPS } from '../../constants';
 import { getSafeVar } from '../../utils';
-import GenericModal from '../../modals/GenericModal';
 
 export default function Board() {
   const userUpdateStatus = useSelector(state => state.user.update_status);
@@ -27,7 +26,6 @@ export default function Board() {
   const allowIn = loggedIn && typeof place === 'number' && place <= MINPLACE;
   const modalsSeen = useSelector(state => state.modal.modalsSeen) || [];
   const userUUID = useSelector(state => state.user.uuid);
-  const boardPublicViewed = useSelector(state => state.user.board_public_viewed);
 
   const [sortBy, setSortBy] = useState('status');
   const [sortNameUp, setSortNameUp] = useState(false);
@@ -176,12 +174,6 @@ export default function Board() {
   const history = useHistory();
 
   const onBoardOpenClick = () => {
-    /* remove for now, since everyone will have seen their public board
-    dispatch({
-      type: types.USER_UPDATE_REQUESTED,
-      params: { board_public_viewed: true },
-    });
-     */
     history.push(`/public/${userUUID}`);
   };
 
@@ -229,23 +221,8 @@ export default function Board() {
     }
   }, [showHowToIntro, modalsSeen]);
 
-  const shareYourBoardProps = {
-    title: 'Share Your Public FundBoard',
-    text: `You can share your public FundBoard with contacts that can introduce you to the investors
-on it at ${window.location.origin}/public/${userUUID}.`,
-    buttons: [
-      {
-        key: 'public',
-        text: 'Open Public FundBoard',
-        variant: 'link',
-        onClick: onBoardOpenClick,
-      },
-    ],
-  };
-
   return (
     <Row id="PageBoard" className="pageContainer">
-      {!boardPublicViewed && <GenericModal {...shareYourBoardProps} />}
       {allowIn && (
         <div>
           <div className="boardDetailsBar">
