@@ -2,9 +2,14 @@ import * as types from '../actions/types';
 import { calcMatch, processErr } from '../utils';
 import investors from '../data/investors.json';
 
-const defaults = {
+export const searchResets = {
   results_status: '',
   extraZipcodes_status: '',
+  results: [],
+};
+
+const defaults = {
+  ...searchResets,
   results: [],
   keywords: [],
   raise: 100000,
@@ -53,7 +58,7 @@ export default function search(state = defaults, action) {
     };
     case types.SEARCH_SET_RAISE: return {
       ...state,
-      raise: (typeof action.raise === 'number') ? action.raise : 1000000,
+      raise: (typeof action.raise === 'number') ? action.raise : 100000,
     };
     case types.SEARCH_SET_LOCATION: return {
       ...state,

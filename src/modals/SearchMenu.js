@@ -4,7 +4,6 @@ import { useSelector, useDispatch } from 'react-redux';
 import Modal from 'react-bootstrap/Modal';
 import Form from 'react-bootstrap/Form';
 import InputGroup from 'react-bootstrap/InputGroup';
-import RangeSlider from 'react-bootstrap-range-slider';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Button from 'react-bootstrap/Button';
 import FormControl from 'react-bootstrap/FormControl';
@@ -53,12 +52,15 @@ export default function SearchMenu() {
   const searchKeywords = useSelector(state => state.search.keywords) || [];
 
   const searchRaise = useSelector(state => state.search.raise) || 100000;
+  const [raiseValue, setRaiseValue] = useState(searchRaise);
+  const [raiseValid, setRaiseValid] = useState(true);
 
   const searchedText = useSelector(state => state.search.searchedText);
 
   const searchLocation = useSelector(state => state.search.location) || '';
   // use local state to handle invalid entries without recording them
   const [locationValue, setLocationValue] = useState(searchLocation);
+  const [locationValid, setLocationValid] = useState(true);
 
   const extraLocations = useSelector(state => state.search.extraLocations) || [];
   const extraZipcodes_status = useSelector(state => state.search.extraZipcodes_status);
@@ -71,7 +73,6 @@ export default function SearchMenu() {
   const storedRemote = useSelector(state => state.search.remote) || '';
 
   const [validated, setValidated] = useState(false);
-  const [isValid, setIsValid] = useState(false);
 
   const [tileSearchFor, setTileSearchFor] = useState('');
   const [showTileWarning, setShowTileWarning] = useState(false);
@@ -133,8 +134,18 @@ export default function SearchMenu() {
     setKeywords(searchKeywords.filter(kw => kw !== w));
   };
 
-  const onRaiseChange = val => {
-    setRaise(val);
+  const onRaiseChange = e => {
+    const input = e.currentTarget;
+    const val = Number(e.target.value);
+    setValidated(true);
+    if (input.checkValidity()) {
+      setRaiseValid(true);
+      setRaiseValue(val);
+      setRaise(val);
+    } else {
+      setRaiseValid(false);
+      setRaiseValue(val);
+    }
   };
 
   const onRemoteChange = val => {
@@ -146,12 +157,12 @@ export default function SearchMenu() {
     const val = e.target.value;
     setValidated(true);
     if (input.checkValidity()) {
-      setIsValid(true);
+      setLocationValid(true);
       setLocationValue(val);
       setLocation(val);
     } else {
+      setLocationValid(false);
       setLocationValue(val);
-      setIsValid(false);
     }
   };
 
@@ -312,40 +323,44 @@ export default function SearchMenu() {
             </button>
           )}
         </div>
-        <SectionTitle
-          faIcon="rocket"
-          text="Raising"
-          detailText={usdFormatter.format(searchRaise)}
-          subText="The amount you're trying to raise this round"
-        />
-        <div className="sliderWrapper">
-          <div className="sliderMin">
-            {usdFormatter.format(100000)}
-          </div>
-          <RangeSlider
-            value={searchRaise}
-            min={100000}
-            max={10000000}
-            step={100000}
-            size="lg"
-            variant="primary"
-            tooltip="on"
-            tooltipLabel={val => usdFormatter.format(val)}
-            onChange={e => onRaiseChange(Number(e.target.value))}
-            data-track="RaiseSlider"
-          />
-          <div className="sliderMax">
-            {usdFormatter.format(10000000)}
-          </div>
-        </div>
         <Form noValidate validated={validated} ref={form}>
+          <div className="mb-4">
+            <SectionTitle
+              faIcon="rocket"
+              text="Raising"
+              detailText={usdFormatter.format(raiseValue)}
+              subText="How much you're trying to raise ($100,000 - $10,000,000)"
+            />
+            <Form.Group controlId="RaiseInput">
+              <Form.Label className="sr-only">
+                The Amount Your Are Trying to Raise
+              </Form.Label>
+              <Form.Control
+                required
+                max={10000000}
+                min={100000}
+                step={100000}
+                type="number"
+                placeholder="100000"
+                value={raiseValue}
+                isInvalid={validated && !raiseValid}
+                onChange={e => onRaiseChange(e)}
+                data-track="RaiseInput"
+              />
+              <Form.Control.Feedback type="invalid">
+                Please enter a valid raise amount.
+              </Form.Control.Feedback>
+            </Form.Group>
+          </div>
           <SectionTitle
             faIcon="map-marker-alt"
             text="Location"
             subText="The Zip Code of your office or home"
           />
           <Form.Group controlId="LocationInput">
-            <Form.Label>My Zip Code (5 digit)</Form.Label>
+            <Form.Label className="sr-only">
+              My Zip Code (5 digit)
+            </Form.Label>
             <Form.Control
               required
               maxLength={5}
@@ -354,7 +369,7 @@ export default function SearchMenu() {
               placeholder="zip code"
               value={locationValue}
               onChange={e => onLocationChange(e)}
-              isInvalid={validated && !isValid}
+              isInvalid={validated && !locationValid}
               data-track="LocationInput"
             />
             <Form.Control.Feedback type="invalid">

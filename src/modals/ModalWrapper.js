@@ -14,7 +14,8 @@ import { MINPLACE } from '../constants';
 export default function ModalWrapper() {
   const loggedIn = useSelector(state => state.user.sessionToken);
   const place = useSelector(state => state.user.place);
-  const allowIn = typeof place === 'number' && place <= MINPLACE;
+  const overridePlace = useSelector(state => state.user.overridePlace);
+  const allowIn = typeof place === 'number' && (place <= MINPLACE || overridePlace);
   const openModal = useSelector(state => state.modal.openModal);
 
   return (

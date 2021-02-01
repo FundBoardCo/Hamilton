@@ -42,7 +42,9 @@ function* workUserCreate(action) {
     const results = yield call(userCreate, params);
     const data = results.toJSON();
     const init = yield call(userInit);
-    data.place = init.toJSON().place;
+    const initData = init.toJSON();
+    data.place = initData.place;
+    data.overridePlace = initData.overridePlace;
     yield put({ type: types.USER_CREATE_SUCCEEDED, data });
     window.heap.identify(email);
     window.heap.addUserProperties({ email });
@@ -75,7 +77,9 @@ function* workUserLogin(action) {
     const data = results.toJSON();
     const { email } = data;
     const init = yield call(userInit);
-    data.place = init.toJSON().place;
+    const initData = init.toJSON();
+    data.place = initData.place;
+    data.overridePlace = initData.overridePlace;
     yield put({ type: types.USER_LOGIN_SUCCEEDED, data });
     window.heap.identify(email);
     window.heap.addUserProperties({ email });

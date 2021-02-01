@@ -3,7 +3,6 @@ import {
   call,
   fork,
   put,
-  take,
   takeEvery,
   takeLatest,
 } from 'redux-saga/effects';
