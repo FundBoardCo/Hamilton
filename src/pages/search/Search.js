@@ -92,7 +92,7 @@ export default function Search() {
       <div className="mb-3 txs-2 tx-md-tx3">
         {investorIds.length > 0 ? (
           <span className="txs-3">
-            {`You have ${investorIds.length} investors on your FundBoard. `}
+            {`You have ${investorIds.length} ${investorIds.length === 1 ? 'investor' : 'investors'} on your FundBoard. `}
             <a href="/public">
               <strong>Share it now to start getting introductions.</strong>
             </a>
