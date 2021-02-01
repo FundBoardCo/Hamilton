@@ -95,7 +95,7 @@ export default function Talk() {
               required
               as="textarea"
               rows={3}
-              placeholder="Leave feeback or questions here."
+              placeholder="Leave feedback or questions here."
               value={comment}
               onChange={e => onCommentChange(e)}
               data-track="TalkCommentInput"
