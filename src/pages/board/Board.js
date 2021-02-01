@@ -23,7 +23,8 @@ export default function Board() {
   const ownInvestors = useSelector(state => state.investors.ownInvestors) || {};
   const loggedIn = useSelector(state => state.user.sessionToken);
   const place = useSelector(state => state.user.place);
-  const allowIn = loggedIn && typeof place === 'number' && place <= MINPLACE;
+  const overridePlace = useSelector(state => state.user.overridePlace);
+  const allowIn = loggedIn && typeof place === 'number' && (place <= MINPLACE || overridePlace);
   const modalsSeen = useSelector(state => state.modal.modalsSeen) || [];
   const userUUID = useSelector(state => state.user.uuid);
 

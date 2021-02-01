@@ -70,7 +70,8 @@ function LinkInput(props) {
 export default function Profile() {
   const loggedIn = useSelector(state => state.user.sessionToken);
   const place = useSelector(state => state.user.place);
-  const allowIn = loggedIn && typeof place === 'number' && place <= MINPLACE;
+  const overridePlace = useSelector(state => state.user.overridePlace);
+  const allowIn = loggedIn && typeof place === 'number' && (place <= MINPLACE || overridePlace);
   const user = useSelector(state => state.user) || {};
   const email = useSelector(state => state.user.email) || '';
   const searchRaise = useSelector(state => state.search.raise) || 100000;
