@@ -5,6 +5,7 @@ import investors from '../data/investors.json';
 export const searchResets = {
   results_status: '',
   extraZipcodes_status: '',
+  results: [],
 };
 
 const defaults = {
@@ -57,7 +58,7 @@ export default function search(state = defaults, action) {
     };
     case types.SEARCH_SET_RAISE: return {
       ...state,
-      raise: (typeof action.raise === 'number') ? action.raise : 1000000,
+      raise: (typeof action.raise === 'number') ? action.raise : 100000,
     };
     case types.SEARCH_SET_LOCATION: return {
       ...state,

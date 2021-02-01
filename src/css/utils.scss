@@ -185,7 +185,8 @@ html#ov body {
     padding-left: 0;
   }
 
-  input[type=text] {
+  input[type=text],
+  input[type=number] {
     font-size: $tx;
 
     @media (min-width: $mediaXs) {
