@@ -233,7 +233,7 @@ export default function Board() {
               </span>
               <Button
                 variant="link"
-                className="txs-3 ml-auto text-secondary-light3"
+                className="txs-3 ml-auto text-secondary-light2"
                 onClick={onBoardOpenClick}
               >
                 Public FundBoard
