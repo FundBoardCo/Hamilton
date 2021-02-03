@@ -17,6 +17,7 @@ export default function ModalWrapper() {
   const overridePlace = useSelector(state => state.user.overridePlace);
   const allowIn = typeof place === 'number' && (place <= MINPLACE || overridePlace);
   const openModal = useSelector(state => state.modal.openModal);
+  console.log(openModal);
 
   return (
     <Switch>
