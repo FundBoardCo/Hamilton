@@ -226,7 +226,7 @@ function App() {
         <main id="Main">
           <div className="container-xl">
             <Switch>
-              <Route path="/" exact component={Intro} />
+              <Route path="/" exact component={Public} />
               <Route path="/intro" component={Intro} />
               <Route path="/introsearch" component={IntroSearch} />
               <Route path="/board" component={Board} />

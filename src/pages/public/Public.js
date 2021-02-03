@@ -3,16 +3,24 @@ import { useSelector, useDispatch } from 'react-redux';
 import Row from 'react-bootstrap/Row';
 import PropTypes from 'prop-types';
 import Button from 'react-bootstrap/Button';
+import { useHistory } from 'react-router';
 import PersonPublic from '../../components/people/PersonPublic';
 import * as types from '../../actions/types';
 import DismissibleStatus from '../../components/DismissibleStatus';
 import GenericModal from '../../modals/GenericModal';
-import { STAGEPROPS } from '../../constants';
+import WelcomeModal from '../../modals/Welcome';
+import { MINPLACE, STAGEPROPS } from '../../constants';
 
 export default function Public(props) {
   const { match } = props;
   const { params } = match;
   const { uuid } = params;
+
+  const loggedIn = useSelector(state => state.user.sessionToken);
+  const place = useSelector(state => state.user.place);
+  const overridePlace = useSelector(state => state.user.overridePlace);
+  const allowIn = loggedIn && typeof place === 'number' && (place <= MINPLACE || overridePlace);
+  const modalsSeen = useSelector(state => state.modal.modalsSeen) || [];
 
   const people = useSelector(state => state.people.records) || {};
   const peopleGetStatus = useSelector(state => state.people.get_status);
@@ -34,6 +42,11 @@ export default function Public(props) {
   const publicPostIntro = useSelector(state => state.founders.post_intro_status);
 
   const [showConfirmHide, setShowConfirmHide] = useState(false);
+
+  // make sure to show the page uuid in the URL if there is one.
+  if (!uuid && pageUUID) {
+    window.history.replaceState(null, 'public', `/public/${pageUUID}`);
+  }
 
   const statusBars = [
     {
@@ -201,19 +214,11 @@ export default function Public(props) {
     });
   };
 
-  // force login if no the user isn't logged in, otherwise add the uuid to the URL.
-  if (!uuid && pageUUID) {
-    window.history.replaceState(null, 'public', `/public/${pageUUID}`);
-  } else if (!pageUUID) {
-    dispatch({
-      type: types.MODAL_SET_OPEN,
-      modal: 'login',
-      modalProps: {
-        initialMode: 'create',
-        extraText: 'Create an account to get a sharable FundBoard.',
-      },
-    });
-  }
+  const history = useHistory();
+
+  const onGoToSearch = () => {
+    history.push('introSearch');
+  };
 
   const confirmDeleteProps = {
     title: 'Are You Sure?',
@@ -234,6 +239,75 @@ export default function Public(props) {
     ],
   };
 
+  const exampleVCs = [
+    {
+      key: 'example1',
+      name: 'Bryan Birsic is an Example Investor',
+      image_url: '/imgs/BryanPic.jpg',
+      primary_job_title: 'Founder',
+      primary_organization: {
+        id: '',
+        name: 'FundBoard',
+        image_url: '/imgs/FundBoard_Logo_300.jpg',
+        homepage: 'https://fundboard.co',
+        linkedin: 'https://www.linkedin.com/in/bryanbirsic',
+        twitter: 'https://twitter.com/birsic',
+      },
+      matches: {
+        keywords: ['Helping Founders', 'Being Awesome'],
+        raise: true,
+        location: true,
+        name: true,
+        org: true,
+      },
+      disable: true,
+    },
+    {
+      key: 'example2',
+      name: 'Another Example Investor',
+      image_url: '/imgs/greySquare.jpg',
+      primary_job_title: 'Partner',
+      primary_organization: {
+        id: '',
+        name: 'Some Very Cool Fund',
+        image_url: '/imgs/greySquare',
+        homepage: '',
+        linkedin: '',
+        twitter: '',
+      },
+      matches: {
+        keywords: ['Helping Founders', 'Being Awesome'],
+        raise: true,
+        location: true,
+        name: true,
+        org: true,
+      },
+      disable: true,
+    },
+    {
+      key: 'example3',
+      name: 'Another Example Investor',
+      image_url: '/imgs/greySquare.jpg',
+      primary_job_title: 'Partner',
+      primary_organization: {
+        id: '',
+        name: 'Some Very Cool Fund',
+        image_url: '/imgs/greySquare',
+        homepage: '',
+        linkedin: '',
+        twitter: '',
+      },
+      matches: {
+        keywords: ['Helping Founders', 'Being Awesome'],
+        raise: true,
+        location: true,
+        name: true,
+        org: true,
+      },
+      disable: true,
+    },
+  ];
+
   return (
     <Row id="PageBoard" className="pageContainer public">
       {showConfirmHide && <GenericModal {...confirmDeleteProps} />}
@@ -241,14 +315,18 @@ export default function Public(props) {
         <div className="primaryDetails">
           <div className="d-flex w-100">
             <div className="d-none d-md-block flex-grow-1">
-              <Button
-                variant="text"
-                className="text-left titleLink"
-                type="button"
-                onClick={onClickShowProfile}
-              >
-                {`Welcome to the FundBoard of ${profile.name || '_____'}`}
-              </Button>
+              {profile.name ? (
+                <Button
+                  variant="text"
+                  className="text-left titleLink"
+                  type="button"
+                  onClick={onClickShowProfile}
+                >
+                  {`Welcome to the FundBoard of ${profile.name}`}
+                </Button>
+              ) : (
+                <span>Welcome to FundBoard!</span>
+              )}
             </div>
             <div className="d-md-none flex-grow-1">
               <button
@@ -262,7 +340,7 @@ export default function Public(props) {
                 </span>
               </button>
             </div>
-            {isMyPage && (
+            {isMyPage && allowIn && (
               <div>
                 <a
                   href="/board"
@@ -277,7 +355,7 @@ export default function Public(props) {
       </div>
       {statusBars.map(s => <DismissibleStatus {...s} />)}
       <div>
-        {isMyPage && (
+        {isMyPage && allowIn && (
           <div className="d-flex mb-3">
             <a
               href="/profile"
@@ -295,7 +373,7 @@ export default function Public(props) {
           </div>
         )}
         <div className="results">
-          {boardPublic && investorList.map(i => {
+          {boardPublic && investorList.length && investorList.map(i => {
             const personProps = {
               ...i,
               founderUUID: pageUUID,
@@ -306,18 +384,41 @@ export default function Public(props) {
               <PersonPublic key={i.uuid} {...personProps} />
             );
           })}
+          {pageUUID && (!boardPublic || investorList.length === 0) && (
+            <div>
+              This founder doesn’t have any investors shared publicly yet.
+            </div>
+          )}
+          {!pageUUID && (
+            <div>
+              {exampleVCs.map(i => <PersonPublic {...i} />)}
+              <div className="mt-3 mb-4">
+                <p>
+                  This page is&nbsp;
+                  <i>your FundBoard.</i>
+                  &nbsp;To get introductions all you have to do is
+                  share it.
+                </p>
+                <p>
+                  <strong>Step one is to find the right investors.</strong>
+                  &nbsp;Bryan and the other investors above are just examples! They’ll go away after
+                  you add some real investors.
+                </p>
+              </div>
+              <div className="d-flex justify-content-center">
+                <Button
+                  variant="secondary"
+                  className="btnNoMax"
+                  onClick={onGoToSearch}
+                >
+                  Find Investors to Add to Your FundBoard
+                </Button>
+              </div>
+            </div>
+          )}
         </div>
-        {pageUUID && (!boardPublic || investorList.length === 0) && (
-          <div>
-            This founder doesn’t have any investors shared publicly yet.
-          </div>
-        )}
-        {!pageUUID && (
-          <div>
-            {'This is a generic public FundBoard. It should have a user\'s ID in the URL.'}
-          </div>
-        )}
       </div>
+      {!pageUUID && !modalsSeen.includes('welcome') && <WelcomeModal />}
     </Row>
   );
 }
