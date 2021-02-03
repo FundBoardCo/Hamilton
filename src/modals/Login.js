@@ -19,7 +19,7 @@ export default function Login() {
   } = user;
 
   const openModal = useSelector(state => state.modal.openModal);
-  const modalProps = useSelector(state => state.modal.modalProps);
+  const modalProps = useSelector(state => state.modal.modalProps) || {};
   const { extraText, initialMode } = modalProps;
 
   const [mode, setMode] = useState(initialMode || 'login');
