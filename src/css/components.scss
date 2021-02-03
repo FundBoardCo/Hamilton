@@ -4,152 +4,293 @@
 html#ov body {
   // override bootstrap styles
 
-  .person {
+  .personWrapper {
     display: flex;
-    align-items: stretch;
-    background-color: $col-light;
-    border-radius: $pad4;
-    overflow: hidden;
-    padding: 0;
-    margin-bottom: $pad2;
-    width: 100%;
-    border: none;
-    outline: 0;
-    box-sizing: border-box;
-    border: 1px solid transparent;
-    text-align: left;
+    flex-direction: column;
 
-    &:hover,
-    &:active,
-    &.active {
-      color: inherit;
-      border: 1px solid $col-secondary;
-    }
-
-    .thumb {
-      width: $pad6;
-      height: $pad6;
-      flex-shrink: 0;
-      padding: 0;
-      border: 0;
-      border-right: 1px solid $col-primary-light4;
-      background-size: cover;
-      background-position: center;
-      background-repeat: no-repeat;
-
-      @media (min-width: $mediaLg) {
-        width: $pad7;
-        height: $pad7;
-      }
-    }
-
-    .content {
+    .person {
       display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      flex-grow: 1;
-      padding: $pad2;
+      align-items: stretch;
+      background-color: $col-bright;
+      border-radius: $pad4;
+      overflow: hidden;
+      padding: 0;
+      margin-bottom: $pad2;
+      width: 100%;
+      outline: 0;
+      box-sizing: border-box;
+      border: 1px solid transparent;
+      text-align: left;
 
-      h1 {
-        font-size: $tx;
-        margin-bottom: 0;
+      &:hover,
+      &.active {
+        color: inherit;
+        border: 1px solid $col-secondary;
       }
 
-      .details {
-        margin-top: auto;
+      .thumb {
+        width: $pad6;
+        height: $pad6;
+        flex-shrink: 0;
+        padding: 0;
+        border-width: 1px;
+        border-style: solid;
+        border-color: $col-primary-light4;
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        background-color: $col-primary-light9;
 
-        .orgLogoWrapper {
-          width: 20px;
-          height: 20px;
-          flex-shrink: 0;
-          margin-right: $pad1;
-          border-radius: $pad1;
-          border: 1px solid $col-primary-light7;
-          overflow: hidden;
-          background-size: cover;
-          background-repeat: no-repeat;
-          background-position: center;
-        }
-
-        .orgText {
-          display: flex;
-          align-items: center;
-          font-size: $txSm;
-        }
-      }
-
-      @media (min-width: $mediaXs) {
-        .details {
-          .orgText {
-            font-size: 0.7rem;
-          }
+        @media (min-width: $mediaLg) {
+          width: $pad7;
+          height: $pad7;
         }
       }
 
-      @media (min-width: $mediaSm) {
-        .details {
-          .orgLogoWrapper {
-            width: 28px;
-            height: 28px;
-          }
-          .orgText {
-            font-size: $txMd;
-          }
-        }
-      }
-
-      @media (min-width: $mediaLg) {
+      .content {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        flex-grow: 1;
+        padding: $pad2;
 
         h1 {
-          font-size: $h3;
+          font-size: $tx;
+          margin-bottom: 0;
         }
 
         .details {
+          margin-top: auto;
+
           .orgLogoWrapper {
-            margin-right: $pad2;
-            width: 38px;
-            height: 38px;
+            width: 20px;
+            height: 20px;
+            flex-shrink: 0;
+            margin-right: $pad1;
+            border-radius: $pad1;
+            border: 1px solid $col-primary-light7;
+            overflow: hidden;
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-position: center;
           }
 
           .orgText {
-            font-size: $h5;
+            display: flex;
+            align-items: center;
+            font-size: $txSm;
+          }
+        }
+
+        @media (min-width: $mediaXs) {
+          .details {
+            .orgText {
+              font-size: 0.7rem;
+            }
+          }
+        }
+
+        @media (min-width: $mediaSm) {
+          .details {
+            .orgLogoWrapper {
+              width: 28px;
+              height: 28px;
+            }
+
+            .orgText {
+              font-size: $txMd;
+            }
+          }
+        }
+
+        @media (min-width: $mediaLg) {
+
+          h1 {
+            font-size: $h3;
+          }
+
+          .details {
+            .orgLogoWrapper {
+              margin-right: $pad2;
+              width: 38px;
+              height: 38px;
+            }
+
+            .orgText {
+              font-size: $h5;
+            }
+          }
+        }
+      }
+
+      .introText {
+        font-size: $txSm;
+        flex-basis: 33%;
+        display: flex;
+        justify-content: flex-end;
+        text-align: right;
+
+        .btn-link {
+          align-items: flex-start;
+          justify-content: flex-end;
+        }
+
+        @media (min-width: $mediaMd) {
+          font-size: $txMd;
+        }
+      }
+
+      .controls {
+        flex-basis: 15%;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end;
+        justify-content: flex-end;
+        padding: $pad2;
+
+        .iconDisc {
+          font-size: 0.8rem;
+        }
+
+        .percentageMatch {
+          margin-top: auto;
+          font-size: $txMd;
+          color: $col-primary;
+          text-align: center;
+        }
+
+        @media (min-width: $mediaXs) {
+          .percentageMatch {
+            font-size: $tx;
+          }
+        }
+
+        @media (min-width: $mediaLg) {
+          .iconDisc {
+            font-size: $pad4;
+          }
+
+          .percentageMatch {
+            font-size: $h4;
           }
         }
       }
     }
 
-    .controls {
-      flex-basis: 15%;
-      display: flex;
-      flex-direction: column;
-      align-items: flex-end;
-      justify-content: flex-end;
-      padding: $pad2;
+    &.Board {
+      // border-bottom: 1px solid $col-primary-light6;
+      padding: 10px 10px 5px 10px;
+      margin-bottom: $pad2;
+      margin-right: -15px;
+      margin-left: -15px;
+      background-color: #fff;
 
-      .iconBtn {
-        font-size: $pad4;
+      .person {
+        flex-basis: 33%;
+        background-color: transparent;
+        border-radius: 0;
+        border: none;
+        margin-bottom: 0;
+
+        &:hover,
+        &:active {
+          border: none;
+        }
+
+        .thumb {
+          width: $pad5;
+          height: $pad5;
+        }
+
+        .content {
+          padding: 0 0 0 $pad2;
+          justify-content: flex-start;
+
+          h1 {
+            font-size: $tx;
+            margin-bottom: 0;
+          }
+
+          .details {
+            margin-top: 0;
+
+            .orgLogoWrapper {
+              display: none;
+            }
+
+            .orgText {
+              font-size: $txMd;
+            }
+          }
+
+          @media (min-width: $mediaLg) {
+            h1 {
+              font-size: $h5;
+            }
+
+            .details {
+              .orgText {
+                font-size: $tx;
+              }
+            }
+          }
+        }
+
+        .controls {
+          padding-top: 0;
+          padding-right: 0;
+        }
       }
 
-      .percentageMatch {
-        margin-top: auto;
+      .notesWrapper {
+        display: flex;
         font-size: $txMd;
-        color: $col-primary;
-        text-align: center;
-      }
 
-      @media (min-width: $mediaXs) {
-        .percentageMatch {
-          font-size: $tx;
+        .notes {
+          margin-top: $pad1;
+          font-size: $txSm;
+        }
+
+        .published {
+          margin-left: auto;
+          margin-top: $pad1;
+          padding-left: $pad2;
+          font-size: $txSm;
+          color: $col-primary-light;
+          flex-shrink: 0;
+        }
+
+        .next {
+          display: flex;
+
+          .text {
+            margin-right: $pad1;
+          }
+
+          .date {
+            margin-left: auto;
+          }
+
+          &.sortedByNext .date {
+            flex-basis: 35%;
+          }
         }
       }
 
-      @media (min-width: $mediaLg) {
-        .addBtn {
-          font-size: $pad5;
-        }
+      @media (min-width: $mediaMd) {
+        margin-right: 0;
+        margin-left: 0;
+        border-radius: $pad2;
 
-        .percentageMatch {
-          font-size: $h4;
+        .notesWrapper {
+
+          .next {
+            font-size: $tx;
+
+            .date {
+              margin-left: auto;
+            }
+          }
         }
       }
     }
@@ -272,122 +413,124 @@ html#ov body {
       }
     }
 
-    &.modal-investor {
+    &.modal-profile {
       .modal-dialog {
         .modal-content {
           height:100%;
 
           .modal-header {
-            position: absolute;
-            right: 0;
+            height: 1rem;
             z-index: 10;
           }
 
           .modal-body {
 
-            .investorHeader {
-              display: flex;
-
-              .thumbCol {
-                flex-grow: 0;
-                flex-shrink: 0;
-                min-width: auto;
-                margin-right: $pad2;
-
-                .thumb {
-                  width: $pad5;
-                  height: $pad5;
-                  overflow: hidden;
-                  border-radius: $pad2;
-                  border: 1px solid $col-primary-light6;
-                  background-size: cover;
-                  background-repeat: no-repeat;
-                }
-
-                @media (min-width: $mediaXs) {
-                  .thumb {
-                    width: $pad6;
-                    height: $pad6;
-                  }
-                }
-
-                @media (min-width: $mediaLg) {
-                  margin-right: $pad3;
-                  .thumb {
-                    width: $pad7;
-                    height: $pad7;
-                  }
-                }
-              }
-
-              h1 {
-                font-size: $h5;
-                margin-bottom: 0;
-
-                @media (min-width: $mediaXs) {
-                  font-size: $h4;
-                }
-
-                @media (min-width: $mediaMd) {
-                  font-size: $h3;
-                }
-
-                @media (min-width: $mediaLg) {
-                  font-size: $h2;
-                }
-              }
-
-              .orgDetails {
+            .personNameTag {
+              .profileHeader {
                 display: flex;
-                margin-top: auto;
-                font-size: $txSm;
 
-                .orgLogoWrapper {
-                  width: $pad3;
-                  height: $pad3;
+                .thumbCol {
+                  flex-grow: 0;
                   flex-shrink: 0;
-                  padding-right: $pad1;
-                  border: 1px solid $col-primary-light7;
-                  box-sizing: border-box;
-                  border-radius: $pad1;
-                  overflow: hidden;
-                  margin-right: $pad1;
-                  background-size: cover;
-                  background-repeat: no-repeat;
-                  background-position: center;
+                  min-width: auto;
+                  margin-right: $pad2;
+
+                  .thumb {
+                    width: $pad5;
+                    height: $pad5;
+                    overflow: hidden;
+                    border-radius: $pad2;
+                    border: 1px solid $col-primary-light4;
+                    background-color: $col-primary-light9;
+                    background-size: cover;
+                    background-repeat: no-repeat;
+                  }
+
+                  @media (min-width: $mediaXs) {
+                    .thumb {
+                      width: $pad6;
+                      height: $pad6;
+                    }
+                  }
+
+                  @media (min-width: $mediaLg) {
+                    margin-right: $pad3;
+                    .thumb {
+                      width: $pad7;
+                      height: $pad7;
+                    }
+                  }
                 }
 
-                .jobTitle {
+                h1 {
+                  font-size: $h5;
+                  margin-bottom: 0;
+
+                  @media (min-width: $mediaXs) {
+                    font-size: $h4;
+                  }
+
+                  @media (min-width: $mediaMd) {
+                    font-size: $h3;
+                  }
+
+                  @media (min-width: $mediaLg) {
+                    font-size: $h2;
+                  }
+                }
+
+                .orgDetails {
                   display: flex;
-                  align-items: center;
-                }
-
-                @media (min-width: $mediaXs) {
-                  font-size: $txMd;
+                  margin-top: auto;
+                  font-size: $txSm;
 
                   .orgLogoWrapper {
-                    width: 40px;
-                    height: 40px;
+                    width: $pad3;
+                    height: $pad3;
+                    flex-shrink: 0;
+                    padding-right: $pad1;
+                    border: 1px solid $col-primary-light7;
+                    box-sizing: border-box;
+                    border-radius: $pad1;
+                    overflow: hidden;
+                    margin-right: $pad1;
+                    background-size: cover;
+                    background-repeat: no-repeat;
+                    background-position: center;
                   }
 
                   .jobTitle {
-                    flex-direction: column;
-                    align-items: start;
+                    display: flex;
+                    align-items: center;
                   }
-                }
 
-                @media (min-width: $mediaMd) {
-                  font-size: $tx;
-                }
+                  @media (min-width: $mediaXs) {
+                    font-size: $txMd;
 
-                @media (min-width: $mediaLg) {
-                  font-size: $tx;
+                    .orgLogoWrapper {
+                      width: 40px;
+                      height: 40px;
+                    }
 
-                  .orgLogoWrapper {
-                    width: $pad5;
-                    height: $pad5;
-                    border-radius: $pad2;
-                    margin-right: $pad2;
+                    .jobTitle {
+                      flex-direction: column;
+                      align-items: start;
+                    }
+                  }
+
+                  @media (min-width: $mediaMd) {
+                    font-size: $tx;
+                  }
+
+                  @media (min-width: $mediaLg) {
+                    font-size: $tx;
+
+                    .orgLogoWrapper {
+                      width: $pad5;
+                      height: $pad5;
+                      border-radius: $pad2;
+                      margin-right: $pad2;
+                    }
                   }
                 }
               }
@@ -401,15 +544,15 @@ html#ov body {
             .description {
               max-height: 9em;
               overflow-y: scroll;
+
+              i {
+                color: $col-secondary;
+                font-weight: 700;
+              }
             }
 
             .matches {
               margin-bottom: $pad4;
-
-              h2 {
-                color: $col-primary-light2;
-                font-weight: 700;
-              }
 
               ul {
                 padding: 0;
@@ -425,105 +568,168 @@ html#ov body {
                 }
               }
             }
+          }
+        }
+      }
 
-            .funded {
-              margin-bottom: $pad4;
-
-              h3 {
-                font-size: 1.4rem;
-              }
-
-              .founders {
-                display: flex;
-                flex-wrap: nowrap;
-                overflow-x: auto;
-                padding: $pad2 0;
-              }
-
-              @media (min-width: $mediaXs) {
-                h3 {
-                  font-size: 1.7rem;
-                }
-              }
-
-              @media (min-width: $mediaLg) {
-                h3 {
-                  font-size: $h2;
-                }
-              }
-            }
-
-            .twitterFeed {
-              margin-bottom: $pad4;
-            }
-
-            .invalidWrapper {
-              padding: $pad2;
-              margin: -$pad2;
-
-              .openLinkWrapper {
+      &.investor {
+        .modal-dialog {
+          .modal-content {
+            .modal-body {
+              .funded {
                 margin-bottom: $pad4;
-                color: $col-secondary-dark;
-                font-size: $h5;
-                display: flex;
-                align-items: flex-start;
 
-                .btn.btn-link {
-                  font-weight: 700;
-                  color: inherit;
+                h3 {
+                  font-size: 1.4rem;
+                }
+
+                .founders {
+                  display: flex;
+                  flex-wrap: nowrap;
+                  overflow-x: auto;
+                  padding: $pad2 0;
+                }
+
+                @media (min-width: $mediaXs) {
+                  h3 {
+                    font-size: 1.7rem;
+                  }
+                }
+
+                @media (min-width: $mediaLg) {
+                  h3 {
+                    font-size: $h2;
+                  }
                 }
               }
 
-              .invalidBtns {
-                display: flex;
-                flex-direction: column;
-                align-items: flex-start;
-                padding-bottom: $pad2;
+              .twitterFeed {
+                margin-bottom: $pad4;
+              }
 
-                .btn {
-                  color: $col-secondary;
-                  margin-bottom: $pad2;
+              .invalidWrapper {
+                padding: $pad2;
+                margin: -$pad2;
+
+                .openLinkWrapper {
+                  margin-bottom: $pad4;
+                  color: $col-secondary-dark;
+                  font-size: $h5;
+                  display: flex;
+                  align-items: flex-start;
+
+                  .btn.btn-link {
+                    font-weight: 700;
+                    color: inherit;
+                  }
                 }
-              }
-
-              .invalidError {
-                padding: $pad3;
-                text-align: center;
-                width: 100%;
-                overflow-wrap: break-word;
-              }
-
-              @media (min-width: $mediaLg) {
 
                 .invalidBtns {
-                  padding-bottom: $pad4;
+                  display: flex;
+                  flex-direction: column;
+                  align-items: flex-start;
+                  padding-bottom: $pad2;
+
+                  .btn {
+                    color: $col-secondary;
+                    margin-bottom: $pad2;
+                  }
+                }
+
+                .invalidError {
+                  padding: $pad3;
+                  text-align: center;
+                  width: 100%;
+                  overflow-wrap: break-word;
+                }
+
+                @media (min-width: $mediaLg) {
+
+                  .invalidBtns {
+                    padding-bottom: $pad4;
+                  }
+                }
+              }
+
+              .editWrapper {
+                margin-bottom: $pad3;
+              }
+
+              .notesWrapper,
+              .nextWrapper {
+                margin-bottom: $pad3;
+
+                .note {
+                  display: flex;
+                  margin-bottom: $pad1;
+
+                  .body {
+                    display: flex;
+                    flex-grow: 1;
+                    background: none;
+                    border: none;
+                    text-align: left;
+                    color: $col-primary;
+                    font-size: $txMd;
+
+                    &:hover {
+                      text-decoration: underline;
+                    }
+
+                    .content {
+                      flex-grow: 1;
+                      display: flex;
+                      flex-direction: column;
+
+                      .date {
+                      }
+
+                      .text {
+                      }
+                    }
+                  }
+                }
+              }
+
+              .nextWrapper {
+                .note {
+                  .content {
+                    .date {
+                      font-weight: 700;
+                      color: $col-danger;
+
+                      &.waiting {
+                        color: $col-primary;
+                      }
+                    }
+                  }
                 }
               }
             }
-          }
 
-          .modal-footer {
-            padding: 0;
+            .modal-footer {
+              padding: 0;
 
-            .addBtn {
-              width: 100%;
-              height: 100%;
-              color: $col-text-light;
-              border: none;
-              font-size: $tx;
-              font-weight: 700;
-              display: flex;
-              justify-content: center;
-              align-items: center;
-              margin: 0;
-              padding: $pad3;
+              .addBtn {
+                width: 100%;
+                height: 100%;
+                color: $col-text-light;
+                border: none;
+                font-size: $tx;
+                font-weight: 700;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                margin: 0;
+                padding: $pad3;
 
-              @media (min-width: $mediaXs) {
-                font-size: $h5;
-              }
+                @media (min-width: $mediaXs) {
+                  font-size: $h5;
+                }
 
-              @media (min-width: $mediaLg) {
-                font-size: $h4;
+                @media (min-width: $mediaLg) {
+                  font-size: $h4;
+                }
               }
             }
           }
@@ -595,10 +801,9 @@ html#ov body {
 
             .tilesWrapper {
               border: 1px solid $col-primary;
-              padding: $pad2;
-              border-radius: $pad3;
+              border-radius: $pad1;
+              padding: $pad1;
               overflow: hidden;
-              background-color: $col-primary-light7;
               position: relative;
 
               .tiles {
@@ -615,7 +820,8 @@ html#ov body {
                   justify-content: center;
                   align-items: center;
                   width: 100%;
-                  background-color: $col-light;
+                  max-height: 2.3em;
+                  background-color: $col-text-light;
                   border: 1px solid $col-primary-light3;
                   color: $col-primary-dark;
                   font-size: 1em;
@@ -936,10 +1142,166 @@ html#ov body {
       }
     }
   }
-  form {
-    .form-check-input.is-valid ~ .form-check-label,
-    &.was-validated .form-check-input:valid ~ .form-check-label {
-      color: inherit;
+
+  .selectInvestorStage {
+    display: flex;
+    flex-direction: column;
+    border: 1px solid $col-primary-light4;
+    border-radius: $pad2;
+    padding: $pad3;
+    margin-bottom: $pad2;
+
+    .stage {
+      display: flex;
+      align-items: center;
+      background: none;
+      border: none;
+      font-size: $h4;
+      color: $col-text;
+      padding: 0;
+      margin-bottom: $pad4;
+
+      &:last-child,
+      &.firstClosed {
+        margin-bottom: 0;
+      }
+
+      .stageIcon {
+        margin-right: 0.5em;
+      }
+
+      .stageText {
+        font-weight: 700;
+        text-align: left;
+      }
+
+      .caret {
+        margin-left: auto;
+      }
+
+      &:hover {
+        color: $col-secondary;
+
+        .stageIcon {
+          background-color: $col-secondary!important;
+        }
+      }
+
+      &:active {
+        color: $col-text;
+      }
+
+      &.beforeCurrent {
+        opacity: 0.4;
+      }
+    }
+
+    @media (min-width: $mediaMd) {
+
+      .stage {
+        font-size: $h3;
+      }
+    }
+  }
+
+  .datePickerWrapper {
+    flex-grow: 1;
+    z-index: 10;
+
+    .react-datepicker-wrapper {
+      width: 100%;
+
+      .react-datepicker__input-container {
+
+        input {
+          display: block;
+          width: 100%;
+          border-color: $col-primary;
+          border-width: 1px;
+          border-style: solid;
+          border-radius: $pad1;
+          height: calc(1.5rem + .75rem + 2px);
+          padding: .375rem + .75rem;
+          font-size: 1rem;
+          line-height: 1.5;
+          color: $col-text;
+          transition: border-color .15s ease-in-out, box-shadow .15s ease-in-out;
+        }
+
+        button.react-datepicker__close-icon:after {
+          background-color: $col-primary;
+        }
+      }
+    }
+
+    .react-datepicker {
+      border-color: $col-primary;
+
+      .react-datepicker__month-container {
+
+        .react-datepicker__header {
+          border-bottom-color: $col-primary;
+          background-color: $col-primary-light6;
+        }
+
+        .react-datepicker__day--selected,
+        .react-datepicker__day--in-selecting-range,
+        .react-datepicker__day--in-range,
+        .react-datepicker__month-text--selected,
+        .react-datepicker__month-text--in-selecting-range,
+        .react-datepicker__month-text--in-range,
+        .react-datepicker__quarter-text--selected,
+        .react-datepicker__quarter-text--in-selecting-range,
+        .react-datepicker__quarter-text--in-range,
+        .react-datepicker__year-text--selected,
+        .react-datepicker__year-text--in-selecting-range,
+        .react-datepicker__year-text--in-range {
+          background-color: $col-primary;
+          &:hover {
+            background-color: $col-secondary;
+          }
+        }
+      }
+
+      .react-datepicker__time-container {
+        border-left-color: $col-primary;
+
+        .react-datepicker__header {
+          border-bottom-color: $col-primary;
+          background-color: $col-primary-light6;
+        }
+
+        .react-datepicker__time {
+          .react-datepicker__time-box {
+            ul.react-datepicker__time-list {
+              li.react-datepicker__time-list-item {
+              }
+              li.react-datepicker__time-list-item--selected {
+                  background-color: $col-secondary;
+              }
+            }
+          }
+        }
+      }
+    }
+
+    .react-datepicker-popper[data-placement^="bottom"] {
+      .react-datepicker__triangle {
+        border-bottom-color: $col-primary-light6;
+
+        &:before {
+          border-bottom-color: $col-primary;
+        }
+      }
+    }
+
+    .react-datepicker-popper[data-placement^="top"] {
+      .react-datepicker__triangle {
+
+        &:before {
+          border-bottom-color: $col-primary;
+        }
+      }
     }
   }
 }

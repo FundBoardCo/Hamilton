@@ -1,45 +1,66 @@
-import { REHYDRATE } from 'redux-persist';
 import * as types from '../actions/types';
-import { getSafeVar, processErr } from '../utils';
+import { processErr } from '../utils';
 
 const defaults = {
   email: '',
   create_status: '',
   login_status: '',
-  token: null,
+  sessionToken: null,
+  objectId: '',
+  init_status: '',
   update_status: '',
   delete_status: '',
   reset_status: '',
-  password: '',
-  investors: [],
+  updateProfile_status: '',
+  showAdvice: true,
+  board_public: true,
+  uuid: '',
+  get_profile_status: '',
+  profile: {
+    name: '',
+    primary_job_title: '',
+    primary_organization_name: '',
+    primary_organization_homepage: '',
+    primary_organization_logo: '',
+    description: '',
+    linkedin: '',
+    twitter: '',
+    permalink: '',
+    links: [],
+    raise: 0,
+    remote: false,
+    location_city: '',
+    location_state: '',
+    team_size: 0,
+  },
 };
 
 export const userResets = {
   create_status: '',
   login_status: '',
+  init_status: '',
   update_status: '',
   delete_status: '',
   reset_status: '',
+  updateProfile_status: '',
+  get_profile_status: '',
 };
 
-export default function user(state = { ...defaults }, action) {
-  const rehydration = getSafeVar(() => action.payload.user, {});
+export default function user(state = defaults, action) {
   switch (action.type) {
-    case REHYDRATE: return {
+    case types.BOARD_SHOWADVICE: return {
       ...state,
-      ...rehydration,
-      ...userResets,
+      showAdvice: action.showAdvice,
     };
     case types.USER_CREATE_REQUESTED: return {
       ...state,
       create_status: 'pending',
-      token: null,
-      email: action.email,
+      sessionToken: null,
     };
     case types.USER_CREATE_SUCCEEDED: return {
       ...state,
       create_status: 'succeeded',
-      token: action.data.token,
+      ...action.data,
     };
     case types.USER_CREATE_FAILED: return {
       ...state,
@@ -52,12 +73,11 @@ export default function user(state = { ...defaults }, action) {
     case types.USER_LOGIN_REQUESTED: return {
       ...state,
       login_status: 'pending',
-      email: action.params.email,
     };
     case types.USER_LOGIN_SUCCEEDED: return {
       ...state,
       login_status: 'succeeded',
-      token: action.data.token,
+      ...action.data,
     };
     case types.USER_LOGIN_FAILED: return {
       ...state,
@@ -68,27 +88,7 @@ export default function user(state = { ...defaults }, action) {
       login_status: '',
     };
     case types.USER_LOGOUT: return {
-      ...state,
       ...defaults,
-      // if needed, delete any cookies here
-    };
-    case types.USER_GET_PROFILE_REQUESTED: return {
-      ...state,
-      get_status: 'pending',
-    };
-    case types.USER_GET_PROFILE_SUCCEEDED: return {
-      ...state,
-      get_status: 'succeeded',
-      email: getSafeVar(() => action.data.profile.email, ''),
-      investors: getSafeVar(() => action.data.following, []),
-    };
-    case types.USER_GET_PROFILE_FAILED: return {
-      ...state,
-      get_status: processErr(action.error),
-    };
-    case types.USER_GET_PROFILE_DISMISSED: return {
-      ...state,
-      get_status: '',
     };
     case types.USER_UPDATE_REQUESTED: return {
       ...state,
@@ -97,6 +97,7 @@ export default function user(state = { ...defaults }, action) {
     case types.USER_UPDATE_SUCCEEDED: return {
       ...state,
       update_status: 'succeeded',
+      ...action.data,
     };
     case types.USER_UPDATE_FAILED: return {
       ...state,
@@ -106,13 +107,54 @@ export default function user(state = { ...defaults }, action) {
       ...state,
       update_status: '',
     };
+    case types.USER_LOCAL_UPDATE_REQUESTED: return {
+      ...state,
+      ...action.data,
+    };
+    case types.USER_POST_PROFILE_REQUESTED: return {
+      ...state,
+      updateProfile_status: 'pending',
+    };
+    case types.USER_POST_PROFILE_SUCCEEDED: return {
+      ...state,
+      updateProfile_status: 'succeeded',
+      profile: {
+        ...action.data,
+      },
+    };
+    case types.USER_POST_PROFILE_FAILED: return {
+      ...state,
+      updateProfile_status: processErr(action.error),
+    };
+    case types.USER_POST_PROFILE_DISMISSED: return {
+      ...state,
+      updateProfile_status: '',
+    };
+    case types.USER_GET_PROFILE_REQUESTED: return {
+      ...state,
+      get_profile_status: 'pending',
+    };
+    case types.USER_GET_PROFILE_SUCCEEDED: return {
+      ...state,
+      get_profile_status: 'succeeded',
+      profile: {
+        ...action.data,
+      },
+    };
+    case types.USER_GET_PROFILE_FAILED: return {
+      ...state,
+      get_profile_status: processErr(action.error),
+    };
+    case types.USER_GET_PROFILE_DISMISSED: return {
+      ...state,
+      get_profile_status: '',
+    };
     case types.USER_DELETE_REQUESTED: return {
       ...state,
       delete_status: 'pending',
     };
     case types.USER_DELETE_SUCCEEDED: return {
-      ...state,
-      token: null,
+      ...defaults,
       delete_status: 'succeeded',
     };
     case types.USER_DELETE_FAILED: return {

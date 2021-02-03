@@ -5,7 +5,7 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 
 export default function NotFound() {
-  const loggedIn = useSelector(state => state.user.token);
+  const loggedIn = useSelector(state => state.user.sessionToken);
 
   return (
     <Row className="pageContainer">

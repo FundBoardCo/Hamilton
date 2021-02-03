@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
@@ -95,7 +95,7 @@ export default function Talk() {
               required
               as="textarea"
               rows={3}
-              placeholder="Leave feeback or questions here."
+              placeholder="Leave feedback or questions here."
               value={comment}
               onChange={e => onCommentChange(e)}
               data-track="TalkCommentInput"

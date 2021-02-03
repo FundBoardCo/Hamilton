@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useHistory } from 'react-router';
 import { useSelector, useDispatch } from 'react-redux';
 import Form from 'react-bootstrap/Form';
@@ -12,15 +12,17 @@ let prevMode = '';
 export default function Login() {
   const user = useSelector(state => state.user) || {};
   const {
-    email,
+    email = '',
     create_status,
     login_status,
     reset_status,
   } = user;
 
   const openModal = useSelector(state => state.modal.openModal);
+  const modalProps = useSelector(state => state.modal.modalProps);
+  const { extraText, initialMode } = modalProps;
 
-  const [mode, setMode] = useState('login');
+  const [mode, setMode] = useState(initialMode || 'login');
 
   const [validated, setValidated] = useState(false);
   const [started, setStarted] = useState(false);
@@ -30,6 +32,24 @@ export default function Login() {
 
   const dispatch = useDispatch();
 
+  useEffect(() => {
+    dispatch({
+      type: types.USER_LOGIN_DISSMISSED,
+    });
+  }, [dispatch]);
+
+  useEffect(() => {
+    dispatch({
+      type: types.USER_CREATE_DISSMISSED,
+    });
+  }, [dispatch]);
+
+  useEffect(() => {
+    dispatch({
+      type: types.USER_RESETPASSWORD_DISSMISSED,
+    });
+  }, [dispatch]);
+
   const create = () => dispatch({
     type: types.USER_CREATE_REQUESTED,
     params: { email: emailValue, password },
@@ -37,7 +57,7 @@ export default function Login() {
 
   const login = () => dispatch({
     type: types.USER_LOGIN_REQUESTED,
-    params: { email: emailValue, password },
+    params: { username: emailValue, password },
   });
 
   const reset = () => dispatch({
@@ -138,7 +158,7 @@ export default function Login() {
   if (mode === 'create') {
     btnProps.login = {
       variant: 'text',
-      text: 'Cancel',
+      text: 'Login',
       type: 'button',
       onClick: onLoginClick,
     };
@@ -196,6 +216,11 @@ export default function Login() {
         </Modal.Title>
       </Modal.Header>
       <Modal.Body>
+        {extraText && (
+          <div>
+            {extraText}
+          </div>
+        )}
         <Form
           noValidate
           validated={started && validated}
@@ -264,6 +289,7 @@ export default function Login() {
           <Status
             statusPrefix="Reset password:"
             status={reset_status}
+            dissmissAction={types.USER_RESETPASSWORD_DISSMISSED}
           />
           <div className="footerBtnWrapper">
             <Button

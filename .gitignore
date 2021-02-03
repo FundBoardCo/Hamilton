@@ -10,6 +10,8 @@
 
 # production
 /build
+/build-lambda
+/build-lambda/
 
 # IDE
 .idea
@@ -25,3 +27,6 @@
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+
+# Local Netlify folder
+.netlify

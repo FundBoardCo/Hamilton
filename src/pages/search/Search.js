@@ -12,9 +12,11 @@ export default function Search() {
   const searchKeywords = useSelector(state => state.search.keywords) || [];
   const searchRaise = useSelector(state => state.search.raise) || 100000;
   const searchLocation = useSelector(state => state.search.location) || '';
-  const searchResults = useSelector(state => state.search.results) || [];
+  const rawResults = useSelector(state => state.search.results) || [];
   const searchStatus = useSelector(state => state.search.results_status) || '';
-  const investorIds = useSelector(state => state.board.ids) || [];
+  const ownInvestors = useSelector(state => state.investors.ownInvestors) || {};
+  const investorIds = Object.keys(ownInvestors);
+  const searchResults = rawResults.filter(s => !investorIds.includes(s.uuid));
 
   const [detailsOpen, setDetailsOpen] = useState(false);
   const [page, setPage] = useState(1);
@@ -48,8 +50,7 @@ export default function Search() {
     setPage(page + 1);
   };
 
-  const resultKeys = Object.keys(searchResults);
-  const lastIndexShown = resultKeys.length < page * 100 ? resultKeys.length : page * 100;
+  const lastIndexShown = searchResults.length < page * 100 ? searchResults.length : page * 100;
 
   return (
     <Row id="PageSearch" className="pageContainer">
@@ -89,16 +90,17 @@ export default function Search() {
         </div>
       </div>
       <div className="mb-3 txs-2 tx-md-tx3">
-        {resultKeys.length > 0 && (
-          <span>
-            {`You have ${investorIds.length} investors on your FundBoard. Click on an investor to learn more about them and save them to your `}
-            <a href="/board">board.</a>
+        {investorIds.length > 0 ? (
+          <span className="txs-3">
+            {`You have ${investorIds.length} ${investorIds.length === 1 ? 'investor' : 'investors'} on your FundBoard. `}
+            <a href="/public">
+              <strong>Share it now to start getting introductions.</strong>
+            </a>
           </span>
-        )}
-        {resultKeys.length === 0 && (
+        ) : (
           <span>
             {`You have ${investorIds.length} investors on your FundBoard. Start a new search to find matching investors to save to your `}
-            <a href="/board">board.</a>
+            <a href="/public">board.</a>
           </span>
         )}
       </div>
@@ -108,17 +110,22 @@ export default function Search() {
         dissmissAction={types.SEARCH_GET_RESULTS_DISMISSED}
       />
       <div className="results">
-        {resultKeys.map((k, i) => {
-          const personProps = { ...searchResults[k] };
+        {searchResults.map((r, i) => {
+          const investorStatus = ownInvestors[r.uuid] || {};
+          const personProps = {
+            ...r,
+            ...investorStatus, // overwrite with user's data
+            investorStatus,
+          };
           if (i >= page * 100) return null;
           return (
-            <Person key={k} {...personProps} />
+            <Person key={r.uuid} {...personProps} />
           );
         })}
-        {resultKeys.length > 0 && (
+        {searchResults.length > 0 && (
           <div className="d-flex mt-4 mb-5">
             <span className="h5 text-primary">{`1 to ${lastIndexShown}`}</span>
-            {resultKeys.length > page * 100 && (
+            {searchResults.length > page * 100 && (
               <Button
                 variant="info"
                 className="ml-auto"
@@ -129,9 +136,9 @@ export default function Search() {
             )}
           </div>
         )}
-        {Object.keys(searchResults).length === 0 && searchStatus === 'succcess' && (
-          <div className="p-2 text-info">
-            <div>No results found.</div>
+        {Object.keys(searchResults).length === 0 && searchStatus !== 'pending' && (
+          <div className="p-2 text-info d-flex justify-content-center">
+            <div>{searchStatus === 'succcess' && 'No results found.'}</div>
             <Button
               variant="primary"
               onClick={onEditClick}
@@ -145,4 +152,3 @@ export default function Search() {
     </Row>
   );
 }
-
