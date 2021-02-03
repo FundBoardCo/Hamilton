@@ -170,33 +170,6 @@ export default function InvestorData(props) {
             dangerouslySetInnerHTML={{ __html: convertKeyTags(description) }}
           />
         )}
-        {permalink && (
-          <div className="crunchBaseAttribution mb-3">
-            <a
-              href={`https://www.crunchbase.com/person/${permalink}`}
-              target="_blank"
-              rel="noopener noreferrer"
-              data-track={`${path}InvestorCrunchBase`}
-            >
-              Sourced from CrunchBase
-            </a>
-          </div>
-        )}
-        {linkedin && (
-          <div className="h3 text-linkedin d-flex">
-            <FontAwesomeIcon icon={['fab', 'linkedin']} />
-            &nbsp;
-            <a
-              href={linkedin}
-              className="text-linkedin"
-              target="_blank"
-              rel="noopener noreferrer"
-              data-track={`${path}InvestorLinkedIn`}
-            >
-              LinkedIn Profile
-            </a>
-          </div>
-        )}
       </section>
       {path !== 'Board' && searchLocation && !!matches && Object.keys(matches).length > 0 && (
         <section className="matches mb-4">
@@ -238,9 +211,36 @@ export default function InvestorData(props) {
           </div>
         </section>
       )}
+      {permalink && (
+        <div className="crunchBaseAttribution mb-3">
+          <a
+            href={`https://www.crunchbase.com/person/${permalink}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            data-track={`${path}InvestorCrunchBase`}
+          >
+            Sourced from CrunchBase
+          </a>
+        </div>
+      )}
+      {linkedin && (
+        <div className="h3 text-linkedin d-flex mb-3">
+          <FontAwesomeIcon icon={['fab', 'linkedin']} />
+          &nbsp;
+          <a
+            href={linkedin}
+            className="text-linkedin"
+            target="_blank"
+            rel="noopener noreferrer"
+            data-track={`${path}InvestorLinkedIn`}
+          >
+            LinkedIn Profile
+          </a>
+        </div>
+      )}
       {twitterName && (
         <section className="twitterFeed">
-          <div className="h3 text-twitter d-flex mb-2 sectionHead">
+          <div className="h3 text-twitter d-flex mb-3 sectionHead">
             <FontAwesomeIcon icon={['fab', 'twitter-square']} />
             &nbsp;
             <a
