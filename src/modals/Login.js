@@ -221,6 +221,18 @@ export default function Login() {
             {extraText}
           </div>
         )}
+        {mode === 'create' && (
+          <div className="mb-2">
+            <strong>Note: </strong>
+            &nbsp;For our Beta we have a limited number of accounts available.
+          </div>
+        )}
+        {mode === 'reset' && (
+          <div className="mb-2">
+            We had to rebuild the backend for the beta, if you made an account in our alpha you
+            might need to make a new account if resetting your password doesn’t work.
+          </div>
+        )}
         <Form
           noValidate
           validated={started && validated}
