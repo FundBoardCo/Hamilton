@@ -53,6 +53,9 @@ $col-warning-light: scale_color($col-warning, $lightness: 20%);
 $col-warning-light2: scale_color($col-warning, $lightness: 30%);
 $col-warning-light3: scale_color($col-warning, $lightness: 40%);
 $col-warning-light4: scale_color($col-warning, $lightness: 50%);
+$col-warning-light5: scale_color($col-warning, $lightness: 60%);
+$col-warning-light6: scale_color($col-warning, $lightness: 70%);
+$col-warning-light7: scale_color($col-warning, $lightness: 80%);
 $col-warning-dark: scale_color($col-warning, $lightness: -20%);
 $col-warning-dark2: scale_color($col-warning, $lightness: -30%);
 $col-warning-op1: scale_color($col-warning, $alpha: -10%);
@@ -81,11 +84,12 @@ $col-structure-light5: scale_color($col-structure, $lightness: 60%);
 $col-structure-light6: scale_color($col-structure, $lightness: 70%);
 $col-structure-light7: scale_color($col-structure, $lightness: 80%);
 
-$col-light: #fff;
-$col-light-dark: #f8f9fa;
-$col-light-dark2: #e9eaeb;
+$col-light: #f3f0f8;
+$col-light-dark: scale_color($col-light, $lightness: -20%);
+$col-light-dark2: scale_color($col-light, $lightness: -30%);
 $col-text: #20133C;
 $col-text-light: scale_color($col-structure, $lightness: 95%);
+$col-bright: #fff;
 
 $col-linkedin: #2867B2;
 $col-twitter: #1DA1F2;
@@ -155,6 +159,18 @@ html#ov body {
     color: $col-secondary !important;
   }
 
+  .text-secondary-light {
+    color: $col-secondary-light !important;
+  }
+
+  .text-secondary-light2 {
+    color: $col-secondary-light2 !important;
+  }
+
+  .text-secondary-light3 {
+    color: $col-secondary-light3 !important;
+  }
+
   .text-secondary-dark {
     color: $col-secondary-dark !important;
   }
@@ -215,6 +231,14 @@ html#ov body {
     background-color: $col-primary-light4 !important;
   }
 
+  .bg-primary-light5 {
+    background-color: $col-primary-light5 !important;
+  }
+
+  .bg-primary-light6 {
+    background-color: $col-primary-light6 !important;
+  }
+
   .bg-primary-dark {
     background-color: $col-primary-dark !important;
   }
@@ -241,6 +265,14 @@ html#ov body {
 
   .bg-secondary-light4 {
     background-color: $col-secondary-light4 !important;
+  }
+
+  .bg-secondary-light5 {
+    background-color: $col-secondary-light5 !important;
+  }
+
+  .bg-secondary-light6 {
+    background-color: $col-secondary-light6 !important;
   }
 
   .bg-secondary-dark {
@@ -435,6 +467,10 @@ html#ov body {
     border-color: $col-info-dark !important;
   }
 
+  .bd-secondary {
+    border-color: $col-secondary !important;
+  }
+
   .btn-primary, .badge-primary {
     @include btn-colors($col-primary, $col-primary-dark, $col-primary-light2, $col-text-light, $col-primary-light5);
   }
@@ -446,7 +482,7 @@ html#ov body {
   .btn-outline-primary {
     border-width: 1px;
     border-style: solid;
-    @include btn-colors($col-light, $col-primary, $col-primary-light2, $col-primary, $col-primary-light4);
+    @include btn-colors(transparent, $col-primary, $col-primary-light2, $col-primary, $col-primary-light4);
   }
 
   .btn-secondary, .badge-secondary {
@@ -456,7 +492,7 @@ html#ov body {
   .btn-outline-secondary {
     border-width: 1px;
     border-style: solid;
-    @include btn-colors($col-light, $col-secondary, $col-secondary-light2, $col-secondary, $col-light);
+    @include btn-colors(transparent, $col-secondary, $col-secondary-light2, $col-secondary, $col-light);
   }
 
   .btn-danger, .badge-danger {
@@ -470,7 +506,7 @@ html#ov body {
   .btn-outline-danger {
     border-width: 1px;
     border-style: solid;
-    @include btn-colors($col-light, $col-danger, $col-danger-light2, $col-danger, $col-light);
+    @include btn-colors(transparent, $col-danger, $col-danger-light2, $col-danger, $col-light);
   }
 
   .btn-warning, .badge-warning {
@@ -478,7 +514,9 @@ html#ov body {
   }
 
   .btn-outline-warning {
-    @include btn-colors($col-light, $col-warning, $col-warning-light2, $col-warning, $col-light);
+    border-width: 1px;
+    border-style: solid;
+    @include btn-colors(transparent, $col-warning, $col-warning-light2, $col-warning, $col-light);
   }
 
   .btn-success, .badge-success {
@@ -488,7 +526,7 @@ html#ov body {
   .btn-outline-success {
     border-width: 1px;
     border-style: solid;
-    @include btn-colors($col-light, $col-success, $col-success-light2, $col-success, $col-light);
+    @include btn-colors(transparent, $col-success, $col-success-light2, $col-success, $col-light);
   }
 
   .btn-info, .badge-info {
@@ -496,7 +534,9 @@ html#ov body {
   }
 
   .btn-outline-info {
-    @include btn-colors($col-light, $col-info, $col-info-light2, $col-info, $col-light);
+    border-width: 1px;
+    border-style: solid;
+    @include btn-colors(transparent, $col-info, $col-info-light2, $col-info, $col-light);
   }
 
   .btn-emp, .badge-emp {
@@ -506,7 +546,7 @@ html#ov body {
   .btn-outline-emp {
     border-width: 1px;
     border-style: solid;
-    @include btn-colors($col-light, $col-emp, $col-emp-light2, $col-emp, $col-light);
+    @include btn-colors(transparent, $col-emp, $col-emp-light2, $col-emp, $col-light);
   }
 
   .btn-light, .badge-light {
@@ -553,8 +593,15 @@ html#ov body {
     @include btn-icon-colors($col-light, $col-light-dark, $col-light-dark2);
   }
 
-  input.form-control, textarea.form-control {
+  input.form-control,
+  textarea.form-control {
     border-color: $col-primary;
+  }
+
+  .input-group .input-group-prepend .input-group-text {
+    border-color: $col-primary;
+    background-color: $col-text-light;
+    color: $col-primary;
   }
 
   .shadow-big {

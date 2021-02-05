@@ -1,8 +1,8 @@
 import {
-  put,
+  all,
   call,
   fork,
-  select,
+  put,
   takeEvery,
   takeLatest,
 } from 'redux-saga/effects';
@@ -10,48 +10,46 @@ import { REHYDRATE } from 'redux-persist';
 import axios from 'axios';
 import {
   ZIPCODECLIENTKEY,
+  ZIPDISTANCE,
 } from '../constants';
 import {
-  getSafeVar,
-  processErr,
+  trackErr,
   toQueryString,
 } from '../utils';
 import * as types from '../actions/types';
-
-const api = `https://${process.env.REACT_APP_ENV === 'DEV' ? 'staging-' : ''}api.fundboard.co/`;
-
-const getToken = state => state.user.token;
-const getBoard = state => state.board.ids;
-const getInvestors = state => state.user.investors;
-
-function trackErr(err) {
-  window.heap.track('Error', { message: processErr(err) });
-}
-
-function isLoginErr(err) {
-  const status = getSafeVar(() => err.response.status);
-  return status === '401';
-}
-
-const loginErrProps = { type: types.MODAL_SET_OPEN, model: 'login' };
-
-function requestAirtableGetKeywords() {
-  return axios.get('/.netlify/functions/airtable_get_keywords');
-}
-
-function* workAirtableGetKeywords() {
-  try {
-    const results = yield call(requestAirtableGetKeywords);
-    yield put({ type: 'AIRTABLE_GET_KEYWORDS_SUCCEEDED', data: results.data });
-  } catch (error) {
-    trackErr(error);
-    yield put({ type: 'AIRTABLE_GET_KEYWORDS_FAILED', error });
-  }
-}
-
-function* watchAirtableGetKeywords() {
-  yield takeLatest('AIRTABLE_GET_KEYWORDS_REQUESTED', workAirtableGetKeywords);
-}
+import {
+  watchSendFeedback,
+  watchPersonPutInvalid,
+  watchAirtableGetKeywords,
+} from './airtable';
+import {
+  watchProfileDataGet,
+  watchPublicUserGet,
+  watchPublicInvestorsGet,
+  watchPostIntro,
+} from './founders';
+import {
+  watchUserGetOwnInvestors,
+  watchUserPostInvestor,
+  watchUserSafeAdd,
+} from './investors';
+import {
+  watchUserManualInvestorPost,
+  watchUserManualInvestorsGet,
+} from './manageRaise';
+import {
+  watchUserCreate,
+  watchUserLogin,
+  watchUserReset,
+  watchUserLogout,
+  watchUserDelete,
+  watchUserUpdate,
+  watchUserProfileDataGet,
+  watchUserProfileDataPost,
+} from './user';
+import {
+  watchPeopleGet,
+} from './people';
 
 function getInfo(params) {
   return axios.get(`/.netlify/functions/webflow_get_blog?${toQueryString(params)}`);
@@ -72,313 +70,9 @@ function* watchGetInfo() {
   yield takeEvery(types.INFO_GET_REQUESTED, workGetInfo);
 }
 
-function userLogin(data = {}) {
-  return axios({
-    method: 'post',
-    url: `${api}login`,
-    data,
-  });
-}
-
-function* workUserLogin(action) {
-  try {
-    const { params } = action;
-    const { email } = params;
-    const results = yield call(userLogin, params);
-    yield put({ type: types.USER_LOGIN_SUCCEEDED, data: results.data });
-    window.heap.identify(email);
-    window.heap.addUserProperties({ email });
-    yield put({ type: types.USER_GET_PROFILE_REQUESTED });
-    /*
-    const board = yield select(getBoard);
-    if (Array.isArray(board) && board.length) {
-      const uParams = { investors: [...board] };
-      yield put({ type: types.USER_UPDATE_REQUESTED, params: uParams });
-    }
-     */
-  } catch (error) {
-    trackErr(error);
-    yield put({ type: types.USER_LOGIN_FAILED, error });
-  }
-}
-
-function* watchUserLogin() {
-  yield takeLatest(types.USER_LOGIN_REQUESTED, workUserLogin);
-}
-
-function workUserLogout() {
-  window.heap.resetIdentity();
-}
-
-function* watchUserLogout() {
-  yield takeLatest(types.USER_LOGOUT, workUserLogout);
-}
-
-function userCreate(data = {}) {
-  return axios({
-    method: 'post',
-    url: `${api}create`,
-    data,
-  });
-}
-
-function* workUserCreate(action) {
-  try {
-    const { params } = action;
-    const { email } = params;
-    const results = yield call(userCreate, params);
-    yield put({ type: types.USER_CREATE_SUCCEEDED, data: results.data });
-    window.heap.identity(email);
-    window.heap.addUserProperties({
-      email,
-    });
-    yield put({ type: types.USER_GET_PROFILE_REQUESTED });
-  } catch (error) {
-    trackErr(error);
-    yield put({ type: types.USER_CREATE_FAILED, error });
-  }
-}
-
-function* watchUserCreate() {
-  yield takeLatest(types.USER_CREATE_REQUESTED, workUserCreate);
-}
-
-function userUpdate(params) {
-  const { token } = params;
-  const data = { ...params };
-  delete data.token;
-  return axios({
-    method: 'post',
-    url: `${api}profile`,
-    data,
-    headers: {
-      Authorization: token,
-    },
-  });
-}
-
-function* workUserUpdate(action) {
-  try {
-    const { params } = action;
-    if (Array.isArray(params.investors)) {
-      params.following = params.investors;
-      delete params.investors;
-      window.heap.addUserProperties({
-        investorCount: params.following.length,
-      });
-    }
-    params.token = yield select(getToken);
-    const results = yield call(userUpdate, params);
-    yield put({ type: types.USER_UPDATE_SUCCEEDED, data: results.data });
-  } catch (error) {
-    trackErr(error);
-    if (isLoginErr(error)) yield put(loginErrProps);
-    yield put({ type: types.USER_UPDATE_FAILED, error });
-  }
-}
-
-function* watchUserUpdate() {
-  yield takeEvery(types.USER_UPDATE_REQUESTED, workUserUpdate);
-}
-
-function* workUserGetProfileSucceeded() {
-  // any time the profile is received, if unmerged investors are on the board update the profile
-  const ids = yield select(getInvestors) || [];
-  const unmergedBoard = yield select(getBoard) || [];
-  if (ids.length && unmergedBoard.filter(b => !ids.includes(b)).length) {
-    yield put({ type: types.BOARD_MERGE, ids });
-    const board = yield select(getBoard) || [];
-    const params = {
-      investors: [...board],
-    };
-    yield put({ type: types.USER_UPDATE_REQUESTED, params });
-  }
-}
-
-function* watchUserGetProfileSucceeded() {
-  yield takeLatest(types.USER_GET_PROFILE_SUCCEEDED, workUserGetProfileSucceeded);
-}
-
-function getUserProfile(token) {
-  return axios({
-    method: 'get',
-    url: `${api}profile`,
-    headers: {
-      Authorization: token,
-    },
-  });
-}
-
-function* workUserGetProfile() {
-  try {
-    const token = yield select(getToken);
-    const results = yield call(getUserProfile, token);
-    const ids = getSafeVar(() => results.data.following, []);
-    const investorCount = Array.isArray(ids) && ids.length;
-    yield put({ type: types.USER_GET_PROFILE_SUCCEEDED, data: results.data });
-    window.heap.addUserProperties({
-      investorCount,
-    });
-  } catch (error) {
-    trackErr(error);
-    if (isLoginErr(error)) yield put(loginErrProps);
-    yield put({ type: types.USER_GET_PROFILE_FAILED, error });
-  }
-}
-
-function* watchUserGetProfile() {
-  yield takeLatest(types.USER_GET_PROFILE_REQUESTED, workUserGetProfile);
-}
-
-function userDelete(token) {
-  return axios({
-    method: 'post',
-    url: `${api}profile/delete`,
-    headers: {
-      Authorization: token,
-    },
-  });
-}
-
-function* workUserDelete() {
-  try {
-    const token = yield select(getToken);
-    yield call(userDelete, token);
-    yield put({ type: types.USER_DELETE_SUCCEEDED });
-  } catch (error) {
-    trackErr(error);
-    if (isLoginErr(error)) yield put(loginErrProps);
-    yield put({ type: types.USER_DELETE_FAILED, error });
-  }
-}
-
-function* watchUserDelete() {
-  yield takeEvery(types.USER_DELETE_REQUESTED, workUserDelete);
-}
-
-function userReset(email) {
-  return axios({
-    method: 'post',
-    url: `${api}recover`,
-    data: { email },
-  });
-}
-
-function* workUserReset(action) {
-  try {
-    const { email } = action;
-    yield call(userReset, email);
-    yield put({ type: types.USER_RESETPASSWORD_SUCCEEDED });
-  } catch (error) {
-    trackErr(error);
-    yield put({ type: types.USER_RESETPASSWORD_FAILED, error });
-  }
-}
-
-function* watchUserReset() {
-  yield takeEvery(types.USER_RESETPASSWORD_REQUESTED, workUserReset);
-}
-
-function personPutInvalid(params = {}) {
-  const data = {
-    fields: { ...params },
-  };
-  return axios({
-    method: 'post',
-    url: '/.netlify/functions/airtable_post_report',
-    data,
-  });
-}
-
-function* workPersonPutInvalid(action) {
-  const { params } = action;
-  try {
-    yield call(personPutInvalid, params);
-    yield put({ type: 'PERSON_PUT_INVALID_SUCCEEDED', params });
-  } catch (error) {
-    trackErr(error);
-    yield put({ type: 'PERSON_PUT_INVALID_FAILED', params, error });
-  }
-}
-
-function* watchPersonPutInvalid() {
-  yield takeEvery('PERSON_PUT_INVALID_REQUESTED', workPersonPutInvalid);
-}
-
-function sendFeedback(params = {}) {
-  const data = {
-    records: [
-      {
-        fields: { ...params },
-      },
-    ],
-    typecast: true,
-  };
-  return axios({
-    method: 'post',
-    url: '/.netlify/functions/airtable_post_feedback',
-    data,
-  });
-}
-
-function* workSendFeedback(action) {
-  const { params } = action;
-  try {
-    yield call(sendFeedback, params);
-    yield put({ type: types.FEEDBACK_SEND_SUCCEEDED });
-  } catch (error) {
-    trackErr(error);
-    yield put({ type: types.FEEDBACK_SEND_FAILED, error });
-  }
-}
-
-function* watchSendFeedback() {
-  yield takeEvery(types.FEEDBACK_SEND_REQUESTED, workSendFeedback);
-}
-
-function* workBoardRemove(action) {
-  const token = yield select(getToken);
-  const board = yield select(getBoard);
-  const { id } = action;
-  const params = {
-    investors: board.filter(i => i !== id),
-  };
-  try {
-    if (token) {
-      yield put({ type: types.USER_UPDATE_REQUESTED, params });
-    }
-  } catch (error) {
-    trackErr(error);
-  }
-}
-
-function* watchBoardRemove() {
-  yield takeLatest(types.BOARD_REMOVE, workBoardRemove);
-}
-
-function* workBoardAdd(action) {
-  const token = yield select(getToken);
-  const board = yield select(getBoard);
-  const { id, data } = action;
-  const params = {
-    investors: [...new Set([...board, id])],
-  };
-  try {
-    if (token) {
-      yield put({ type: types.USER_UPDATE_REQUESTED, params });
-    }
-    yield put({ type: 'PEOPLE_UPDATE', data: [data] });
-  } catch (error) {
-    trackErr(error);
-  }
-}
-
-function* watchBoardAdd() {
-  yield takeLatest(types.BOARD_ADD, workBoardAdd);
-}
-
 function getExtraZipCodes(params) {
   const { zipcode, miles } = params;
+
   return axios.get(
     `https://www.zipcodeapi.com/rest/${ZIPCODECLIENTKEY}/radius.json/${zipcode}/${miles}/mile`,
     // `/.netlify/functions/zipcodeapi_get_codes?${toQueryString(params)}`,
@@ -389,7 +83,7 @@ function* workGetExtraZipCodes(action) {
   const zipcode = action.location;
   const params = {
     zipcode,
-    miles: 10,
+    miles: ZIPDISTANCE,
   };
   try {
     if (!zipcode || typeof zipcode !== 'string' || zipcode.length !== 5) {
@@ -408,124 +102,43 @@ function* watchSearchSetZipCode() {
   yield takeLatest(types.SEARCH_SET_LOCATION, workGetExtraZipCodes);
 }
 
-function getPeopleResults(params) {
-  const { id, token } = params;
-  return axios({
-    method: 'get',
-    url: `${api}investors?${toQueryString({ id })}`,
-    headers: {
-      Authorization: token,
-    },
-  });
-}
-
-function* workPeopleGetResults(action) {
-  const params = { id: action.id };
-  try {
-    params.token = yield select(getToken);
-    const results = yield call(getPeopleResults, params);
-    yield put({ type: types.PEOPLE_GET_SUCCEEDED, params, data: results.data });
-  } catch (error) {
-    yield put({ type: types.PEOPLE_GET_FAILED, params, error });
-  }
-}
-
-function* watchPeopleGetResults() {
-  yield takeEvery(types.PEOPLE_GET_REQUEST, workPeopleGetResults);
-}
-
-function getPeopleInvestments(params) {
-  const { id, token } = params;
-  return axios({
-    method: 'get',
-    url: `${api}investments?${toQueryString({ id })}`,
-    headers: {
-      Authorization: token,
-    },
-  });
-}
-
-function* workPeopleGetInvestments(action) {
-  const { id } = action;
-  const params = { id };
-  try {
-    params.token = yield select(getToken);
-    const results = yield call(getPeopleInvestments, params);
-    yield put({
-      type: types.PEOPLE_GET_INVESTMENTS_SUCCEEDED,
-      params,
-      id,
-      data: results.data,
-    });
-  } catch (error) {
-    yield put({
-      type: types.PEOPLE_GET_INVESTMENTS_FAILED,
-      id,
-      params,
-      error,
-    });
-  }
-}
-
-function* watchPeopleGetInvestments() {
-  yield takeEvery(types.PEOPLE_GET_INVESTMENTS_REQUEST, workPeopleGetInvestments);
-}
-
-function requestSearchGetResults(params = {}) {
-  return axios.get(`${api}search?${toQueryString(params)}`);
-}
-
-function* workSearchGetResults(action) {
-  const { params } = action;
-  params.limit = params.limit || 3000;
-  try {
-    const results = yield call(requestSearchGetResults, params);
-    yield put({ type: 'SEARCH_GET_RESULTS_SUCCEEDED', data: results.data });
-  } catch (error) {
-    trackErr(error);
-    yield put({ type: 'SEARCH_GET_RESULTS_FAILED', error });
-  }
-}
-
-function* watchSearchGetResults() {
-  yield takeLatest('SEARCH_GET_RESULTS_REQUESTED', workSearchGetResults);
-}
-
 function workRehydrate(action) {
-  const { key, payload } = action;
-  const { token, email, investors } = payload;
-  const investorCount = Array.isArray(investors) && investors.length;
+  const { key, payload = {} } = action;
+  const { token, email } = payload;
   if (key === 'user' && token && email) {
     window.heap.identify(email);
     window.heap.addUserProperties({
       email,
-      investorCount,
     });
   }
 }
 
-function* watchRehydrate() {
-  yield takeLatest(REHYDRATE, workRehydrate);
-}
-
 export default function* rootSaga() {
-  yield fork(watchRehydrate);
-  yield fork(watchAirtableGetKeywords);
-  yield fork(watchBoardAdd);
-  yield fork(watchBoardRemove);
-  yield fork(watchUserCreate);
-  yield fork(watchUserLogin);
-  yield fork(watchUserLogout);
-  yield fork(watchUserUpdate);
-  yield fork(watchUserDelete);
-  yield fork(watchUserReset);
-  yield fork(watchUserGetProfile);
-  yield fork(watchUserGetProfileSucceeded);
-  yield fork(watchPersonPutInvalid);
-  yield fork(watchPeopleGetResults);
-  yield fork(watchPeopleGetInvestments);
-  yield fork(watchSearchSetZipCode);
-  yield fork(watchSearchGetResults);
-  yield fork(watchSendFeedback);
-  yield fork(watchGetInfo);
+  // prevent all other sagas until rehydration is complete
+  yield takeLatest(REHYDRATE, workRehydrate);
+  yield all([
+    fork(watchAirtableGetKeywords),
+    fork(watchUserCreate),
+    fork(watchUserLogin),
+    fork(watchUserLogout),
+    fork(watchUserUpdate),
+    fork(watchUserDelete),
+    fork(watchUserReset),
+    fork(watchUserGetOwnInvestors),
+    fork(watchUserPostInvestor),
+    fork(watchUserSafeAdd),
+    fork(watchPublicInvestorsGet),
+    fork(watchProfileDataGet),
+    fork(watchPublicUserGet),
+    fork(watchUserProfileDataGet),
+    fork(watchUserProfileDataPost),
+    fork(watchPostIntro),
+    fork(watchUserManualInvestorPost),
+    fork(watchUserManualInvestorsGet),
+    fork(watchPersonPutInvalid),
+    fork(watchSearchSetZipCode),
+    fork(watchSendFeedback),
+    fork(watchGetInfo),
+    fork(watchPeopleGet),
+  ]);
 }

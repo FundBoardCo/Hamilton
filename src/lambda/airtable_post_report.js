@@ -1,8 +1,6 @@
 import fetch from 'node-fetch';
 
-exports.handler = async (event, context, callback) => {
-  const pass = body => { callback(null, { statusCode: 200, body: JSON.stringify(body) }); };
-
+exports.handler = async event => {
   try {
     const response = await fetch('https://api.airtable.com/v0/appZTL6daVhkCbRGG/reports',
       {
@@ -14,12 +12,15 @@ exports.handler = async (event, context, callback) => {
         body: event.body,
       });
     const data = await response.json();
-    await pass(data);
-  } catch (err) {
-    const error = {
-      statusCode: err.statusCode || 500,
-      body: JSON.stringify({ error: err.message }),
+    return {
+      statusCode: 200,
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data),
     };
-    await pass(error);
+  } catch (err) {
+    return {
+      statusCode: err.statusCode || 500,
+      body: JSON.stringify(err.message || err),
+    };
   }
 };

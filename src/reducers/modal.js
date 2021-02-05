@@ -3,15 +3,17 @@ import * as types from '../actions/types';
 const defaults = {
   openModal: '',
   modalsSeen: [],
+  modalProps: {},
   actions: null,
 };
 
-export default function modal(state = { ...defaults }, action) {
+export default function modal(state = defaults, action) {
   switch (action.type) {
     case types.MODAL_SET_OPEN: return {
       ...state,
       openModal: action.modal,
       actions: action.actions,
+      modalProps: action.modalProps || {},
     };
     case types.MODAL_SEEN: return {
       ...state,

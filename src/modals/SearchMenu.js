@@ -3,9 +3,10 @@ import { useHistory } from 'react-router';
 import { useSelector, useDispatch } from 'react-redux';
 import Modal from 'react-bootstrap/Modal';
 import Form from 'react-bootstrap/Form';
-import RangeSlider from 'react-bootstrap-range-slider';
+import InputGroup from 'react-bootstrap/InputGroup';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Button from 'react-bootstrap/Button';
+import FormControl from 'react-bootstrap/FormControl';
 import { statusIsError, getSearchLocations } from '../utils';
 import * as types from '../actions/types';
 import { ZIPDISTANCE } from '../constants';
@@ -47,20 +48,22 @@ export default function SearchMenu() {
   const form = useRef(null);
 
   const airtableKeywords = useSelector(state => state.airtable.keywords) || {};
-  const wordsToShow = Array.isArray(airtableKeywords.data) ? airtableKeywords.data : [];
 
   const searchKeywords = useSelector(state => state.search.keywords) || [];
 
   const searchRaise = useSelector(state => state.search.raise) || 100000;
+  const [raiseValue, setRaiseValue] = useState(searchRaise);
+  const [raiseValid, setRaiseValid] = useState(true);
+
+  const searchedText = useSelector(state => state.search.searchedText);
 
   const searchLocation = useSelector(state => state.search.location) || '';
   // use local state to handle invalid entries without recording them
   const [locationValue, setLocationValue] = useState(searchLocation);
+  const [locationValid, setLocationValid] = useState(true);
 
   const extraLocations = useSelector(state => state.search.extraLocations) || [];
   const extraZipcodes_status = useSelector(state => state.search.extraZipcodes_status);
-  console.log(searchLocation)
-  console.log(extraLocations)
   const locations = searchLocation
   && typeof searchLocation === 'string'
   && Array.isArray(extraLocations)
@@ -70,33 +73,50 @@ export default function SearchMenu() {
   const storedRemote = useSelector(state => state.search.remote) || '';
 
   const [validated, setValidated] = useState(false);
-  const [isValid, setIsValid] = useState(false);
 
+  const [tileSearchFor, setTileSearchFor] = useState('');
   const [showTileWarning, setShowTileWarning] = useState(false);
+  let wordsToShow = Array.isArray(airtableKeywords.data)
+    ? airtableKeywords.data
+    : [];
+  if (tileSearchFor) {
+    wordsToShow = wordsToShow.filter(w => (
+      w.toLowerCase().includes(tileSearchFor.toLowerCase())
+    ));
+  }
 
   const dispatch = useDispatch();
 
   const history = useHistory();
 
   const setKeywords = keywords => dispatch({
-    type: 'SEARCH_SET_KEYWORDS',
+    type: types.SEARCH_SET_KEYWORDS,
     keywords,
   });
 
   const setRaise = raise => dispatch({
-    type: 'SEARCH_SET_RAISE',
+    type: types.SEARCH_SET_RAISE,
     raise,
   });
 
   const setLocation = location => dispatch({
-    type: 'SEARCH_SET_LOCATION',
+    type: types.SEARCH_SET_LOCATION,
     location,
   });
 
   const setRemote = remote => dispatch({
-    type: 'SEARCH_SET_REMOTE',
+    type: types.SEARCH_SET_REMOTE,
     remote,
   });
+
+  const setSearchedText = text => dispatch({
+    type: types.SEARCH_SET_SEARCHTEXT,
+    text,
+  });
+
+  const onClickClearSearchText = () => {
+    setSearchedText('');
+  };
 
   const onTileClick = (word, active) => {
     if (active) {
@@ -114,8 +134,18 @@ export default function SearchMenu() {
     setKeywords(searchKeywords.filter(kw => kw !== w));
   };
 
-  const onRaiseChange = val => {
-    setRaise(val);
+  const onRaiseChange = e => {
+    const input = e.currentTarget;
+    const val = Number(e.target.value);
+    setValidated(true);
+    if (input.checkValidity()) {
+      setRaiseValid(true);
+      setRaiseValue(val);
+      setRaise(val);
+    } else {
+      setRaiseValid(false);
+      setRaiseValue(val);
+    }
   };
 
   const onRemoteChange = val => {
@@ -127,12 +157,12 @@ export default function SearchMenu() {
     const val = e.target.value;
     setValidated(true);
     if (input.checkValidity()) {
-      setIsValid(true);
+      setLocationValid(true);
       setLocationValue(val);
       setLocation(val);
     } else {
+      setLocationValid(false);
       setLocationValue(val);
-      setIsValid(false);
     }
   };
 
@@ -171,6 +201,15 @@ export default function SearchMenu() {
     }
   }, [airtableKeywords.data, dispatch]);
 
+  useEffect(() => {
+    if (searchLocation) {
+      dispatch({
+        type: 'SEARCH_SET_LOCATION',
+        location: searchLocation,
+      });
+    }
+  }, [searchLocation, dispatch]);
+
   let extraZipcodesText = extraZipcodes_status;
 
   if (!searchLocation) {
@@ -199,6 +238,27 @@ export default function SearchMenu() {
       </Modal.Header>
       <Modal.Body>
         <SectionTitle
+          faIcon="search"
+          text="Search By Name or Organization"
+        />
+        <InputGroup className="mb-5">
+          <FormControl
+            type="text"
+            value={searchedText}
+            placeholder="Name or Organization"
+            onChange={e => setSearchedText(e.target.value)}
+            aria-label="Search for an investor by name or organization."
+          />
+          <InputGroup.Append>
+            <Button
+              variant="outline-primary"
+              onClick={onClickClearSearchText}
+            >
+              <FontAwesomeIcon className="mr-1 ml-1" icon="times" />
+            </Button>
+          </InputGroup.Append>
+        </InputGroup>
+        <SectionTitle
           text="My Keywords"
           faIcon="key"
           detailText={`${searchKeywords.length} selected`}
@@ -217,6 +277,23 @@ export default function SearchMenu() {
             </Button>
           ))}
         </div>
+        <InputGroup className="mb-2">
+          <FormControl
+            type="text"
+            value={tileSearchFor}
+            placeholder="Search for a keyword"
+            onChange={e => setTileSearchFor(e.target.value)}
+            aria-label="Search for keyword to include in your search."
+          />
+          <InputGroup.Append>
+            <Button
+              variant="outline-primary"
+              onClick={() => setTileSearchFor('')}
+            >
+              <FontAwesomeIcon className="mr-1 ml-1" icon="times" />
+            </Button>
+          </InputGroup.Append>
+        </InputGroup>
         <div className="tilesWrapper mb-5">
           <div className="tiles">
             {wordsToShow.map(w => {
@@ -246,40 +323,44 @@ export default function SearchMenu() {
             </button>
           )}
         </div>
-        <SectionTitle
-          faIcon="rocket"
-          text="Raising"
-          detailText={usdFormatter.format(searchRaise)}
-          subText="The amount you're trying to raise this round"
-        />
-        <div className="sliderWrapper">
-          <div className="sliderMin">
-            {usdFormatter.format(100000)}
-          </div>
-          <RangeSlider
-            value={searchRaise}
-            min={100000}
-            max={10000000}
-            step={100000}
-            size="lg"
-            variant="primary"
-            tooltip="on"
-            tooltipLabel={val => usdFormatter.format(val)}
-            onChange={e => onRaiseChange(Number(e.target.value))}
-            data-track="RaiseSlider"
-          />
-          <div className="sliderMax">
-            {usdFormatter.format(10000000)}
-          </div>
-        </div>
         <Form noValidate validated={validated} ref={form}>
+          <div className="mb-4">
+            <SectionTitle
+              faIcon="rocket"
+              text="Raising"
+              detailText={usdFormatter.format(raiseValue)}
+              subText="How much you're trying to raise ($100,000 - $10,000,000)"
+            />
+            <Form.Group controlId="RaiseInput">
+              <Form.Label className="sr-only">
+                The Amount Your Are Trying to Raise
+              </Form.Label>
+              <Form.Control
+                required
+                max={10000000}
+                min={100000}
+                step={100000}
+                type="number"
+                placeholder="100000"
+                value={raiseValue}
+                isInvalid={validated && !raiseValid}
+                onChange={e => onRaiseChange(e)}
+                data-track="RaiseInput"
+              />
+              <Form.Control.Feedback type="invalid">
+                Please enter a valid raise amount.
+              </Form.Control.Feedback>
+            </Form.Group>
+          </div>
           <SectionTitle
             faIcon="map-marker-alt"
             text="Location"
             subText="The Zip Code of your office or home"
           />
           <Form.Group controlId="LocationInput">
-            <Form.Label>My Zip Code (5 digit)</Form.Label>
+            <Form.Label className="sr-only">
+              My Zip Code (5 digit)
+            </Form.Label>
             <Form.Control
               required
               maxLength={5}
@@ -288,7 +369,7 @@ export default function SearchMenu() {
               placeholder="zip code"
               value={locationValue}
               onChange={e => onLocationChange(e)}
-              isInvalid={validated && !isValid}
+              isInvalid={validated && !locationValid}
               data-track="LocationInput"
             />
             <Form.Control.Feedback type="invalid">

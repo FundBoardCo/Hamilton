@@ -12,24 +12,31 @@ import Button from 'react-bootstrap/Button';
 import { library } from '@fortawesome/fontawesome-svg-core';
 import { fab } from '@fortawesome/free-brands-svg-icons';
 import {
+  faArchive,
   faBalanceScale,
   faBan,
   faBuilding,
+  faCaretDown,
   faCaretLeft,
+  faCaretUp,
   faCaretRight,
   faCheck,
   faCheckCircle,
   faCog,
   faComment,
   faCommentDots,
+  faComments,
   faDoorOpen,
   faEdit,
   faEllipsisH,
   faExclamationTriangle,
+  faEye,
+  faEyeSlash,
   faFileCsv,
   faFileDownload,
   faFileExport,
   faFlag,
+  faHandsHelping,
   faInfoCircle,
   faKey,
   faLink,
@@ -37,8 +44,10 @@ import {
   faMapMarkerAlt,
   faMinus,
   faMinusCircle,
+  faMoneyCheck,
   faPlus,
   faPlusCircle,
+  faProjectDiagram,
   faRocket,
   faSearch,
   faSignInAlt,
@@ -46,10 +55,16 @@ import {
   faThumbsDown,
   faThumbsUp,
   faTimes,
+  faTrashAlt,
+  faUser,
+  faUsers,
   faQuestion,
   faQuestionCircle,
+  faWifi,
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import 'react-datepicker/dist/react-datepicker.css';
+import Parse from 'parse';
 import Logo from './imgs/FundBoard_Logo.svg';
 import ScrollToTop from './components/ScrollToTop';
 import Intro from './pages/start/Intro';
@@ -58,6 +73,7 @@ import Board from './pages/board/Board';
 import Search from './pages/search/Search';
 import Profile from './pages/profile/Profile';
 import Talk from './pages/talk/Talk';
+import Public from './pages/public/Public';
 import NotFound from './pages/NotFound';
 import Modal from './modals/ModalWrapper';
 import * as types from './actions/types';
@@ -65,24 +81,31 @@ import * as types from './actions/types';
 // import common icons so they're accessible later.
 library.add(
   fab,
+  faArchive,
   faBalanceScale,
   faBan,
   faBuilding,
+  faCaretDown,
   faCaretLeft,
+  faCaretUp,
   faCaretRight,
   faCheck,
   faCheckCircle,
   faCog,
   faComment,
   faCommentDots,
+  faComments,
   faDoorOpen,
   faEdit,
   faFileDownload,
   faEllipsisH,
   faExclamationTriangle,
+  faEye,
+  faEyeSlash,
   faFileCsv,
   faFileExport,
   faFlag,
+  faHandsHelping,
   faInfoCircle,
   faKey,
   faLink,
@@ -90,8 +113,10 @@ library.add(
   faMapMarkerAlt,
   faMinus,
   faMinusCircle,
+  faMoneyCheck,
   faPlus,
   faPlusCircle,
+  faProjectDiagram,
   faRocket,
   faSearch,
   faSignInAlt,
@@ -99,12 +124,22 @@ library.add(
   faThumbsDown,
   faThumbsUp,
   faTimes,
+  faTrashAlt,
+  faUser,
+  faUsers,
   faQuestion,
   faQuestionCircle,
+  faWifi,
+);
+
+Parse.serverURL = 'https://parseapi.back4app.com';
+Parse.initialize(
+  'FCVvEJKJSFUsOGRhK5qCcFdCtz7Fdi8DN4xzA3Vh',
+  'CxrimZZc8gtvVVzELog2sEp2dDh8tYpHis2pciCS',
 );
 
 function App() {
-  const loggedIn = useSelector(state => state.user.token);
+  const loggedIn = useSelector(state => state.user.sessionToken);
   const firstTime = useSelector(state => state.search.firstTime);
 
   const dispatch = useDispatch();
@@ -121,14 +156,14 @@ function App() {
           <a href="/" className="navBrand">
             <img className="navLogo" src={Logo} alt="FundBoard Logo" />
             <span className="navName">FundBoard</span>
-            <span className="navVersion">Alpha 0.1.12</span>
+            <span className="navVersion">Beta 0.1</span>
           </a>
           <Nav className="ml-auto" defaultActiveKey={window.location.pathname}>
             {(!firstTime || loggedIn) && (
               <Nav.Link
                 as={NavLink}
-                href="/board"
-                to="/board"
+                href="/public"
+                to="/public"
                 className="board"
                 data-track="navBoard"
               >
@@ -158,7 +193,7 @@ function App() {
                 activeClassName="profile"
                 data-track="navProfile"
               >
-                <FontAwesomeIcon icon="cog" />
+                <FontAwesomeIcon icon="user" />
                 <span>My Profile</span>
               </Nav.Link>
             )}
@@ -198,6 +233,8 @@ function App() {
               <Route path="/search" component={Search} />
               <Route path="/profile" component={Profile} />
               <Route path="/talk" component={Talk} />
+              <Route path="/public/:uuid" component={Public} />
+              <Route path="/public" component={Public} />
               <Route component={NotFound} />
             </Switch>
           </div>

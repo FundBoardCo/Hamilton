@@ -1,12 +1,25 @@
-import { processErr, capitalizeFirstLetter } from '../utils';
+import { processErr, capitalizeFirstLetters } from '../utils';
 import * as types from '../actions/types';
+
+function dedupe(records) {
+  const keywords = records.map(r => r.fields.Keyword);
+  const lower = [];
+  const capped = [];
+  keywords.forEach(k => {
+    if (!lower.includes(k.toLowerCase())) {
+      lower.push(k.toLowerCase());
+      capped.push(capitalizeFirstLetters(k));
+    }
+  });
+  return capped;
+}
 
 const defaultState = {
   keywords: { state: null, data: [] },
   feedback_status: '',
 };
 
-export default function airTable(state = { ...defaultState }, action) {
+export default function airTable(state = defaultState, action) {
   console.log(action);
   switch (action.type) {
     case types.AIRTABLE_GET_KEYWORDS_REQUESTED: return {
@@ -17,11 +30,15 @@ export default function airTable(state = { ...defaultState }, action) {
       },
     };
     case types.AIRTABLE_GET_KEYWORDS_SUCCEEDED: return {
+      // This will fire multiple times if it is paginating.
       ...state,
       keywords: {
         ...state.keywords,
         status: 'succeeded',
-        data: action.data.records.map(r => capitalizeFirstLetter(r.fields.Keyword)).sort(),
+        data: [...new Set([
+          ...state.keywords.data,
+          ...dedupe(action.data.records),
+        ])].sort(),
       },
     };
     case types.AIRTABLE_GET_KEYWORDS_FAILED: return {

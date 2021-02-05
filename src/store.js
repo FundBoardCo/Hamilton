@@ -1,17 +1,21 @@
 import { createStore, applyMiddleware, combineReducers } from 'redux';
 import { persistStore, persistReducer } from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
-import hardSet from 'redux-persist/lib/stateReconciler/hardSet';
-import autoMergeLevel2 from 'redux-persist/lib/stateReconciler/autoMergeLevel2';
 import createSagaMiddleware from 'redux-saga';
 import rootSaga from './sagas';
 import airtable from './reducers/airtable';
-import board from './reducers/board';
+import founders, { founderResets } from './reducers/founders';
 import info from './reducers/info';
-import search from './reducers/search';
-import user, { userResets } from './reducers/user'
+import investors, { investorsResets } from './reducers/investors';
+import search, { searchResets } from './reducers/search';
+import user, { userResets } from './reducers/user';
 import modal from './reducers/modal';
-import people from './reducers/people';
+import people, { peopleResets } from './reducers/people';
+import manageRaise from './reducers/manageRaise';
+
+const configDefaults = {
+  storage,
+};
 
 const persistConfig = {
   key: 'root',
@@ -20,51 +24,74 @@ const persistConfig = {
 };
 
 const airtableConfig = {
+  ...configDefaults,
   key: 'airtable',
-  storage,
-  stateReconciler: hardSet,
   blacklist: ['feedback_status'],
 };
 
-const boardConfig = {
-  key: 'board',
-  storage,
-  blacklist: [],
-  stateReconciler: autoMergeLevel2,
+const foundersConfig = {
+  ...configDefaults,
+  key: 'founders',
+  blacklist: Object.keys(founderResets),
+};
+
+const investorsConfig = {
+  ...configDefaults,
+  key: 'investors',
+  blacklist: Object.keys(investorsResets),
+};
+
+const manageRaiseConfig = {
+  ...configDefaults,
+  key: 'manageRaise',
+  blacklist: [
+    'records',
+    'public_records',
+    'manual_records',
+    'get_status',
+    'post_status',
+    'publicPost_status',
+    'postBoard_status',
+    'getPublic_status',
+    'postBoard_status',
+    'deleteBoard_status',
+    'getPublic_status',
+    'getBoardUUID_status',
+    'getFounderData_status',
+    'manualInvestorGet_status',
+    'manualInvestorPost_status',
+  ],
 };
 
 const modalConfig = {
+  ...configDefaults,
   key: 'modal',
-  storage,
-  blacklist: [],
-  stateReconciler: autoMergeLevel2,
 };
 
 const peopleConfig = {
+  ...configDefaults,
   key: 'people',
-  storage,
-  blacklist: [],
-  stateReconciler: autoMergeLevel2,
+  blacklist: Object.keys(peopleResets),
 };
 
 const searchConfig = {
+  ...configDefaults,
   key: 'search',
-  storage,
-  blacklist: ['results', 'results_status', 'extraZipcodes_status'],
-  stateReconciler: autoMergeLevel2,
+  blacklist: Object.keys(searchResets),
 };
 
 const userConfig = {
+  ...configDefaults,
   key: 'user',
-  storage,
   blacklist: Object.keys(userResets),
-  stateReconciler: autoMergeLevel2,
 };
 
 const rootReducer = combineReducers({
   airtable: persistReducer(airtableConfig, airtable),
-  board: persistReducer(boardConfig, board),
   info,
+  founders: persistReducer(foundersConfig, founders),
+  investors: persistReducer(investorsConfig, investors),
+  manageRaise: persistReducer(manageRaiseConfig, manageRaise),
   modal: persistReducer(modalConfig, modal),
   people: persistReducer(peopleConfig, people),
   search: persistReducer(searchConfig, search),

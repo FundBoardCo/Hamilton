@@ -1,26 +1,38 @@
-import React, { useEffect, useCallback } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
+import { useHistory } from 'react-router-dom';
 import Papa from 'papaparse';
 import FileSaver from 'file-saver';
 import Row from 'react-bootstrap/Row';
 import Button from 'react-bootstrap/Button';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Col from 'react-bootstrap/Col';
+import FormControl from 'react-bootstrap/FormControl';
+import InputGroup from 'react-bootstrap/InputGroup';
 import Person from '../../components/people/Person';
 import * as types from '../../actions/types';
+import DismissibleStatus from '../../components/DismissibleStatus';
+import { MINPLACE, STAGEPROPS } from '../../constants';
+import { getSafeVar } from '../../utils';
 
 export default function Board() {
-  const investorIDs = useSelector(state => state.board.ids) || [];
-  const people = useSelector(state => state.people);
-  const loggedIn = useSelector(state => state.user.token);
+  const userUpdateStatus = useSelector(state => state.user.update_status);
+  const people = useSelector(state => state.people.records);
+  const getOwnInvestorsStatus = useSelector(
+    state => state.investors.getOwnInvestors_status,
+  );
+  const ownInvestors = useSelector(state => state.investors.ownInvestors) || {};
+  const loggedIn = useSelector(state => state.user.sessionToken);
+  const place = useSelector(state => state.user.place);
+  const overridePlace = useSelector(state => state.user.overridePlace);
+  const allowIn = loggedIn && typeof place === 'number' && (place <= MINPLACE || overridePlace);
   const modalsSeen = useSelector(state => state.modal.modalsSeen) || [];
+  const userUUID = useSelector(state => state.user.uuid);
 
-  // TODO: this currently doesn't do anything, because none of the fetched people have match data
-  investorIDs.sort((a, b) => {
-    const matchA = (people[a] && people[a].percentageMatch) || 0;
-    const matchB = (people[b] && people[b].percentageMatch) || 0;
-    return matchB - matchA;
-  });
+  const [sortBy, setSortBy] = useState('status');
+  const [sortNameUp, setSortNameUp] = useState(false);
+  const [sortStatusUp, setSortStatusUp] = useState(false);
+  const [searchBy, setSearchBy] = useState('');
+  const [showArchived, setShowArchived] = useState(false);
 
   const dispatch = useDispatch();
 
@@ -31,15 +43,23 @@ export default function Board() {
   }, [dispatch]);
 
   useEffect(() => {
-    if (investorIDs.length) {
+    const ids = Object.keys(ownInvestors);
+    if (ids.length) {
       dispatch({
         type: types.PEOPLE_GET_REQUEST,
-        id: investorIDs,
+        ids,
       });
     }
-  }, [investorIDs, dispatch]);
+  }, [ownInvestors, dispatch]);
 
-  const investorList = {};
+  useEffect(() => {
+    dispatch({
+      type: types.USER_GET_INVESTORS_REQUESTED,
+    });
+  }, [dispatch]);
+
+  let investorList = [];
+  let toShowInvestorList;
   const csvList = [];
 
   const firstLine = {};
@@ -48,8 +68,10 @@ export default function Board() {
   firstLine.Organization = '';
   firstLine.Priority = 'Rank investors in the order you will reach out to them.';
   firstLine['Introed By'] = 'Fill in when someone has made an introduction.';
+  firstLine['Introer Email'] = '';
   firstLine['Date of Intro'] = '';
-  firstLine.Status = 'Contacted, Meeting Scheduled, Pitched, Term Sheet, Signed, Funded';
+  firstLine.Stage = Object.keys(STAGEPROPS).join(', ');
+  firstLine.Amount = 'Amount they are investing';
   firstLine['Next Steps'] = 'If you need to do something, list it here.';
   firstLine.Notes = '';
   firstLine['Potential Lead'] = 'Focus on getting leads first.';
@@ -60,24 +82,36 @@ export default function Board() {
   firstLine.CrunchBase = '';
   csvList.push(firstLine);
 
-  investorIDs.forEach(i => {
+  Object.keys(ownInvestors).forEach(i => {
     const person = people[i] ? { ...people[i] } : {};
+    const investorStatus = ownInvestors[i] || {};
+    investorList.push({
+      ...person,
+      uuid: i,
+      ...investorStatus, // merges in manual data
+      investorStatus,
+    });
     const org = person.primary_organization || {};
     const location = [];
     if (person.location_city) location.push(person.location_city);
     if (person.location_state) location.push(person.location_state);
-    investorList[i] = { ...person };
+    const noteValues = investorStatus.notes ? Object.values(investorStatus.notes) : [];
+    const notesForCSV = noteValues
+      .filter(n => !n.next).map(n => `${n.text} ${n.date || ''}`).join(' || ');
+    const nextForCSV = noteValues
+      .filter(n => n.next).map(n => `${n.text} ${n.date || ''}`).join(' || ');
     const csvPer = {};
-    // TODO change this for API data
     csvPer['Investor Name'] = person.name || '';
     csvPer.Title = person.primary_job_title || '';
     csvPer.Organization = org.name || '';
     csvPer.Priority = '';
-    csvPer['Introed By'] = '';
-    csvPer['Date of Intro'] = '';
-    csvPer.Status = '';
-    csvPer['Next Steps'] = '';
-    csvPer.Notes = '';
+    csvPer['Introed By'] = investorStatus.intro_name || '';
+    csvPer['Introer Email'] = investorStatus.intro_email || '';
+    csvPer['Date of Intro'] = investorStatus.intro_date || '';
+    csvPer.Stage = investorStatus.stage;
+    csvPer.Amount = investorStatus.amount || '';
+    csvPer['Next Steps'] = nextForCSV;
+    csvPer.Notes = notesForCSV;
     csvPer['Potential Lead'] = person.is_lead_investor ? 'Yes' : '';
     csvPer['Open to Direct Outreach'] = person.is_open ? 'Yes' : '';
     csvPer.Location = location.join(', ');
@@ -87,6 +121,50 @@ export default function Board() {
     csvList.push(csvPer);
   });
 
+  if (!showArchived) {
+    investorList = investorList.filter(i => i.investorStatus.stage !== 'archived');
+  }
+
+  investorList.sort((a, b) => {
+    if (sortBy === 'status') {
+      const stageKeys = Object.keys(STAGEPROPS);
+      const aStage = a.investorStatus.stage;
+      const bStage = b.investorStatus.stage;
+      if (sortStatusUp) {
+        return stageKeys.indexOf(aStage) > stageKeys.indexOf(bStage) ? -1 : 1;
+      }
+      return stageKeys.indexOf(aStage) > stageKeys.indexOf(bStage) ? 1 : -1;
+    }
+    const aName = (a.name && a.name.toLowerCase()) || '';
+    const bName = (b.name && b.name.toLowerCase()) || '';
+    if (sortNameUp) {
+      return aName > bName ? -1 : 1;
+    }
+    return aName > bName ? 1 : -1;
+  });
+
+  if (sortBy === 'next') {
+    investorList = investorList.filter(i => {
+      let next = [];
+      const { investorStatus } = i;
+      const { notes } = investorStatus;
+      if (notes && Object.values(notes).length) {
+        next = Object.values(notes).filter(v => v.next);
+      }
+      return next.length;
+    });
+  }
+
+  if (searchBy) {
+    toShowInvestorList = investorList.filter(i => {
+      const org = getSafeVar(() => i.primary_organization.name, '');
+      return i.name.toLowerCase().includes(searchBy.toLowerCase())
+      || org.toLowerCase().includes(searchBy.toLowerCase());
+    });
+  } else {
+    toShowInvestorList = investorList;
+  }
+
   const csv = Papa.unparse(Object.values(csvList));
   const csvData = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
 
@@ -94,11 +172,47 @@ export default function Board() {
     FileSaver.saveAs(csvData, 'MyFundBoard.csv');
   }, [csvData]);
 
+  const history = useHistory();
+
+  const onBoardOpenClick = () => {
+    history.push(`/public/${userUUID}`);
+  };
+
+  const onAddBoardClick = () => {
+    dispatch({
+      type: types.MODAL_SET_OPEN,
+      modal: 'editInvestor',
+    });
+  };
+
   const showHowToIntro = useCallback(() => dispatch({
     type: types.MODAL_SET_OPEN,
     modal: 'howToIntro',
-    actions: { onCSVClick },
-  }), [dispatch, onCSVClick]);
+  }), [dispatch]);
+
+  const toggleSortByName = () => {
+    if (sortBy === 'name') {
+      setSortNameUp(!sortNameUp);
+    } else {
+      setSortBy('name');
+    }
+  };
+
+  const toggleSortByStatus = () => {
+    if (sortBy === 'status') {
+      setSortStatusUp(!sortStatusUp);
+    } else {
+      setSortBy('status');
+    }
+  };
+
+  const toggleSortByNext = () => {
+    if (sortBy === 'next') {
+      setSortBy('name');
+    } else {
+      setSortBy('next');
+    }
+  };
 
   useEffect(() => {
     // if the how to intro modal has never been opened, open it
@@ -110,54 +224,120 @@ export default function Board() {
 
   return (
     <Row id="PageBoard" className="pageContainer">
-      {loggedIn && (
+      {allowIn && (
         <div>
           <div className="boardDetailsBar">
             <div className="primaryDetails">
               <span>
-                {`My Fundboard: ${investorIDs.length}`}
-                <span className="d-none d-md-inline">&nbsp;Potential Lead</span>
-                &nbsp;Investors
+                Edit FundBoard
               </span>
+              <Button
+                variant="link"
+                className="txs-3 ml-auto text-secondary-light2"
+                onClick={onBoardOpenClick}
+              >
+                Public FundBoard
+              </Button>
             </div>
           </div>
-          {investorIDs.length > 0 && (
-            <div className="d-flex justify-content-end justify-content-lg-end mb-3">
-              <Button
-                className="primaryDetailsLink txs-2 txs-lg-tx3 mr-2 btnNoMax"
-                variant="primary"
-                onClick={showHowToIntro}
-                data-track="BoardGetFunded"
+          <div className="d-flex justify-content-end justify-content-lg-end align-items-center mb-3">
+            <div className="sortBar">
+              <span className="label">Sort By:</span>
+              <button
+                type="button"
+                className={sortBy === 'name' ? 'active' : ''}
+                onClick={toggleSortByName}
               >
-                <FontAwesomeIcon icon="question" />
-                <span className="ml-2">Next</span>
-                <span className="d-none d-sm-inline">&nbsp;Steps</span>
-              </Button>
-              <Button
-                className="primaryDetailsLink txs-2 txs-lg-tx3"
-                variant="secondary"
-                onClick={onCSVClick}
-                disabled={investorIDs.length === 0}
-                data-track="BoardDownload"
+                ABC
+              </button>
+              <button
+                type="button"
+                className={sortBy === 'status' ? 'active' : ''}
+                onClick={toggleSortByStatus}
               >
-                <FontAwesomeIcon icon="file-download" />
-                <span className="ml-2">Download</span>
-                <span className="d-none d-sm-inline">&nbsp;My Investors</span>
-              </Button>
+                Status
+              </button>
+              <button
+                type="button"
+                className={sortBy === 'next' ? 'active' : ''}
+                onClick={toggleSortByNext}
+              >
+                To Do Next
+              </button>
+              <button
+                type="button"
+                className={showArchived ? 'active' : ''}
+                onClick={() => setShowArchived(!showArchived)}
+              >
+                Archived
+              </button>
             </div>
-          )}
+            <div className="searchBar">
+              <InputGroup>
+                <InputGroup.Prepend>
+                  <InputGroup.Text>
+                    Search
+                  </InputGroup.Text>
+                </InputGroup.Prepend>
+                <FormControl
+                  type="text"
+                  value={searchBy}
+                  onChange={e => setSearchBy(e.target.value)}
+                  aria-label="Search for an investor by name or organization."
+                />
+              </InputGroup>
+            </div>
+          </div>
         </div>
       )}
-      {loggedIn && (
+      <DismissibleStatus
+        status={userUpdateStatus}
+        showSuccess={false}
+        dissmissAction={types.USER_UPDATE_DISSMISSED}
+      />
+      {allowIn && (
+        <div className="d-flex mb-3">
+          <Button
+            variant="link"
+            onClick={onAddBoardClick}
+          >
+            Add Manual Investor
+          </Button>
+          <Button
+            className="ml-auto"
+            variant="link"
+            onClick={onCSVClick}
+            disabled={Object.keys(ownInvestors).length === 0}
+            data-track="BoardDownload"
+          >
+            <span className="ml-2">Download</span>
+            <span className="d-none d-sm-inline">&nbsp;My Investors</span>
+          </Button>
+        </div>
+      )}
+      <DismissibleStatus
+        status={getOwnInvestorsStatus}
+        showSuccess={false}
+        dissmissAction={types.USER_GET_INVESTORS_DISMISSED}
+      />
+      {allowIn && (
         <div className="results">
-          {Object.keys(investorList).map(k => {
-            const personProps = { ...investorList[k] };
-            personProps.uuid = k;
-            personProps.isBoard = true;
+          {toShowInvestorList.map(i => {
+            const personProps = {
+              ...i,
+              ...i.investorStatus,
+              isBoard: true,
+              sortedBy: sortBy,
+            };
             return (
-              <Person key={k} {...personProps} />
+              <Person key={i.uuid} {...personProps} />
             );
           })}
+          {toShowInvestorList.length < 1 && sortBy === 'next' && (
+            <div className="d-flex justify-content-center">
+              None of your investors have next steps yet. Open one to add a next step.
+            </div>
+          )}
         </div>
       )}
       {!loggedIn && (
@@ -165,10 +345,10 @@ export default function Board() {
           <h1 className="text-center">To see your FundBoard, you need to log in first.</h1>
         </Col>
       )}
-      {investorIDs.length === 0 && (
+      {allowIn && Object.keys(ownInvestors).length === 0 && (
         <div>
           <p>
-            You don't have any investors saved yet.
+            You don’t have any investors saved yet.
           </p>
           <div className="d-flex justify-content-center">
             <a className="btn btn-secondary" href="/search/menu">Find My Investors</a>

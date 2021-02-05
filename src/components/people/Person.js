@@ -4,6 +4,11 @@ import { useSelector } from 'react-redux';
 import { useHistory, useLocation } from 'react-router';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { capitalizeFirstLetter } from '../../utils';
+import StageIcon from './StageIcon';
+
+function randomKey() {
+  return String(Math.floor(Math.random() * 100000000));
+}
 
 export default function Person(props) {
   const {
@@ -17,28 +22,51 @@ export default function Person(props) {
     // isImpact = false,
     isBoard = false,
     status,
+    sortedBy,
     matches = {},
+    investorStatus = {},
   } = props;
 
-  const primary_organization_logo = primary_organization.image_url || '';
-  const primary_organization_name = primary_organization.name || '';
+  let {
+    primary_organization_name,
+    primary_organization_logo,
+  } = props;
+
+  primary_organization_logo = primary_organization_logo
+    || primary_organization.image_url
+    || '';
+  primary_organization_name = primary_organization_name
+    || primary_organization.name
+    || primary_organization.value
+    || '';
 
   let percentageMatch = matches.percentage_match || 0;
-  percentageMatch = `${Math.floor(percentageMatch * 100)}%`;
+  percentageMatch = `${percentageMatch}%`;
 
-  const investors = useSelector(state => state.board.ids) || [];
-  const isOnBoard = investors.includes(uuid);
+  const ownInvestors = useSelector(state => state.investors.ownInvestors) || {};
+  const investorIds = Object.keys(ownInvestors);
+  const isOnBoard = investorIds.includes(uuid);
+
+  const location = useLocation();
+  const path = location.pathname.substring(1).split('/')[0];
+  const capPath = capitalizeFirstLetter(path);
 
   const history = useHistory();
 
-  const showPerson = () => {
-    const root = isBoard ? 'board' : 'search';
-    history.push(`/${root}/${uuid}`);
+  const clickPerson = () => {
+    history.push(`/${path}/${uuid}`);
   };
 
-  const location = useLocation();
-
-  const path = capitalizeFirstLetter(location.pathname.substring(1).split('/')[0]);
+  const investorStage = investorStatus.stage || (isOnBoard && 'added');
+  let { notes } = investorStatus;
+  let next = {};
+  if (notes && Object.values(notes).length) {
+    next = Object.values(notes).filter(v => v.next);
+    notes = Object.values(notes).filter(v => !v.next);
+  } else {
+    // Sometimes notes gets saved as an object somehow?
+    notes = [];
+  }
 
   const validationProps = {};
 
@@ -52,50 +80,104 @@ export default function Person(props) {
     validationProps.faIcon = 'ban';
   }
 
+  if (sortedBy === 'next' && !next.length) return null;
+
   return (
-    <button
-      className="person"
-      onClick={showPerson}
-      type="button"
-      data-track={`${path}Person`}
-    >
-      <div className="thumb" style={{ backgroundImage: `url(${image_url})` }} />
-      <div className="content">
-        <div>
-          <h1>
-            {validationProps.faIcon && (
-            <FontAwesomeIcon icon={validationProps.faIcon} className={`mr-1 ${validationProps.classes}`} />
-            )}
-            {name || uuid}
-          </h1>
-        </div>
-        <div className="d-flex details">
-          {primary_organization_logo && (
-            <div className="orgLogoWrapper" style={{ backgroundImage: `url(${primary_organization_logo})` }} />
+    <div className={`personWrapper ${isBoard ? 'Board' : ''}`}>
+      <button
+        className="person"
+        onClick={clickPerson}
+        type="button"
+        data-track={`${capPath}Person`}
+      >
+        <div className="thumb" style={{ backgroundImage: `url(${image_url})` }} />
+        <div className="content">
+          {sortedBy !== 'next' && (
+            <div>
+              <h1>
+                {validationProps.faIcon && (
+                <FontAwesomeIcon icon={validationProps.faIcon} className={`mr-1 ${validationProps.classes}`} />
+                )}
+                {name || uuid}
+              </h1>
+            </div>
           )}
-          <div className="orgText">
-            {primary_job_title && (
-              <div>
-                {`${primary_job_title}${primary_job_title && ','}`}
-                {`${primary_job_title ? '\xa0' : ''}`}
-                {primary_organization_name}
+          {sortedBy !== 'next' && (
+            <div className="d-flex details">
+              {primary_organization_logo && (
+                <div className="orgLogoWrapper" style={{ backgroundImage: `url(${primary_organization_logo})` }} />
+              )}
+              <div className="orgText">
+                {primary_job_title && (
+                  <div>
+                    {`${primary_job_title}${primary_job_title && ','}`}
+                    {`${primary_job_title ? '\xa0' : ''}`}
+                    {primary_organization_name}
+                  </div>
+                )}
               </div>
+            </div>
+          )}
+          {sortedBy === 'next' && next.length && next.map(n => (
+            <div className="next sortedByNext" key={randomKey()}>
+              <span className="text">
+                <span className="text-danger">
+                  To Do Next:&nbsp;
+                </span>
+                {n.text ? n.text : ''}
+              </span>
+              <span className="date">
+                {n.date ? n.date : ''}
+              </span>
+            </div>
+          ))}
+        </div>
+        <div className="controls">
+          <StageIcon stage={investorStage} withText />
+          <div className="percentageMatch">
+            {!isBoard && `${percentageMatch}`}
+          </div>
+        </div>
+      </button>
+      {isBoard && sortedBy !== 'next' && (
+        <div className="notesWrapper">
+          <div>
+            <div className="notes text-primary">
+              {`Notes(${notes.length})${notes.length > 0 ? `: ${notes[0].text}` : ''}`}
+            </div>
+            {next.length && next.map(n => (
+              <div className="next" key={randomKey()}>
+                <span className="text">
+                  <span className={n.waiting ? 'text-primary' : 'text-danger'}>
+                    {n.waiting ? 'Waiting for' : 'To Do Next'}
+                    :&nbsp;
+                  </span>
+                  <span className={n.waiting ? 'text-primary' : ''}>
+                    {n.text ? n.text : ''}
+                  </span>
+                </span>
+                <span className="date">
+                  {n.date ? n.date : ''}
+                </span>
+              </div>
+            ))}
+          </div>
+          <div className="published">
+            {investorStatus.published ? (
+              <span>
+                <FontAwesomeIcon icon="eye" className="mr-1" />
+                <span>Public</span>
+              </span>
+            ) : (
+              <span>
+                <FontAwesomeIcon icon="eye-slash" className="mr-1" />
+                <span>Private</span>
+              </span>
             )}
           </div>
         </div>
-      </div>
-      <div className="controls">
-        <div
-          className="iconBtn addBtn btn btn-icon-info"
-        >
-          <FontAwesomeIcon icon={isOnBoard ? 'check-circle' : 'ellipsis-h'} />
-          <span className="sr-only">This investor is on your board.</span>
-        </div>
-        <div className="percentageMatch">
-          {path !== 'Board' && `${percentageMatch}%`}
-        </div>
-      </div>
-    </button>
+      )}
+    </div>
   );
 }
 
@@ -114,6 +196,8 @@ Person.defaultProps = {
     linkedin: '',
     twitter: '',
   },
+  primary_organization_name: '',
+  primary_organization_logo: '',
   matches: {
     keywords: ['one', 'two'],
     raise: false,
@@ -125,7 +209,9 @@ Person.defaultProps = {
   // isOpen: false,
   // isImpact: false,
   isBoard: false,
-  validation: null,
+  status: '',
+  sortedBy: '',
+  investorStatus: {},
 };
 
 Person.propTypes = {
@@ -138,6 +224,8 @@ Person.propTypes = {
     PropTypes.bool,
     PropTypes.number,
   ])),
+  primary_organization_name: PropTypes.string,
+  primary_organization_logo: PropTypes.string,
   matches: PropTypes.shape({
     keywords: PropTypes.arrayOf(PropTypes.string),
     raise: PropTypes.bool,
@@ -149,5 +237,14 @@ Person.propTypes = {
   // isOpen: PropTypes.bool,
   // isImpact: PropTypes.bool,
   isBoard: PropTypes.bool,
-  validation: PropTypes.oneOfType([PropTypes.string, PropTypes.instanceOf(null)]),
+  status: PropTypes.string,
+  sortedBy: PropTypes.string,
+  investorStatus: PropTypes.shape({
+    id: PropTypes.string,
+    notes: PropTypes
+      .objectOf(PropTypes
+        .objectOf(PropTypes
+          .oneOfType([PropTypes.string, PropTypes.bool]))),
+    intro: PropTypes.objectOf(PropTypes.string),
+  }),
 };
