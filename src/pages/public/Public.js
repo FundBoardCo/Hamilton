@@ -344,7 +344,7 @@ export default function Public(props) {
               <div>
                 <a
                   href="/board"
-                  className="btn btn-link text-secondary-light3 txs-3 text-nowrap"
+                  className="btn btn-link text-secondary-light2 txs-3 text-nowrap"
                 >
                   Edit Board
                 </a>

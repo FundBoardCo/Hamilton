@@ -369,8 +369,6 @@ html#ov body {
 
         .modal-content {
           min-height: calc(var(--app-height) - 20px);
-          min-width: calc(95vw + 20px);
-          max-width: calc(100vw - 20px);
           padding-left: 15px; // match column padding
           border-radius: $pad2;
           margin-top: $pad2;
@@ -386,30 +384,6 @@ html#ov body {
 
         &.show .modal-dialog {
           left: -20px;
-        }
-      }
-
-      @media (min-width: $mediaMd) {
-        .modal-dialog {
-          min-width: 0;
-          max-width: calc(45vw + 20px);
-
-          .modal-content {
-            min-width: 0;
-            max-width: calc(45vw + 20px);
-          }
-        }
-      }
-
-      @media (min-width: $mediaLg) {
-        .modal-dialog {
-          min-width: 0;
-          max-width: calc(35vw + 20px);
-
-          .modal-content {
-            min-width: 0;
-            max-width: calc(35vw + 20px);
-          }
         }
       }
     }
@@ -743,6 +717,7 @@ html#ov body {
 
         @media (min-width: $mediaMd) {
           width: calc(45vw + 20px);
+          min-width: 490px;
         }
 
         @media (min-width: $mediaLg) {
