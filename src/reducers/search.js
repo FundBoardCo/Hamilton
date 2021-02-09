@@ -4,12 +4,14 @@ import investors from '../data/investors.json';
 
 export const searchResets = {
   results_status: '',
+  random_status: '',
   extraZipcodes_status: '',
 };
 
 const defaults = {
   ...searchResets,
   results: [],
+  random: [],
   keywords: [],
   raise: 100000,
   location: '',
@@ -45,6 +47,40 @@ function extractLocations(state, action) {
     searchedCityState,
     searchedLocationPairs,
   };
+}
+
+function subsetInvestorData(i) {
+  // only return data required for the search page so we can persist it without going over the
+  // browser memory limits.
+  // adapted from https://medium.com/@captaindaylight/get-a-subset-of-an-object-9896148b9c72
+  return (({
+    uuid,
+    name,
+    image_url,
+    primary_job_title,
+    primary_organization,
+  }) => ({
+    uuid,
+    name,
+    image_url,
+    primary_job_title,
+    primary_organization,
+  }))(i);
+}
+
+const validSubSet = validInvestors.map(i => ({
+  ...subsetInvestorData(i),
+}));
+
+function getRandom(count) {
+  const toExtract = [...validSubSet];
+  const extracted = [];
+  let randomInvestor;
+  for (let i = 0; i < count; i += 1) {
+    [randomInvestor] = toExtract.splice(Math.floor(Math.random() * toExtract.length), 1);
+    extracted.push(randomInvestor);
+  }
+  return extracted;
 }
 
 export default function search(state = defaults, action) {
@@ -88,28 +124,12 @@ export default function search(state = defaults, action) {
     case types.SEARCH_GET_RESULTS_REQUESTED:
       parsedResults = validInvestors.map(i => {
         const calcedMatch = calcMatch({ investor: i, ...state });
-        // only return data required for the search page so we can persist it without going over the
-        // browser memory limits.
-        // adapted from https://medium.com/@captaindaylight/get-a-subset-of-an-object-9896148b9c72
-        const subSet = (({
-          uuid,
-          name,
-          image_url,
-          primary_job_title,
-          primary_organization,
-        }) => ({
-          uuid,
-          name,
-          image_url,
-          primary_job_title,
-          primary_organization,
-        }))(i);
         return {
-          ...subSet,
+          ...subsetInvestorData(i),
           ...calcedMatch,
         };
       })
-        .filter(f => f.matches.percentage_match > 0)
+        .filter(f => f.matches.percentage_match > 25)
         .sort((a, b) => b.matches.percentage_match - a.matches.percentage_match);
 
       return {
@@ -132,6 +152,12 @@ export default function search(state = defaults, action) {
       ...state,
       results_status: '',
     };
+    case types.SEARCH_GET_RANDOM_REQUESTED:
+      return {
+        ...state,
+        random_status: 'succeeded',
+        random: [...getRandom(action.count)],
+      };
     case types.SEARCH_CLEAR_RESULTS: return {
       ...state,
       results_status: '',

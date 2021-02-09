@@ -41,6 +41,8 @@ export default function Public(props) {
   const investorIDs = Object.keys(public_records) || [];
   const publicPostIntro = useSelector(state => state.founders.post_intro_status);
 
+  const randomInvestors = useSelector(state => state.search.random) || [];
+
   const [showConfirmHide, setShowConfirmHide] = useState(false);
 
   // make sure to show the page uuid in the URL if there is one.
@@ -146,10 +148,16 @@ export default function Public(props) {
         type: types.PEOPLE_GET_REQUEST,
         ids,
       });
+    } else {
+      dispatch({
+        type: types.SEARCH_GET_RANDOM_REQUESTED,
+        count: 3,
+      });
     }
   }, [public_records, dispatch]);
 
-  const investorList = [];
+  let investorList = [];
+  console.log(randomInvestors);
 
   if (Array.isArray(investorIDs)) {
     investorIDs.forEach(i => {
@@ -162,6 +170,9 @@ export default function Public(props) {
         investorStatus,
       });
     });
+  } else {
+    console.log("my own list");
+    investorList = [...randomInvestors];
   }
 
   investorList.sort((a, b) => {
