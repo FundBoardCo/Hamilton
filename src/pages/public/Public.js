@@ -33,18 +33,18 @@ export default function Public(props) {
 
   const publicProfileStatus = useSelector(state => state.founders.get_profile_status);
   const publicUserStatus = useSelector(state => state.founders.get_user_status);
+  const getInvestorsStatus = useSelector(state => state.founders.get_investors_status) || '';
+  const publicPostIntro = useSelector(state => state.founders.post_intro_status);
 
   const user = useSelector(state => state.user) || {};
   const pageUUID = uuid || user.uuid;
   const profile = useSelector(state => state.founders.publicFounders[pageUUID]) || {};
   const isMyPage = pageUUID === user.uuid;
-
   const boardPublic = profile.board_public;
-  const getInvestorsStatus = useSelector(state => state.founders.get_investors_status) || '';
-  const public_records = useSelector(state => state.founders.publicInvestors) || {};
-  const investorIDs = Object.keys(public_records) || [];
-  const publicPostIntro = useSelector(state => state.founders.post_intro_status);
 
+  const public_records = useSelector(state => state.founders.publicInvestors) || {};
+  let investorIDs = [];
+  if (pageUUID) investorIDs = Object.keys(public_records) || [];
   const randomInvestors = useSelector(state => state.search.random) || [];
 
   const [showConfirmHide, setShowConfirmHide] = useState(false);
@@ -353,12 +353,13 @@ export default function Public(props) {
                 <p>
                   This page is&nbsp;
                   <i>your FundBoard.</i>
-                  &nbsp;To get introductions to investors all you have to do is share it.
+                  &nbsp;This is where you save investors you’d like to meet. Once you have some,
+                  get a custom URL and share your FundBoard with people that can introduce you.
                 </p>
                 <p>
                   <strong>Step one is to find the right investors.</strong>
                   &nbsp;The investors above are just examples! They’ll go away after
-                  you add some real investors.
+                  you add some investors that match your startup.
                 </p>
               </div>
               <div className="d-flex justify-content-center">
@@ -372,7 +373,7 @@ export default function Public(props) {
               </div>
             </div>
           )}
-          {!pageUUID && (investorList.length || loggedOutInvestorIDs.length) && (
+          {!pageUUID && (investorList.length > 0 || loggedOutInvestorIDs.length > 0) && (
             <div>
               {loggedOutInvestors.map(i => (
                 <PersonPublic
