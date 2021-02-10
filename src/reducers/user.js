@@ -1,7 +1,19 @@
 import * as types from '../actions/types';
 import { processErr } from '../utils';
 
+export const userResets = {
+  create_status: '',
+  login_status: '',
+  init_status: '',
+  update_status: '',
+  delete_status: '',
+  reset_status: '',
+  updateProfile_status: '',
+  get_profile_status: '',
+};
+
 const defaults = {
+  ...userResets,
   email: '',
   create_status: '',
   login_status: '',
@@ -33,17 +45,6 @@ const defaults = {
     location_state: '',
     team_size: 0,
   },
-};
-
-export const userResets = {
-  create_status: '',
-  login_status: '',
-  init_status: '',
-  update_status: '',
-  delete_status: '',
-  reset_status: '',
-  updateProfile_status: '',
-  get_profile_status: '',
 };
 
 export default function user(state = defaults, action) {
