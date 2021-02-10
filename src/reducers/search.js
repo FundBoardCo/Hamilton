@@ -91,7 +91,7 @@ export default function search(state = defaults, action) {
         const calcedMatch = calcMatch({ investor: i, ...state });
         return { ...i, ...calcedMatch };
       })
-        .filter(f => f.matches.percentage_match > 0);
+        .filter(f => f.matches.percentage_match > 24);
       parsedResults.sort((a, b) => b.matches.percentage_match - a.matches.percentage_match);
 
       return {

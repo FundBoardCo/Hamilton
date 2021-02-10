@@ -42,11 +42,12 @@ export default function Keywords() {
   };
 
   const onTileClick = (word, active) => {
+    const normalizedWord = word.toLowerCase();
     if (active) {
-      setKeywords(searchKeywords.filter(w => w !== word));
+      setKeywords(searchKeywords.filter(w => w !== normalizedWord));
       setShowTileWarning(false);
     } else if (searchKeywords.length < 5) {
-      setKeywords([...searchKeywords, word]);
+      setKeywords([...searchKeywords, normalizedWord]);
       setShowTileWarning(false);
     } else {
       setShowTileWarning(true);
