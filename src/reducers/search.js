@@ -139,7 +139,7 @@ export default function search(state = defaults, action) {
           ...calcedMatch,
         };
       })
-        .filter(f => f.matches.percentage_match > 25)
+        .filter(f => f.matches.percentage_match > 24)
         .sort((a, b) => b.matches.percentage_match - a.matches.percentage_match);
 
       return {
