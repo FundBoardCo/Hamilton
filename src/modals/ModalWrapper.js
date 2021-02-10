@@ -36,7 +36,7 @@ export default function ModalWrapper() {
       { openModal === 'makeIntro' && <Route path={['/', '/public']} component={MakeIntro} />}
       { openModal === 'founder' && <Route path="/public" component={Founder} />}
       { openModal === 'editInvestor' && <Route path="/board" component={EditManualInvestor} />}
-      { !openModal && <Route path={['/board/:uuid', '/public/:uuid']} component={Investor} /> }
+      { !openModal && <Route path={['/board/:uuid']} component={Investor} /> }
     </Switch>
   );
 }
