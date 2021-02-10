@@ -31,12 +31,12 @@ export default function ModalWrapper() {
       />
       { !loggedIn && <Route path={['/board', '/profile']} component={Login} /> }
       { loggedIn && !allowIn && <Route path={['/board']} component={WaitList} /> }
-      { !openModal && <Route path="/board/:uuid" component={Investor} /> }
       { openModal === 'login' && <Route path="/" component={Login} /> }
       { openModal === 'howToIntro' && <Route path="/board" component={Welcome} /> }
-      { openModal === 'makeIntro' && <Route path="/public" component={MakeIntro} />}
+      { openModal === 'makeIntro' && <Route path={['/', '/public']} component={MakeIntro} />}
       { openModal === 'founder' && <Route path="/public" component={Founder} />}
       { openModal === 'editInvestor' && <Route path="/board" component={EditManualInvestor} />}
+      { !openModal && <Route path={['/board/:uuid', '/public/:uuid']} component={Investor} /> }
     </Switch>
   );
 }

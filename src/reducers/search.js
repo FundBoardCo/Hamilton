@@ -49,7 +49,7 @@ function extractLocations(state, action) {
   };
 }
 
-function subsetInvestorData(i) {
+function subsetInvestorData(i = {}) {
   // only return data required for the search page so we can persist it without going over the
   // browser memory limits.
   // adapted from https://medium.com/@captaindaylight/get-a-subset-of-an-object-9896148b9c72
@@ -68,19 +68,29 @@ function subsetInvestorData(i) {
   }))(i);
 }
 
-const validSubSet = validInvestors.map(i => ({
-  ...subsetInvestorData(i),
-}));
+function extractRandomItemFromArray(arr) {
+  // remember the arr is a reference, so this removes the item from it.
+  return arr.splice(Math.floor(Math.random() * arr.length), 1)[0];
+}
 
 function getRandom(count) {
-  const toExtract = [...validSubSet];
-  const extracted = [];
-  let randomInvestor;
-  for (let i = 0; i < count; i += 1) {
-    [randomInvestor] = toExtract.splice(Math.floor(Math.random() * toExtract.length), 1);
-    extracted.push(randomInvestor);
+  const toExtract = [...Object.values(investors)
+    .filter(v => v.status !== 'INACTIVE' && v.uuid)];
+  const outreach = toExtract.filter(o => o['accepts-direct_outreach']);
+  const diverse = toExtract.filter(d => d.diverse_investors_list);
+  const outArr = [];
+  const divArr = [];
+  const genArr = [];
+  while (outArr.length + divArr.length + genArr.length < count) {
+    if (!outArr.length) {
+      outArr.push(extractRandomItemFromArray(outreach));
+    } else if (divArr.length < 3) {
+      divArr.push(extractRandomItemFromArray(diverse));
+    } else {
+      genArr.push(extractRandomItemFromArray(toExtract));
+    }
   }
-  return extracted;
+  return [...outArr, ...divArr, ...genArr];
 }
 
 export default function search(state = defaults, action) {

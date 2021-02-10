@@ -213,6 +213,11 @@ export default function EditIntro(props) {
         status={showNotUnique ? 'This offer has already been made. You can\'t offer the same introduction twice.' : ''}
         show={showNotUnique}
       />
+      {!uuid && (
+        <div className="text-secondary p-2">
+          {'This is just an example intro, this user hasn\'t created an account yet.'}
+        </div>
+      )}
       <div className="footerBtnWrapper mt-3">
         <Button
           variant="danger"
@@ -225,6 +230,7 @@ export default function EditIntro(props) {
         <Button
           variant="success"
           className="btnNoMax"
+          disabled={!uuid}
           data-track="MakeIntro-Save"
           onClick={handleSubmit}
         >
@@ -236,6 +242,7 @@ export default function EditIntro(props) {
 }
 
 EditIntro.defaultProps = {
+  uuid: '',
   isPublic: false,
   intro: {
     intro_name: '',
@@ -246,7 +253,7 @@ EditIntro.defaultProps = {
 };
 
 EditIntro.propTypes = {
-  uuid: PropTypes.string.isRequired,
+  uuid: PropTypes.string,
   objectId: PropTypes.string.isRequired,
   isPublic: PropTypes.bool,
   onSubmit: PropTypes.func.isRequired,

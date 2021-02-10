@@ -24,6 +24,10 @@ export default function Public(props) {
 
   const people = useSelector(state => state.people.records) || {};
   const peopleGetStatus = useSelector(state => state.people.get_status);
+
+  const loggedOutInvestorIDs = useSelector(state => state.investors.loggedOutInvestorIDs) || [];
+  const loggedOutInvestors = loggedOutInvestorIDs.map(lo => people[lo]);
+
   const userEmail = useSelector(state => state.user.email);
   const userUpdateStatus = useSelector(state => state.user.update_status);
 
@@ -142,7 +146,7 @@ export default function Public(props) {
   }, [pageUUID, dispatch]);
 
   useEffect(() => {
-    const ids = Object.keys(public_records);
+    const ids = pageUUID ? Object.keys(public_records) : loggedOutInvestorIDs;
     if (ids.length) {
       dispatch({
         type: types.PEOPLE_GET_REQUEST,
@@ -151,15 +155,14 @@ export default function Public(props) {
     } else {
       dispatch({
         type: types.SEARCH_GET_RANDOM_REQUESTED,
-        count: 3,
+        count: 5,
       });
     }
   }, [public_records, dispatch]);
 
-  let investorList = [];
-  console.log(randomInvestors);
+  const investorList = [];
 
-  if (Array.isArray(investorIDs)) {
+  if (Array.isArray(investorIDs) && investorIDs.length) {
     investorIDs.forEach(i => {
       const person = people[i] ? { ...people[i] } : {};
       const investorStatus = public_records[i] || {};
@@ -170,9 +173,6 @@ export default function Public(props) {
         investorStatus,
       });
     });
-  } else {
-    console.log("my own list");
-    investorList = [...randomInvestors];
   }
 
   investorList.sort((a, b) => {
@@ -231,6 +231,14 @@ export default function Public(props) {
     history.push('introSearch');
   };
 
+  const onGoToLogin = () => {
+    dispatch({
+      type: types.MODAL_SET_OPEN,
+      modal: 'login',
+      modalProps: { initialMode: 'create'},
+    });
+  };
+
   const confirmDeleteProps = {
     title: 'Are You Sure?',
     text: 'This will hide the investors on your public board. Links to your board will still work.',
@@ -249,75 +257,6 @@ export default function Public(props) {
       },
     ],
   };
-
-  const exampleVCs = [
-    {
-      key: 'example1',
-      name: 'Bryan Birsic is an Example Investor',
-      image_url: '/imgs/BryanPic.jpg',
-      primary_job_title: 'Founder',
-      primary_organization: {
-        id: '',
-        name: 'FundBoard',
-        image_url: '/imgs/FundBoard_Logo_300.jpg',
-        homepage: 'https://fundboard.co',
-        linkedin: 'https://www.linkedin.com/in/bryanbirsic',
-        twitter: 'https://twitter.com/birsic',
-      },
-      matches: {
-        keywords: ['Helping Founders', 'Being Awesome'],
-        raise: true,
-        location: true,
-        name: true,
-        org: true,
-      },
-      disable: true,
-    },
-    {
-      key: 'example2',
-      name: 'Another Example Investor',
-      image_url: '/imgs/greySquare.jpg',
-      primary_job_title: 'Partner',
-      primary_organization: {
-        id: '',
-        name: 'Some Very Cool Fund',
-        image_url: '/imgs/greySquare',
-        homepage: '',
-        linkedin: '',
-        twitter: '',
-      },
-      matches: {
-        keywords: ['Helping Founders', 'Being Awesome'],
-        raise: true,
-        location: true,
-        name: true,
-        org: true,
-      },
-      disable: true,
-    },
-    {
-      key: 'example3',
-      name: 'Another Example Investor',
-      image_url: '/imgs/greySquare.jpg',
-      primary_job_title: 'Partner',
-      primary_organization: {
-        id: '',
-        name: 'Some Very Cool Fund',
-        image_url: '/imgs/greySquare',
-        homepage: '',
-        linkedin: '',
-        twitter: '',
-      },
-      matches: {
-        keywords: ['Helping Founders', 'Being Awesome'],
-        raise: true,
-        location: true,
-        name: true,
-        org: true,
-      },
-      disable: true,
-    },
-  ];
 
   return (
     <Row id="PageBoard" className="pageContainer public">
@@ -388,6 +327,7 @@ export default function Public(props) {
             const personProps = {
               ...i,
               founderUUID: pageUUID,
+              founderName: profile.name,
               userEmail,
               isMyPage,
             };
@@ -395,24 +335,29 @@ export default function Public(props) {
               <PersonPublic key={i.uuid} {...personProps} />
             );
           })}
-          {pageUUID && (!boardPublic || investorList.length === 0) && (
+          {pageUUID && !isMyPage && (!boardPublic || investorList.length === 0) && (
             <div>
               This founder doesn’t have any investors shared publicly yet.
             </div>
           )}
-          {!pageUUID && (
+          {!pageUUID && investorList.length < 1 && loggedOutInvestorIDs.length < 1 && (
             <div>
-              {exampleVCs.map(i => <PersonPublic {...i} />)}
+              {randomInvestors.map(i => (
+                <PersonPublic
+                  key={i.uuid}
+                  {...i}
+                  investorStatus={{ stage: 'added' }}
+                />
+              ))}
               <div className="mt-3 mb-4">
                 <p>
                   This page is&nbsp;
                   <i>your FundBoard.</i>
-                  &nbsp;To get introductions all you have to do is
-                  share it.
+                  &nbsp;To get introductions to investors all you have to do is share it.
                 </p>
                 <p>
                   <strong>Step one is to find the right investors.</strong>
-                  &nbsp;Bryan and the other investors above are just examples! They’ll go away after
+                  &nbsp;The investors above are just examples! They’ll go away after
                   you add some real investors.
                 </p>
               </div>
@@ -423,6 +368,32 @@ export default function Public(props) {
                   onClick={onGoToSearch}
                 >
                   Find Investors to Add to Your FundBoard
+                </Button>
+              </div>
+            </div>
+          )}
+          {!pageUUID && (investorList.length || loggedOutInvestorIDs.length) && (
+            <div>
+              {loggedOutInvestors.map(i => (
+                <PersonPublic
+                  key={i.uuid}
+                  {...i}
+                  investorStatus={{ stage: 'added' }}
+                />
+              ))}
+              <div className="mt-3 mb-4">
+                <p>
+                  You’ve found some investors! Now all you need to do is log in to get a URL you
+                  can share with people that might be able to intro you.
+                </p>
+              </div>
+              <div className="d-flex justify-content-center">
+                <Button
+                  variant="secondary"
+                  className="btnNoMax"
+                  onClick={onGoToLogin}
+                >
+                  Make My FundBoard Shareable
                 </Button>
               </div>
             </div>
