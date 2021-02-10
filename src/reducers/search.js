@@ -4,13 +4,14 @@ import investors from '../data/investors.json';
 
 export const searchResets = {
   results_status: '',
+  random_status: '',
   extraZipcodes_status: '',
-  results: [],
 };
 
 const defaults = {
   ...searchResets,
   results: [],
+  random: [],
   keywords: [],
   raise: 100000,
   location: '',
@@ -46,6 +47,50 @@ function extractLocations(state, action) {
     searchedCityState,
     searchedLocationPairs,
   };
+}
+
+function subsetInvestorData(i = {}) {
+  // only return data required for the search page so we can persist it without going over the
+  // browser memory limits.
+  // adapted from https://medium.com/@captaindaylight/get-a-subset-of-an-object-9896148b9c72
+  return (({
+    uuid,
+    name,
+    image_url,
+    primary_job_title,
+    primary_organization,
+  }) => ({
+    uuid,
+    name,
+    image_url,
+    primary_job_title,
+    primary_organization,
+  }))(i);
+}
+
+function extractRandomItemFromArray(arr) {
+  // remember the arr is a reference, so this removes the item from it.
+  return arr.splice(Math.floor(Math.random() * arr.length), 1)[0];
+}
+
+function getRandom(count) {
+  const toExtract = [...Object.values(investors)
+    .filter(v => v.status !== 'INACTIVE' && v.uuid)];
+  const outreach = toExtract.filter(o => o['accepts-direct_outreach']);
+  const diverse = toExtract.filter(d => d.diverse_investors_list);
+  const outArr = [];
+  const divArr = [];
+  const genArr = [];
+  while (outArr.length + divArr.length + genArr.length < count) {
+    if (!outArr.length) {
+      outArr.push(extractRandomItemFromArray(outreach));
+    } else if (divArr.length < 3) {
+      divArr.push(extractRandomItemFromArray(diverse));
+    } else {
+      genArr.push(extractRandomItemFromArray(toExtract));
+    }
+  }
+  return [...outArr, ...divArr, ...genArr];
 }
 
 export default function search(state = defaults, action) {
@@ -89,10 +134,13 @@ export default function search(state = defaults, action) {
     case types.SEARCH_GET_RESULTS_REQUESTED:
       parsedResults = validInvestors.map(i => {
         const calcedMatch = calcMatch({ investor: i, ...state });
-        return { ...i, ...calcedMatch };
+        return {
+          ...subsetInvestorData(i),
+          ...calcedMatch,
+        };
       })
-        .filter(f => f.matches.percentage_match > 24);
-      parsedResults.sort((a, b) => b.matches.percentage_match - a.matches.percentage_match);
+        .filter(f => f.matches.percentage_match > 24)
+        .sort((a, b) => b.matches.percentage_match - a.matches.percentage_match);
 
       return {
         ...state,
@@ -114,6 +162,12 @@ export default function search(state = defaults, action) {
       ...state,
       results_status: '',
     };
+    case types.SEARCH_GET_RANDOM_REQUESTED:
+      return {
+        ...state,
+        random_status: 'succeeded',
+        random: [...getRandom(action.count)],
+      };
     case types.SEARCH_CLEAR_RESULTS: return {
       ...state,
       results_status: '',

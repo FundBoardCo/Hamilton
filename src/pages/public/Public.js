@@ -3,37 +3,56 @@ import { useSelector, useDispatch } from 'react-redux';
 import Row from 'react-bootstrap/Row';
 import PropTypes from 'prop-types';
 import Button from 'react-bootstrap/Button';
+import { useHistory } from 'react-router';
 import PersonPublic from '../../components/people/PersonPublic';
 import * as types from '../../actions/types';
 import DismissibleStatus from '../../components/DismissibleStatus';
 import GenericModal from '../../modals/GenericModal';
-import { STAGEPROPS } from '../../constants';
+import WelcomeModal from '../../modals/Welcome';
+import { MINPLACE, STAGEPROPS } from '../../constants';
 
 export default function Public(props) {
   const { match } = props;
   const { params } = match;
   const { uuid } = params;
 
+  const loggedIn = useSelector(state => state.user.sessionToken);
+  const place = useSelector(state => state.user.place);
+  const overridePlace = useSelector(state => state.user.overridePlace);
+  const allowIn = loggedIn && typeof place === 'number' && (place <= MINPLACE || overridePlace);
+  const modalsSeen = useSelector(state => state.modal.modalsSeen) || [];
+
   const people = useSelector(state => state.people.records) || {};
   const peopleGetStatus = useSelector(state => state.people.get_status);
+
+  const loggedOutInvestorIDs = useSelector(state => state.investors.loggedOutInvestorIDs) || [];
+  const loggedOutInvestors = loggedOutInvestorIDs.map(lo => people[lo]);
+
   const userEmail = useSelector(state => state.user.email);
   const userUpdateStatus = useSelector(state => state.user.update_status);
 
   const publicProfileStatus = useSelector(state => state.founders.get_profile_status);
   const publicUserStatus = useSelector(state => state.founders.get_user_status);
+  const getInvestorsStatus = useSelector(state => state.founders.get_investors_status) || '';
+  const publicPostIntro = useSelector(state => state.founders.post_intro_status);
 
   const user = useSelector(state => state.user) || {};
   const pageUUID = uuid || user.uuid;
   const profile = useSelector(state => state.founders.publicFounders[pageUUID]) || {};
   const isMyPage = pageUUID === user.uuid;
-
   const boardPublic = profile.board_public;
-  const getInvestorsStatus = useSelector(state => state.founders.get_investors_status) || '';
+
   const public_records = useSelector(state => state.founders.publicInvestors) || {};
-  const investorIDs = Object.keys(public_records) || [];
-  const publicPostIntro = useSelector(state => state.founders.post_intro_status);
+  let investorIDs = [];
+  if (pageUUID) investorIDs = Object.keys(public_records) || [];
+  const randomInvestors = useSelector(state => state.search.random) || [];
 
   const [showConfirmHide, setShowConfirmHide] = useState(false);
+
+  // make sure to show the page uuid in the URL if there is one.
+  if (!uuid && pageUUID) {
+    window.history.replaceState(null, 'public', `/public/${pageUUID}`);
+  }
 
   const statusBars = [
     {
@@ -127,18 +146,23 @@ export default function Public(props) {
   }, [pageUUID, dispatch]);
 
   useEffect(() => {
-    const ids = Object.keys(public_records);
+    const ids = pageUUID ? Object.keys(public_records) : loggedOutInvestorIDs;
     if (ids.length) {
       dispatch({
         type: types.PEOPLE_GET_REQUEST,
         ids,
+      });
+    } else {
+      dispatch({
+        type: types.SEARCH_GET_RANDOM_REQUESTED,
+        count: 5,
       });
     }
   }, [public_records, dispatch]);
 
   const investorList = [];
 
-  if (Array.isArray(investorIDs)) {
+  if (Array.isArray(investorIDs) && investorIDs.length) {
     investorIDs.forEach(i => {
       const person = people[i] ? { ...people[i] } : {};
       const investorStatus = public_records[i] || {};
@@ -201,19 +225,19 @@ export default function Public(props) {
     });
   };
 
-  // force login if no the user isn't logged in, otherwise add the uuid to the URL.
-  if (!uuid && pageUUID) {
-    window.history.replaceState(null, 'public', `/public/${pageUUID}`);
-  } else if (!pageUUID) {
+  const history = useHistory();
+
+  const onGoToSearch = () => {
+    history.push('introSearch');
+  };
+
+  const onGoToLogin = () => {
     dispatch({
       type: types.MODAL_SET_OPEN,
       modal: 'login',
-      modalProps: {
-        initialMode: 'create',
-        extraText: 'Create an account to get a sharable FundBoard.',
-      },
+      modalProps: { initialMode: 'create'},
     });
-  }
+  };
 
   const confirmDeleteProps = {
     title: 'Are You Sure?',
@@ -241,14 +265,18 @@ export default function Public(props) {
         <div className="primaryDetails">
           <div className="d-flex w-100">
             <div className="d-none d-md-block flex-grow-1">
-              <Button
-                variant="text"
-                className="text-left titleLink"
-                type="button"
-                onClick={onClickShowProfile}
-              >
-                {`Welcome to the FundBoard of ${profile.name || '_____'}`}
-              </Button>
+              {profile.name ? (
+                <Button
+                  variant="text"
+                  className="text-left titleLink"
+                  type="button"
+                  onClick={onClickShowProfile}
+                >
+                  {`Welcome to the FundBoard of ${profile.name}`}
+                </Button>
+              ) : (
+                <span>Welcome to FundBoard!</span>
+              )}
             </div>
             <div className="d-md-none flex-grow-1">
               <button
@@ -262,7 +290,7 @@ export default function Public(props) {
                 </span>
               </button>
             </div>
-            {isMyPage && (
+            {isMyPage && allowIn && (
               <div>
                 <a
                   href="/board"
@@ -277,7 +305,7 @@ export default function Public(props) {
       </div>
       {statusBars.map(s => <DismissibleStatus {...s} />)}
       <div>
-        {isMyPage && (
+        {isMyPage && allowIn && (
           <div className="d-flex mb-3">
             <a
               href="/profile"
@@ -295,10 +323,11 @@ export default function Public(props) {
           </div>
         )}
         <div className="results">
-          {boardPublic && investorList.map(i => {
+          {boardPublic && investorList.length && investorList.map(i => {
             const personProps = {
               ...i,
               founderUUID: pageUUID,
+              founderName: profile.name,
               userEmail,
               isMyPage,
             };
@@ -306,18 +335,73 @@ export default function Public(props) {
               <PersonPublic key={i.uuid} {...personProps} />
             );
           })}
+          {pageUUID && !isMyPage && (!boardPublic || investorList.length === 0) && (
+            <div>
+              This founder doesn’t have any investors shared publicly yet.
+            </div>
+          )}
+          {!pageUUID && investorList.length < 1 && loggedOutInvestorIDs.length < 1 && (
+            <div>
+              {randomInvestors.map(i => (
+                <PersonPublic
+                  key={i.uuid}
+                  {...i}
+                  investorStatus={{ stage: 'added' }}
+                />
+              ))}
+              <div className="mt-3 mb-4">
+                <p>
+                  This page is&nbsp;
+                  <i>your FundBoard.</i>
+                  &nbsp;This is where you save investors you’d like to meet. Once you have some,
+                  get a custom URL and share your FundBoard with people that can introduce you.
+                </p>
+                <p>
+                  <strong>Step one is to find the right investors.</strong>
+                  &nbsp;The investors above are just examples! They’ll go away after
+                  you add some investors that match your startup.
+                </p>
+              </div>
+              <div className="d-flex justify-content-center">
+                <Button
+                  variant="secondary"
+                  className="btnNoMax"
+                  onClick={onGoToSearch}
+                >
+                  Find Investors to Add to Your FundBoard
+                </Button>
+              </div>
+            </div>
+          )}
+          {!pageUUID && (investorList.length > 0 || loggedOutInvestorIDs.length > 0) && (
+            <div>
+              {loggedOutInvestors.map(i => (
+                <PersonPublic
+                  key={i.uuid}
+                  {...i}
+                  investorStatus={{ stage: 'added' }}
+                />
+              ))}
+              <div className="mt-3 mb-4">
+                <p>
+                  You’ve found some investors! Now all you need to do is log in to get a URL you
+                  can share with people that might be able to intro you.
+                </p>
+              </div>
+              <div className="d-flex justify-content-center">
+                <Button
+                  variant="secondary"
+                  className="btnNoMax"
+                  onClick={onGoToLogin}
+                >
+                  Make My FundBoard Shareable
+                </Button>
+              </div>
+            </div>
+          )}
         </div>
-        {pageUUID && (!boardPublic || investorList.length === 0) && (
-          <div>
-            This founder doesn’t have any investors shared publicly yet.
-          </div>
-        )}
-        {!pageUUID && (
-          <div>
-            {'This is a generic public FundBoard. It should have a user\'s ID in the URL.'}
-          </div>
-        )}
       </div>
+      {!pageUUID && !modalsSeen.includes('welcome') && <WelcomeModal />}
     </Row>
   );
 }

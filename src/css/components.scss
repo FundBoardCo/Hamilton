@@ -179,7 +179,7 @@ html#ov body {
 
     &.Board {
       // border-bottom: 1px solid $col-primary-light6;
-      padding: 10px 10px 5px 10px;
+      padding: 10px;
       margin-bottom: $pad2;
       margin-right: -15px;
       margin-left: -15px;
@@ -215,7 +215,8 @@ html#ov body {
             margin-top: 0;
 
             .orgLogoWrapper {
-              display: none;
+              width: 28px;
+              height: 28px;
             }
 
             .orgText {
@@ -867,8 +868,16 @@ html#ov body {
         }
       }
     }
-    &.modal-howToIntro {
-      .howToIntroList {
+    &.modal-welcome {
+      h1 {
+        margin-bottom: 0;
+      }
+
+      .modal-body {
+        padding-top: 0;
+      }
+
+      .welcomeList {
         display: flex;
         flex-flow: row wrap;
 
@@ -905,6 +914,7 @@ html#ov body {
           }
 
           dd {
+            font-size: 1.2rem;
             margin: 0 0 2rem 0;
             flex-basis: calc(100% - 4rem);
           }
