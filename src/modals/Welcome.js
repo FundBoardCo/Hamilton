@@ -40,18 +40,18 @@ export default function Welcome() {
         <dl className="welcomeList">
           <dt>1</dt>
           <dd>
-            Find investors that want to invest in your startup with our&nbsp;
-            <a href="/introSearch">founder-friendly search.</a>
+            Find investors that want to invest in your startup with our founder-friendly search.
           </dd>
           <dt>2</dt>
           <dd>
-            Save investors that match to your FundBoard. This is just for you, they don’t know
-            they’re on their list. FundBoard is for founders!
+            Save matching investors to your FundBoard. This is just for you,&nbsp;
+            <strong>they don’t know you saved them.</strong>
+            &nbsp;FundBoard is for founders!
           </dd>
           <dt>3</dt>
           <dd>
             Share your FundBoard with friends, contacts, and anyone else you think might be able
-            to introduce you to your matched investors.
+            to give you a warm introduction to your matched investors.
           </dd>
           <dt>4</dt>
           <dd>
