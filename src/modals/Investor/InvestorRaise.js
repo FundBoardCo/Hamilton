@@ -71,6 +71,14 @@ export default function InvestorRaise(props) {
     updateStatus(params);
   };
 
+  const onToggleArchive = () => {
+    const params = {
+      objectId,
+      stage: stage === 'archived' ? 'added' : 'archived',
+    };
+    updateStatus(params);
+  };
+
   const onEditManualClick = () => {
     dispatch({
       type: types.MODAL_SET_OPEN,
@@ -258,10 +266,10 @@ export default function InvestorRaise(props) {
           {published ? 'Public' : 'Private'}
         </h2>
         <div className="d-flex">
-          <p>
+          <p className="mr-4">
             Change whether this investor is visible on your public board.
           </p>
-          <span className="flex-shrink-0 ml-2">
+          <span className="flex-shrink-0 ml-auto">
             <Button
               variant="link"
               className={published ? 'primary' : 'warning'}
@@ -269,6 +277,26 @@ export default function InvestorRaise(props) {
             >
               <FontAwesomeIcon className="mr-2" icon={published ? 'eye-slash' : 'eye'} />
               {published ? 'Make Private' : 'Make Public'}
+            </Button>
+          </span>
+        </div>
+      </section>
+      <section className="mb-4">
+        <h2 className="sectionHead">
+          Archive
+        </h2>
+        <div className="d-flex">
+          <p className="mr-4">
+            If you no longer want to see this investor on your board, you can archive them.
+          </p>
+          <span className="flex-shrink-0 ml-auto">
+            <Button
+              variant="link"
+              className={stage === 'archived' ? 'primary' : 'warning'}
+              onClick={onToggleArchive}
+            >
+              <FontAwesomeIcon className="mr-2" icon={stage === 'archived' ? 'recycle' : 'archive'} />
+              {stage === 'archived' ? 'Unarchive' : 'Archive'}
             </Button>
           </span>
         </div>
