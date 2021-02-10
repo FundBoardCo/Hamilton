@@ -13,6 +13,7 @@ import * as types from '../../actions/types';
 import DismissibleStatus from '../../components/DismissibleStatus';
 import { MINPLACE, STAGEPROPS } from '../../constants';
 import { getSafeVar } from '../../utils';
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 
 export default function Board() {
   const userUpdateStatus = useSelector(state => state.user.update_status);
@@ -255,6 +256,7 @@ export default function Board() {
                 className={showArchived ? 'active' : ''}
                 onClick={() => setShowArchived(!showArchived)}
               >
+                <FontAwesomeIcon className="mr-2" icon={showArchived ? 'eye-slash' : 'eye'} />
                 Archived
               </button>
             </div>
