@@ -119,11 +119,12 @@ export default function SearchMenu() {
   };
 
   const onTileClick = (word, active) => {
+    const normalizedWord = word.toLowerCase();
     if (active) {
-      setKeywords(searchKeywords.filter(w => w !== word));
+      setKeywords(searchKeywords.filter(w => w !== normalizedWord));
       setShowTileWarning(false);
     } else if (searchKeywords.length < 5) {
-      setKeywords([...searchKeywords, word]);
+      setKeywords([...searchKeywords, normalizedWord]);
       setShowTileWarning(false);
     } else {
       setShowTileWarning(true);
@@ -132,6 +133,7 @@ export default function SearchMenu() {
 
   const onRemoveKeyword = w => {
     setKeywords(searchKeywords.filter(kw => kw !== w));
+    setShowTileWarning(false);
   };
 
   const onRaiseChange = e => {
@@ -297,7 +299,7 @@ export default function SearchMenu() {
         <div className="tilesWrapper mb-5">
           <div className="tiles">
             {wordsToShow.map(w => {
-              const active = searchKeywords.includes(w);
+              const active = searchKeywords.includes(w.toLowerCase());
               return (
                 <button
                   className={`tile ${active ? 'active' : ''}`}
