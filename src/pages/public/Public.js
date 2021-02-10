@@ -166,12 +166,14 @@ export default function Public(props) {
     investorIDs.forEach(i => {
       const person = people[i] ? { ...people[i] } : {};
       const investorStatus = public_records[i] || {};
-      investorList.push({
-        ...person,
-        ...investorStatus, // merge in manual edits
-        uuid: i,
-        investorStatus,
-      });
+      if (investorStatus.stage !== 'archived') {
+        investorList.push({
+          ...person,
+          ...investorStatus, // merge in manual edits
+          uuid: i,
+          investorStatus,
+        });
+      }
     });
   }
 
