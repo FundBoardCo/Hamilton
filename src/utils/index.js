@@ -177,7 +177,9 @@ export function calcMatch(opts) {
     primary_organization = {},
   } = investor;
 
-  const iKeywords = investor.keywords;
+  const iKeywords = Array.isArray(investor.keywords)
+    ? investor.keywords.map(ik => ik.trim().toLowerCase()) : [];
+  const sKeywords = keywords.map(sk => sk.trim().toLowerCase());
 
   const matchedLocation = searchedCityState === investorLocation;
   const matchedExtraLocations = !!Array.isArray(invested_locations)
@@ -185,7 +187,7 @@ export function calcMatch(opts) {
   && !!invested_locations.find(il => searchedLocationPairs.includes(il));
 
   const matches = {
-    keywords: Array.isArray(iKeywords) ? iKeywords.filter(k => keywords.includes(k)) : [],
+    keywords: iKeywords.filter(k => sKeywords.includes(k)),
     raise: raise >= raise_min && raise <= raise_max,
     location: matchedLocation || matchedExtraLocations,
   };
