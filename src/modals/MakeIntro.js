@@ -13,6 +13,15 @@ export default function MakeIntro() {
   const founderStatus = useSelector(state => state.founders.get_profile_status)
     || '';
 
+  const orgName = investor.primary_organization_name
+    || (investor.primary_organization && investor.primary_organization.name)
+    || (investor.primary_organization && investor.primary_organization.value)
+    || '';
+
+  const connectName = founderName || 'this founder';
+  const orgString = orgName ? ` at ${orgName}` : '';
+  const connectString = `I can connect ${connectName} to ${investor.name}${orgString}`;
+
   const dispatch = useDispatch();
 
   const unSetModal = () => dispatch({
@@ -41,7 +50,7 @@ export default function MakeIntro() {
     >
       <Modal.Header closeButton>
         <Modal.Title>
-          <h4>{`I can connect ${founderName || 'this founder'} to ${investor.name}`}</h4>
+          <h4>{connectString}</h4>
         </Modal.Title>
       </Modal.Header>
       <Modal.Body className="pt-0">
