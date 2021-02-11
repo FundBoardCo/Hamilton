@@ -59,12 +59,14 @@ function subsetInvestorData(i = {}) {
     image_url,
     primary_job_title,
     primary_organization,
+    status,
   }) => ({
     uuid,
     name,
     image_url,
     primary_job_title,
     primary_organization,
+    status,
   }))(i);
 }
 
@@ -139,7 +141,7 @@ export default function search(state = defaults, action) {
           ...calcedMatch,
         };
       })
-        .filter(f => f.matches.percentage_match > 24)
+        .filter(f => f.matches.percentage_match > (state.searchedText ? 0 : 24))
         .sort((a, b) => b.matches.percentage_match - a.matches.percentage_match);
 
       return {
