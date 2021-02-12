@@ -9,23 +9,16 @@ import DismissibleStatus from '../../components/DismissibleStatus';
 import * as types from '../../actions/types';
 
 export default function Search() {
-  const searchKeywords = useSelector(state => state.search.keywords) || [];
-  const searchRaise = useSelector(state => state.search.raise) || 100000;
-  const searchLocation = useSelector(state => state.search.location) || '';
   const rawResults = useSelector(state => state.search.results) || [];
   const searchStatus = useSelector(state => state.search.results_status) || '';
   const ownInvestors = useSelector(state => state.investors.ownInvestors) || {};
   const investorIds = Object.keys(ownInvestors);
+  const loggedOutInvestorIDs = useSelector(state => state.investors.loggedOutInvestorIDs) || [];
+  const numInvestors = investorIds.length ? investorIds.length : loggedOutInvestorIDs.length;
   const searchResults = rawResults.filter(s => !investorIds.includes(s.uuid));
 
   const [detailsOpen, setDetailsOpen] = useState(false);
   const [page, setPage] = useState(1);
-
-  const usdFormatter = new Intl.NumberFormat('en-US', {
-    style: 'currency',
-    currency: 'USD',
-    minimumFractionDigits: 0,
-  });
 
   const onDetailClick = () => {
     setDetailsOpen(!detailsOpen);
@@ -77,29 +70,18 @@ export default function Search() {
             Search
           </Button>
         </div>
-        <div className={`secondaryDetails ${detailsOpen ? '' : 'sr-only'}`}>
-          <p>
-            {`You searched for: ${searchKeywords.join()}`}
-          </p>
-          <p>
-            {`Raise: ${usdFormatter.format(searchRaise)}`}
-          </p>
-          <p>
-            {`Location: ${searchLocation}`}
-          </p>
-        </div>
       </div>
       <div className="mb-3 txs-2 tx-md-tx3">
         {investorIds.length > 0 ? (
           <span className="txs-3">
-            {`You have ${investorIds.length} ${investorIds.length === 1 ? 'investor' : 'investors'} on your FundBoard. `}
+            {`You have ${numInvestors} ${numInvestors === 1 ? 'investor' : 'investors'} on your FundBoard. `}
             <a href="/public">
               <strong>Share it now to start getting introductions.</strong>
             </a>
           </span>
         ) : (
           <span>
-            {`You have ${investorIds.length} investors on your FundBoard. Start a new search to find matching investors to save to your `}
+            {`You have ${numInvestors} investors on your FundBoard. Start a new search to find matching investors to save to your `}
             <a href="/public">board.</a>
           </span>
         )}
