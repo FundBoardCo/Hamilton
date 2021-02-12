@@ -56,6 +56,7 @@ function subsetInvestorData(i = {}) {
   return (({
     uuid,
     name,
+    image_id,
     image_url,
     primary_job_title,
     primary_organization,
@@ -63,6 +64,7 @@ function subsetInvestorData(i = {}) {
   }) => ({
     uuid,
     name,
+    image_id,
     image_url,
     primary_job_title,
     primary_organization,

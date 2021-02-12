@@ -5,6 +5,7 @@ import { useHistory, useLocation } from 'react-router';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { capitalizeFirstLetter } from '../../utils';
 import StageIcon from './StageIcon';
+import { cb_logo_imagePrefix } from '../../constants';
 
 function randomKey() {
   return String(Math.floor(Math.random() * 100000000));
@@ -32,8 +33,13 @@ export default function Person(props) {
     primary_organization_logo,
   } = props;
 
+  // Sometimes the logo is an image_id instead of an URL
+  const imageIDURL = primary_organization.image_id
+    ? `${cb_logo_imagePrefix}${primary_organization.image_id}` : '';
+
   primary_organization_logo = primary_organization_logo
     || primary_organization.image_url
+    || imageIDURL
     || '';
   primary_organization_name = primary_organization_name
     || primary_organization.name
