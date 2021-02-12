@@ -260,6 +260,13 @@ export default function Public(props) {
     ],
   };
 
+  let userState;
+  if (!pageUUID && investorList.length < 1 && loggedOutInvestorIDs.length < 1) {
+    userState = 'new';
+  } else if (!pageUUID && (investorList.length > 0 || loggedOutInvestorIDs.length > 0)) {
+    userState = 'newWithInvestors';
+  }
+
   return (
     <Row id="PageBoard" className="pageContainer public">
       {showConfirmHide && <GenericModal {...confirmDeleteProps} />}
@@ -298,7 +305,8 @@ export default function Public(props) {
                   href="/board"
                   className="btn btn-link text-secondary-light2 txs-3 text-nowrap"
                 >
-                  Edit Board
+                  Manage
+                  <span className="d-none d-md-inline">&nbsp;My Board</span>
                 </a>
               </div>
             )}
@@ -342,7 +350,7 @@ export default function Public(props) {
               This founder doesn’t have any investors shared publicly yet.
             </div>
           )}
-          {!pageUUID && investorList.length < 1 && loggedOutInvestorIDs.length < 1 && (
+          {userState === 'new' && (
             <div>
               {randomInvestors.map(i => (
                 <PersonPublic
@@ -375,7 +383,7 @@ export default function Public(props) {
               </div>
             </div>
           )}
-          {!pageUUID && (investorList.length > 0 || loggedOutInvestorIDs.length > 0) && (
+          {userState === 'newWithInvestors' && (
             <div>
               {loggedOutInvestors.map(i => (
                 <PersonPublic
