@@ -771,6 +771,18 @@ html#ov {
 
           &.public {
             // overrides for the public page
+
+            .headline {
+              text-align: center;
+              font-size: 3rem;
+              margin-bottom: 1.6rem;
+            }
+
+            .tagline {
+              text-align: center;
+              font-size: 1.3rem;
+            }
+
             .primaryDetails {
 
               .btn.btn-link {
@@ -783,6 +795,15 @@ html#ov {
               }
 
               @media (min-width: $mediaMd) {
+
+                .headline {
+                  font-size: 4rem;
+                  margin-bottom: 1.8rem;
+                }
+
+                .tagline {
+                  font-size: 1.4rem;
+                }
 
                 .btn.btn-link {
                   color: $col-text;

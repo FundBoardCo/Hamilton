@@ -347,16 +347,21 @@ export default function Public(props) {
           {userState === 'new' && (
             <div>
               <div className="mt-3 mb-4">
-                <h1 className="text-center">This is Your FundBoard</h1>
-                <p>
-                  This is where you&nbsp;
-                  <strong>search</strong>
-                  &nbsp;for investors that match your startup,&nbsp;
-                  <strong>save</strong>
-                  &nbsp;them to your FundBoard, and&nbsp;
-                  <strong>share</strong>
-                  &nbsp;them with people that can introduce you to them.
-                </p>
+                <h1 className="headline">This is Your FundBoard</h1>
+                <div className="tagline">
+                  <p>
+                    <strong>Search</strong>
+                    &nbsp;for investors that want to invest in your startup.
+                  </p>
+                  <p>
+                    <strong>Save</strong>
+                    &nbsp;them to your FundBoard.
+                  </p>
+                  <p>
+                    <strong>Share</strong>
+                    &nbsp;them to get warm introductions.
+                  </p>
+                </div>
               </div>
               <div className="d-flex justify-content-center mb-4">
                 <Button
@@ -364,17 +369,16 @@ export default function Public(props) {
                   className="btnNoMax"
                   onClick={onGoToSearch}
                 >
-                  Find Investors
-                  <span className="d-none d-md-inline"> to Add to Your FundBoard</span>
+                  Step 1: Find Investors
                 </Button>
               </div>
               <img
-                className="d-none d-md-inline responsiveImg mb-4"
+                className="d-none d-md-inline responsiveImg mt-1 mb-4"
                 src={ExampleOfIntro}
                 alt="A screenshot of someone providing an introduction to an investor on your FundBoard"
               />
               <img
-                className="d-md-none responsiveImg mb-2"
+                className="d-md-none responsiveImg mb-1"
                 src={ExampleOfIntroMobile}
                 alt="A screenshot of someone providing an introduction to an investor on your FundBoard"
               />
