@@ -9,7 +9,7 @@ import * as types from '../../actions/types';
 import DismissibleStatus from '../../components/DismissibleStatus';
 import GenericModal from '../../modals/GenericModal';
 import { MINPLACE, STAGEPROPS } from '../../constants';
-import ExampleOfIntro from '../../imgs/ExampleOfIntro.png'
+import ExampleOfIntro from '../../imgs/ExampleOfIntro.jpg';
 
 export default function Public(props) {
   const { match } = props;
