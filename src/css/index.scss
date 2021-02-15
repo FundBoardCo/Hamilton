@@ -73,6 +73,10 @@ html#ov {
               display: none;
               line-height: 1;
               margin-left: 0.5em;
+
+              &.show {
+                display: inline;
+              }
             }
 
             &:hover,
@@ -97,9 +101,7 @@ html#ov {
         }
 
         .navBrand {
-          display: flex;
-          align-items: center;
-          text-decoration: none;
+          display: none;
         }
 
         @media (min-width: $mediaXs) {
@@ -110,46 +112,37 @@ html#ov {
           }
         }
 
-        @media (max-width: $mediaMaxMd) {
-          .navBrand {
-            .navLogo {
-              display: none;
-            }
-
-            .navName {
-              @include hidden();
-            }
-
-            .navVersion {
-              @include hidden();
-            }
-          }
-        }
-
         @media (min-width: $mediaLg) {
           order: 1;
 
-          .navLogo {
-            display: block;
-            width: 46px;
-            margin-right: 0.5em;
-          }
-
-          .navName {
-            display: inline;
-            font-size: 40px;
-            font-weight: 700;
+          .navBrand {
+            display: flex;
+            align-items: center;
             text-decoration: none;
-            color: $col-text-light; // override link color
-          }
 
-          .navVersion {
-            display: inline;
-            font-size: $txSm;
-            align-self: baseline;
-            margin-left: 0.5em;
-            text-decoration: none;
-            color: $col-text-light; // override link color
+            .navLogo {
+              display: block;
+              width: 46px;
+              margin-right: 0.5em;
+            }
+
+            .navName {
+              display: inline;
+              font-size: 40px;
+              font-weight: 700;
+              text-decoration: none;
+              color: $col-text-light; // override link color
+            }
+
+            .navVersion {
+              display: inline;
+              flex-shrink: 0;
+              font-size: $txSm;
+              align-self: baseline;
+              margin-left: 0.5em;
+              text-decoration: none;
+              color: $col-text-light; // override link color
+            }
           }
 
           .navbar-nav {
@@ -182,7 +175,8 @@ html#ov {
         margin: 0 auto; // center
         position: relative;
         overflow: auto;
-        background: linear-gradient($col-primary-light9, $col-primary-light7);
+        // background: linear-gradient($col-primary-light9, $col-primary-light7);
+        background: $col-primary-light9;
 
         @media (min-width: $mediaLg) {
           order: 2;

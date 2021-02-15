@@ -220,7 +220,7 @@ function App() {
                 data-track="navLogin"
               >
                 <FontAwesomeIcon icon="sign-in-alt" />
-                <span>Log In</span>
+                <span className="show">Log In</span>
               </Button>
             )}
           </Nav>

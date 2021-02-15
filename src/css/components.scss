@@ -7,20 +7,25 @@ html#ov body {
   .personWrapper {
     display: flex;
     flex-direction: column;
+    margin-bottom: $pad2;
+    margin-right: -15px;
+    margin-left: -15px;
+    background-color: $col-bright;
 
     .person {
       display: flex;
+      flex-basis: 33%;
       align-items: stretch;
-      background-color: $col-bright;
-      border-radius: $pad4;
       overflow: hidden;
-      padding: 0;
-      margin-bottom: $pad2;
+      padding: 10px;
       width: 100%;
       outline: 0;
       box-sizing: border-box;
-      border: 1px solid transparent;
       text-align: left;
+      background-color: transparent;
+      border: 1px solid transparent;
+      border-top-color: $col-structure-light7;
+      border-bottom-color: $col-structure-light7;
 
       &:hover,
       &.active {
@@ -177,25 +182,18 @@ html#ov body {
       }
     }
 
-    &.Board {
-      // border-bottom: 1px solid $col-primary-light6;
-      padding: 10px;
-      margin-bottom: $pad2;
-      margin-right: -15px;
-      margin-left: -15px;
-      background-color: #fff;
+    @media (min-width: $mediaMd) {
+      margin-right: 0;
+      margin-left: 0;
 
       .person {
-        flex-basis: 33%;
-        background-color: transparent;
-        border-radius: 0;
-        border: none;
-        margin-bottom: 0;
+        border-color: $col-structure-light7;
+      }
+    }
 
-        &:hover,
-        &:active {
-          border: none;
-        }
+    &.Board {
+
+      .person {
 
         .thumb {
           width: $pad5;
