@@ -176,7 +176,7 @@ function App() {
             {(!firstTime || loggedIn) && (
               <Nav.Link
                 as={NavLink}
-                href="/search/menu"
+                href="/search"
                 to="/search/menu"
                 className="search"
                 activeClassName="active"
