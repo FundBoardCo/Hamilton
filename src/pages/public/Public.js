@@ -10,6 +10,7 @@ import DismissibleStatus from '../../components/DismissibleStatus';
 import GenericModal from '../../modals/GenericModal';
 import { MINPLACE, STAGEPROPS } from '../../constants';
 import ExampleOfIntro from '../../imgs/ExampleOfIntro.jpg';
+import ExampleOfIntroMobile from '../../imgs/ExampleOfIntroMobile.jpg';
 
 export default function Public(props) {
   const { match } = props;
@@ -346,32 +347,40 @@ export default function Public(props) {
           {userState === 'new' && (
             <div>
               <div className="mt-3 mb-4">
-                <h1>This is Your FundBoard</h1>
+                <h1 className="text-center">This is Your FundBoard</h1>
                 <p>
-                  This is where you save investors that match your startup. Once you have some,
-                  get a custom URL and share your FundBoard with people that can introduce you to
-                  them.
-                </p>
-                <img
-                  className="responsiveImg mb-4"
-                  src={ExampleOfIntro}
-                  alt="A screenshot of someone providing an introduction to an investor on your FundBoard"
-                />
-                <p>
-                  <strong>Step one is to find the right investors.</strong>
-                  &nbsp;The investors above are just examples! Our search engine will match you to
-                  the investors that are the most likely to want to meet you.
+                  This is where you&nbsp;
+                  <strong>search</strong>
+                  &nbsp;for investors that match your startup,&nbsp;
+                  <strong>save</strong>
+                  &nbsp;them to your FundBoard, and&nbsp;
+                  <strong>share</strong>
+                  &nbsp;them with people that can introduce you to them.
                 </p>
               </div>
-              <div className="d-flex justify-content-center">
+              <div className="d-flex justify-content-center mb-4">
                 <Button
                   variant="secondary"
                   className="btnNoMax"
                   onClick={onGoToSearch}
                 >
-                  Find Investors to Add to Your FundBoard
+                  Find Investors
+                  <span className="d-none d-md-inline"> to Add to Your FundBoard</span>
                 </Button>
               </div>
+              <img
+                className="d-none d-md-inline responsiveImg mb-4"
+                src={ExampleOfIntro}
+                alt="A screenshot of someone providing an introduction to an investor on your FundBoard"
+              />
+              <img
+                className="d-md-none responsiveImg mb-2"
+                src={ExampleOfIntroMobile}
+                alt="A screenshot of someone providing an introduction to an investor on your FundBoard"
+              />
+              <p className="text-center txs-1">
+                <i>This is just a screenshot. Find some investors to get intros for real.</i>
+              </p>
             </div>
           )}
           {userState === 'newWithInvestors' && (
