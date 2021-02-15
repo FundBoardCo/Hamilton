@@ -8,8 +8,8 @@ import PersonPublic from '../../components/people/PersonPublic';
 import * as types from '../../actions/types';
 import DismissibleStatus from '../../components/DismissibleStatus';
 import GenericModal from '../../modals/GenericModal';
-import WelcomeModal from '../../modals/Welcome';
 import { MINPLACE, STAGEPROPS } from '../../constants';
+import ExampleOfIntro from '../../imgs/ExampleOfIntro.png'
 
 export default function Public(props) {
   const { match } = props;
@@ -20,7 +20,6 @@ export default function Public(props) {
   const place = useSelector(state => state.user.place);
   const overridePlace = useSelector(state => state.user.overridePlace);
   const allowIn = loggedIn && typeof place === 'number' && (place <= MINPLACE || overridePlace);
-  const modalsSeen = useSelector(state => state.modal.modalsSeen) || [];
 
   const people = useSelector(state => state.people.records) || {};
   const peopleGetStatus = useSelector(state => state.people.get_status);
@@ -45,7 +44,6 @@ export default function Public(props) {
   const public_records = useSelector(state => state.founders.publicInvestors) || {};
   let investorIDs = [];
   if (pageUUID) investorIDs = Object.keys(public_records) || [];
-  const randomInvestors = useSelector(state => state.search.random) || [];
 
   const [showConfirmHide, setShowConfirmHide] = useState(false);
 
@@ -158,7 +156,7 @@ export default function Public(props) {
         count: 5,
       });
     }
-  }, [public_records, dispatch]);
+  }, [pageUUID, loggedOutInvestorIDs, public_records, dispatch]);
 
   const investorList = [];
 
@@ -237,7 +235,7 @@ export default function Public(props) {
     dispatch({
       type: types.MODAL_SET_OPEN,
       modal: 'login',
-      modalProps: { initialMode: 'create'},
+      modalProps: { initialMode: 'create' },
     });
   };
 
@@ -266,53 +264,48 @@ export default function Public(props) {
   } else if (!pageUUID && (investorList.length > 0 || loggedOutInvestorIDs.length > 0)) {
     userState = 'newWithInvestors';
   }
+  const newUserStates = ['new', 'newWithInvestors'];
 
   return (
     <Row id="PageBoard" className="pageContainer public">
       {showConfirmHide && <GenericModal {...confirmDeleteProps} />}
-      <div className="boardDetailsBar">
-        <div className="primaryDetails">
-          <div className="d-flex w-100">
-            <div className="d-none d-md-block flex-grow-1">
-              {profile.name ? (
+      {!newUserStates.includes(userState) && (
+        <div className="boardDetailsBar">
+          <div className="primaryDetails">
+            <div className="d-flex w-100">
+              <div className="flex-grow-1">
                 <Button
                   variant="text"
                   className="text-left titleLink"
                   type="button"
                   onClick={onClickShowProfile}
                 >
-                  {`Welcome to the FundBoard of ${profile.name}`}
+                  <span className="d-none d-md-inline">
+                    {`Welcome to the FundBoard of ${profile.name || '_____'}`}
+                  </span>
+                  <span className="d-md-none">
+                    {`${profile.name || '_____'}`}
+                    <span>
+                      ’s FundBoard
+                    </span>
+                  </span>
                 </Button>
-              ) : (
-                <span>Welcome to FundBoard!</span>
+              </div>
+              {isMyPage && allowIn && (
+                <div>
+                  <a
+                    href="/board"
+                    className="btn btn-link text-secondary-light2 txs-3 text-nowrap"
+                  >
+                    Manage
+                    <span className="d-none d-md-inline">&nbsp;My Board</span>
+                  </a>
+                </div>
               )}
             </div>
-            <div className="d-md-none flex-grow-1">
-              <button
-                className="btn btn-txt titleLink text-left d-inline"
-                type="button"
-                onClick={onClickShowProfile}
-              >
-                {profile.name || '_____'}
-                <span className="d-md-none">
-                  ’s FundBoard
-                </span>
-              </button>
-            </div>
-            {isMyPage && allowIn && (
-              <div>
-                <a
-                  href="/board"
-                  className="btn btn-link text-secondary-light2 txs-3 text-nowrap"
-                >
-                  Manage
-                  <span className="d-none d-md-inline">&nbsp;My Board</span>
-                </a>
-              </div>
-            )}
           </div>
         </div>
-      </div>
+      )}
       {statusBars.map(s => <DismissibleStatus {...s} />)}
       <div>
         {isMyPage && allowIn && (
@@ -352,24 +345,22 @@ export default function Public(props) {
           )}
           {userState === 'new' && (
             <div>
-              {randomInvestors.map(i => (
-                <PersonPublic
-                  key={i.uuid}
-                  {...i}
-                  investorStatus={{ stage: 'added' }}
-                />
-              ))}
               <div className="mt-3 mb-4">
+                <h1>This is Your FundBoard</h1>
                 <p>
-                  This page is&nbsp;
-                  <i>your FundBoard.</i>
-                  &nbsp;This is where you save investors you’d like to meet. Once you have some,
-                  get a custom URL and share your FundBoard with people that can introduce you.
+                  This is where you save investors that match your startup. Once you have some,
+                  get a custom URL and share your FundBoard with people that can introduce you to
+                  them.
                 </p>
+                <img
+                  className="responsiveImg mb-4"
+                  src={ExampleOfIntro}
+                  alt="A screenshot of someone providing an introduction to an investor on your FundBoard"
+                />
                 <p>
                   <strong>Step one is to find the right investors.</strong>
-                  &nbsp;The investors above are just examples! They’ll go away after
-                  you add some investors that match your startup.
+                  &nbsp;The investors above are just examples! Our search engine will match you to
+                  the investors that are the most likely to want to meet you.
                 </p>
               </div>
               <div className="d-flex justify-content-center">
@@ -411,7 +402,6 @@ export default function Public(props) {
           )}
         </div>
       </div>
-      {!pageUUID && !modalsSeen.includes('welcome') && <WelcomeModal />}
     </Row>
   );
 }
