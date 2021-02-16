@@ -5,10 +5,34 @@ import { useHistory, useLocation } from 'react-router';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { capitalizeFirstLetter } from '../../utils';
 import StageIcon from './StageIcon';
+import RaiseBullet from './RaiseBullet';
 import { cb_logo_imagePrefix } from '../../constants';
 
 function randomKey() {
   return String(Math.floor(Math.random() * 100000000));
+}
+
+function Matches(props) {
+  const { keywords, raise, location } = props;
+  return (
+    <ul className="matches">
+      <RaiseBullet
+        faIcon="key"
+        bool={Array.isArray(keywords) && keywords.length > 0}
+        text=""
+      />
+      <RaiseBullet
+        faIcon="rocket"
+        bool={raise}
+        text=""
+      />
+      <RaiseBullet
+        faIcon="map-marker-alt"
+        bool={location}
+        text=""
+      />
+    </ul>
+  );
 }
 
 export default function Person(props) {
@@ -139,7 +163,11 @@ export default function Person(props) {
           ))}
         </div>
         <div className="controls">
-          <StageIcon stage={investorStage} withText />
+          {path === 'search' ? (
+            <Matches {...matches} />
+          ) : (
+            <StageIcon stage={investorStage} withText />
+          )}
           <div className="percentageMatch">
             {!isBoard && `${percentageMatch}`}
           </div>

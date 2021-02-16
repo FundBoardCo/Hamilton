@@ -157,6 +157,23 @@ html#ov body {
           font-size: 0.8rem;
         }
 
+        .matches {
+          padding: 0;
+          margin: 0;
+          list-style-type: none;
+          display: flex;
+
+          li {
+            display: flex;
+            align-items: center;
+
+            .iconDisc {
+              font-size: 0.5rem;
+              margin-right: 0.25rem;
+            }
+          }
+        }
+
         .percentageMatch {
           margin-top: auto;
           font-size: $txMd;
@@ -177,6 +194,11 @@ html#ov body {
 
           .percentageMatch {
             font-size: $h4;
+          }
+
+          .matches li .iconDisc {
+            font-size: 0.75rem;
+            margin-right: 0.5rem;
           }
         }
       }
