@@ -62,6 +62,7 @@ export default function InvestorData(props) {
     location_city,
     location_state,
     startups = [],
+    invested_locations = [],
     // investments = [],
     // is_lead_investor = false,
     // is_open = false,
@@ -137,7 +138,7 @@ export default function InvestorData(props) {
   let locationText = convertInvestedLocations([`${location_city}_${location_state}`]);
   locationText = locationText ? `They are located in ${locationText}` : '';
 
-  const matchedLocations = data.invested_locations.filter(l => searchedLocationPairs.includes(l));
+  const matchedLocations = invested_locations.filter(l => searchedLocationPairs.includes(l));
   const investedInText = convertInvestedLocations(matchedLocations);
 
   if (investedInText) {
