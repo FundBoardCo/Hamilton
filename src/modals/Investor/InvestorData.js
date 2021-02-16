@@ -137,7 +137,8 @@ export default function InvestorData(props) {
   let locationText = convertInvestedLocations([`${location_city}_${location_state}`]);
   locationText = locationText ? `They are located in ${locationText}` : '';
 
-  const investedInText = convertInvestedLocations(data.invested_locations);
+  const matchedLocations = data.invested_locations.filter(l => searchedLocationPairs.includes(l));
+  const investedInText = convertInvestedLocations(matchedLocations);
 
   if (investedInText) {
     locationText = locationText
