@@ -175,7 +175,7 @@ export default function Person(props) {
       </button>
       {isBoard && sortedBy !== 'next' && (
         <div className="notesWrapper">
-          <div>
+          <div className='flex-grow-1'>
             <div className="notes text-primary">
               {`Notes(${notes.length})${notes.length > 0 ? `: ${notes[0].text}` : ''}`}
             </div>

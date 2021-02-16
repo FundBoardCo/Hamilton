@@ -10,7 +10,6 @@ html#ov body {
     margin-bottom: $pad2;
     margin-right: -15px;
     margin-left: -15px;
-    background-color: $col-bright;
 
     .person {
       display: flex;
@@ -22,7 +21,7 @@ html#ov body {
       outline: 0;
       box-sizing: border-box;
       text-align: left;
-      background-color: transparent;
+      background-color: $col-bright;
       border: 1px solid transparent;
       border-top-color: $col-structure-light7;
       border-bottom-color: $col-structure-light7;
@@ -266,6 +265,10 @@ html#ov body {
       .notesWrapper {
         display: flex;
         font-size: $txMd;
+        padding: $pad1;
+        background-color: $col-bright;
+        border-bottom: 1px solid $col-structure-light7;
+        margin-bottom: $pad2;
 
         .notes {
           margin-top: $pad1;
@@ -301,12 +304,12 @@ html#ov body {
       @media (min-width: $mediaMd) {
         margin-right: 0;
         margin-left: 0;
-        border-radius: $pad2;
 
         .notesWrapper {
+          border-right: 1px solid $col-structure-light7;
+          border-left: 1px solid $col-structure-light7;
 
           .next {
-            font-size: $tx;
 
             .date {
               margin-left: auto;
