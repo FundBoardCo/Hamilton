@@ -796,11 +796,6 @@ html#ov {
 
               @media (min-width: $mediaMd) {
 
-                .headline {
-                  font-size: 4rem;
-                  margin-bottom: 1.8rem;
-                }
-
                 .tagline {
                   font-size: 1.4rem;
                 }
@@ -812,6 +807,15 @@ html#ov {
                 .btn.btn-link.toggleHideLink {
                   color: $col-warning-light;
                 }
+              }
+            }
+
+            @media (min-width: $mediaMd) {
+
+              .headline {
+                font-size: 4.5rem;
+                margin-top: 1.5rem;
+                margin-bottom: 1.2rem;
               }
             }
           }

@@ -347,7 +347,7 @@ export default function Public(props) {
           {userState === 'new' && (
             <div>
               <div className="mt-3 mb-4">
-                <h1 className="headline">This is Your FundBoard</h1>
+                <h1 className="headline">Welcome to FundBoard!</h1>
                 <div className="tagline">
                   <p>
                     <strong>Search</strong>
