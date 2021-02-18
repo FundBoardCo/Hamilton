@@ -364,7 +364,6 @@ export default function SearchMenu() {
               My Zip Code (5 digit)
             </Form.Label>
             <Form.Control
-              required
               maxLength={5}
               pattern="[0-9]{5}"
               type="text"
