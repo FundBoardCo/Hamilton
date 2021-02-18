@@ -13,6 +13,7 @@ import * as types from '../../actions/types';
 import DismissibleStatus from '../../components/DismissibleStatus';
 import { MINPLACE, STAGEPROPS } from '../../constants';
 import { getSafeVar } from '../../utils';
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 
 export default function Board() {
   const userUpdateStatus = useSelector(state => state.user.update_status);
@@ -25,7 +26,6 @@ export default function Board() {
   const place = useSelector(state => state.user.place);
   const overridePlace = useSelector(state => state.user.overridePlace);
   const allowIn = loggedIn && typeof place === 'number' && (place <= MINPLACE || overridePlace);
-  const modalsSeen = useSelector(state => state.modal.modalsSeen) || [];
   const userUUID = useSelector(state => state.user.uuid);
 
   const [sortBy, setSortBy] = useState('status');
@@ -185,11 +185,6 @@ export default function Board() {
     });
   };
 
-  const showHowToIntro = useCallback(() => dispatch({
-    type: types.MODAL_SET_OPEN,
-    modal: 'howToIntro',
-  }), [dispatch]);
-
   const toggleSortByName = () => {
     if (sortBy === 'name') {
       setSortNameUp(!sortNameUp);
@@ -213,14 +208,6 @@ export default function Board() {
       setSortBy('next');
     }
   };
-
-  useEffect(() => {
-    // if the how to intro modal has never been opened, open it
-    // ToDo save to the server so it's maintained across browsers and devices.
-    if (!modalsSeen.includes('howToIntro')) {
-      showHowToIntro();
-    }
-  }, [showHowToIntro, modalsSeen]);
 
   return (
     <Row id="PageBoard" className="pageContainer">
@@ -269,6 +256,7 @@ export default function Board() {
                 className={showArchived ? 'active' : ''}
                 onClick={() => setShowArchived(!showArchived)}
               >
+                <FontAwesomeIcon className="mr-2" icon={showArchived ? 'eye-slash' : 'eye'} />
                 Archived
               </button>
             </div>

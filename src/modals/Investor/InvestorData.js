@@ -62,6 +62,7 @@ export default function InvestorData(props) {
     location_city,
     location_state,
     startups = [],
+    invested_locations = [],
     // investments = [],
     // is_lead_investor = false,
     // is_open = false,
@@ -96,14 +97,18 @@ export default function InvestorData(props) {
   startups.forEach(s => {
     if (Array.isArray(s.founder_identifiers)) {
       s.founder_identifiers.forEach(f => {
-        founders.push({
-          name: f.value,
-          permalink: f.permalink,
-          image_url: `${cb_founder_imagePrefix}${f.image_id}`,
-          org_name: s.name,
-          org_permalink: s.permalink,
-          logo_url: s.image_url,
-        });
+        // don't add the same founder twice
+        const allPermalinks = founders.map(fp => fp.permalink);
+        if (!allPermalinks.includes(f.permalink)) {
+          founders.push({
+            name: f.value,
+            permalink: f.permalink,
+            image_url: `${cb_founder_imagePrefix}${f.image_id}`,
+            org_name: s.name,
+            org_permalink: s.permalink,
+            logo_url: s.image_url,
+          });
+        }
       });
     }
   });
@@ -133,7 +138,8 @@ export default function InvestorData(props) {
   let locationText = convertInvestedLocations([`${location_city}_${location_state}`]);
   locationText = locationText ? `They are located in ${locationText}` : '';
 
-  const investedInText = convertInvestedLocations(data.invested_locations);
+  const matchedLocations = invested_locations.filter(l => searchedLocationPairs.includes(l));
+  const investedInText = convertInvestedLocations(matchedLocations);
 
   if (investedInText) {
     locationText = locationText

@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { useHistory } from 'react-router';
 import { useSelector, useDispatch } from 'react-redux';
 import Modal from 'react-bootstrap/Modal';
@@ -9,22 +9,20 @@ import EditIntro from './Investor/EditIntro';
 export default function MakeIntro() {
   const openModal = useSelector(state => state.modal.openModal);
   const modalProps = useSelector(state => state.modal.modalProps);
-  const { founderUUID, investor } = modalProps;
+  const { founderName, investor } = modalProps;
   const founderStatus = useSelector(state => state.founders.get_profile_status)
     || '';
-  const founderProps = useSelector(state => state.founders.publicFounders[founderUUID])
-    || {};
+
+  const orgName = investor.primary_organization_name
+    || (investor.primary_organization && investor.primary_organization.name)
+    || (investor.primary_organization && investor.primary_organization.value)
+    || '';
+
+  const connectName = founderName || 'this founder';
+  const orgString = orgName ? ` at ${orgName}` : '';
+  const connectString = `I can connect ${connectName} to ${investor.name}${orgString}`;
 
   const dispatch = useDispatch();
-
-  useEffect(() => {
-    if (!Object.keys(founderProps).length) {
-      dispatch({
-        type: types.PUBLIC_GET_PROFILE_REQUESTED,
-        uuid: founderUUID,
-      });
-    }
-  }, [founderProps, founderUUID, dispatch]);
 
   const unSetModal = () => dispatch({
     type: types.MODAL_SET_OPEN,
@@ -52,7 +50,7 @@ export default function MakeIntro() {
     >
       <Modal.Header closeButton>
         <Modal.Title>
-          <h4>{`I can connect ${founderProps.name || 'this founder'} to ${investor.name}`}</h4>
+          <h4>{connectString}</h4>
         </Modal.Title>
       </Modal.Header>
       <Modal.Body className="pt-0">

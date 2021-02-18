@@ -89,6 +89,13 @@ export default function Investor(props) {
     });
     if (loggedIn) {
       onToggleMode('raise');
+    } else {
+      history.goBack();
+      dispatch({
+        type: types.MODAL_SET_OPEN,
+        modal: 'login',
+        modalProps: { initialMode: 'create' },
+      });
     }
   };
 

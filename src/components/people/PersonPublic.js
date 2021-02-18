@@ -21,8 +21,10 @@ export default function Person(props) {
     status,
     investorStatus = {},
     founderUUID,
+    founderName,
     isMyPage,
     userEmail,
+    disable,
   } = props;
 
   let {
@@ -95,7 +97,7 @@ export default function Person(props) {
         className="person"
         onClick={clickPerson}
         type="button"
-        disabled={!notConnected || introedByUser}
+        disabled={disable || !notConnected || introedByUser}
         data-track={`${capPath}Person`}
       >
         <div className="thumb" style={{ backgroundImage: `url(${image_url})` }} />
@@ -171,8 +173,10 @@ Person.defaultProps = {
   status: '',
   investorStatus: {},
   founderUUID: '',
+  founderName: '',
   isMyPage: false,
   userEmail: '',
+  disable: false,
 };
 
 Person.propTypes = {
@@ -204,6 +208,8 @@ Person.propTypes = {
     intro: PropTypes.objectOf(PropTypes.string),
   }),
   founderUUID: PropTypes.string,
+  founderName: PropTypes.string,
   isMyPage: PropTypes.bool,
   userEmail: PropTypes.string,
+  disable: PropTypes.bool,
 };

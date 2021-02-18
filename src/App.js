@@ -48,6 +48,7 @@ import {
   faPlus,
   faPlusCircle,
   faProjectDiagram,
+  faRecycle,
   faRocket,
   faSearch,
   faSignInAlt,
@@ -117,6 +118,7 @@ library.add(
   faPlus,
   faPlusCircle,
   faProjectDiagram,
+  faRecycle,
   faRocket,
   faSearch,
   faSignInAlt,
@@ -156,7 +158,7 @@ function App() {
           <a href="/" className="navBrand">
             <img className="navLogo" src={Logo} alt="FundBoard Logo" />
             <span className="navName">FundBoard</span>
-            <span className="navVersion">Beta 0.1</span>
+            <span className="navVersion">Beta 0.1.01</span>
           </a>
           <Nav className="ml-auto" defaultActiveKey={window.location.pathname}>
             {(!firstTime || loggedIn) && (
@@ -174,7 +176,7 @@ function App() {
             {(!firstTime || loggedIn) && (
               <Nav.Link
                 as={NavLink}
-                href="/search/menu"
+                href="/search"
                 to="/search/menu"
                 className="search"
                 activeClassName="active"
@@ -218,7 +220,7 @@ function App() {
                 data-track="navLogin"
               >
                 <FontAwesomeIcon icon="sign-in-alt" />
-                <span>Log In</span>
+                <span className="show">Log In</span>
               </Button>
             )}
           </Nav>
@@ -226,7 +228,7 @@ function App() {
         <main id="Main">
           <div className="container-xl">
             <Switch>
-              <Route path="/" exact component={Intro} />
+              <Route path="/" exact component={Public} />
               <Route path="/intro" component={Intro} />
               <Route path="/introsearch" component={IntroSearch} />
               <Route path="/board" component={Board} />

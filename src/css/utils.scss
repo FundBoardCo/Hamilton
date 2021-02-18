@@ -363,9 +363,21 @@ html#ov body {
     }
   }
 
+  .h-md-1 {
+    @media (min-width: $mediaMd) {
+      font-size: $h1;
+    }
+  }
+
   .h-md-2 {
     @media (min-width: $mediaMd) {
       font-size: $h2;
+    }
+  }
+
+  .h-md-5 {
+    @media (min-width: $mediaMd) {
+      font-size: $h5;
     }
   }
 

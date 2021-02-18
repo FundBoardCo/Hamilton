@@ -26,6 +26,7 @@ export default function airTable(state = defaultState, action) {
       ...state,
       keywords: {
         ...state.keywords,
+        data: [],
         status: 'pending',
       },
     };

@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { cb_logo_imagePrefix } from '../../constants';
 
 function OrgLogo(props) {
   const { URL } = props;
@@ -52,8 +53,13 @@ export default function InvestorData(props) {
   const orglink = primary_organization.permalink
     && `https://www.crunchbase.com/organization/${primary_organization.permalink}`;
 
+  // Sometimes the logo is an image_id instead of an URL
+  const imageIDURL = primary_organization.image_id
+    ? `${cb_logo_imagePrefix}${primary_organization.image_id}` : '';
+
   primary_organization_logo = primary_organization_logo
     || primary_organization.image_url
+    || imageIDURL
     || '';
   primary_organization_name = primary_organization_name
     || primary_organization.name
@@ -101,7 +107,7 @@ export default function InvestorData(props) {
               <JobTitle title={primary_job_title} orgName={primary_organization_name} />
             </a>
           ) : (
-            <span className='orgDetails'>
+            <span className="orgDetails">
               <OrgLogo URL={primary_organization_logo} />
               <JobTitle title={primary_job_title} orgName={primary_organization_name} />
             </span>

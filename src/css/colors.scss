@@ -83,6 +83,8 @@ $col-structure-light4: scale_color($col-structure, $lightness: 50%);
 $col-structure-light5: scale_color($col-structure, $lightness: 60%);
 $col-structure-light6: scale_color($col-structure, $lightness: 70%);
 $col-structure-light7: scale_color($col-structure, $lightness: 80%);
+$col-structure-light8: scale_color($col-structure, $lightness: 90%);
+$col-structure-light9: scale_color($col-structure, $lightness: 95%);
 
 $col-light: #f3f0f8;
 $col-light-dark: scale_color($col-light, $lightness: -20%);

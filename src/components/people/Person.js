@@ -5,9 +5,34 @@ import { useHistory, useLocation } from 'react-router';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { capitalizeFirstLetter } from '../../utils';
 import StageIcon from './StageIcon';
+import RaiseBullet from './RaiseBullet';
+import { cb_logo_imagePrefix } from '../../constants';
 
 function randomKey() {
   return String(Math.floor(Math.random() * 100000000));
+}
+
+function Matches(props) {
+  const { keywords, raise, location } = props;
+  return (
+    <ul className="matches">
+      <RaiseBullet
+        faIcon="key"
+        bool={Array.isArray(keywords) && keywords.length > 0}
+        text=""
+      />
+      <RaiseBullet
+        faIcon="rocket"
+        bool={raise}
+        text=""
+      />
+      <RaiseBullet
+        faIcon="map-marker-alt"
+        bool={location}
+        text=""
+      />
+    </ul>
+  );
 }
 
 export default function Person(props) {
@@ -32,8 +57,13 @@ export default function Person(props) {
     primary_organization_logo,
   } = props;
 
+  // Sometimes the logo is an image_id instead of an URL
+  const imageIDURL = primary_organization.image_id
+    ? `${cb_logo_imagePrefix}${primary_organization.image_id}` : '';
+
   primary_organization_logo = primary_organization_logo
     || primary_organization.image_url
+    || imageIDURL
     || '';
   primary_organization_name = primary_organization_name
     || primary_organization.name
@@ -133,7 +163,11 @@ export default function Person(props) {
           ))}
         </div>
         <div className="controls">
-          <StageIcon stage={investorStage} withText />
+          {path === 'search' ? (
+            <Matches {...matches} />
+          ) : (
+            <StageIcon stage={investorStage} withText />
+          )}
           <div className="percentageMatch">
             {!isBoard && `${percentageMatch}`}
           </div>
@@ -141,7 +175,7 @@ export default function Person(props) {
       </button>
       {isBoard && sortedBy !== 'next' && (
         <div className="notesWrapper">
-          <div>
+          <div className='flex-grow-1'>
             <div className="notes text-primary">
               {`Notes(${notes.length})${notes.length > 0 ? `: ${notes[0].text}` : ''}`}
             </div>

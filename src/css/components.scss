@@ -7,20 +7,24 @@ html#ov body {
   .personWrapper {
     display: flex;
     flex-direction: column;
+    margin-bottom: $pad2;
+    margin-right: -15px;
+    margin-left: -15px;
 
     .person {
       display: flex;
+      flex-basis: 33%;
       align-items: stretch;
-      background-color: $col-bright;
-      border-radius: $pad4;
       overflow: hidden;
-      padding: 0;
-      margin-bottom: $pad2;
+      padding: 10px;
       width: 100%;
       outline: 0;
       box-sizing: border-box;
-      border: 1px solid transparent;
       text-align: left;
+      background-color: $col-bright;
+      border: 1px solid transparent;
+      border-top-color: $col-structure-light7;
+      border-bottom-color: $col-structure-light7;
 
       &:hover,
       &.active {
@@ -152,6 +156,23 @@ html#ov body {
           font-size: 0.8rem;
         }
 
+        .matches {
+          padding: 0;
+          margin: 0;
+          list-style-type: none;
+          display: flex;
+
+          li {
+            display: flex;
+            align-items: center;
+
+            .iconDisc {
+              font-size: 0.5rem;
+              margin-right: 0.25rem;
+            }
+          }
+        }
+
         .percentageMatch {
           margin-top: auto;
           font-size: $txMd;
@@ -173,29 +194,27 @@ html#ov body {
           .percentageMatch {
             font-size: $h4;
           }
+
+          .matches li .iconDisc {
+            font-size: 0.75rem;
+            margin-right: 0.5rem;
+          }
         }
       }
     }
 
-    &.Board {
-      // border-bottom: 1px solid $col-primary-light6;
-      padding: 10px 10px 5px 10px;
-      margin-bottom: $pad2;
-      margin-right: -15px;
-      margin-left: -15px;
-      background-color: #fff;
+    @media (min-width: $mediaMd) {
+      margin-right: 0;
+      margin-left: 0;
 
       .person {
-        flex-basis: 33%;
-        background-color: transparent;
-        border-radius: 0;
-        border: none;
-        margin-bottom: 0;
+        border-color: $col-structure-light7;
+      }
+    }
 
-        &:hover,
-        &:active {
-          border: none;
-        }
+    &.Board {
+
+      .person {
 
         .thumb {
           width: $pad5;
@@ -215,7 +234,8 @@ html#ov body {
             margin-top: 0;
 
             .orgLogoWrapper {
-              display: none;
+              width: 28px;
+              height: 28px;
             }
 
             .orgText {
@@ -245,6 +265,10 @@ html#ov body {
       .notesWrapper {
         display: flex;
         font-size: $txMd;
+        padding: $pad1;
+        background-color: $col-bright;
+        border-bottom: 1px solid $col-structure-light7;
+        margin-bottom: $pad2;
 
         .notes {
           margin-top: $pad1;
@@ -280,12 +304,12 @@ html#ov body {
       @media (min-width: $mediaMd) {
         margin-right: 0;
         margin-left: 0;
-        border-radius: $pad2;
 
         .notesWrapper {
+          border-right: 1px solid $col-structure-light7;
+          border-left: 1px solid $col-structure-light7;
 
           .next {
-            font-size: $tx;
 
             .date {
               margin-left: auto;
@@ -867,8 +891,16 @@ html#ov body {
         }
       }
     }
-    &.modal-howToIntro {
-      .howToIntroList {
+    &.modal-welcome {
+      h1 {
+        margin-bottom: 0;
+      }
+
+      .modal-body {
+        padding-top: 0;
+      }
+
+      .welcomeList {
         display: flex;
         flex-flow: row wrap;
 
@@ -905,6 +937,7 @@ html#ov body {
           }
 
           dd {
+            font-size: 1.2rem;
             margin: 0 0 2rem 0;
             flex-basis: calc(100% - 4rem);
           }
