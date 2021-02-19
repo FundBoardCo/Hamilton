@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import {
   BrowserRouter as Router,
   Route,
@@ -145,6 +145,13 @@ function App() {
   const firstTime = useSelector(state => state.search.firstTime);
 
   const dispatch = useDispatch();
+
+  // always fetch the airtable keywords so they're fresh
+  useEffect(() => {
+    dispatch({
+      type: types.AIRTABLE_GET_KEYWORDS_REQUESTED,
+    });
+  }, [dispatch]);
 
   const onShowLogin = () => dispatch({
     type: types.MODAL_SET_OPEN,
