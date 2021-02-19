@@ -341,7 +341,6 @@ export default function SearchMenu() {
                 required
                 max={10000000}
                 min={100000}
-                step={100000}
                 type="number"
                 placeholder="100000"
                 value={raiseValue}
