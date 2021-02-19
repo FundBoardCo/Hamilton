@@ -267,6 +267,8 @@ export function calcMatch(opts) {
 
     if (!invName.includes(searchFor) && !orgName.includes(searchFor)) {
       percentageMatch = 0;
+    } else {
+      percentageMatch = Math.floor((percentageMatch + 50) / 1.5);
     }
   }
 

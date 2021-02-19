@@ -72,6 +72,7 @@ export default function InvestorData(props) {
 
   const twitterName = getSafeVar(() => twitter.substr(twitter.lastIndexOf('/') + 1), '');
 
+  const searchedText = useSelector(state => state.search.searchedText);
   const searchKeywords = useSelector(state => state.search.keywords);
   const searchRaise = useSelector(state => state.search.raise);
   const searchedCityState = useSelector(state => state.search.searchedCityState);
@@ -80,6 +81,7 @@ export default function InvestorData(props) {
   const searchData = useSelector(state => state.search.results[uuid] || {});
 
   const calcedMatches = calcMatch({
+    searchedText,
     investor: { ...data },
     keywords: searchKeywords,
     raise: searchRaise,
