@@ -35,7 +35,10 @@ export default function airTable(state = defaultState, action) {
       keywords: {
         ...state.keywords,
         status: 'succeeded',
-        data: dedupe(action.data.records).sort(),
+        data: [...new Set([
+          ...state.keywords.data,
+          ...dedupe(action.data.records),
+        ])].sort(),
       },
     };
     case types.AIRTABLE_GET_KEYWORDS_FAILED: return {
