@@ -26,6 +26,7 @@ export default function airTable(state = defaultState, action) {
       ...state,
       keywords: {
         ...state.keywords,
+        data: [],
         status: 'pending',
       },
     };
@@ -36,6 +37,7 @@ export default function airTable(state = defaultState, action) {
         ...state.keywords,
         status: 'succeeded',
         data: [...new Set([
+          ...state.keywords.data,
           ...dedupe(action.data.records),
         ])].sort(),
       },
