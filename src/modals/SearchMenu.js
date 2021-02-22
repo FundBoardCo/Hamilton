@@ -195,13 +195,10 @@ export default function SearchMenu() {
   };
 
   useEffect(() => {
-    if (!Array.isArray(airtableKeywords.data)
-      || (Array.isArray(airtableKeywords.data) && !airtableKeywords.data.length)) {
-      dispatch({
-        type: types.AIRTABLE_GET_KEYWORDS_REQUESTED,
-      });
-    }
-  }, [airtableKeywords.data, dispatch]);
+    dispatch({
+      type: types.AIRTABLE_GET_KEYWORDS_REQUESTED,
+    });
+  }, [dispatch]);
 
   useEffect(() => {
     if (searchLocation) {
