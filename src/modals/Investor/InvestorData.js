@@ -72,15 +72,16 @@ export default function InvestorData(props) {
 
   const twitterName = getSafeVar(() => twitter.substr(twitter.lastIndexOf('/') + 1), '');
 
+  const searchedText = useSelector(state => state.search.searchedText);
   const searchKeywords = useSelector(state => state.search.keywords);
   const searchRaise = useSelector(state => state.search.raise);
-  const searchLocation = useSelector(state => state.search.location);
   const searchedCityState = useSelector(state => state.search.searchedCityState);
   const searchedLocationPairs = useSelector(state => state.search.searchedLocationPairs);
 
   const searchData = useSelector(state => state.search.results[uuid] || {});
 
   const calcedMatches = calcMatch({
+    searchedText,
     investor: { ...data },
     keywords: searchKeywords,
     raise: searchRaise,
@@ -177,7 +178,7 @@ export default function InvestorData(props) {
           />
         )}
       </section>
-      {path !== 'Board' && searchLocation && !!matches && Object.keys(matches).length > 0 && (
+      {path !== 'Board' && !!matches && Object.keys(matches).length > 0 && (
         <section className="matches mb-4">
           <h2 className="sectionHead">{`${percentageMatch} Match`}</h2>
           <ul>
@@ -189,19 +190,18 @@ export default function InvestorData(props) {
             })}
             <RaiseBullet
               faIcon="key"
-              bool={(Array.isArray(matches.keywords) && matches.keywords.length > 0)
-              || !searchLocation}
+              bool={(Array.isArray(matches.keywords) && matches.keywords.length > 0)}
               text={`Their matching interests: ${matches.keywords.length ? matches.keywords.join(', ') : 'none'}.`}
             />
             <RaiseBullet
               faIcon="rocket"
-              bool={matches.raise || !searchLocation}
+              bool={matches.raise}
               text={`They invest in rounds of ${usdFormatter.format(raise_min)} or more. 
               The median round they participate in is ${usdFormatter.format(raise_median)}`}
             />
             <RaiseBullet
               faIcon="map-marker-alt"
-              bool={matches.location || !searchLocation}
+              bool={matches.location}
               text={locationText}
             />
           </ul>

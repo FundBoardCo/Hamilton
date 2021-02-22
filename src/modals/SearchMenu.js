@@ -341,7 +341,6 @@ export default function SearchMenu() {
                 required
                 max={10000000}
                 min={100000}
-                step={100000}
                 type="number"
                 placeholder="100000"
                 value={raiseValue}
@@ -364,7 +363,6 @@ export default function SearchMenu() {
               My Zip Code (5 digit)
             </Form.Label>
             <Form.Control
-              required
               maxLength={5}
               pattern="[0-9]{5}"
               type="text"

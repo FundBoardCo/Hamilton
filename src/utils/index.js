@@ -154,10 +154,10 @@ export function formatCur(val, currency = 'USD') {
 
 export function calcMatch(opts) {
   const {
-    searchedText,
+    searchedText = '',
     raise,
-    searchedCityState,
-    searchedLocationPairs,
+    searchedCityState = '',
+    searchedLocationPairs = [],
     investor = {},
     keywords = [],
   } = opts;
@@ -192,7 +192,7 @@ export function calcMatch(opts) {
     location: matchedLocation || matchedExtraLocations,
   };
 
-  keywords.forEach(k => {
+  sKeywords.forEach(k => {
     if (description) {
       const lDesc = description.toLowerCase();
       if (lDesc.includes(k)) matches.keywords.push(k);
@@ -267,6 +267,8 @@ export function calcMatch(opts) {
 
     if (!invName.includes(searchFor) && !orgName.includes(searchFor)) {
       percentageMatch = 0;
+    } else {
+      percentageMatch = Math.floor((percentageMatch + 50) / 1.5);
     }
   }
 
