@@ -169,11 +169,13 @@ export default function SearchMenu() {
   };
 
   const getResults = () => {
+    // the params don't currently do anything, keep them for when search is an API call.
     const params = {};
     params.keywords = searchKeywords;
     params.raise = searchRaise;
     params.location = searchedCity;
     params.secondaryLocation = searchedSecondaryCities;
+    params.remote = storedRemote;
 
     return dispatch({
       type: 'SEARCH_GET_RESULTS_REQUESTED',
@@ -382,7 +384,7 @@ export default function SearchMenu() {
           >
             <Form.Check
               type="checkbox"
-              label="We're fully remote, but I still entered my zip code."
+              label="We're fully remote."
               checked={storedRemote}
               onChange={e => onRemoteChange(e.target.checked)}
               data-track="RemoteCheckbox"

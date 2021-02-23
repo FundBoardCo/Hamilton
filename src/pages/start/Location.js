@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
@@ -46,10 +46,13 @@ export default function Location() {
   }, [dispatch]);
 
   const getResults = () => {
+    // the params don't currently do anything, keep them for when search is an API call.
     const params = {};
     params.location = [searchLocation, ...extraZipcodes];
     params.raise = searchRaise;
     params.keywords = searchKeywords;
+    params.remote = storedRemote;
+
     return dispatch({
       type: types.SEARCH_GET_RESULTS_REQUESTED,
       params,
@@ -94,13 +97,12 @@ export default function Location() {
     <Row id="Location">
       <Col className="locationInner">
         <h1 className="text-center">Your Location</h1>
-        <p className="text-center">The location of your office, or home if you're remote.</p>
+        <p className="text-center">The location of your office, or home if you are remote.</p>
         <div className="formWrapper">
           <Form noValidate validated={validated}>
             <Form.Group controlId="LocationInput">
               <Form.Label>My Zip Code (5 digit)</Form.Label>
               <Form.Control
-                required
                 maxLength={5}
                 pattern="[0-9]{5}"
                 type="text"
@@ -120,7 +122,7 @@ export default function Location() {
             >
               <Form.Check
                 type="checkbox"
-                label="We're fully remote, but I still entered my zip code."
+                label="We're fully remote."
                 checked={remoteValue}
                 onChange={e => onRemoteChange(e.target.checked)}
                 data-track="IntroSearchRemote"
@@ -135,7 +137,6 @@ export default function Location() {
               <Button
                 variant="secondary"
                 className="btnNoMax ml-auto"
-                disabled={!isValid || !searchLocation || extraZipcodes_status !== 'succeeded'}
                 onClick={onSearchClick}
                 data-track="IntroSearchSeeMatches"
               >

@@ -133,6 +133,10 @@ export default function search(state = defaults, action) {
       };
     case types.SEARCH_GET_EXTRAZIPCODES_FAILED: return {
       ...state,
+      extraZipcodes: [],
+      extraLocations: [],
+      searchedCityState: '',
+      searchedLocationPairs: [],
       extraZipcodes_status: processErr(action.error),
     };
     case types.SEARCH_GET_RESULTS_REQUESTED:
