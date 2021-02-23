@@ -361,6 +361,14 @@ export default function Profile() {
     }
   };
 
+  const onTogglePublicBoard = () => {
+    setCurrentUpdate('board');
+    const params = {
+      board_public: !board_public,
+    };
+    updateAccount(params);
+  };
+
   const onLogoutClick = () => {
     logout();
   };
@@ -595,6 +603,30 @@ export default function Profile() {
             </Form>
           </section>
         )}
+        <section className="mb-5 mb-md-4">
+          <h2 className="sectionHead">Hide Your FundBoard</h2>
+          <p>
+            If you want to hide your investors only you can seet them, set them to hidden here.
+            Your FundBoard link will still be viewable, but none of your investors will be shown
+            except to you.
+          </p>
+          <div className="d-flex justify-content-center justify-content-md-end">
+            <Button
+              variant="link"
+              className="txs-2 txs-md-1"
+              disabled={updateStatus === 'pending'}
+              onClick={onTogglePublicBoard}
+            >
+              <span>
+                <FontAwesomeIcon
+                  icon={board_public ? 'eye-slash' : 'eye'}
+                  className="mr-2"
+                />
+                {`Make Your FundBoard ${board_public ? 'Private' : 'Public'}.`}
+              </span>
+            </Button>
+          </div>
+        </section>
         <section className="mb-5 mb-md-4">
           <h2 className="sectionHead">Log Out</h2>
           <p>Click the button below to log out of your account.</p>

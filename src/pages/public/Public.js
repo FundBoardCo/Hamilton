@@ -210,14 +210,6 @@ export default function Public(props) {
     toggleHideBoard();
   };
 
-  const onToggleHideBoardClick = () => {
-    if (!boardPublic) {
-      toggleHideBoard();
-    } else {
-      setShowConfirmHide(true);
-    }
-  };
-
   const onClickShowProfile = () => {
     dispatch({
       type: types.MODAL_SET_OPEN,
@@ -282,13 +274,10 @@ export default function Public(props) {
                   onClick={onClickShowProfile}
                 >
                   <span className="d-none d-md-inline">
-                    {`Welcome to the FundBoard of ${profile.name || '_____'}`}
+                    {`Welcome to ${profile.name ? `${profile.name}’s ` : ''}FundBoard`}
                   </span>
                   <span className="d-md-none">
-                    {`${profile.name || '_____'}`}
-                    <span>
-                      ’s FundBoard
-                    </span>
+                    {`${profile.name || 'Welcome to Fundboard'}`}
                   </span>
                 </Button>
               </div>
@@ -315,15 +304,9 @@ export default function Public(props) {
               href="/profile"
               className="mr-2"
             >
-              Edit Profile
+              {(!profile.name || !profile.primary_organization_name)
+                ? 'Add Details To Your Public Profile' : 'Edit Profile'}
             </a>
-            <Button
-              variant="link"
-              className="txs-1 toggleHideLink ml-auto"
-              onClick={onToggleHideBoardClick}
-            >
-              {`${boardPublic ? 'Hide' : 'Show'} Public Investor List`}
-            </Button>
           </div>
         )}
         <div className="results">
