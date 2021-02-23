@@ -21,7 +21,6 @@ export default function Person(props) {
     status,
     investorStatus = {},
     founderUUID,
-    founderName,
     isMyPage,
     userEmail,
     disable,
