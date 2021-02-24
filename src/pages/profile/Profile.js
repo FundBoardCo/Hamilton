@@ -81,8 +81,6 @@ export default function Profile() {
   const getProfileStatus = useSelector(state => state.user.get_profile_status);
   const deleteStatus = useSelector(state => state.user.delete_status);
 
-  console.log(profile);
-
   const initialInputState = {
     password: '',
     name: profile.name || '',
@@ -100,27 +98,8 @@ export default function Profile() {
     location_state: profile.location_state || '',
     team_size: profile.team_size || 1,
   };
-  console.log(initialInputState);
 
-  const [{
-    password,
-    name,
-    title,
-    orgName,
-    orgURL,
-    orgLogoURL,
-    desc,
-    linkedin,
-    twitter,
-    permalink,
-    links,
-    remote,
-    location_city,
-    location_state,
-    team_size,
-  }, setState] = useState(initialInputState);
-
-  console.log(`name: ${name}`);
+  const [inputState, setInputState] = useState(initialInputState);
 
   const accountInputs = {
     password: {
@@ -130,7 +109,7 @@ export default function Profile() {
       feedback: true,
       formText: 'Enter a password with 8 or more characters, and at least one upper and lower '
         + 'case letter and number.',
-      value: password,
+      value: inputState.password,
     },
   };
 
@@ -138,24 +117,24 @@ export default function Profile() {
     name: {
       label: 'Your Full Name',
       placeholder: 'name',
-      value: name,
+      value: inputState.name,
     },
     title: {
       label: 'Your Title At Your Startup',
       placeholder: 'title',
-      value: title,
+      value: inputState.title,
     },
     orgName: {
       label: 'The Name of Your Startup',
       placeholder: 'startup name',
-      value: orgName,
+      value: inputState.orgName,
     },
     orgURL: {
       label: 'Your Startup’s Website',
       type: 'url',
       placeholder: 'http://something.com',
       feedback: true,
-      value: orgURL,
+      value: inputState.orgURL,
     },
     orgLogoURL: {
       label: 'A Link to Your Startup’s Logo',
@@ -164,10 +143,9 @@ export default function Profile() {
       formText: 'You should link to an image that is at least 100 x 100 px, but not larger than '
         + '400 x 400.',
       feedback: true,
-      value: orgLogoURL,
+      value: inputState.orgLogoURL,
     },
   };
-  console.log(publicInputs1);
 
   const publicInputs2 = {
     linkedin: {
@@ -175,21 +153,21 @@ export default function Profile() {
       type: 'url',
       placeholder: 'LinkedIn url',
       feedback: true,
-      value: linkedin,
+      value: inputState.linkedin,
     },
     twitter: {
       label: 'Your Twitter Page',
       type: 'url',
       placeholder: 'Twitter url',
       feedback: true,
-      value: twitter,
+      value: inputState.twitter,
     },
     permalink: {
       label: 'Your CrunchBase Page',
       type: 'url',
       placeholder: 'CrunchBase url',
       feedback: true,
-      value: permalink,
+      value: inputState.permalink,
     },
   };
 
@@ -200,24 +178,24 @@ export default function Profile() {
       min: 1,
       placeholder: 'number equal to or higher than 1',
       feedback: true,
-      value: team_size,
+      value: inputState.team_size,
     },
     location_city: {
       label: 'Your City (HQ, or personal if fully remote)',
       placeholder: 'City',
-      value: location_city,
+      value: inputState.location_city,
     },
     location_state: {
       label: 'Your State',
       placeholder: 'XX',
       formText: 'Use a 2 letter state abbreviation.',
-      value: location_state,
+      value: inputState.location_state,
       pattern: '[A-Z]{2}',
     },
     remote: {
       label: 'We’re fully remote',
       type: 'checkbox',
-      value: remote,
+      value: inputState.remote,
     },
   };
 
@@ -228,7 +206,7 @@ export default function Profile() {
   const [showPublicInputs, setShowPublicInputs] = useState(false);
 
   const clearState = () => {
-    setState({ ...initialInputState });
+    setInputState({ ...initialInputState });
   };
 
   const onInputChange = e => {
@@ -237,7 +215,7 @@ export default function Profile() {
     let { value } = e.target;
     if (type === 'checkbox') value = !!checked;
     if (type === 'number') value = Number(value);
-    setState(prevState => ({ ...prevState, [name]: value }));
+    setInputState(prevState => ({ ...prevState, [name]: value }));
   };
 
   const dispatch = useDispatch();
@@ -283,33 +261,33 @@ export default function Profile() {
   });
 
   const setLinkText = (text, index) => {
-    const newLinks = [...links];
+    const newLinks = [...inputState.links];
     newLinks[index].text = text;
-    setState(prevState => ({ ...prevState, links: newLinks }));
+    setInputState(prevState => ({ ...prevState, links: newLinks }));
   };
 
   const setLinkURL = (url, index) => {
-    const newLinks = [...links];
+    const newLinks = [...inputState.links];
     newLinks[index].url = url;
-    setState(prevState => ({ ...prevState, links: newLinks }));
+    setInputState(prevState => ({ ...prevState, links: newLinks }));
   };
 
   const removeLink = i => {
-    const newLinks = [...links];
+    const newLinks = [...inputState.links];
     newLinks.splice(i, 1);
-    setState(prevState => ({ ...prevState, links: newLinks }));
+    setInputState(prevState => ({ ...prevState, links: newLinks }));
   };
 
   const addLink = () => {
     const newLinks = [
-      ...links,
+      ...inputState.links,
       {
         text: '',
         url: '',
         key: Math.floor(Math.random() * Math.floor(1000000)),
       },
     ];
-    setState(prevState => ({ ...prevState, links: newLinks }));
+    setInputState(prevState => ({ ...prevState, links: newLinks }));
   };
 
   const handleSubmit = event => {
@@ -320,7 +298,7 @@ export default function Profile() {
     setValidated(true);
     if (form.checkValidity() !== false) {
       const params = {};
-      if (password) params.password = password;
+      if (inputState.password) params.password = inputState.password;
       updateAccount(params);
     }
   };
@@ -333,20 +311,13 @@ export default function Profile() {
     setPublicValidated(true);
     if (form.checkValidity() !== false) {
       const params = {
-        name,
-        primary_job_title: title,
-        primary_organization_name: orgName,
-        primary_organization_homepage: orgURL,
-        primary_organization_logo: orgLogoURL,
-        description: desc,
-        linkedin,
-        twitter,
-        permalink,
-        links,
-        remote: !!remote,
-        location_city,
-        location_state,
-        team_size,
+        primary_job_title: inputState.title,
+        primary_organization_name: inputState.orgName,
+        primary_organization_homepage: inputState.orgURL,
+        primary_organization_logo: inputState.orgLogoURL,
+        description: inputState.desc,
+        remote: !!inputState.remote,
+        ...inputState,
       };
       updateFounderData(params);
     }
@@ -503,7 +474,7 @@ export default function Profile() {
                 onChange={onInputChange}
                 key="testName"
                 iKey="name"
-                {...publicInputs1['name']}
+                {...publicInputs1.name}
               />
               {Object.keys(publicInputs1).map(k => (
                 <FormInput
@@ -521,7 +492,7 @@ export default function Profile() {
                       as="textarea"
                       placeholder="More information about you that would be relevant to someone making an intro."
                       name="desc"
-                      value={desc}
+                      value={inputState.desc}
                       onChange={e => onInputChange(e)}
                       data-track="ProfileDescription"
                     />
@@ -535,7 +506,7 @@ export default function Profile() {
                     />
                   ))}
                   <h5>Additional Links</h5>
-                  {links.map((l, i) => (
+                  {inputState.links.map((l, i) => (
                     <LinkInput
                       text={l.text}
                       url={l.url}
