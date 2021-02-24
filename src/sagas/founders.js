@@ -63,8 +63,7 @@ function* workGetUser(action) {
   const params = { uuid };
 
   try {
-    const results = yield call(getPublicUser, params);
-    const data = results && results.toJSON ? results.toJSON() : {};
+    const data = yield call(getPublicUser, params);
     yield put({ type: types.PUBLIC_GET_USER_SUCCEEDED, uuid, data });
   } catch (error) {
     trackErr(error);
