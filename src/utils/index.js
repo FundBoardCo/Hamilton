@@ -252,7 +252,13 @@ export function calcMatch(opts) {
 
   percentageMatch += (invAdd + startAdd) * 0.375;
 
-  percentageMatch = Math.floor((percentageMatch / 3) * 100);
+  if (searchedCityState) {
+    percentageMatch = Math.floor((percentageMatch / 3) * 100);
+  } else if (remote) {
+    percentageMatch = Math.floor((percentageMatch / 2.875) * 100);
+  } else {
+    percentageMatch = Math.floor((percentageMatch / 2.75) * 100);
+  }
 
   if (searchedText) {
     const searchFor = searchedText.toLowerCase();
