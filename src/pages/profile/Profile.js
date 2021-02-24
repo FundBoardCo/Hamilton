@@ -120,6 +120,8 @@ export default function Profile() {
     team_size,
   }, setState] = useState(initialInputState);
 
+  console.log(`name: ${name}`);
+
   const accountInputs = {
     password: {
       label: 'New Password',
@@ -165,6 +167,7 @@ export default function Profile() {
       value: orgLogoURL,
     },
   };
+  console.log(publicInputs1);
 
   const publicInputs2 = {
     linkedin: {
@@ -496,6 +499,12 @@ export default function Profile() {
               validated={publicValidated}
               onSubmit={handlePublicSubmit}
             >
+              <FormInput
+                onChange={onInputChange}
+                key="testName"
+                iKey="name"
+                {...publicInputs1['name']}
+              />
               {Object.keys(publicInputs1).map(k => (
                 <FormInput
                   onChange={onInputChange}
