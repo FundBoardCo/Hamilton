@@ -470,12 +470,6 @@ export default function Profile() {
               validated={publicValidated}
               onSubmit={handlePublicSubmit}
             >
-              <FormInput
-                onChange={onInputChange}
-                key="testName"
-                iKey="name"
-                {...publicInputs1.name}
-              />
               {Object.keys(publicInputs1).map(k => (
                 <FormInput
                   onChange={onInputChange}
