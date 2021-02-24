@@ -81,6 +81,8 @@ export default function Profile() {
   const getProfileStatus = useSelector(state => state.user.get_profile_status);
   const deleteStatus = useSelector(state => state.user.delete_status);
 
+  console.log(profile);
+
   const initialInputState = {
     password: '',
     name: profile.name || '',
@@ -98,6 +100,7 @@ export default function Profile() {
     location_state: profile.location_state || '',
     team_size: profile.team_size || 1,
   };
+  console.log(initialInputState);
 
   const [{
     password,
