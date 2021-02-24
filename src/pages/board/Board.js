@@ -216,14 +216,20 @@ export default function Board() {
           <div className="boardDetailsBar">
             <div className="primaryDetails">
               <span>
-                Edit FundBoard
+                <span className="d-none d-md-inline">
+                  Manage&nbsp;
+                </span>
+                My FundBoard
               </span>
               <Button
                 variant="link"
                 className="txs-3 ml-auto text-secondary-light2"
                 onClick={onBoardOpenClick}
               >
-                Public FundBoard
+                Public
+                <span className="d-none d-md-inline">
+                  &nbsp;FundBoard
+                </span>
               </Button>
             </div>
           </div>
