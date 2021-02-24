@@ -299,7 +299,7 @@ export default function Public(props) {
                   profile.primary_organization_name ? profile.primary_organization_name : '[In Stealth Mode]'
                 } is raising${
                   profile.raise ? ` ${formatUSD(profile.raise)}` : ''
-                }.`
+                }`
               }
             </h1>
             <h2 className="text-center h4 h-md-3">
