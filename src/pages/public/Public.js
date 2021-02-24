@@ -285,7 +285,7 @@ export default function Public(props) {
           </span>
         </div>
       )}
-      {!newUserStates.includes(userState) && (
+      {!newUserStates.includes(userState) && publicProfileStatus === 'succeeded' && (
         <div>
           <div className="mb-3">
             <h1 className="text-center h2 h-md-1 mb-3">
