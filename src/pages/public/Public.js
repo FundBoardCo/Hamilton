@@ -297,13 +297,11 @@ export default function Public(props) {
                 } from 
                 ${
                   profile.primary_organization_name ? profile.primary_organization_name : '[In Stealth Mode]'
-                } is raising${
-                  profile.raise ? ` ${formatUSD(profile.raise)}` : ''
-                }`
+                } is Building Their Network`
               }
             </h1>
             <h2 className="text-center h4 h-md-3">
-              Can you make an introduction to any of these investors?
+              Which Investors Can You Intro?
             </h2>
           </div>
           {Object.values(profile).filter(v => v).length > 0 && (
