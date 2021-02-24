@@ -11,7 +11,6 @@ import GenericModal from '../../modals/GenericModal';
 import { MINPLACE, STAGEPROPS } from '../../constants';
 import ExampleOfIntro from '../../imgs/ExampleOfIntro.jpg';
 import ExampleOfIntroMobile from '../../imgs/ExampleOfIntroMobile.jpg';
-import { formatUSD } from '../../utils';
 
 export default function Public(props) {
   const { match } = props;
