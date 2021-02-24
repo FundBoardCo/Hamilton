@@ -72,16 +72,14 @@ export default function Profile() {
   const place = useSelector(state => state.user.place);
   const overridePlace = useSelector(state => state.user.overridePlace);
   const allowIn = loggedIn && typeof place === 'number' && (place <= MINPLACE || overridePlace);
-  const user = useSelector(state => state.user) || {};
+  const profile = useSelector(state => state.user.profile) || {};
+  const board_public = useSelector(state => state.user.board_public);
   const email = useSelector(state => state.user.email) || '';
-  const searchRaise = useSelector(state => state.search.raise) || 100000;
   const searchRemote = useSelector(state => state.search.remote) || '';
   const updateStatus = useSelector(state => state.user.update_status);
   const updateProfileStatus = useSelector(state => state.user.updateProfile_status);
   const getProfileStatus = useSelector(state => state.user.get_profile_status);
   const deleteStatus = useSelector(state => state.user.delete_status);
-
-  const { board_public, profile = {} } = user;
 
   const initialInputState = {
     password: '',
@@ -95,7 +93,6 @@ export default function Profile() {
     twitter: profile.twitter || '',
     permalink: profile.permalink || '',
     links: profile.links || [],
-    raise: profile.raise || searchRaise || 0,
     remote: profile.remote !== undefined ? profile.remote : searchRemote,
     location_city: profile.location_city || '',
     location_state: profile.location_state || '',
@@ -114,7 +111,6 @@ export default function Profile() {
     twitter,
     permalink,
     links,
-    raise,
     remote,
     location_city,
     location_state,
@@ -164,16 +160,6 @@ export default function Profile() {
         + '400 x 400.',
       feedback: true,
       value: orgLogoURL,
-    },
-    raise: {
-      label: 'How Much You’re Trying to Raise (in Dollars)',
-      type: 'number',
-      min: 100000,
-      max: 10000000,
-      placeholder: 'number equal to or higher than 100000',
-      feedback: true,
-      formText: 'Plese enter a value of at least $100,000.',
-      value: raise,
     },
   };
 
@@ -351,7 +337,6 @@ export default function Profile() {
         twitter,
         permalink,
         links,
-        raise,
         remote: !!remote,
         location_city,
         location_state,
