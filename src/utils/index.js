@@ -203,7 +203,7 @@ export function calcMatch(opts) {
 
   matches.keywords = [...new Set([...matches.keywords])];
 
-  let percentageMatch = matches.keywords.length / keywords.length;
+  let percentageMatch = keywords.length ? matches.keywords.length / keywords.length : 0;
 
   if (matches.raise) {
     let raiseDiff = raise - raise_median;
