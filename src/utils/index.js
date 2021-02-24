@@ -288,3 +288,12 @@ export function parseB4AObject(result) {
 export function parseB4AArray(arr) {
   return arr.map(a => parseB4AObject(a));
 }
+
+export function formatUSD(amount = 0) {
+  const usdFormatter = new Intl.NumberFormat('en-US', {
+    style: 'currency',
+    currency: 'USD',
+    minimumFractionDigits: 0,
+  });
+  return usdFormatter.format(amount);
+}
