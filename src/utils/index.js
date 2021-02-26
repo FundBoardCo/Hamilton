@@ -157,6 +157,7 @@ export function calcMatch(opts) {
     searchedText = '',
     raise,
     onlyLeads = false,
+    onlyDiverse = false,
     searchedCityState = '',
     searchedLocationPairs = [],
     investor = {},
@@ -169,6 +170,8 @@ export function calcMatch(opts) {
     investorLocation = '',
     invested_locations,
     is_lead_investor,
+    diverse_investors_list,
+    accepts_direct_outreach,
     raise_min = 0,
     raise_max = 0,
     raise_median = 0,
@@ -262,8 +265,6 @@ export function calcMatch(opts) {
     percentageMatch = Math.floor((percentageMatch / 2.75) * 100);
   }
 
-  if (onlyLeads && !is_lead_investor) percentageMatch = 0;
-
   if (searchedText) {
     const searchFor = searchedText.toLowerCase();
     let orgName = primary_organization_name
@@ -279,6 +280,10 @@ export function calcMatch(opts) {
       percentageMatch = Math.floor((percentageMatch + 50) / 1.5);
     }
   }
+
+  if (onlyLeads && !is_lead_investor) percentageMatch = 0;
+
+  if (onlyDiverse && !diverse_investors_list) percentageMatch = 0;
 
   matches.percentage_match = percentageMatch;
 

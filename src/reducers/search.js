@@ -65,6 +65,7 @@ function subsetInvestorData(i = {}) {
     primary_organization,
     status,
     is_lead_investor,
+    diverse_investors_list,
   }) => ({
     uuid,
     name,
@@ -74,6 +75,7 @@ function subsetInvestorData(i = {}) {
     primary_organization,
     status,
     is_lead_investor,
+    diverse_investors_list,
   }))(i);
 }
 
@@ -117,6 +119,10 @@ export default function search(state = defaults, action) {
     case types.SEARCH_SET_ONLYLEADS: return {
       ...state,
       onlyLeads: action.onlyLeads,
+    };
+    case types.SEARCH_SET_ONLYDIVERSE: return {
+      ...state,
+      onlyDiverse: action.onlyDiverse,
     };
     case types.SEARCH_SET_LOCATION: return {
       ...state,
