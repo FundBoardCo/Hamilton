@@ -14,7 +14,10 @@ const defaults = {
   random: [],
   keywords: [],
   raise: 100000,
+  onlyLeads: false,
+  onlyDiverse: false,
   location: '',
+  remote: false,
   extraZipcodes: [],
   extraLocations: [],
   searchedCityState: '',
@@ -110,6 +113,10 @@ export default function search(state = defaults, action) {
     case types.SEARCH_SET_RAISE: return {
       ...state,
       raise: (typeof action.raise === 'number') ? action.raise : 100000,
+    };
+    case types.SEARCH_SET_ONLYLEADS: return {
+      ...state,
+      onlyLeads: action.onlyLeads,
     };
     case types.SEARCH_SET_LOCATION: return {
       ...state,

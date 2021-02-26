@@ -55,6 +55,8 @@ export default function SearchMenu() {
   const [raiseValue, setRaiseValue] = useState(searchRaise);
   const [raiseValid, setRaiseValid] = useState(true);
 
+  const searchOnlyLeads = useSelector(state => state.search.onlyLeads);
+
   const searchedText = useSelector(state => state.search.searchedText);
 
   const searchLocation = useSelector(state => state.search.location) || '';
@@ -104,6 +106,11 @@ export default function SearchMenu() {
     location,
   });
 
+  const setOnlyLeads = onlyLeads => dispatch({
+    type: types.SEARCH_SET_ONLYLEADS,
+    onlyLeads,
+  });
+
   const setRemote = remote => dispatch({
     type: types.SEARCH_SET_REMOTE,
     remote,
@@ -150,6 +157,10 @@ export default function SearchMenu() {
     }
   };
 
+  const onOnlyLeadsChange = val => {
+    setOnlyLeads(val);
+  };
+
   const onRemoteChange = val => {
     setRemote(val);
   };
@@ -173,6 +184,7 @@ export default function SearchMenu() {
     const params = {};
     params.keywords = searchKeywords;
     params.raise = searchRaise;
+    params.onlyLeads = searchOnlyLeads;
     params.location = searchedCity;
     params.secondaryLocation = searchedSecondaryCities;
     params.remote = storedRemote;
@@ -325,6 +337,25 @@ export default function SearchMenu() {
           )}
         </div>
         <Form noValidate validated={validated} ref={form}>
+          <div className="mb-4">
+            <SectionTitle
+              faIcon="flag"
+              text="Find a Lead Investor"
+              subText="If you don’t have a lead yet, start here"
+            />
+            <Form.Group
+              controlId="LeadCheckBox"
+              className="mb-4"
+            >
+              <Form.Check
+                type="checkbox"
+                label="Show only lead investors"
+                checked={searchOnlyLeads}
+                onChange={e => onOnlyLeadsChange(e.target.checked)}
+                data-track="LeadCheckbox"
+              />
+            </Form.Group>
+          </div>
           <div className="mb-4">
             <SectionTitle
               faIcon="rocket"

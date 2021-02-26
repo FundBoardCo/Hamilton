@@ -212,7 +212,7 @@ export default function InvestorData(props) {
             />
             <RaiseBullet
               faIcon="flag"
-              bool={cur_investments_led > 0}
+              bool={investments_led > 0}
               text={`They have led ${cur_investments_led} investments at their current org. They have led ${investments_led} investments overall, and been a partner in ${num_partner_investments} investments.`}
             />
             <RaiseBullet

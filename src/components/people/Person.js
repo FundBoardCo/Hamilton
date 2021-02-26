@@ -19,6 +19,7 @@ function Matches(props) {
     raise,
     location,
   } = props;
+
   return (
     <ul className="matches">
       <RaiseBullet

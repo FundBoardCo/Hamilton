@@ -156,6 +156,7 @@ export function calcMatch(opts) {
   const {
     searchedText = '',
     raise,
+    onlyLeads = false,
     searchedCityState = '',
     searchedLocationPairs = [],
     investor = {},
@@ -167,12 +168,13 @@ export function calcMatch(opts) {
     name = '',
     investorLocation = '',
     invested_locations,
+    is_lead_investor,
     raise_min = 0,
     raise_max = 0,
     raise_median = 0,
     description,
     startupDescsBlob,
-    cur_investments_led = 0,
+    investments_led = 0,
     startups = [],
     primary_organization_name = '',
     primary_organization = {},
@@ -239,10 +241,10 @@ export function calcMatch(opts) {
 
   // weight startups and investments
   let invAdd = 0;
-  if (cur_investments_led > 1) invAdd = 0.1;
-  if (cur_investments_led > 5) invAdd = 0.5;
-  if (cur_investments_led > 10) invAdd = 0.8;
-  if (cur_investments_led > 20) invAdd = 1;
+  if (investments_led > 1) invAdd = 0.1;
+  if (investments_led > 5) invAdd = 0.5;
+  if (investments_led > 10) invAdd = 0.8;
+  if (investments_led > 20) invAdd = 1;
 
   let startAdd = 0;
   if (startups.length > 2) startAdd = 0.1;
@@ -259,6 +261,8 @@ export function calcMatch(opts) {
   } else {
     percentageMatch = Math.floor((percentageMatch / 2.75) * 100);
   }
+
+  if (onlyLeads && !is_lead_investor) percentageMatch = 0;
 
   if (searchedText) {
     const searchFor = searchedText.toLowerCase();
