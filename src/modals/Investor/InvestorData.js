@@ -21,15 +21,23 @@ import { cb_founder_imagePrefix } from '../../constants';
 
 const matchData = [
   {
-    key: 'isLead',
-    faIcon: 'flag',
-    text: 'They lead funding rounds.',
+    key: 'accepts_direct_outreach',
+    faIcon: 'door-open',
+    text: 'They are open to direct outreach.',
     bool: true,
   },
   {
-    key: 'isOpen',
-    faIcon: 'door-open',
-    text: 'They are open to direct outreach.',
+    key: 'diverse_investors_list',
+    faIcon: 'users',
+    text: 'They are on the Founder For Change Diverse Investors list.',
+    link: 'https://www.foundersforchange.org/diverse-investors-list',
+    bool: true,
+  },
+  {
+    key: 'techcrunch_list',
+    faIcon: 'list-alt',
+    text: 'They are on The TechCrunch List.',
+    link: 'https://techcrunch.com/the-techcrunch-list',
     bool: true,
   },
   {
@@ -63,6 +71,10 @@ export default function InvestorData(props) {
     location_state,
     startups = [],
     invested_locations = [],
+    investments_led = 0,
+    cur_investments_led = 0,
+    num_partner_investments = 0,
+    investor_type = [],
     // investments = [],
     // is_lead_investor = false,
     // is_open = false,
@@ -77,8 +89,8 @@ export default function InvestorData(props) {
   const searchRaise = useSelector(state => state.search.raise);
   const searchedCityState = useSelector(state => state.search.searchedCityState);
   const searchedLocationPairs = useSelector(state => state.search.searchedLocationPairs);
-
-  const searchData = useSelector(state => state.search.results[uuid] || {});
+  const investorTypes = investor_type.includes('investment_partner') ? ['a VC'] : [];
+  if (investor_type.includes('angel')) investorTypes.push('an angel');
 
   const calcedMatches = calcMatch({
     searchedText,
@@ -182,12 +194,6 @@ export default function InvestorData(props) {
         <section className="matches mb-4">
           <h2 className="sectionHead">{`${percentageMatch} Match`}</h2>
           <ul>
-            {matchData.map(d => {
-              if (searchData[d.key]) {
-                return <RaiseBullet {...d} />;
-              }
-              return null;
-            })}
             <RaiseBullet
               faIcon="key"
               bool={(Array.isArray(matches.keywords) && matches.keywords.length > 0)}
@@ -204,6 +210,22 @@ export default function InvestorData(props) {
               bool={matches.location}
               text={locationText}
             />
+            <RaiseBullet
+              faIcon="flag"
+              bool={cur_investments_led > 0}
+              text={`They have led ${cur_investments_led} investments at their current org. They have led ${investments_led} investments overall, and been a partner in ${num_partner_investments} investments.`}
+            />
+            <RaiseBullet
+              faIcon="money-check"
+              bool
+              text={`They are ${investorTypes[0]}${investorTypes.length > 1 ? ` and ${investorTypes[1]}` : ''}.`}
+            />
+            {matchData.map(d => {
+              if (data[d.key]) {
+                return <RaiseBullet {...d} />;
+              }
+              return null;
+            })}
           </ul>
         </section>
       )}
