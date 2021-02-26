@@ -70,6 +70,7 @@ export default function SearchMenu() {
 
   const searchOnlyLeads = useSelector(state => state.search.onlyLeads);
   const searchOnlyDiverse = useSelector(state => state.search.onlyDiverse);
+  const searchOnlyOpen = useSelector(state => state.search.onlyOpen);
 
   const searchedText = useSelector(state => state.search.searchedText);
 
@@ -130,6 +131,11 @@ export default function SearchMenu() {
     onlyDiverse,
   });
 
+  const setOnlyOpen = onlyOpen => dispatch({
+    type: types.SEARCH_SET_ONLYOPEM,
+    onlyOpen,
+  });
+
   const setRemote = remote => dispatch({
     type: types.SEARCH_SET_REMOTE,
     remote,
@@ -184,6 +190,10 @@ export default function SearchMenu() {
     setOnlyDiverse(val);
   };
 
+  const onOnlyOpenChange = val => {
+    setOnlyOpen(val);
+  };
+
   const onRemoteChange = val => {
     setRemote(val);
   };
@@ -209,6 +219,7 @@ export default function SearchMenu() {
     params.raise = searchRaise;
     params.onlyLeads = searchOnlyLeads;
     params.onlyDiverse = searchOnlyDiverse;
+    params.onlyOpen = searchOnlyOpen;
     params.location = searchedCity;
     params.secondaryLocation = searchedSecondaryCities;
     params.remote = storedRemote;
@@ -424,6 +435,25 @@ export default function SearchMenu() {
                 checked={searchOnlyDiverse}
                 onChange={e => onOnlyDiverseChange(e.target.checked)}
                 data-track="DiverseCheckbox"
+              />
+            </Form.Group>
+          </div>
+          <div className="mb-5">
+            <SectionTitle
+              faIcon="door-open"
+              text="Open to Direct Outreach"
+              subText="Show only investors that have indicated they are open to being contacted directly. We don't guarantee you can reach them."
+            />
+            <Form.Group
+              controlId="OpenCheckBox"
+              className="mb-4"
+            >
+              <Form.Check
+                type="checkbox"
+                label="Show only investors open to outreach"
+                checked={searchOnlyOpen}
+                onChange={e => onOnlyOpenChange(e.target.checked)}
+                data-track="OpenCheckbox"
               />
             </Form.Group>
           </div>

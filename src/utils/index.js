@@ -158,6 +158,7 @@ export function calcMatch(opts) {
     raise,
     onlyLeads = false,
     onlyDiverse = false,
+    onlyOpen = false,
     searchedCityState = '',
     searchedLocationPairs = [],
     investor = {},
@@ -284,6 +285,8 @@ export function calcMatch(opts) {
   if (onlyLeads && !is_lead_investor) percentageMatch = 0;
 
   if (onlyDiverse && !diverse_investors_list) percentageMatch = 0;
+
+  if (onlyOpen && !accepts_direct_outreach) percentageMatch = 0;
 
   matches.percentage_match = percentageMatch;
 

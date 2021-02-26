@@ -16,6 +16,7 @@ const defaults = {
   raise: 100000,
   onlyLeads: false,
   onlyDiverse: false,
+  onlyOpen: false,
   location: '',
   remote: false,
   extraZipcodes: [],
@@ -121,6 +122,10 @@ export default function search(state = defaults, action) {
     case types.SEARCH_SET_ONLYDIVERSE: return {
       ...state,
       onlyDiverse: action.onlyDiverse,
+    };
+    case types.SEARCH_SET_ONLYOPEM: return {
+      ...state,
+      onlyOpen: action.onlyOpen,
     };
     case types.SEARCH_SET_LOCATION: return {
       ...state,
