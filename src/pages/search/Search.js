@@ -56,7 +56,7 @@ export default function Search() {
             data-track="ToggleSearchDetails"
           >
             {`${Object.keys(searchResults).length}`}
-            <span className="d-none d-md-inline">&nbsp;Potential Lead</span>
+            <span className="d-none d-md-inline">&nbsp;Potential </span>
             &nbsp;Investors
           </Button>
           <Button
