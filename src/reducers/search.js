@@ -65,7 +65,6 @@ function subsetInvestorData(i = {}) {
     primary_organization,
     status,
     is_lead_investor,
-    diverse_investors_list,
   }) => ({
     uuid,
     name,
@@ -75,7 +74,6 @@ function subsetInvestorData(i = {}) {
     primary_organization,
     status,
     is_lead_investor,
-    diverse_investors_list,
   }))(i);
 }
 
