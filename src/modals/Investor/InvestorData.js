@@ -190,9 +190,11 @@ export default function InvestorData(props) {
           />
         )}
       </section>
-      {path !== 'Board' && !!matches && Object.keys(matches).length > 0 && (
-        <section className="matches mb-4">
-          <h2 className="sectionHead">{`${percentageMatch} Match`}</h2>
+      <section className="matches mb-4">
+        <h2 className="sectionHead">
+          {path === 'Board' ? 'Investor Facts' : `${percentageMatch} Match`}
+        </h2>
+        {path !== 'Board' && !!matches && Object.keys(matches).length > 0 ? (
           <ul>
             <RaiseBullet
               faIcon="key"
@@ -227,8 +229,27 @@ export default function InvestorData(props) {
               return null;
             })}
           </ul>
-        </section>
-      )}
+        ) : (
+          <ul>
+            <RaiseBullet
+              faIcon="flag"
+              bool={investments_led > 0}
+              text={`They have led ${cur_investments_led} investments at their current org. They have led ${investments_led} investments overall, and been a partner in ${num_partner_investments} investments.`}
+            />
+            <RaiseBullet
+              faIcon="money-check"
+              bool
+              text={`They are ${investorTypes[0]}${investorTypes.length > 1 ? ` and ${investorTypes[1]}` : ''}.`}
+            />
+            {matchData.map(d => {
+              if (data[d.key]) {
+                return <RaiseBullet {...d} />;
+              }
+              return null;
+            })}
+          </ul>
+        )}
+      </section>
       {Array.isArray(founders) && founders.length > 0 && (
         <section className="funded mb-4">
           <h3 className="sectionHead">Founders They&apos;ve Funded</h3>
