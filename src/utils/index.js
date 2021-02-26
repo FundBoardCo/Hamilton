@@ -172,7 +172,7 @@ export function calcMatch(opts) {
     raise_median = 0,
     description,
     startupDescsBlob,
-    num_partner_investments = 0,
+    cur_investments_led = 0,
     startups = [],
     primary_organization_name = '',
     primary_organization = {},
@@ -239,10 +239,10 @@ export function calcMatch(opts) {
 
   // weight startups and investments
   let invAdd = 0;
-  if (num_partner_investments > 2) invAdd = 0.1;
-  if (num_partner_investments > 5) invAdd = 0.5;
-  if (num_partner_investments > 10) invAdd = 0.8;
-  if (num_partner_investments > 20) invAdd = 1;
+  if (cur_investments_led > 1) invAdd = 0.1;
+  if (cur_investments_led > 5) invAdd = 0.5;
+  if (cur_investments_led > 10) invAdd = 0.8;
+  if (cur_investments_led > 20) invAdd = 1;
 
   let startAdd = 0;
   if (startups.length > 2) startAdd = 0.1;
