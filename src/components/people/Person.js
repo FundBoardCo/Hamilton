@@ -13,9 +13,19 @@ function randomKey() {
 }
 
 function Matches(props) {
-  const { keywords, raise, location } = props;
+  const {
+    is_lead_investor,
+    keywords,
+    raise,
+    location,
+  } = props;
   return (
     <ul className="matches">
+      <RaiseBullet
+        faIcon="flag"
+        bool={is_lead_investor}
+        text=""
+      />
       <RaiseBullet
         faIcon="key"
         bool={Array.isArray(keywords) && keywords.length > 0}
@@ -50,6 +60,7 @@ export default function Person(props) {
     sortedBy,
     matches = {},
     investorStatus = {},
+    is_lead_investor,
   } = props;
 
   let {
@@ -166,7 +177,7 @@ export default function Person(props) {
         </div>
         <div className="controls">
           {path === 'search' ? (
-            <Matches {...matches} />
+            <Matches {...{ ...matches, is_lead_investor }} />
           ) : (
             <StageIcon stage={investorStage} withText />
           )}
@@ -242,6 +253,7 @@ Person.defaultProps = {
   status: '',
   sortedBy: '',
   investorStatus: {},
+  is_lead_investor: false,
 };
 
 Person.propTypes = {
@@ -277,16 +289,19 @@ Person.propTypes = {
           .oneOfType([PropTypes.string, PropTypes.bool]))),
     intro: PropTypes.objectOf(PropTypes.string),
   }),
+  is_lead_investor: PropTypes.bool,
 };
 
 Matches.defaultProps = {
   keywords: [],
   raise: false,
   location: false,
+  is_lead_investor: false,
 };
 
 Matches.propTypes = {
   keywords: PropTypes.arrayOf(PropTypes.string),
   raise: PropTypes.bool,
   location: PropTypes.bool,
+  is_lead_investor: PropTypes.bool,
 };
