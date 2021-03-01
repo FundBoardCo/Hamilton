@@ -315,7 +315,7 @@ export default function Public(props) {
                 <span>
                   {
                     `Learn More About 
-                    ${profile.name ? profile.name : ''}
+                    ${profile.name ? profile.name : 'This Founder'}
                     ${profile.name && profile.primary_organization_name ? 'at' : ''}
                     ${profile.primary_organization_name ? profile.primary_organization_name : ''}`
                   }
