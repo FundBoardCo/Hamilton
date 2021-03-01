@@ -14,7 +14,11 @@ const defaults = {
   random: [],
   keywords: [],
   raise: 100000,
+  onlyLeads: false,
+  onlyDiverse: false,
+  onlyOpen: false,
   location: '',
+  remote: false,
   extraZipcodes: [],
   extraLocations: [],
   searchedCityState: '',
@@ -61,6 +65,7 @@ function subsetInvestorData(i = {}) {
     primary_job_title,
     primary_organization,
     status,
+    is_lead_investor,
   }) => ({
     uuid,
     name,
@@ -69,6 +74,7 @@ function subsetInvestorData(i = {}) {
     primary_job_title,
     primary_organization,
     status,
+    is_lead_investor,
   }))(i);
 }
 
@@ -109,6 +115,18 @@ export default function search(state = defaults, action) {
       ...state,
       raise: (typeof action.raise === 'number') ? action.raise : 100000,
     };
+    case types.SEARCH_SET_ONLYLEADS: return {
+      ...state,
+      onlyLeads: action.onlyLeads,
+    };
+    case types.SEARCH_SET_ONLYDIVERSE: return {
+      ...state,
+      onlyDiverse: action.onlyDiverse,
+    };
+    case types.SEARCH_SET_ONLYOPEM: return {
+      ...state,
+      onlyOpen: action.onlyOpen,
+    };
     case types.SEARCH_SET_LOCATION: return {
       ...state,
       location: action.location,
@@ -133,6 +151,10 @@ export default function search(state = defaults, action) {
       };
     case types.SEARCH_GET_EXTRAZIPCODES_FAILED: return {
       ...state,
+      extraZipcodes: [],
+      extraLocations: [],
+      searchedCityState: '',
+      searchedLocationPairs: [],
       extraZipcodes_status: processErr(action.error),
     };
     case types.SEARCH_GET_RESULTS_REQUESTED:

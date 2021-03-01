@@ -21,7 +21,6 @@ export default function Person(props) {
     status,
     investorStatus = {},
     founderUUID,
-    founderName,
     isMyPage,
     userEmail,
     disable,
@@ -133,7 +132,7 @@ export default function Person(props) {
           )}
           {notConnected ? (
             <div>
-              {introedByUser ? 'You have offered to connect them.' : 'I can connect them to this investor.'}
+              {introedByUser ? 'You have offered to connect them.' : 'Yes, I can connect them to this investor.'}
             </div>
           ) : (
             <div>

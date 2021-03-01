@@ -11,7 +11,7 @@ function dedupe(records) {
       capped.push(capitalizeFirstLetters(k));
     }
   });
-  return capped;
+  return [...new Set(capped)];
 }
 
 const defaultState = {

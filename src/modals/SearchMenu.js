@@ -23,6 +23,7 @@ function SectionTitle(params) {
     faIcon,
     detailText,
     subText,
+    link,
   } = params;
   return (
     <div className="sectionTitle">
@@ -38,7 +39,19 @@ function SectionTitle(params) {
         )}
       </div>
       {subText && (
-        <p>{subText}</p>
+        <p>
+          {link ? (
+            <a
+              href={link}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              {subText}
+            </a>
+          ) : (
+            <span>{subText}</span>
+          )}
+        </p>
       )}
     </div>
   );
@@ -54,6 +67,10 @@ export default function SearchMenu() {
   const searchRaise = useSelector(state => state.search.raise) || 100000;
   const [raiseValue, setRaiseValue] = useState(searchRaise);
   const [raiseValid, setRaiseValid] = useState(true);
+
+  const searchOnlyLeads = useSelector(state => state.search.onlyLeads);
+  const searchOnlyDiverse = useSelector(state => state.search.onlyDiverse);
+  const searchOnlyOpen = useSelector(state => state.search.onlyOpen);
 
   const searchedText = useSelector(state => state.search.searchedText);
 
@@ -104,6 +121,21 @@ export default function SearchMenu() {
     location,
   });
 
+  const setOnlyLeads = onlyLeads => dispatch({
+    type: types.SEARCH_SET_ONLYLEADS,
+    onlyLeads,
+  });
+
+  const setOnlyDiverse = onlyDiverse => dispatch({
+    type: types.SEARCH_SET_ONLYDIVERSE,
+    onlyDiverse,
+  });
+
+  const setOnlyOpen = onlyOpen => dispatch({
+    type: types.SEARCH_SET_ONLYOPEM,
+    onlyOpen,
+  });
+
   const setRemote = remote => dispatch({
     type: types.SEARCH_SET_REMOTE,
     remote,
@@ -150,6 +182,18 @@ export default function SearchMenu() {
     }
   };
 
+  const onOnlyLeadsChange = val => {
+    setOnlyLeads(val);
+  };
+
+  const onOnlyDiverseChange = val => {
+    setOnlyDiverse(val);
+  };
+
+  const onOnlyOpenChange = val => {
+    setOnlyOpen(val);
+  };
+
   const onRemoteChange = val => {
     setRemote(val);
   };
@@ -169,11 +213,16 @@ export default function SearchMenu() {
   };
 
   const getResults = () => {
+    // the params don't currently do anything, keep them for when search is an API call.
     const params = {};
     params.keywords = searchKeywords;
     params.raise = searchRaise;
+    params.onlyLeads = searchOnlyLeads;
+    params.onlyDiverse = searchOnlyDiverse;
+    params.onlyOpen = searchOnlyOpen;
     params.location = searchedCity;
     params.secondaryLocation = searchedSecondaryCities;
+    params.remote = storedRemote;
 
     return dispatch({
       type: 'SEARCH_GET_RESULTS_REQUESTED',
@@ -195,13 +244,10 @@ export default function SearchMenu() {
   };
 
   useEffect(() => {
-    if (!Array.isArray(airtableKeywords.data)
-      || (Array.isArray(airtableKeywords.data) && !airtableKeywords.data.length)) {
-      dispatch({
-        type: types.AIRTABLE_GET_KEYWORDS_REQUESTED,
-      });
-    }
-  }, [airtableKeywords.data, dispatch]);
+    dispatch({
+      type: types.AIRTABLE_GET_KEYWORDS_REQUESTED,
+    });
+  }, [dispatch]);
 
   useEffect(() => {
     if (searchLocation) {
@@ -326,7 +372,26 @@ export default function SearchMenu() {
           )}
         </div>
         <Form noValidate validated={validated} ref={form}>
-          <div className="mb-4">
+          <div className="mb-5">
+            <SectionTitle
+              faIcon="flag"
+              text="Find a Lead Investor"
+              subText="If you don’t have a lead yet, start here"
+            />
+            <Form.Group
+              controlId="LeadCheckBox"
+              className="mb-4"
+            >
+              <Form.Check
+                type="checkbox"
+                label="Show only lead investors"
+                checked={searchOnlyLeads}
+                onChange={e => onOnlyLeadsChange(e.target.checked)}
+                data-track="LeadCheckbox"
+              />
+            </Form.Group>
+          </div>
+          <div className="mb-5">
             <SectionTitle
               faIcon="rocket"
               text="Raising"
@@ -341,7 +406,6 @@ export default function SearchMenu() {
                 required
                 max={10000000}
                 min={100000}
-                step={100000}
                 type="number"
                 placeholder="100000"
                 value={raiseValue}
@@ -354,6 +418,45 @@ export default function SearchMenu() {
               </Form.Control.Feedback>
             </Form.Group>
           </div>
+          <div className="mb-5">
+            <SectionTitle
+              faIcon="users"
+              text="Investors From Diverse Backgrounds"
+              subText="Only include investors on the Founders for Change Diverse Investors List"
+              link="https://www.foundersforchange.org/diverse-investors-list"
+            />
+            <Form.Group
+              controlId="DiverseCheckBox"
+              className="mb-4"
+            >
+              <Form.Check
+                type="checkbox"
+                label="Must be on the Diverse Investors List"
+                checked={searchOnlyDiverse}
+                onChange={e => onOnlyDiverseChange(e.target.checked)}
+                data-track="DiverseCheckbox"
+              />
+            </Form.Group>
+          </div>
+          <div className="mb-5">
+            <SectionTitle
+              faIcon="door-open"
+              text="Open to Direct Outreach"
+              subText="Show only investors that have indicated they are open to being contacted directly. We don't guarantee you can reach them."
+            />
+            <Form.Group
+              controlId="OpenCheckBox"
+              className="mb-4"
+            >
+              <Form.Check
+                type="checkbox"
+                label="Show only investors open to outreach"
+                checked={searchOnlyOpen}
+                onChange={e => onOnlyOpenChange(e.target.checked)}
+                data-track="OpenCheckbox"
+              />
+            </Form.Group>
+          </div>
           <SectionTitle
             faIcon="map-marker-alt"
             text="Location"
@@ -364,7 +467,6 @@ export default function SearchMenu() {
               My Zip Code (5 digit)
             </Form.Label>
             <Form.Control
-              required
               maxLength={5}
               pattern="[0-9]{5}"
               type="text"
@@ -383,11 +485,11 @@ export default function SearchMenu() {
           </div>
           <Form.Group
             controlId="RemoteCheckbox"
-            className="mb-4"
+            className="mb-5"
           >
             <Form.Check
               type="checkbox"
-              label="We're fully remote, but I still entered my zip code."
+              label="We're fully remote."
               checked={storedRemote}
               onChange={e => onRemoteChange(e.target.checked)}
               data-track="RemoteCheckbox"

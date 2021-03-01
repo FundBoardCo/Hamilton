@@ -154,24 +154,31 @@ export function formatCur(val, currency = 'USD') {
 
 export function calcMatch(opts) {
   const {
-    searchedText,
+    searchedText = '',
     raise,
-    searchedCityState,
-    searchedLocationPairs,
+    onlyLeads = false,
+    onlyDiverse = false,
+    onlyOpen = false,
+    searchedCityState = '',
+    searchedLocationPairs = [],
     investor = {},
     keywords = [],
+    remote = false,
   } = opts;
 
   const {
     name = '',
     investorLocation = '',
     invested_locations,
+    is_lead_investor,
+    diverse_investors_list,
+    accepts_direct_outreach,
     raise_min = 0,
     raise_max = 0,
     raise_median = 0,
     description,
     startupDescsBlob,
-    num_partner_investments = 0,
+    investments_led = 0,
     startups = [],
     primary_organization_name = '',
     primary_organization = {},
@@ -192,7 +199,7 @@ export function calcMatch(opts) {
     location: matchedLocation || matchedExtraLocations,
   };
 
-  keywords.forEach(k => {
+  sKeywords.forEach(k => {
     if (description) {
       const lDesc = description.toLowerCase();
       if (lDesc.includes(k)) matches.keywords.push(k);
@@ -202,16 +209,8 @@ export function calcMatch(opts) {
 
   matches.keywords = [...new Set([...matches.keywords])];
 
-  let percentageMatch;
+  let percentageMatch = keywords.length ? matches.keywords.length / keywords.length : 0;
 
-  switch (matches.keywords.length) {
-    case 5: percentageMatch = 1; break;
-    case 4: percentageMatch = 0.847; break;
-    case 3: percentageMatch = 0.768; break;
-    case 2: percentageMatch = 0.645; break;
-    case 1: percentageMatch = 0.51; break;
-    default: percentageMatch = 0;
-  }
   if (matches.raise) {
     let raiseDiff = raise - raise_median;
     if (raiseDiff < 0) raiseDiff *= -1;
@@ -231,30 +230,41 @@ export function calcMatch(opts) {
     percentageMatch += raiseAdd;
   }
 
-  // count location as 0.5, so it's 40/40/20 on keywords/raise/location
+  let locationBonus = 0;
   if (matches.location) {
-    percentageMatch += 0.3;
+    locationBonus = 0.6;
     if (investorLocation === searchedCityState) {
-      percentageMatch += 0.2;
+      locationBonus = 1;
     }
   }
 
+  // if remote, give all results 50% location bonus
+  if (remote) locationBonus = (locationBonus + 1) / 2;
+  // count location as 0.25, so it's 1/1/0.25/0.75 keywords, raise, location, investments
+  percentageMatch += (locationBonus / 4);
+
   // weight startups and investments
   let invAdd = 0;
-  if (num_partner_investments > 2) invAdd = 0.05;
-  if (num_partner_investments > 5) invAdd = 0.1;
-  if (num_partner_investments > 10) invAdd = 0.2;
-  if (num_partner_investments > 20) invAdd = 0.25;
-  percentageMatch += invAdd;
+  if (investments_led > 1) invAdd = 0.1;
+  if (investments_led > 5) invAdd = 0.5;
+  if (investments_led > 10) invAdd = 0.8;
+  if (investments_led > 20) invAdd = 1;
 
   let startAdd = 0;
-  if (startups.length > 2) startAdd = 0.05;
-  if (startups.length > 3) startAdd = 0.1;
-  if (startups.length > 4) startAdd = 0.2;
-  if (startups.length > 10) startAdd = 0.25;
-  percentageMatch += startAdd;
+  if (startups.length > 2) startAdd = 0.1;
+  if (startups.length > 3) startAdd = 0.5;
+  if (startups.length > 4) startAdd = 0.8;
+  if (startups.length > 10) startAdd = 1;
 
-  percentageMatch = Math.floor((percentageMatch / 3) * 100);
+  percentageMatch += (invAdd + startAdd) * 0.375;
+
+  if (searchedCityState) {
+    percentageMatch = Math.floor((percentageMatch / 3) * 100);
+  } else if (remote) {
+    percentageMatch = Math.floor((percentageMatch / 2.875) * 100);
+  } else {
+    percentageMatch = Math.floor((percentageMatch / 2.75) * 100);
+  }
 
   if (searchedText) {
     const searchFor = searchedText.toLowerCase();
@@ -267,8 +277,16 @@ export function calcMatch(opts) {
 
     if (!invName.includes(searchFor) && !orgName.includes(searchFor)) {
       percentageMatch = 0;
+    } else {
+      percentageMatch = Math.floor((percentageMatch + 50) / 1.5);
     }
   }
+
+  if (onlyLeads && !is_lead_investor) percentageMatch = 0;
+
+  if (onlyDiverse && !diverse_investors_list) percentageMatch = 0;
+
+  if (onlyOpen && !accepts_direct_outreach) percentageMatch = 0;
 
   matches.percentage_match = percentageMatch;
 
@@ -281,4 +299,13 @@ export function parseB4AObject(result) {
 
 export function parseB4AArray(arr) {
   return arr.map(a => parseB4AObject(a));
+}
+
+export function formatUSD(amount = 0) {
+  const usdFormatter = new Intl.NumberFormat('en-US', {
+    style: 'currency',
+    currency: 'USD',
+    minimumFractionDigits: 0,
+  });
+  return usdFormatter.format(amount);
 }

@@ -210,14 +210,6 @@ export default function Public(props) {
     toggleHideBoard();
   };
 
-  const onToggleHideBoardClick = () => {
-    if (!boardPublic) {
-      toggleHideBoard();
-    } else {
-      setShowConfirmHide(true);
-    }
-  };
-
   const onClickShowProfile = () => {
     dispatch({
       type: types.MODAL_SET_OPEN,
@@ -270,62 +262,71 @@ export default function Public(props) {
   return (
     <Row id="PageBoard" className="pageContainer public">
       {showConfirmHide && <GenericModal {...confirmDeleteProps} />}
-      {!newUserStates.includes(userState) && (
-        <div className="boardDetailsBar">
-          <div className="primaryDetails">
-            <div className="d-flex w-100">
-              <div className="flex-grow-1">
-                <Button
-                  variant="text"
-                  className="text-left titleLink"
-                  type="button"
-                  onClick={onClickShowProfile}
-                >
-                  <span className="d-none d-md-inline">
-                    {`Welcome to the FundBoard of ${profile.name || '_____'}`}
-                  </span>
-                  <span className="d-md-none">
-                    {`${profile.name || '_____'}`}
-                    <span>
-                      ’s FundBoard
-                    </span>
-                  </span>
-                </Button>
-              </div>
-              {isMyPage && allowIn && (
-                <div>
-                  <a
-                    href="/board"
-                    className="btn btn-link text-secondary-light2 txs-3 text-nowrap"
-                  >
-                    Manage
-                    <span className="d-none d-md-inline">&nbsp;My Board</span>
-                  </a>
-                </div>
-              )}
-            </div>
+      {!newUserStates.includes(userState) && isMyPage && allowIn && (
+        <div className="d-flex w-100 align-items-center mb-3">
+          <span className="ml-auto mr-2">
+            <a
+              href="/profile"
+              className="text-secondary-light2"
+            >
+              {(!profile.name || !profile.primary_organization_name)
+                ? 'Add Details To Your Public Profile' : 'Edit Profile'}
+            </a>
+          </span>
+          <span>
+            <a
+              href="/board"
+              className="text-secondary-light2 text-nowrap"
+            >
+              Manage
+              <span className="d-none d-md-inline">&nbsp;My Board</span>
+            </a>
+          </span>
+        </div>
+      )}
+      {!newUserStates.includes(userState) && publicProfileStatus === 'succeeded' && (
+        <div>
+          <div className="mb-3">
+            <h1 className="text-center h2 h-md-1 mb-3">
+              {
+                `${
+                  profile.name ? profile.name : '[Secret Founder]'
+                }${
+                  profile.primary_job_title ? `, ${profile.primary_job_title}` : ''
+                } from 
+                ${
+                  profile.primary_organization_name ? profile.primary_organization_name : '[In Stealth Mode]'
+                } is Building Their Network`
+              }
+            </h1>
+            <h2 className="text-center h4 h-md-3">
+              Which Investors Can You Intro?
+            </h2>
           </div>
+          {Object.values(profile).filter(v => v).length > 0 && (
+            <div className="d-flex justify-content-center mb-4">
+              <Button
+                variant="outline-secondary"
+                className="btnNoMax txs-3"
+                type="button"
+                onClick={onClickShowProfile}
+                data-track="PublicShowProfile"
+              >
+                <span>
+                  {
+                    `Learn More About 
+                    ${profile.name ? profile.name : 'This Founder'}
+                    ${profile.name && profile.primary_organization_name ? 'at' : ''}
+                    ${profile.primary_organization_name ? profile.primary_organization_name : ''}`
+                  }
+                </span>
+              </Button>
+            </div>
+          )}
         </div>
       )}
       {statusBars.map(s => <DismissibleStatus {...s} />)}
       <div>
-        {isMyPage && allowIn && (
-          <div className="d-flex mb-3">
-            <a
-              href="/profile"
-              className="mr-2"
-            >
-              Edit Profile
-            </a>
-            <Button
-              variant="link"
-              className="txs-1 toggleHideLink ml-auto"
-              onClick={onToggleHideBoardClick}
-            >
-              {`${boardPublic ? 'Hide' : 'Show'} Public Investor List`}
-            </Button>
-          </div>
-        )}
         <div className="results">
           {boardPublic && investorList.length && investorList.map(i => {
             const personProps = {
@@ -350,15 +351,21 @@ export default function Public(props) {
                 <h1 className="headline">Welcome to FundBoard!</h1>
                 <div className="tagline">
                   <p>
-                    <strong>Search</strong>
+                    <strong className="text-primary">
+                      Search
+                    </strong>
                     &nbsp;for investors that want to invest in your startup.
                   </p>
                   <p>
-                    <strong>Save</strong>
+                    <strong className="text-primary">
+                      Save
+                    </strong>
                     &nbsp;them to your FundBoard.
                   </p>
                   <p>
-                    <strong>Share</strong>
+                    <strong className="text-primary">
+                      Share
+                    </strong>
                     &nbsp;them to get warm introductions.
                   </p>
                 </div>
@@ -368,6 +375,7 @@ export default function Public(props) {
                   variant="secondary"
                   className="btnNoMax"
                   onClick={onGoToSearch}
+                  data-track="PublicFindInvestors"
                 >
                   Step 1: Find Investors
                 </Button>
@@ -407,6 +415,7 @@ export default function Public(props) {
                   variant="secondary"
                   className="btnNoMax"
                   onClick={onGoToLogin}
+                  data-track="PublicGoToLogin"
                 >
                   Make My FundBoard Shareable
                 </Button>

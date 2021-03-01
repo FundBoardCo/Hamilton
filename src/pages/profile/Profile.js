@@ -72,16 +72,14 @@ export default function Profile() {
   const place = useSelector(state => state.user.place);
   const overridePlace = useSelector(state => state.user.overridePlace);
   const allowIn = loggedIn && typeof place === 'number' && (place <= MINPLACE || overridePlace);
-  const user = useSelector(state => state.user) || {};
+  const profile = useSelector(state => state.user.profile) || {};
+  const board_public = useSelector(state => state.user.board_public);
   const email = useSelector(state => state.user.email) || '';
-  const searchRaise = useSelector(state => state.search.raise) || 100000;
   const searchRemote = useSelector(state => state.search.remote) || '';
   const updateStatus = useSelector(state => state.user.update_status);
   const updateProfileStatus = useSelector(state => state.user.updateProfile_status);
   const getProfileStatus = useSelector(state => state.user.get_profile_status);
   const deleteStatus = useSelector(state => state.user.delete_status);
-
-  const { board_public, profile = {} } = user;
 
   const initialInputState = {
     password: '',
@@ -95,31 +93,13 @@ export default function Profile() {
     twitter: profile.twitter || '',
     permalink: profile.permalink || '',
     links: profile.links || [],
-    raise: profile.raise || searchRaise || 0,
     remote: profile.remote !== undefined ? profile.remote : searchRemote,
     location_city: profile.location_city || '',
     location_state: profile.location_state || '',
     team_size: profile.team_size || 1,
   };
 
-  const [{
-    password,
-    name,
-    title,
-    orgName,
-    orgURL,
-    orgLogoURL,
-    desc,
-    linkedin,
-    twitter,
-    permalink,
-    links,
-    raise,
-    remote,
-    location_city,
-    location_state,
-    team_size,
-  }, setState] = useState(initialInputState);
+  const [inputState, setInputState] = useState(initialInputState);
 
   const accountInputs = {
     password: {
@@ -129,7 +109,7 @@ export default function Profile() {
       feedback: true,
       formText: 'Enter a password with 8 or more characters, and at least one upper and lower '
         + 'case letter and number.',
-      value: password,
+      value: inputState.password,
     },
   };
 
@@ -137,24 +117,24 @@ export default function Profile() {
     name: {
       label: 'Your Full Name',
       placeholder: 'name',
-      value: name,
+      value: inputState.name,
     },
     title: {
       label: 'Your Title At Your Startup',
       placeholder: 'title',
-      value: title,
+      value: inputState.title,
     },
     orgName: {
       label: 'The Name of Your Startup',
       placeholder: 'startup name',
-      value: orgName,
+      value: inputState.orgName,
     },
     orgURL: {
       label: 'Your Startup’s Website',
       type: 'url',
       placeholder: 'http://something.com',
       feedback: true,
-      value: orgURL,
+      value: inputState.orgURL,
     },
     orgLogoURL: {
       label: 'A Link to Your Startup’s Logo',
@@ -163,7 +143,7 @@ export default function Profile() {
       formText: 'You should link to an image that is at least 100 x 100 px, but not larger than '
         + '400 x 400.',
       feedback: true,
-      value: orgLogoURL,
+      value: inputState.orgLogoURL,
     },
   };
 
@@ -173,58 +153,49 @@ export default function Profile() {
       type: 'url',
       placeholder: 'LinkedIn url',
       feedback: true,
-      value: linkedin,
+      value: inputState.linkedin,
     },
     twitter: {
       label: 'Your Twitter Page',
       type: 'url',
       placeholder: 'Twitter url',
       feedback: true,
-      value: twitter,
+      value: inputState.twitter,
     },
     permalink: {
       label: 'Your CrunchBase Page',
       type: 'url',
       placeholder: 'CrunchBase url',
       feedback: true,
-      value: permalink,
+      value: inputState.permalink,
     },
   };
 
   const publicInputs3 = {
-    raise: {
-      label: 'How Much You’re Trying to Raise (in Dollars)',
-      type: 'number',
-      min: 100000,
-      placeholder: 'number equal to or higher than 100000',
-      feedback: true,
-      formText: 'Plese enter a value of at least $100,000.',
-      value: raise,
-    },
     team_size: {
       label: 'How Many People Are On Your Team?',
       type: 'number',
       min: 1,
       placeholder: 'number equal to or higher than 1',
       feedback: true,
-      value: team_size,
+      value: inputState.team_size,
     },
     location_city: {
       label: 'Your City (HQ, or personal if fully remote)',
       placeholder: 'City',
-      value: location_city,
+      value: inputState.location_city,
     },
     location_state: {
       label: 'Your State',
       placeholder: 'XX',
       formText: 'Use a 2 letter state abbreviation.',
-      value: location_state,
+      value: inputState.location_state,
       pattern: '[A-Z]{2}',
     },
     remote: {
       label: 'We’re fully remote',
       type: 'checkbox',
-      value: remote,
+      value: inputState.remote,
     },
   };
 
@@ -235,7 +206,7 @@ export default function Profile() {
   const [showPublicInputs, setShowPublicInputs] = useState(false);
 
   const clearState = () => {
-    setState({ ...initialInputState });
+    setInputState({ ...initialInputState });
   };
 
   const onInputChange = e => {
@@ -244,7 +215,7 @@ export default function Profile() {
     let { value } = e.target;
     if (type === 'checkbox') value = !!checked;
     if (type === 'number') value = Number(value);
-    setState(prevState => ({ ...prevState, [name]: value }));
+    setInputState(prevState => ({ ...prevState, [name]: value }));
   };
 
   const dispatch = useDispatch();
@@ -290,33 +261,33 @@ export default function Profile() {
   });
 
   const setLinkText = (text, index) => {
-    const newLinks = [...links];
+    const newLinks = [...inputState.links];
     newLinks[index].text = text;
-    setState(prevState => ({ ...prevState, links: newLinks }));
+    setInputState(prevState => ({ ...prevState, links: newLinks }));
   };
 
   const setLinkURL = (url, index) => {
-    const newLinks = [...links];
+    const newLinks = [...inputState.links];
     newLinks[index].url = url;
-    setState(prevState => ({ ...prevState, links: newLinks }));
+    setInputState(prevState => ({ ...prevState, links: newLinks }));
   };
 
   const removeLink = i => {
-    const newLinks = [...links];
+    const newLinks = [...inputState.links];
     newLinks.splice(i, 1);
-    setState(prevState => ({ ...prevState, links: newLinks }));
+    setInputState(prevState => ({ ...prevState, links: newLinks }));
   };
 
   const addLink = () => {
     const newLinks = [
-      ...links,
+      ...inputState.links,
       {
         text: '',
         url: '',
         key: Math.floor(Math.random() * Math.floor(1000000)),
       },
     ];
-    setState(prevState => ({ ...prevState, links: newLinks }));
+    setInputState(prevState => ({ ...prevState, links: newLinks }));
   };
 
   const handleSubmit = event => {
@@ -327,7 +298,7 @@ export default function Profile() {
     setValidated(true);
     if (form.checkValidity() !== false) {
       const params = {};
-      if (password) params.password = password;
+      if (inputState.password) params.password = inputState.password;
       updateAccount(params);
     }
   };
@@ -340,21 +311,13 @@ export default function Profile() {
     setPublicValidated(true);
     if (form.checkValidity() !== false) {
       const params = {
-        name,
-        primary_job_title: title,
-        primary_organization_name: orgName,
-        primary_organization_homepage: orgURL,
-        primary_organization_logo: orgLogoURL,
-        description: desc,
-        linkedin,
-        twitter,
-        permalink,
-        links,
-        raise,
-        remote: !!remote,
-        location_city,
-        location_state,
-        team_size,
+        primary_job_title: inputState.title,
+        primary_organization_name: inputState.orgName,
+        primary_organization_homepage: inputState.orgURL,
+        primary_organization_logo: inputState.orgLogoURL,
+        description: inputState.desc,
+        remote: !!inputState.remote,
+        ...inputState,
       };
       updateFounderData(params);
     }
@@ -487,23 +450,6 @@ export default function Profile() {
             <h2 className="sectionHead">Profile (Optional)</h2>
             <p>Your profile will be shown on your public FundBoard.</p>
             <div>
-              <div className="d-flex justify-content-end mb-2">
-                <Button
-                  variant="outline-secondary"
-                  className="txs-2 mr-2 txs-md-1"
-                  disabled={updateStatus === 'pending'}
-                  onClick={onTogglePublicBoard}
-                >
-                  {`Make Your FundBoard ${board_public ? 'Private' : 'Public'}.`}
-                </Button>
-                <Button
-                  variant="outline-info"
-                  className="txs-2 tx-md-1"
-                  onClick={() => setShowPublicInputs(!showPublicInputs)}
-                >
-                  {`${showPublicInputs ? 'Hide' : 'Show'} Public Data Form`}
-                </Button>
-              </div>
               <DismissibleStatus
                 status={getProfileStatus}
                 statusPrefix="Fetching Public Data"
@@ -518,94 +464,134 @@ export default function Profile() {
                 />
               )}
             </div>
-            {showPublicInputs && (
-              <Form
-                className="mb-5 mb-md-4"
-                noValidate
-                validated={publicValidated}
-                onSubmit={handlePublicSubmit}
-              >
-                {Object.keys(publicInputs1).map(k => (
-                  <FormInput
-                    onChange={onInputChange}
-                    key={k}
-                    iKey={k}
-                    {...publicInputs1[k]}
-                  />
-                ))}
-                <Form.Group controlId="DescriptionInput">
-                  <Form.Label>A Short Bio or Description</Form.Label>
-                  <Form.Control
-                    as="textarea"
-                    placeholder="More information about you that would be relevant to someone making an intro."
-                    name="desc"
-                    value={desc}
-                    onChange={e => onInputChange(e)}
-                    data-track="ProfileDescription"
-                  />
-                </Form.Group>
-                {Object.keys(publicInputs2).map(k => (
-                  <FormInput
-                    onChange={onInputChange}
-                    key={k}
-                    iKey={k}
-                    {...publicInputs2[k]}
-                  />
-                ))}
-                <h5>Additional Links</h5>
-                {links.map((l, i) => (
-                  <LinkInput
-                    text={l.text}
-                    url={l.url}
-                    key={l.key}
-                    linkIndex={i}
-                    onLinkTextChange={setLinkText}
-                    onLinkURLChange={setLinkURL}
-                    onLinkRemove={removeLink}
-                  />
-                ))}
+            <Form
+              className="mb-5 mb-md-4"
+              noValidate
+              validated={publicValidated}
+              onSubmit={handlePublicSubmit}
+            >
+              {Object.keys(publicInputs1).map(k => (
+                <FormInput
+                  onChange={onInputChange}
+                  key={k}
+                  iKey={k}
+                  {...publicInputs1[k]}
+                />
+              ))}
+              {showPublicInputs && (
+                <div>
+                  <Form.Group controlId="DescriptionInput">
+                    <Form.Label>A Short Bio or Description</Form.Label>
+                    <Form.Control
+                      as="textarea"
+                      placeholder="More information about you that would be relevant to someone making an intro."
+                      name="desc"
+                      value={inputState.desc}
+                      onChange={e => onInputChange(e)}
+                      data-track="ProfileDescription"
+                    />
+                  </Form.Group>
+                  {Object.keys(publicInputs2).map(k => (
+                    <FormInput
+                      onChange={onInputChange}
+                      key={k}
+                      iKey={k}
+                      {...publicInputs2[k]}
+                    />
+                  ))}
+                  <h5>Additional Links</h5>
+                  {inputState.links.map((l, i) => (
+                    <LinkInput
+                      text={l.text}
+                      url={l.url}
+                      key={l.key}
+                      linkIndex={i}
+                      onLinkTextChange={setLinkText}
+                      onLinkURLChange={setLinkURL}
+                      onLinkRemove={removeLink}
+                    />
+                  ))}
+                  <Button
+                    variant="link"
+                    className="text-secondary mb-4"
+                    type="button"
+                    onClick={addLink}
+                    data-track="ProfileAddLink"
+                  >
+                    Add another link
+                  </Button>
+                  {Object.keys(publicInputs3).map(k => (
+                    <FormInput
+                      onChange={onInputChange}
+                      key={k}
+                      iKey={k}
+                      {...publicInputs3[k]}
+                    />
+                  ))}
+                </div>
+              )}
+              {currentUpdate === 'public' && (
+                <DismissibleStatus
+                  status={updateStatus}
+                  statusPrefix="Updating Profile"
+                  dissmissAction={types.USER_UPDATE_DISSMISSED}
+                />
+              )}
+              <div className="d-flex flex-grow-1 flex-column flex-md-row align-items-center">
                 <Button
                   variant="link"
-                  className="text-secondary mb-4"
-                  type="button"
-                  onClick={addLink}
+                  className="txs-2 tx-md-1 mb-4 mb-md-0"
+                  onClick={() => setShowPublicInputs(!showPublicInputs)}
+                  data-track={`ProfileShowOptions-${showPublicInputs ? 'Hide' : 'Show'}`}
                 >
-                  Add another link
+                  <FontAwesomeIcon
+                    icon={showPublicInputs ? 'eye-slash' : 'eye'}
+                    className="mr-2"
+                  />
+                  {`${showPublicInputs ? 'Hide' : 'Show'} Additional Options`}
                 </Button>
-                {Object.keys(publicInputs3).map(k => (
-                  <FormInput
-                    onChange={onInputChange}
-                    key={k}
-                    iKey={k}
-                    {...publicInputs3[k]}
-                  />
-                ))}
-                {currentUpdate === 'public' && (
-                  <DismissibleStatus
-                    status={updateStatus}
-                    statusPrefix="Updating Profile"
-                    dissmissAction={types.USER_UPDATE_DISSMISSED}
-                  />
-                )}
-                <div className="d-flex flex-grow-1 justify-content-end">
-                  <Button
-                    className="btnMobile100"
-                    type="submit"
-                    data-track="ProfileUpdateFounderData"
-                    {...btnProps.updateFounderData}
-                  >
-                    {btnProps.updateFounderData.text}
-                  </Button>
-                </div>
-                <DismissibleStatus
-                  status={updateProfileStatus}
-                  statusPrefix="Updating FundBoard"
-                  dissmissAction={types.USER_POST_PROFILE_DISMISSED}
-                />
-              </Form>
-            )}
+                <Button
+                  className="btnMobile100 ml-auto"
+                  type="submit"
+                  data-track="ProfileUpdateFounderData"
+                  {...btnProps.updateFounderData}
+                >
+                  {btnProps.updateFounderData.text}
+                </Button>
+              </div>
+              <DismissibleStatus
+                status={updateProfileStatus}
+                statusPrefix="Updating FundBoard"
+                dissmissAction={types.USER_POST_PROFILE_DISMISSED}
+              />
+            </Form>
           </section>
         )}
+        <section className="mb-5 mb-md-4">
+          <h2 className="sectionHead">Hide Your FundBoard</h2>
+          <p>
+            If you want to hide your investors only you can seet them, set them to hidden here.
+            Your FundBoard link will still be viewable, but none of your investors will be shown
+            except to you.
+          </p>
+          <div className="d-flex justify-content-center justify-content-md-end">
+            <Button
+              variant="link"
+              className="txs-2 txs-md-1"
+              disabled={updateStatus === 'pending'}
+              onClick={onTogglePublicBoard}
+              data-track={`ProfileTogglePublicBoard-${board_public ? 'Private' : 'Public'}`}
+            >
+              <span>
+                <FontAwesomeIcon
+                  icon={board_public ? 'eye-slash' : 'eye'}
+                  className="mr-2"
+                />
+                {`Make Your FundBoard ${board_public ? 'Private' : 'Public'}.`}
+              </span>
+            </Button>
+          </div>
+        </section>
         <section className="mb-5 mb-md-4">
           <h2 className="sectionHead">Log Out</h2>
           <p>Click the button below to log out of your account.</p>

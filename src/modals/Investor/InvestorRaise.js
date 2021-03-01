@@ -210,6 +210,7 @@ export default function InvestorRaise(props) {
             intros={{ ...intros }}
             toEdit={showEditIntro}
             intro={introToEdit}
+            isInBoard={true}
             onSubmit={() => setShowEditIntro(false)}
             onCancel={() => setShowEditIntro(false)}
           />

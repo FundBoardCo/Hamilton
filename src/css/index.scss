@@ -598,8 +598,12 @@ html#ov {
               .titleLink {
                 font-weight: 700;
                 line-height: 1.2;
-                color: $col-text-light;
                 margin-bottom: 0.15em; // equalize bottom space with line-height 1.5 board title
+
+                span {
+                  text-decoration: underline;
+                  color: $col-text-light;
+                }
               }
 
               .primaryDetailsLink {
@@ -718,14 +722,6 @@ html#ov {
           }
 
           @media (min-width: $mediaMd) {
-            .boardDetailsBar {
-              .primaryDetails {
-                .titleLink {
-                  color: $col-text;
-                }
-              }
-            }
-
             .results {
               padding-bottom: 0;
             }
@@ -746,6 +742,13 @@ html#ov {
                 color: $col-text;
                 border-bottom: 2px solid $col-primary;
                 font-size: $h3;
+
+                .titleLink {
+
+                  span {
+                    color: $col-text;
+                  }
+                }
 
                 .primaryDetailsLink {
                   font-size: $tx;

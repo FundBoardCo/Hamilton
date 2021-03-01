@@ -27,6 +27,7 @@ export default function EditIntro(props) {
     intro,
     intros = {},
     toEdit,
+    isInBoard,
   } = props;
   const {
     intro_name = '',
@@ -191,7 +192,7 @@ export default function EditIntro(props) {
           </div>
         </div>
       )}
-      {!isPublic && (
+      {!isPublic && !isInBoard && (
         <Button
           variant="link"
           className="mb-2"
@@ -250,6 +251,7 @@ EditIntro.defaultProps = {
     intro_date: '',
   },
   intros: {},
+  isInBoard: false,
 };
 
 EditIntro.propTypes = {
@@ -265,4 +267,5 @@ EditIntro.propTypes = {
   }),
   intros: PropTypes.objectOf(PropTypes.objectOf(PropTypes.string)),
   toEdit: PropTypes.string.isRequired,
+  isInBoard: PropTypes.bool,
 };
