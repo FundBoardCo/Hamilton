@@ -516,6 +516,7 @@ export default function Profile() {
                     className="text-secondary mb-4"
                     type="button"
                     onClick={addLink}
+                    data-track="ProfileAddLink"
                   >
                     Add another link
                   </Button>
@@ -541,6 +542,7 @@ export default function Profile() {
                   variant="link"
                   className="txs-2 tx-md-1 mb-4 mb-md-0"
                   onClick={() => setShowPublicInputs(!showPublicInputs)}
+                  data-track={`ProfileShowOptions-${showPublicInputs ? 'Hide' : 'Show'}`}
                 >
                   <FontAwesomeIcon
                     icon={showPublicInputs ? 'eye-slash' : 'eye'}
@@ -578,6 +580,7 @@ export default function Profile() {
               className="txs-2 txs-md-1"
               disabled={updateStatus === 'pending'}
               onClick={onTogglePublicBoard}
+              data-track={`ProfileTogglePublicBoard-${board_public ? 'Private' : 'Public'}`}
             >
               <span>
                 <FontAwesomeIcon
