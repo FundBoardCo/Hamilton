@@ -234,6 +234,12 @@ export default function Profile() {
 
   useEffect(() => {
     dispatch({
+      type: types.USER_DELETE_DISSMISSED,
+    });
+  }, [dispatch]);
+
+  useEffect(() => {
+    dispatch({
       type: types.USER_POST_PROFILE_DISMISSED,
     });
   }, [dispatch]);
@@ -617,7 +623,7 @@ export default function Profile() {
           <DismissibleStatus
             status={deleteStatus}
             statusPrefix="Deleting Account"
-            dissmissAction={types.USER_UPDATE_DISSMISSED}
+            dissmissAction={types.USER_DELETE_DISSMISSED}
           />
           <div className="d-flex flex-grow-1 justify-content-end">
             <Button
