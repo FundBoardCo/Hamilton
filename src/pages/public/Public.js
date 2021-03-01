@@ -310,6 +310,7 @@ export default function Public(props) {
                 className="btnNoMax txs-3"
                 type="button"
                 onClick={onClickShowProfile}
+                data-track="PublicShowProfile"
               >
                 <span>
                   {
@@ -374,6 +375,7 @@ export default function Public(props) {
                   variant="secondary"
                   className="btnNoMax"
                   onClick={onGoToSearch}
+                  data-track="PublicFindInvestors"
                 >
                   Step 1: Find Investors
                 </Button>
@@ -413,6 +415,7 @@ export default function Public(props) {
                   variant="secondary"
                   className="btnNoMax"
                   onClick={onGoToLogin}
+                  data-track="PublicGoToLogin"
                 >
                   Make My FundBoard Shareable
                 </Button>

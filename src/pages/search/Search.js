@@ -112,6 +112,7 @@ export default function Search() {
                 variant="info"
                 className="ml-auto"
                 onClick={nextPage}
+                data-track="SearchLoadMore"
               >
                 Load more
               </Button>
