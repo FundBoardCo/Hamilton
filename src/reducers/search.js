@@ -165,7 +165,7 @@ export default function search(state = defaults, action) {
           ...calcedMatch,
         };
       })
-        .filter(f => f.matches.percentage_match > (state.searchedText ? 0 : 24))
+        .filter(f => f.matches.percentage_match > (state.searchedText ? 0 : 9))
         .sort((a, b) => b.matches.percentage_match - a.matches.percentage_match);
 
       return {
