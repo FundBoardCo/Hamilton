@@ -1,7 +1,6 @@
 import moment from 'moment';
 
 export function processErr(err) {
-  console.log(err);
   if (!err) return false;
   if (err.response && err.response.data) {
     if (err.response.data.error) {
