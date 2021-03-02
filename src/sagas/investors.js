@@ -33,6 +33,9 @@ function* workUserGetOwnInvestors() {
       type: types.USER_GET_INVESTORS_FAILED,
       error,
     });
+    if (error.code === Parse.Error.INVALID_SESSION_TOKEN) {
+      yield put({ type: types.USER_LOGOUT });
+    }
   }
 }
 
@@ -68,6 +71,9 @@ function* workUserSafeAdd() {
       type: types.USER_POST_SAFEADDINVESTORS_FAILED,
       error,
     });
+    if (error.code === Parse.Error.INVALID_SESSION_TOKEN) {
+      yield put({ type: types.USER_LOGOUT });
+    }
   }
 }
 
@@ -112,6 +118,9 @@ function* workUserPostInvestor(action) {
       type: types.USER_POST_INVESTOR_FAILED,
       error,
     });
+    if (error.code === Parse.Error.INVALID_SESSION_TOKEN) {
+      yield put({ type: types.USER_LOGOUT });
+    }
   }
 }
 
