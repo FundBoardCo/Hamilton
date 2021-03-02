@@ -234,14 +234,13 @@ function* workUserProfileDataGet() {
     });
   } catch (error) {
     console.log(error);
-    console.log(error.response);
-    console.log(error.response.data);
+    console.log(error.code);
     trackErr(error);
     yield put({
       type: types.USER_GET_PROFILE_FAILED,
       error,
     });
-    if (error.code === 209) {
+    if (error.code === Parse.Error.INVALID_SESSION_TOKEN) {
       yield put({ type: types.USER_LOGOUT });
     }
   }
