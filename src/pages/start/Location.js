@@ -140,7 +140,7 @@ export default function Location() {
                 onClick={onSearchClick}
                 data-track="IntroSearchSeeMatches"
               >
-                Find a Lead Investor
+                Find Investors
               </Button>
             </div>
           </Form>
