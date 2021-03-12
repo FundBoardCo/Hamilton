@@ -179,6 +179,9 @@ function* workUserUpdate(action) {
   } catch (error) {
     trackErr(error);
     yield put({ type: types.USER_UPDATE_FAILED, error });
+    if (error.code === Parse.Error.INVALID_SESSION_TOKEN) {
+      yield put({ type: types.USER_LOGOUT });
+    }
   }
 }
 
@@ -207,6 +210,9 @@ function* workUserProfileDataPost(action) {
       type: types.USER_POST_PROFILE_FAILED,
       error,
     });
+    if (error.code === Parse.Error.INVALID_SESSION_TOKEN) {
+      yield put({ type: types.USER_LOGOUT });
+    }
   }
 }
 
@@ -232,6 +238,9 @@ function* workUserProfileDataGet() {
       type: types.USER_GET_PROFILE_FAILED,
       error,
     });
+    if (error.code === Parse.Error.INVALID_SESSION_TOKEN) {
+      yield put({ type: types.USER_LOGOUT });
+    }
   }
 }
 

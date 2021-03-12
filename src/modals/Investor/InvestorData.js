@@ -89,16 +89,20 @@ export default function InvestorData(props) {
   const searchRaise = useSelector(state => state.search.raise);
   const searchedCityState = useSelector(state => state.search.searchedCityState);
   const searchedLocationPairs = useSelector(state => state.search.searchedLocationPairs);
+  const onlyLeads = useSelector(state => state.search.onlyLeads);
+  const remote = useSelector(state => state.search.remote);
   const investorTypes = investor_type.includes('investment_partner') ? ['a VC'] : [];
   if (investor_type.includes('angel')) investorTypes.push('an angel');
 
   const calcedMatches = calcMatch({
     searchedText,
+    onlyLeads,
     investor: { ...data },
     keywords: searchKeywords,
     raise: searchRaise,
     searchedCityState,
     searchedLocationPairs,
+    remote,
   });
 
   const { matches } = calcedMatches;

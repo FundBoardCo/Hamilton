@@ -178,8 +178,8 @@ export function calcMatch(opts) {
     raise_median = 0,
     description,
     startupDescsBlob,
-    investments_led = 0,
-    startups = [],
+    cur_investments_led = 0,
+    // startups = [],
     primary_organization_name = '',
     primary_organization = {},
   } = investor;
@@ -210,6 +210,7 @@ export function calcMatch(opts) {
   matches.keywords = [...new Set([...matches.keywords])];
 
   let percentageMatch = keywords.length ? matches.keywords.length / keywords.length : 0;
+  let matchDivisor = 1;
 
   if (matches.raise) {
     let raiseDiff = raise - raise_median;
@@ -226,45 +227,55 @@ export function calcMatch(opts) {
     if (raiseDiff <= 1000000) raiseAdd = 0.876;
     if (raiseDiff <= 750000) raiseAdd = 0.921;
     if (raiseDiff <= 500000) raiseAdd = 1;
-    matches.raiseAdd = raiseAdd;
     percentageMatch += raiseAdd;
   }
 
-  let locationBonus = 0;
-  if (matches.location) {
-    locationBonus = 0.6;
-    if (investorLocation === searchedCityState) {
-      locationBonus = 1;
+  matchDivisor += 1; // add divisor for raise;
+
+  if (searchedCityState) {
+    let locationBonus = 0;
+    if (matches.location) {
+      locationBonus = 0.8;
+      if (investorLocation === searchedCityState) {
+        locationBonus = 1;
+      }
+    }
+
+    // if remote, reduce bonus by half
+    if (remote) {
+      percentageMatch += (locationBonus / 8);
+      matchDivisor += 0.125;
+    } else {
+      percentageMatch += (locationBonus / 4);
+      matchDivisor += 0.25;
     }
   }
 
-  // if remote, give all results 50% location bonus
-  if (remote) locationBonus = (locationBonus + 1) / 2;
-  // count location as 0.25, so it's 1/1/0.25/0.75 keywords, raise, location, investments
-  percentageMatch += (locationBonus / 4);
-
   // weight startups and investments
   let invAdd = 0;
-  if (investments_led > 1) invAdd = 0.1;
-  if (investments_led > 5) invAdd = 0.5;
-  if (investments_led > 10) invAdd = 0.8;
-  if (investments_led > 20) invAdd = 1;
-
-  let startAdd = 0;
-  if (startups.length > 2) startAdd = 0.1;
-  if (startups.length > 3) startAdd = 0.5;
-  if (startups.length > 4) startAdd = 0.8;
-  if (startups.length > 10) startAdd = 1;
-
-  percentageMatch += (invAdd + startAdd) * 0.375;
-
-  if (searchedCityState) {
-    percentageMatch = Math.floor((percentageMatch / 3) * 100);
-  } else if (remote) {
-    percentageMatch = Math.floor((percentageMatch / 2.875) * 100);
-  } else {
-    percentageMatch = Math.floor((percentageMatch / 2.75) * 100);
+  if (cur_investments_led > 1) invAdd = 0.1;
+  if (cur_investments_led > 2) invAdd = 0.2;
+  if (cur_investments_led > 3) invAdd = 0.4;
+  if (cur_investments_led > 5) invAdd = 0.6;
+  if (cur_investments_led > 8) invAdd = 0.8;
+  if (cur_investments_led > 12) invAdd = 1;
+  if (onlyLeads) {
+    percentageMatch += invAdd / 2;
+    matchDivisor += 0.5; // add divisor for current investments;
   }
+
+  /*
+  -- remove from now, since it's not clear what is happening to the user when this affects results
+  let startAdd = 0;
+  if (startups.length > 1) startAdd = 0.1;
+  if (startups.length > 3) startAdd = 0.5;
+  if (startups.length > 5) startAdd = 0.8;
+  if (startups.length > 8) startAdd = 1;
+  percentageMatch += startAdd / 4;
+  matchDivisor += 0.25; // add divisor for invested startups;
+   */
+
+  percentageMatch = Math.floor((percentageMatch / matchDivisor) * 100);
 
   if (searchedText) {
     const searchFor = searchedText.toLowerCase();
@@ -289,6 +300,7 @@ export function calcMatch(opts) {
   if (onlyOpen && !accepts_direct_outreach) percentageMatch = 0;
 
   matches.percentage_match = percentageMatch;
+  matches.matchDivisor = matchDivisor;
 
   return { matches };
 }
