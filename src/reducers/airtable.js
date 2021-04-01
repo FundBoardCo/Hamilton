@@ -2,7 +2,7 @@ import { processErr, capitalizeFirstLetters } from '../utils';
 import * as types from '../actions/types';
 
 function dedupe(records) {
-  const keywords = records.map(r => r.fields.Keyword);
+  const keywords = records.map(r => r.fields.Keyword.trim());
   const lower = [];
   const capped = [];
   keywords.forEach(k => {

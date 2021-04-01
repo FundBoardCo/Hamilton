@@ -60,9 +60,16 @@ function SectionTitle(params) {
 export default function SearchMenu() {
   const form = useRef(null);
 
-  const airtableKeywords = useSelector(state => state.airtable.keywords) || {};
+  let airtableKeywords = useSelector(state => state.airtable.keywords) || {};
+  airtableKeywords = airtableKeywords.data || [];
+  // This fixes a bug with spaces from the capitalize function
+  // TODO: remote after April 2021 patch has been live for a while
+  airtableKeywords = airtableKeywords.map(a => a.trim());
 
-  const searchKeywords = useSelector(state => state.search.keywords) || [];
+  let searchKeywords = useSelector(state => state.search.keywords) || [];
+  // This fixes a bug with spaces from the capitalize function
+  // TODO: remote after April 2021 patch has been live for a while
+  searchKeywords = searchKeywords.map(s => s.trim());
 
   const searchRaise = useSelector(state => state.search.raise) || 100000;
   const [raiseValue, setRaiseValue] = useState(searchRaise);
@@ -93,8 +100,8 @@ export default function SearchMenu() {
 
   const [tileSearchFor, setTileSearchFor] = useState('');
   const [showTileWarning, setShowTileWarning] = useState(false);
-  let wordsToShow = Array.isArray(airtableKeywords.data)
-    ? airtableKeywords.data
+  let wordsToShow = Array.isArray(airtableKeywords)
+    ? airtableKeywords
     : [];
   if (tileSearchFor) {
     wordsToShow = wordsToShow.filter(w => (
