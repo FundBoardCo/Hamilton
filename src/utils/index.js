@@ -32,11 +32,7 @@ export function capitalizeFirstLetter(str) {
 export function capitalizeFirstLetters(str) {
   if (typeof str !== 'string') return '';
   const words = str.split(' ');
-  let phrase = '';
-  words.forEach(w => {
-    phrase = `${phrase} ${capitalizeFirstLetter(w)}`;
-  });
-  return phrase;
+  return words.reduce((p, c) => `${p} ${capitalizeFirstLetter(c)}`);
 }
 
 export function convertInvestedLocations(arr) {

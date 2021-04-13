@@ -54,7 +54,7 @@ export default function user(state = defaults, action) {
       showAdvice: action.showAdvice,
     };
     case types.USER_CREATE_REQUESTED: return {
-      ...state,
+      ...defaults, // clear any old data
       create_status: 'pending',
       sessionToken: null,
     };
@@ -72,7 +72,7 @@ export default function user(state = defaults, action) {
       create_status: '',
     };
     case types.USER_LOGIN_REQUESTED: return {
-      ...state,
+      ...defaults, // clear any old data
       login_status: 'pending',
     };
     case types.USER_LOGIN_SUCCEEDED: return {

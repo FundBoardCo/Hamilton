@@ -108,7 +108,7 @@ export default function search(state = defaults, action) {
     case types.SEARCH_SET_KEYWORDS: return {
       ...state,
       keywords: Array.isArray(action.keywords)
-        ? action.keywords.map(k => k.toLowerCase())
+        ? action.keywords.map(k => k.trim().toLowerCase())
         : [],
     };
     case types.SEARCH_SET_RAISE: return {
