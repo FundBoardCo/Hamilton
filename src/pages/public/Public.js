@@ -328,7 +328,7 @@ export default function Public(props) {
       {statusBars.map(s => <DismissibleStatus {...s} />)}
       <div>
         <div className="results">
-          {boardPublic && investorList.length && investorList.map(i => {
+          {boardPublic && investorList.length > 0 && investorList.map(i => {
             const personProps = {
               ...i,
               founderUUID: pageUUID,
