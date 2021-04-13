@@ -6,7 +6,7 @@ export const ZIPCODECLIENTKEY = 'js-IQnw1s8a35CYiI4clJrcM1yIvqTyyciNZfDHMIrhOY2V
 
 export const ZIPDISTANCE = '40';
 
-export const MINPLACE = 500;
+export const MINPLACE = 550;
 
 export const STAGEPROPS = {
   none: {
