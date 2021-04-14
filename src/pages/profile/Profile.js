@@ -75,7 +75,7 @@ export default function Profile() {
   const profile = useSelector(state => state.user.profile) || {};
   const board_public = useSelector(state => state.user.board_public);
   const email = useSelector(state => state.user.email) || '';
-  const searchRemote = useSelector(state => state.search.remote) || '';
+  const searchRemote = useSelector(state => state.search.remote) || false;
   const updateStatus = useSelector(state => state.user.update_status);
   const updateProfileStatus = useSelector(state => state.user.updateProfile_status);
   const getProfileStatus = useSelector(state => state.user.get_profile_status);
@@ -93,7 +93,7 @@ export default function Profile() {
     twitter: profile.twitter || '',
     permalink: profile.permalink || '',
     links: profile.links || [],
-    remote: profile.remote !== undefined ? profile.remote : searchRemote,
+    remote: profile.remote !== undefined ? !!profile.remote : !!searchRemote,
     location_city: profile.location_city || '',
     location_state: profile.location_state || '',
     team_size: profile.team_size || 1,
@@ -195,7 +195,7 @@ export default function Profile() {
     remote: {
       label: 'We’re fully remote',
       type: 'checkbox',
-      value: inputState.remote,
+      value: !!inputState.remote,
     },
   };
 
