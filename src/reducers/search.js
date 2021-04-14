@@ -64,7 +64,10 @@ function subsetInvestorData(i = {}) {
     image_url,
     primary_job_title,
     primary_organization,
+    primary_organization_name,
+    primary_organization_logo,
     status,
+    investorStatus,
     is_lead_investor,
   }) => ({
     uuid,
@@ -73,7 +76,10 @@ function subsetInvestorData(i = {}) {
     image_url,
     primary_job_title,
     primary_organization,
+    primary_organization_name,
+    primary_organization_logo,
     status,
+    investorStatus,
     is_lead_investor,
   }))(i);
 }
