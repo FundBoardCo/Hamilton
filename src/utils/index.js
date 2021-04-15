@@ -155,6 +155,7 @@ export function calcMatch(opts) {
     onlyLeads = false,
     onlyDiverse = false,
     onlyOpen = false,
+    location = '', // the zip code
     searchedCityState = '',
     searchedLocationPairs = [],
     investor = {},
@@ -184,10 +185,17 @@ export function calcMatch(opts) {
     ? investor.keywords.map(ik => ik.trim().toLowerCase()) : [];
   const sKeywords = keywords.map(sk => sk.trim().toLowerCase());
 
-  const matchedLocation = searchedCityState === investorLocation;
-  const matchedExtraLocations = !!Array.isArray(invested_locations)
-  && !!invested_locations.length
-  && !!invested_locations.find(il => searchedLocationPairs.includes(il));
+  let matchedLocation = false;
+  let matchedExtraLocations = false;
+
+  // ignore old location state if the current zip is blank
+  // TODO: this is pretty klunky, reset everything on search if there is no zip code instead
+  if (location) {
+    matchedLocation = searchedCityState === investorLocation;
+    matchedExtraLocations = !!Array.isArray(invested_locations)
+      && !!invested_locations.length
+      && !!invested_locations.find(il => searchedLocationPairs.includes(il));
+  }
 
   const matches = {
     keywords: iKeywords.filter(k => sKeywords.includes(k)),
@@ -212,26 +220,27 @@ export function calcMatch(opts) {
     let raiseDiff = raise - raise_median;
     if (raiseDiff < 0) raiseDiff *= -1;
     let raiseAdd = 0;
-    if (raiseDiff <= 5000000) raiseAdd = 0.1;
-    if (raiseDiff <= 4000000) raiseAdd = 0.224;
-    if (raiseDiff <= 3500000) raiseAdd = 0.336;
-    if (raiseDiff <= 3000000) raiseAdd = 0.418;
-    if (raiseDiff <= 2500000) raiseAdd = 0.527;
-    if (raiseDiff <= 2000000) raiseAdd = 0.626;
-    if (raiseDiff <= 1500000) raiseAdd = 0.719;
-    if (raiseDiff <= 1250000) raiseAdd = 0.826;
-    if (raiseDiff <= 1000000) raiseAdd = 0.876;
-    if (raiseDiff <= 750000) raiseAdd = 0.921;
+    if (raiseDiff <= 5000000) raiseAdd = 0.11;
+    if (raiseDiff <= 4000000) raiseAdd = 0.21;
+    if (raiseDiff <= 3500000) raiseAdd = 0.32;
+    if (raiseDiff <= 3000000) raiseAdd = 0.41;
+    if (raiseDiff <= 2500000) raiseAdd = 0.52;
+    if (raiseDiff <= 2000000) raiseAdd = 0.61;
+    if (raiseDiff <= 1750000) raiseAdd = 0.72;
+    if (raiseDiff <= 1500000) raiseAdd = 0.81;
+    if (raiseDiff <= 1250000) raiseAdd = 0.85;
+    if (raiseDiff <= 1000000) raiseAdd = 0.91;
+    if (raiseDiff <= 750000) raiseAdd = 0.96;
     if (raiseDiff <= 500000) raiseAdd = 1;
     percentageMatch += raiseAdd;
   }
 
   matchDivisor += 1; // add divisor for raise;
 
-  if (searchedCityState) {
+  if (location && searchedCityState) {
     let locationBonus = 0;
     if (matches.location) {
-      locationBonus = 0.8;
+      locationBonus = 0.6;
       if (investorLocation === searchedCityState) {
         locationBonus = 1;
       }
@@ -247,19 +256,6 @@ export function calcMatch(opts) {
     }
   }
 
-  // weight startups and investments
-  let invAdd = 0;
-  if (cur_investments_led > 1) invAdd = 0.1;
-  if (cur_investments_led > 2) invAdd = 0.2;
-  if (cur_investments_led > 3) invAdd = 0.4;
-  if (cur_investments_led > 5) invAdd = 0.6;
-  if (cur_investments_led > 8) invAdd = 0.8;
-  if (cur_investments_led > 12) invAdd = 1;
-  if (onlyLeads) {
-    percentageMatch += invAdd / 2;
-    matchDivisor += 0.5; // add divisor for current investments;
-  }
-
   /*
   -- remove from now, since it's not clear what is happening to the user when this affects results
   let startAdd = 0;
@@ -271,8 +267,55 @@ export function calcMatch(opts) {
   matchDivisor += 0.25; // add divisor for invested startups;
    */
 
+  if (searchedText) {
+    const searchFor = searchedText.toLowerCase();
+    let orgName = primary_organization_name
+      || primary_organization.name
+      || primary_organization.value
+      || '';
+    orgName = orgName.toLowerCase();
+    const invName = name.toLowerCase();
+
+    if (!invName.includes(searchFor) && !orgName.includes(searchFor)) {
+      percentageMatch = 0;
+    } else {
+      percentageMatch += 1;
+      matchDivisor += 1; // add divisor for text search;
+    }
+  }
+
+  // Note that a search match can still be removed by the following boolean searches
+
+  if (onlyDiverse && diverse_investors_list) {
+    // add a match % so investors that would be zero otherwise show up
+    percentageMatch += 0.2;
+    matchDivisor += 0.2;
+  }
+
+  if (onlyOpen && accepts_direct_outreach) {
+    // add a match % so investors that would be zero otherwise show up
+    percentageMatch += 0.2;
+    matchDivisor += 0.2;
+  }
+
+  // weight startups and investments
+  if (onlyLeads && is_lead_investor) {
+    let invAdd = 0;
+    if (cur_investments_led > 1) invAdd = 0.8;
+    if (cur_investments_led > 2) invAdd = 0.9;
+    if (cur_investments_led > 3) invAdd = 1;
+
+    percentageMatch += invAdd / 4;
+    matchDivisor += 0.25; // add divisor for current investments;
+  }
+
+  if (onlyOpen && !accepts_direct_outreach) percentageMatch = 0;
+  if (onlyDiverse && !diverse_investors_list) percentageMatch = 0;
+  if (onlyLeads && !is_lead_investor) percentageMatch = 0;
+
   percentageMatch = Math.floor((percentageMatch / matchDivisor) * 100);
 
+  /*
   if (searchedText) {
     const searchFor = searchedText.toLowerCase();
     let orgName = primary_organization_name
@@ -289,11 +332,24 @@ export function calcMatch(opts) {
     }
   }
 
+  if (onlyDiverse) {
+    if (!diverse_investors_list) {
+      percentageMatch = 0;
+    } else {
+      percentageMatch = Math.floor((percentageMatch + 20) / 1.2);
+    }
+  }
+
+  if (onlyOpen) {
+    if (!accepts_direct_outreach) {
+      percentageMatch = 0;
+    } else {
+      percentageMatch = Math.floor((percentageMatch + 20) / 1.2);
+    }
+  }
+
   if (onlyLeads && !is_lead_investor) percentageMatch = 0;
-
-  if (onlyDiverse && !diverse_investors_list) percentageMatch = 0;
-
-  if (onlyOpen && !accepts_direct_outreach) percentageMatch = 0;
+   */
 
   matches.percentage_match = percentageMatch;
   matches.matchDivisor = matchDivisor;
