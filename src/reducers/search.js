@@ -171,7 +171,11 @@ export default function search(state = defaults, action) {
           ...calcedMatch,
         };
       })
-        .filter(f => f.matches.percentage_match > (state.searchedText ? 0 : 9))
+        .filter(f => f.matches.percentage_match > (
+          state.searchedText
+            || state.onlyLeads
+            || state.onlyOpen
+            || state.onlyDiverse ? 0 : 9))
         .sort((a, b) => b.matches.percentage_match - a.matches.percentage_match);
 
       return {
