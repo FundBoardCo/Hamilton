@@ -84,25 +84,15 @@ export default function InvestorData(props) {
 
   const twitterName = getSafeVar(() => twitter.substr(twitter.lastIndexOf('/') + 1), '');
 
-  const searchedText = useSelector(state => state.search.searchedText);
-  const searchKeywords = useSelector(state => state.search.keywords);
-  const searchRaise = useSelector(state => state.search.raise);
-  const searchedCityState = useSelector(state => state.search.searchedCityState);
+  const searchState = useSelector((state => state.search));
   const searchedLocationPairs = useSelector(state => state.search.searchedLocationPairs);
-  const onlyLeads = useSelector(state => state.search.onlyLeads);
-  const remote = useSelector(state => state.search.remote);
   const investorTypes = investor_type.includes('investment_partner') ? ['a VC'] : [];
   if (investor_type.includes('angel')) investorTypes.push('an angel');
 
+  // recalculate this because it may come from the board page and not have match data
   const calcedMatches = calcMatch({
-    searchedText,
-    onlyLeads,
+    ...searchState,
     investor: { ...data },
-    keywords: searchKeywords,
-    raise: searchRaise,
-    searchedCityState,
-    searchedLocationPairs,
-    remote,
   });
 
   const { matches } = calcedMatches;
