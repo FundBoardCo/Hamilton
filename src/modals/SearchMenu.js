@@ -94,7 +94,7 @@ export default function SearchMenu() {
     ? getSearchLocations(searchLocation, extraLocations) : {};
   const { searchedCity = [], searchedSecondaryCities = [] } = locations;
 
-  const storedRemote = useSelector(state => state.search.remote) || '';
+  const storedRemote = useSelector(state => state.search.remote) || false;
 
   const [validated, setValidated] = useState(false);
 
