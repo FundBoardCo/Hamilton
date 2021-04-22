@@ -48,7 +48,7 @@ function Matches(props) {
 
 export default function Person(props) {
   const {
-    uuid,
+    permalink,
     name,
     image_url = '',
     image_id = '',
@@ -66,9 +66,13 @@ export default function Person(props) {
   } = props;
 
   let {
+    uuid,
     primary_organization_name,
     primary_organization_logo,
   } = props;
+
+  // account for investors keyed by their permalink
+  if (!uuid) uuid = permalink;
 
   const founderImageURL = image_url || `${cb_founder_imagePrefix}${image_id}`;
 
@@ -227,7 +231,8 @@ export default function Person(props) {
 }
 
 Person.defaultProps = {
-  uuid: 'not found',
+  uuid: '',
+  permalink: '',
   name: '',
   image_url: '',
   image_id: '',
@@ -263,6 +268,7 @@ Person.defaultProps = {
 
 Person.propTypes = {
   uuid: PropTypes.string,
+  permalink: PropTypes.string,
   name: PropTypes.string,
   image_url: PropTypes.string,
   image_id: PropTypes.string,
