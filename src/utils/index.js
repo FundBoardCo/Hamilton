@@ -156,6 +156,7 @@ export function calcMatch(opts) {
     onlyDiverse = false,
     onlyOpen = false,
     location = '', // the zip code
+    onlyLocal, // require location matches
     searchedCityState = '',
     searchedLocationPairs = [],
     investor = {},
@@ -166,7 +167,7 @@ export function calcMatch(opts) {
   const {
     name = '',
     investorLocation = '',
-    invested_locations,
+    invested_locations = [],
     is_lead_investor,
     diverse_investors_list,
     accepts_direct_outreach,
@@ -174,8 +175,8 @@ export function calcMatch(opts) {
     raise_max = 0,
     raise_median = 0,
     description,
-    startupDescsBlob,
     cur_investments_led = 0,
+    investor_type,
     // startups = [],
     primary_organization_name = '',
     primary_organization = {},
@@ -191,16 +192,16 @@ export function calcMatch(opts) {
   // ignore old location state if the current zip is blank
   // TODO: this is pretty klunky, reset everything on search if there is no zip code instead
   if (location) {
-    matchedLocation = searchedCityState === investorLocation;
-    matchedExtraLocations = !!Array.isArray(invested_locations)
-      && !!invested_locations.length
-      && !!invested_locations.find(il => searchedLocationPairs.includes(il));
+    matchedLocation = searchedCityState.toLowerCase() === investorLocation.toLowerCase();
+    matchedExtraLocations = Array.isArray(invested_locations)
+      && invested_locations.length
+      && !!invested_locations.find(il => searchedLocationPairs.includes(il.toLowerCase()));
   }
 
   const matches = {
     keywords: iKeywords.filter(k => sKeywords.includes(k)),
     raise: raise >= raise_min && raise <= raise_max,
-    location: matchedLocation || matchedExtraLocations,
+    location: matchedLocation || !!matchedExtraLocations,
   };
 
   sKeywords.forEach(k => {
@@ -208,7 +209,6 @@ export function calcMatch(opts) {
       const lDesc = description.toLowerCase();
       if (lDesc.includes(k)) matches.keywords.push(k);
     }
-    if (startupDescsBlob && startupDescsBlob.includes(k)) matches.keywords.push(k);
   });
 
   matches.keywords = [...new Set([...matches.keywords])];
@@ -247,9 +247,12 @@ export function calcMatch(opts) {
     }
 
     // if remote, reduce bonus by half
-    if (remote) {
+    if (remote && !onlyLocal) {
       percentageMatch += (locationBonus / 8);
       matchDivisor += 0.125;
+    } else if (onlyLocal) {
+      percentageMatch += (locationBonus);
+      matchDivisor += 1;
     } else {
       percentageMatch += (locationBonus / 4);
       matchDivisor += 0.25;
@@ -312,44 +315,16 @@ export function calcMatch(opts) {
   if (onlyOpen && !accepts_direct_outreach) percentageMatch = 0;
   if (onlyDiverse && !diverse_investors_list) percentageMatch = 0;
   if (onlyLeads && !is_lead_investor) percentageMatch = 0;
+  if (onlyLocal && !matches.location) percentageMatch = 0;
+
+  // Exclude results with minimal data unless it's a text search
+  if (!searchedText
+    && (
+      !raise_median
+      || (!Array.isArray(investor_type) || !investor_type.length)
+    )) percentageMatch = 0;
 
   percentageMatch = Math.floor((percentageMatch / matchDivisor) * 100);
-
-  /*
-  if (searchedText) {
-    const searchFor = searchedText.toLowerCase();
-    let orgName = primary_organization_name
-      || primary_organization.name
-      || primary_organization.value
-      || '';
-    orgName = orgName.toLowerCase();
-    const invName = name.toLowerCase();
-
-    if (!invName.includes(searchFor) && !orgName.includes(searchFor)) {
-      percentageMatch = 0;
-    } else {
-      percentageMatch = Math.floor((percentageMatch + 50) / 1.5);
-    }
-  }
-
-  if (onlyDiverse) {
-    if (!diverse_investors_list) {
-      percentageMatch = 0;
-    } else {
-      percentageMatch = Math.floor((percentageMatch + 20) / 1.2);
-    }
-  }
-
-  if (onlyOpen) {
-    if (!accepts_direct_outreach) {
-      percentageMatch = 0;
-    } else {
-      percentageMatch = Math.floor((percentageMatch + 20) / 1.2);
-    }
-  }
-
-  if (onlyLeads && !is_lead_investor) percentageMatch = 0;
-   */
 
   matches.percentage_match = percentageMatch;
   matches.matchDivisor = matchDivisor;

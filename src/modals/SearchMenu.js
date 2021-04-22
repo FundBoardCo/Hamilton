@@ -82,6 +82,7 @@ export default function SearchMenu() {
   const searchedText = useSelector(state => state.search.searchedText);
 
   const searchLocation = useSelector(state => state.search.location) || '';
+  const searchOnlyLocal = useSelector(state => state.search.onlyLocal);
   // use local state to handle invalid entries without recording them
   const [locationValue, setLocationValue] = useState(searchLocation);
   const [locationValid, setLocationValid] = useState(true);
@@ -128,6 +129,11 @@ export default function SearchMenu() {
     location,
   });
 
+  const setLocationBool = onlyLocal => dispatch({
+    type: types.SEARCH_SET_ONLYLOCAL,
+    onlyLocal,
+  });
+
   const setOnlyLeads = onlyLeads => dispatch({
     type: types.SEARCH_SET_ONLYLEADS,
     onlyLeads,
@@ -139,7 +145,7 @@ export default function SearchMenu() {
   });
 
   const setOnlyOpen = onlyOpen => dispatch({
-    type: types.SEARCH_SET_ONLYOPEM,
+    type: types.SEARCH_SET_ONLYOPEN,
     onlyOpen,
   });
 
@@ -199,6 +205,10 @@ export default function SearchMenu() {
 
   const onOnlyOpenChange = val => {
     setOnlyOpen(val);
+  };
+
+  const onLocationBoolChange = val => {
+    setLocationBool(val);
   };
 
   const onRemoteChange = val => {
@@ -490,6 +500,18 @@ export default function SearchMenu() {
           <div className={`mb-3 ${extraZipcodesClass}`}>
             {`Status: ${extraZipcodesText}`}
           </div>
+          <Form.Group
+            controlId="LocationBoolCheckbox"
+            className="mb-3"
+          >
+            <Form.Check
+              type="checkbox"
+              label="Only Investors That Invest in My Location"
+              checked={searchOnlyLocal}
+              onChange={e => onLocationBoolChange(e.target.checked)}
+              data-track="LocationBoolCheckbox"
+            />
+          </Form.Group>
           <Form.Group
             controlId="RemoteCheckbox"
             className="mb-5"

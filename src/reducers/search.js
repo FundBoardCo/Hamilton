@@ -18,6 +18,7 @@ const defaults = {
   onlyDiverse: false,
   onlyOpen: false,
   location: '',
+  onlyLocal: false,
   remote: false,
   extraZipcodes: [],
   extraLocations: [],
@@ -59,6 +60,7 @@ function subsetInvestorData(i = {}) {
   // adapted from https://medium.com/@captaindaylight/get-a-subset-of-an-object-9896148b9c72
   return (({
     uuid,
+    permalink,
     name,
     image_id,
     image_url,
@@ -71,6 +73,7 @@ function subsetInvestorData(i = {}) {
     is_lead_investor,
   }) => ({
     uuid,
+    permalink,
     name,
     image_id,
     image_url,
@@ -129,13 +132,17 @@ export default function search(state = defaults, action) {
       ...state,
       onlyDiverse: action.onlyDiverse,
     };
-    case types.SEARCH_SET_ONLYOPEM: return {
+    case types.SEARCH_SET_ONLYOPEN: return {
       ...state,
       onlyOpen: action.onlyOpen,
     };
     case types.SEARCH_SET_LOCATION: return {
       ...state,
       location: action.location,
+    };
+    case types.SEARCH_SET_ONLYLOCAL: return {
+      ...state,
+      onlyLocal: action.onlyLocal,
     };
     case types.SEARCH_SET_REMOTE: return {
       ...state,
