@@ -429,6 +429,10 @@ html#ov body {
     }
   }
 
+  .tx-lineThrough {
+    text-decoration: line-through;
+  }
+
   .sectionHead {
     padding-bottom: $pad1;
     border-bottom: 2px solid $col-primary-light6;

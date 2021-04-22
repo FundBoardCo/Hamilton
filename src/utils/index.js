@@ -200,7 +200,7 @@ export function calcMatch(opts) {
 
   const matches = {
     keywords: iKeywords.filter(k => sKeywords.includes(k)),
-    raise: raise >= raise_min && raise <= raise_max,
+    raise: !!raise && raise >= raise_min && raise <= raise_max,
     location: matchedLocation || !!matchedExtraLocations,
   };
 
@@ -216,7 +216,7 @@ export function calcMatch(opts) {
   let percentageMatch = keywords.length ? matches.keywords.length / keywords.length : 0;
   let matchDivisor = 1;
 
-  if (matches.raise) {
+  if (raise && matches.raise) {
     let raiseDiff = raise - raise_median;
     if (raiseDiff < 0) raiseDiff *= -1;
     let raiseAdd = 0;
@@ -233,9 +233,8 @@ export function calcMatch(opts) {
     if (raiseDiff <= 750000) raiseAdd = 0.96;
     if (raiseDiff <= 500000) raiseAdd = 1;
     percentageMatch += raiseAdd;
+    matchDivisor += 1; // add divisor for raise;
   }
-
-  matchDivisor += 1; // add divisor for raise;
 
   if (location && searchedCityState) {
     let locationBonus = 0;
@@ -347,4 +346,14 @@ export function formatUSD(amount = 0) {
     minimumFractionDigits: 0,
   });
   return usdFormatter.format(amount);
+}
+
+export function isEmptyish(val) {
+  let emptyish = !val;
+  if (Array.isArray(val)) {
+    emptyish = !val.length;
+  } else if (typeof val === 'object') {
+    emptyish = !Object.keys(val).length;
+  }
+  return emptyish;
 }

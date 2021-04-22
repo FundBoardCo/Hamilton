@@ -8,6 +8,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Person from '../../components/people/Person';
 import DismissibleStatus from '../../components/DismissibleStatus';
 import * as types from '../../actions/types';
+import { isEmptyish } from '../../utils';
 
 function SearchQuery(props) {
   const {
@@ -16,14 +17,28 @@ function SearchQuery(props) {
     action,
     saveKey,
     setTo,
+    restore,
     onClick,
   } = props;
-  const text = typeof value === 'boolean' ? label : value;
+  const valIsEmptyish = isEmptyish(value);
+  let text = value;
+  if (typeof value === 'boolean') {
+    text = label;
+  } else if (valIsEmptyish) {
+    text = restore;
+  }
+
+  const opts = {
+    action,
+    saveKey,
+    setTo: valIsEmptyish ? restore : setTo,
+  };
+
   return (
     <Button
       variant="text"
-      className="mr-2 flex-shrink-0"
-      onClick={() => onClick(action, saveKey, setTo)}
+      className={`mr-2 flex-shrink-0 ${valIsEmptyish ? 'tx-lineThrough' : ''}`}
+      onClick={() => onClick(opts)}
     >
       <i>
         <span className="text-primary mr-2">{text}</span>
@@ -43,13 +58,14 @@ export default function Search() {
   // search query values
   const searchedText = useSelector(state => state.search.searchedText);
   const searchKeywords = useSelector(state => state.search.keywords) || [];
-  const searchRaise = useSelector(state => state.search.raise) || 100000;
+  const searchRaise = useSelector(state => state.search.raise);
   const searchLocation = useSelector(state => state.search.location) || '';
   const searchOnlyLeads = useSelector(state => state.search.onlyLeads);
   const searchOnlyDiverse = useSelector(state => state.search.onlyDiverse);
   const searchOnlyOpen = useSelector(state => state.search.onlyOpen);
   const searchOnlyLocal = useSelector(state => state.search.onlyLocal);
   const searchRemote = useSelector(state => state.search.remote);
+  const prevQuery = useSelector(state => state.search.prevQuery) || {};
   const searchQuery = [
     {
       label: 'Text',
@@ -57,6 +73,7 @@ export default function Search() {
       action: types.SEARCH_SET_SEARCHTEXT,
       saveKey: 'text',
       setTo: '',
+      restore: prevQuery.searchedText,
     },
     {
       label: 'Keywords',
@@ -64,20 +81,23 @@ export default function Search() {
       action: types.SEARCH_SET_KEYWORDS,
       saveKey: 'keywords',
       setTo: [],
+      restore: prevQuery.keywords,
     },
     {
       label: 'Raise',
       value: searchRaise,
       action: types.SEARCH_SET_RAISE,
       saveKey: 'raise',
-      setTo: 100000,
+      setTo: false,
+      restore: prevQuery.raise,
     },
     {
       label: 'Location',
       value: searchLocation,
-      action: types.SEARCH_SET_LOCATION,
+      action: types.SEARCH_TOGGLE_LOCATION,
       saveKey: 'location',
       setTo: '',
+      restore: prevQuery.location,
     },
     {
       label: 'Local',
@@ -85,6 +105,7 @@ export default function Search() {
       action: types.SEARCH_SET_ONLYLOCAL,
       saveKey: 'onlyLocal',
       setTo: false,
+      restore: prevQuery.onlyLocal,
     },
     {
       label: 'Remote',
@@ -92,6 +113,7 @@ export default function Search() {
       action: types.SEARCH_SET_REMOTE,
       saveKey: 'remote',
       setTo: false,
+      restore: prevQuery.remote,
     },
     {
       label: 'Leads',
@@ -99,6 +121,7 @@ export default function Search() {
       action: types.SEARCH_SET_ONLYLEADS,
       saveKey: 'onlyLeads',
       setTo: false,
+      restore: prevQuery.onlyLeads,
     },
     {
       label: 'Diverse',
@@ -106,6 +129,7 @@ export default function Search() {
       action: types.SEARCH_SET_ONLYDIVERSE,
       saveKey: 'onlyDiverse',
       setTo: false,
+      restore: prevQuery.onlyDiverse,
     },
     {
       label: 'Open',
@@ -113,8 +137,10 @@ export default function Search() {
       action: types.SEARCH_SET_ONLYOPEN,
       saveKey: 'onlyOpen',
       setTo: false,
+      restore: prevQuery.onlyOpen,
     },
   ];
+  console.log(searchQuery);
 
   const [detailsOpen, setDetailsOpen] = useState(false);
   const [page, setPage] = useState(1);
@@ -142,7 +168,13 @@ export default function Search() {
     setPage(page + 1);
   };
 
-  const toggleSearchQuery = (action, saveKey, setTo) => {
+  const toggleSearchQuery = opts => {
+    const {
+      action,
+      saveKey,
+      setTo,
+    } = opts;
+
     dispatch({
       type: action,
       [saveKey]: setTo,
@@ -210,12 +242,7 @@ export default function Search() {
           </span>
         </span>
         {searchQuery
-          .filter(s => {
-            let test = false;
-            if (s.value) test = true;
-            if (Array.isArray(s.value)) test = s.value.length;
-            return test;
-          })
+          .filter(s => !isEmptyish(s.value) || !isEmptyish(s.restore))
           .map(s => <SearchQuery {...s} key={s.saveKey} onClick={toggleSearchQuery} />)}
       </div>
       <div className="results">
@@ -269,6 +296,7 @@ SearchQuery.defaultProps = {
   action: '',
   saveKey: '',
   setTo: '',
+  restore: '',
   onClick: {},
 };
 
@@ -286,6 +314,12 @@ SearchQuery.propTypes = {
     PropTypes.number,
     PropTypes.bool,
     PropTypes.array, // this array is always empty
+  ]),
+  restore: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.number,
+    PropTypes.bool,
+    PropTypes.arrayOf(PropTypes.string),
   ]),
   onClick: PropTypes.func,
 };
