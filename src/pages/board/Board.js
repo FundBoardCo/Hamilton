@@ -8,12 +8,12 @@ import Button from 'react-bootstrap/Button';
 import Col from 'react-bootstrap/Col';
 import FormControl from 'react-bootstrap/FormControl';
 import InputGroup from 'react-bootstrap/InputGroup';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Person from '../../components/people/Person';
 import * as types from '../../actions/types';
 import DismissibleStatus from '../../components/DismissibleStatus';
 import { MINPLACE, STAGEPROPS } from '../../constants';
 import { getSafeVar } from '../../utils';
-import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 
 export default function Board() {
   const userUpdateStatus = useSelector(state => state.user.update_status);
@@ -27,6 +27,9 @@ export default function Board() {
   const overridePlace = useSelector(state => state.user.overridePlace);
   const allowIn = loggedIn && typeof place === 'number' && (place <= MINPLACE || overridePlace);
   const userUUID = useSelector(state => state.user.uuid);
+  const startups = useSelector(state => state.people.startups);
+  console.log(startups);
+  const startupsStatus = useSelector(state => state.people.get_startups_status);
 
   const [sortBy, setSortBy] = useState('status');
   const [sortNameUp, setSortNameUp] = useState(false);
@@ -210,6 +213,20 @@ export default function Board() {
     }
   };
 
+  useEffect(() => {
+    let uuids = [];
+    Object.keys(ownInvestors).forEach(o => {
+      uuids = [...new Set([
+        ...uuids,
+        ...people[o]?.startups.map(s => s.uuid),
+      ])];
+    });
+    dispatch({
+      type: types.STARTUPS_REQUESTED,
+      uuids,
+    });
+  }, [dispatch, ownInvestors, people]);
+
   return (
     <Row id="PageBoard" className="pageContainer">
       {allowIn && (
@@ -289,6 +306,11 @@ export default function Board() {
         status={userUpdateStatus}
         showSuccess={false}
         dissmissAction={types.USER_UPDATE_DISSMISSED}
+      />
+      <DismissibleStatus
+        status={startupsStatus}
+        showSuccess={false}
+        dissmissAction={types.STARTUPS_DISMISSED}
       />
       {allowIn && (
         <div className="d-flex mb-3">

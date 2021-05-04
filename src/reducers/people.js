@@ -1,9 +1,27 @@
 import * as types from '../actions/types';
 import { processErr } from '../utils';
 
+function processStartups(action, state) {
+  const newStartups = { ...state.startups };
+  action.data.records.forEach(r => {
+    newStartups[r.fields.uuid] = { ...r.fields };
+  });
+  return newStartups;
+}
+
+function processFounders(action, state) {
+  const startups = { ...state.startups };
+  const founders = action.data.records.map(r => r.fields);
+  startups[action.orgUUID].founders = founders;
+  return startups;
+}
+
 export const peopleResets = {
   records: {},
   get_status: '',
+  get_startups_status: '',
+  startups: {},
+  get_founders_status: '',
 };
 
 const defaults = {
@@ -89,6 +107,52 @@ export default function people(state = defaults, action) {
             invalid_status: '',
           },
         },
+      };
+    case types.STARTUPS_REQUESTED:
+      return {
+        ...state,
+        get_startups_status: 'pending',
+      };
+    case types.STARTUPS_SUCCEEDED:
+      return {
+        ...state,
+        get_startups_status: 'succeeded',
+        startups: processStartups(action, state),
+      };
+    case types.STARTUPS_FAILED:
+      return {
+        ...state,
+        get_startups_status: processErr(action.error),
+      };
+    case types.STARTUPS_DISMISSED:
+      return {
+        ...state,
+        get_startups_status: '',
+      };
+    case types.FOUNDERS_REQUESTED:
+      return {
+        ...state,
+        get_founders_status: 'pending',
+      };
+    case types.FOUNDERS_SUCCEEDED:
+      return {
+        ...state,
+        startups: processFounders(action, state),
+      };
+    case types.FOUNDERS_FAILED:
+      return {
+        ...state,
+        get_founders_status: processErr(action.error),
+      };
+    case types.FOUNDERS_COMPLETED:
+      return {
+        ...state,
+        get_founders_status: 'succeeded',
+      };
+    case types.FOUNDERS_DISMISSED:
+      return {
+        ...state,
+        get_founders_status: '',
       };
     default: return state;
   }

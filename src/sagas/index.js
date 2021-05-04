@@ -49,6 +49,8 @@ import {
 } from './user';
 import {
   watchPeopleGet,
+  watchStartupsGet,
+  watchFoundersGet,
 } from './people';
 
 function getInfo(params) {
@@ -140,5 +142,7 @@ export default function* rootSaga() {
     fork(watchSendFeedback),
     fork(watchGetInfo),
     fork(watchPeopleGet),
+    fork(watchStartupsGet),
+    fork(watchFoundersGet),
   ]);
 }
