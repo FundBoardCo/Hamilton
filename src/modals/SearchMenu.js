@@ -71,7 +71,7 @@ export default function SearchMenu() {
   // TODO: remote after April 2021 patch has been live for a while
   searchKeywords = searchKeywords.map(s => s.trim());
 
-  const searchRaise = useSelector(state => state.search.raise) || 100000;
+  const searchRaise = useSelector(state => state.search.raise);
   const [raiseValue, setRaiseValue] = useState(searchRaise);
   const [raiseValid, setRaiseValid] = useState(true);
 
@@ -82,19 +82,15 @@ export default function SearchMenu() {
   const searchedText = useSelector(state => state.search.searchedText);
 
   const searchLocation = useSelector(state => state.search.location) || '';
+  const searchOnlyLocal = useSelector(state => state.search.onlyLocal);
   // use local state to handle invalid entries without recording them
   const [locationValue, setLocationValue] = useState(searchLocation);
   const [locationValid, setLocationValid] = useState(true);
 
-  const extraLocations = useSelector(state => state.search.extraLocations) || [];
   const extraZipcodes_status = useSelector(state => state.search.extraZipcodes_status);
-  const locations = searchLocation
-  && typeof searchLocation === 'string'
-  && Array.isArray(extraLocations)
-    ? getSearchLocations(searchLocation, extraLocations) : {};
-  const { searchedCity = [], searchedSecondaryCities = [] } = locations;
+  const searchedLocationPairs = useSelector(state => state.searchedLocationPairs) || [];
 
-  const storedRemote = useSelector(state => state.search.remote) || '';
+  const storedRemote = useSelector(state => state.search.remote) || false;
 
   const [validated, setValidated] = useState(false);
 
@@ -128,6 +124,11 @@ export default function SearchMenu() {
     location,
   });
 
+  const setLocationBool = onlyLocal => dispatch({
+    type: types.SEARCH_SET_ONLYLOCAL,
+    onlyLocal,
+  });
+
   const setOnlyLeads = onlyLeads => dispatch({
     type: types.SEARCH_SET_ONLYLEADS,
     onlyLeads,
@@ -139,7 +140,7 @@ export default function SearchMenu() {
   });
 
   const setOnlyOpen = onlyOpen => dispatch({
-    type: types.SEARCH_SET_ONLYOPEM,
+    type: types.SEARCH_SET_ONLYOPEN,
     onlyOpen,
   });
 
@@ -201,6 +202,10 @@ export default function SearchMenu() {
     setOnlyOpen(val);
   };
 
+  const onLocationBoolChange = val => {
+    setLocationBool(val);
+  };
+
   const onRemoteChange = val => {
     setRemote(val);
   };
@@ -222,17 +227,21 @@ export default function SearchMenu() {
   const getResults = () => {
     // the params don't currently do anything, keep them for when search is an API call.
     const params = {};
+    params.searchedText = searchedText;
     params.keywords = searchKeywords;
     params.raise = searchRaise;
     params.onlyLeads = searchOnlyLeads;
     params.onlyDiverse = searchOnlyDiverse;
     params.onlyOpen = searchOnlyOpen;
-    params.location = searchedCity;
-    params.secondaryLocation = searchedSecondaryCities;
+    params.location = searchLocation;
     params.remote = storedRemote;
 
-    return dispatch({
-      type: 'SEARCH_GET_RESULTS_REQUESTED',
+    dispatch({
+      type: types.SEARCH_SYNC_PREVQUERY,
+    });
+
+    dispatch({
+      type: types.SEARCH_GET_RESULTS_REQUESTED,
       params,
     });
   };
@@ -270,7 +279,7 @@ export default function SearchMenu() {
   if (!searchLocation) {
     extraZipcodesText = 'waiting for your zip code.';
   } else if (!extraZipcodes_status || extraZipcodes_status === 'succeeded') {
-    const numCities = searchedSecondaryCities.length;
+    const numCities = searchedLocationPairs.length;
     extraZipcodesText = `${numCities} cities within ${ZIPDISTANCE} miles of ${searchLocation} found.`;
   }
 
@@ -490,6 +499,18 @@ export default function SearchMenu() {
           <div className={`mb-3 ${extraZipcodesClass}`}>
             {`Status: ${extraZipcodesText}`}
           </div>
+          <Form.Group
+            controlId="LocationBoolCheckbox"
+            className="mb-3"
+          >
+            <Form.Check
+              type="checkbox"
+              label="Only Investors That Invest in My Location"
+              checked={searchOnlyLocal}
+              onChange={e => onLocationBoolChange(e.target.checked)}
+              data-track="LocationBoolCheckbox"
+            />
+          </Form.Group>
           <Form.Group
             controlId="RemoteCheckbox"
             className="mb-5"

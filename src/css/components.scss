@@ -41,7 +41,7 @@ html#ov body {
         border-style: solid;
         border-color: $col-primary-light4;
         background-size: cover;
-        background-position: center;
+        background-position: center center;
         background-repeat: no-repeat;
         background-color: $col-primary-light9;
 
@@ -74,9 +74,10 @@ html#ov body {
             border-radius: $pad1;
             border: 1px solid $col-primary-light7;
             overflow: hidden;
-            background-size: cover;
+            background-size: contain;
+            background-color: #fff;
             background-repeat: no-repeat;
-            background-position: center;
+            background-position: center center;
           }
 
           .orgText {
@@ -492,9 +493,10 @@ html#ov body {
                     border-radius: $pad1;
                     overflow: hidden;
                     margin-right: $pad1;
-                    background-size: cover;
+                    background-size: contain;
+                    background-color: #fff;
                     background-repeat: no-repeat;
-                    background-position: center;
+                    background-position: center center;
                   }
 
                   .jobTitle {
@@ -985,8 +987,10 @@ html#ov body {
           border-radius: $pad1;
           border-bottom-left-radius: $pad2;
           box-sizing: border-box;
-          background-size: cover;
+          background-size: contain;
+          background-color: #fff;
           background-repeat: no-repeat;
+          background-position: center center;
         }
       }
 

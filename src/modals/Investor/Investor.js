@@ -25,7 +25,7 @@ export default function Investor(props) {
   const searchResults = useSelector(state => state.search.results) || {};
   const people_records = useSelector(state => state.people.records) || {};
   const investorStatus = useSelector(state => state.investors.ownInvestors[uuid]) || {};
-  const sData = searchResults[uuid] || {};
+  const sData = searchResults.filter(s => s.uuid === uuid)[0] || {};
   const pData = people_records[uuid] || {};
   const data = { ...pData, ...sData, ...investorStatus };
   const loggedOutInvestorIDs = useSelector(state => state.investors.loggedOutInvestorIDs) || [];

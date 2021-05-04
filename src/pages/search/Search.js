@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import PropTypes from 'prop-types';
 import { useSelector, useDispatch } from 'react-redux';
 import { useHistory } from 'react-router';
 import Button from 'react-bootstrap/Button';
@@ -7,6 +8,44 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Person from '../../components/people/Person';
 import DismissibleStatus from '../../components/DismissibleStatus';
 import * as types from '../../actions/types';
+import { isEmptyish } from '../../utils';
+
+function SearchQuery(props) {
+  const {
+    label,
+    value,
+    action,
+    saveKey,
+    setTo,
+    restore,
+    onClick,
+  } = props;
+  const valIsEmptyish = isEmptyish(value);
+  let text = value;
+  if (typeof value === 'boolean') {
+    text = label;
+  } else if (valIsEmptyish) {
+    text = restore;
+  }
+
+  const opts = {
+    action,
+    saveKey,
+    setTo: valIsEmptyish ? restore : setTo,
+  };
+
+  return (
+    <Button
+      variant="text"
+      className={`mr-2 flex-shrink-0 ${valIsEmptyish ? 'tx-lineThrough' : ''}`}
+      onClick={() => onClick(opts)}
+    >
+      <i>
+        <span className="text-primary mr-2">{text}</span>
+      </i>
+    </Button>
+  );
+}
 
 export default function Search() {
   const rawResults = useSelector(state => state.search.results) || [];
@@ -16,6 +55,92 @@ export default function Search() {
   const loggedOutInvestorIDs = useSelector(state => state.investors.loggedOutInvestorIDs) || [];
   const numInvestors = investorIds.length ? investorIds.length : loggedOutInvestorIDs.length;
   const searchResults = rawResults.filter(s => !investorIds.includes(s.uuid));
+  // search query values
+  const searchedText = useSelector(state => state.search.searchedText);
+  const searchKeywords = useSelector(state => state.search.keywords) || [];
+  const searchRaise = useSelector(state => state.search.raise);
+  const searchLocation = useSelector(state => state.search.location) || '';
+  const searchOnlyLeads = useSelector(state => state.search.onlyLeads);
+  const searchOnlyDiverse = useSelector(state => state.search.onlyDiverse);
+  const searchOnlyOpen = useSelector(state => state.search.onlyOpen);
+  const searchOnlyLocal = useSelector(state => state.search.onlyLocal);
+  const searchRemote = useSelector(state => state.search.remote);
+  const prevQuery = useSelector(state => state.search.prevQuery) || {};
+  const searchQuery = [
+    {
+      label: 'Text',
+      value: searchedText,
+      action: types.SEARCH_SET_SEARCHTEXT,
+      saveKey: 'text',
+      setTo: '',
+      restore: prevQuery.searchedText,
+    },
+    {
+      label: 'Keywords',
+      value: searchKeywords.join(', '),
+      action: types.SEARCH_SET_KEYWORDS,
+      saveKey: 'keywords',
+      setTo: [],
+      restore: prevQuery.keywords,
+    },
+    {
+      label: 'Raise',
+      value: searchRaise,
+      action: types.SEARCH_SET_RAISE,
+      saveKey: 'raise',
+      setTo: false,
+      restore: prevQuery.raise,
+    },
+    {
+      label: 'Location',
+      value: searchLocation,
+      action: types.SEARCH_TOGGLE_LOCATION,
+      saveKey: 'location',
+      setTo: '',
+      restore: prevQuery.location,
+    },
+    {
+      label: 'Local',
+      value: searchOnlyLocal,
+      action: types.SEARCH_SET_ONLYLOCAL,
+      saveKey: 'onlyLocal',
+      setTo: false,
+      restore: prevQuery.onlyLocal,
+    },
+    {
+      label: 'Remote',
+      value: searchRemote,
+      action: types.SEARCH_SET_REMOTE,
+      saveKey: 'remote',
+      setTo: false,
+      restore: prevQuery.remote,
+    },
+    {
+      label: 'Leads',
+      value: searchOnlyLeads,
+      action: types.SEARCH_SET_ONLYLEADS,
+      saveKey: 'onlyLeads',
+      setTo: false,
+      restore: prevQuery.onlyLeads,
+    },
+    {
+      label: 'Diverse',
+      value: searchOnlyDiverse,
+      action: types.SEARCH_SET_ONLYDIVERSE,
+      saveKey: 'onlyDiverse',
+      setTo: false,
+      restore: prevQuery.onlyDiverse,
+    },
+    {
+      label: 'Open',
+      value: searchOnlyOpen,
+      action: types.SEARCH_SET_ONLYOPEN,
+      saveKey: 'onlyOpen',
+      setTo: false,
+      restore: prevQuery.onlyOpen,
+    },
+  ];
+  console.log(searchQuery);
 
   const [detailsOpen, setDetailsOpen] = useState(false);
   const [page, setPage] = useState(1);
@@ -41,6 +166,22 @@ export default function Search() {
 
   const nextPage = () => {
     setPage(page + 1);
+  };
+
+  const toggleSearchQuery = opts => {
+    const {
+      action,
+      saveKey,
+      setTo,
+    } = opts;
+
+    dispatch({
+      type: action,
+      [saveKey]: setTo,
+    });
+    dispatch({
+      type: 'SEARCH_GET_RESULTS_REQUESTED',
+    });
   };
 
   const lastIndexShown = searchResults.length < page * 100 ? searchResults.length : page * 100;
@@ -91,6 +232,19 @@ export default function Search() {
         showSuccess={false}
         dissmissAction={types.SEARCH_GET_RESULTS_DISMISSED}
       />
+      <div className="d-flex mb-2 txs-2 txs-md-tx3 flex-wrap">
+        <span className="mr-2 flex-shrink-0">
+          <strong>
+            You searched for&nbsp;
+          </strong>
+          <span>
+            (click to reset):
+          </span>
+        </span>
+        {searchQuery
+          .filter(s => !isEmptyish(s.value) || !isEmptyish(s.restore))
+          .map(s => <SearchQuery {...s} key={s.saveKey} onClick={toggleSearchQuery} />)}
+      </div>
       <div className="results">
         {searchResults.map((r, i) => {
           const investorStatus = ownInvestors[r.uuid] || {};
@@ -101,7 +255,7 @@ export default function Search() {
           };
           if (i >= page * 100) return null;
           return (
-            <Person key={r.uuid} {...personProps} />
+            <Person key={r.uuid || r.permalink} {...personProps} />
           );
         })}
         {searchResults.length > 0 && (
@@ -135,3 +289,37 @@ export default function Search() {
     </Row>
   );
 }
+
+SearchQuery.defaultProps = {
+  label: '',
+  value: '',
+  action: '',
+  saveKey: '',
+  setTo: '',
+  restore: '',
+  onClick: {},
+};
+
+SearchQuery.propTypes = {
+  label: PropTypes.string,
+  value: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.number,
+    PropTypes.bool,
+  ]),
+  action: PropTypes.string,
+  saveKey: PropTypes.string,
+  setTo: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.number,
+    PropTypes.bool,
+    PropTypes.array, // this array is always empty
+  ]),
+  restore: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.number,
+    PropTypes.bool,
+    PropTypes.arrayOf(PropTypes.string),
+  ]),
+  onClick: PropTypes.func,
+};

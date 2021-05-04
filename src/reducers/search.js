@@ -18,6 +18,7 @@ const defaults = {
   onlyDiverse: false,
   onlyOpen: false,
   location: '',
+  onlyLocal: false,
   remote: false,
   extraZipcodes: [],
   extraLocations: [],
@@ -25,6 +26,7 @@ const defaults = {
   searchedLocationPairs: [],
   searchedText: '',
   firstTime: true,
+  prevQuery: {},
 };
 
 let parsedResults = [];
@@ -59,21 +61,29 @@ function subsetInvestorData(i = {}) {
   // adapted from https://medium.com/@captaindaylight/get-a-subset-of-an-object-9896148b9c72
   return (({
     uuid,
+    permalink,
     name,
     image_id,
     image_url,
     primary_job_title,
     primary_organization,
+    primary_organization_name,
+    primary_organization_logo,
     status,
+    investorStatus,
     is_lead_investor,
   }) => ({
     uuid,
+    permalink,
     name,
     image_id,
     image_url,
     primary_job_title,
     primary_organization,
+    primary_organization_name,
+    primary_organization_logo,
     status,
+    investorStatus,
     is_lead_investor,
   }))(i);
 }
@@ -107,36 +117,88 @@ export default function search(state = defaults, action) {
   switch (action.type) {
     case types.SEARCH_SET_KEYWORDS: return {
       ...state,
+      prevQuery: {
+        ...state.prevQuery,
+        keywords: state.keywords,
+      },
       keywords: Array.isArray(action.keywords)
         ? action.keywords.map(k => k.trim().toLowerCase())
         : [],
     };
     case types.SEARCH_SET_RAISE: return {
       ...state,
-      raise: (typeof action.raise === 'number') ? action.raise : 100000,
+      prevQuery: {
+        ...state.prevQuery,
+        raise: state.raise,
+      },
+      raise: action.raise,
     };
     case types.SEARCH_SET_ONLYLEADS: return {
       ...state,
+      prevQuery: {
+        ...state.prevQuery,
+        onlyLeads: state.onlyLeads,
+      },
       onlyLeads: action.onlyLeads,
     };
     case types.SEARCH_SET_ONLYDIVERSE: return {
       ...state,
+      prevQuery: {
+        ...state.prevQuery,
+        onlyDiverse: state.onlyDiverse,
+      },
       onlyDiverse: action.onlyDiverse,
     };
-    case types.SEARCH_SET_ONLYOPEM: return {
+    case types.SEARCH_SET_ONLYOPEN: return {
       ...state,
+      prevQuery: {
+        ...state.prevQuery,
+        onlyOpen: state.onlyOpen,
+      },
       onlyOpen: action.onlyOpen,
     };
     case types.SEARCH_SET_LOCATION: return {
       ...state,
       location: action.location,
     };
+    case types.SEARCH_TOGGLE_LOCATION: return {
+      ...state,
+      prevQuery: {
+        ...state.prevQuery,
+        location: state.location,
+        extraZipcodes: state.extraZipcodes,
+        extraLocations: state.extraLocations,
+        searchedCityState: state.searchedCityState,
+        searchedLocationPairs: state.searchedLocationPairs,
+      },
+      extraZipcodes: action.location ? state.prevQuery.extraZipcodes : [],
+      extraLocations: action.location ? state.prevQuery.extraLocations : [],
+      searchedCityState: action.location ? state.prevQuery.searchedCityState : '',
+      searchedLocationPairs: action.location ? state.prevQuery.searchedLocationPairs : [],
+      location: action.location,
+    };
+    case types.SEARCH_SET_ONLYLOCAL: return {
+      ...state,
+      prevQuery: {
+        ...state.prevQuery,
+        onlyLocal: state.onlyLocal,
+      },
+      onlyLocal: action.onlyLocal,
+    };
     case types.SEARCH_SET_REMOTE: return {
       ...state,
+      prevQuery: {
+        ...state.prevQuery,
+        remote: state.remote,
+      },
       remote: action.remote,
     };
     case types.SEARCH_SET_SEARCHTEXT: return {
       ...state,
+      prevQuery: {
+        ...state.prevQuery,
+        searchedText: state.searchedText,
+      },
       searchedText: action.text,
     };
     case types.SEARCH_GET_EXTRAZIPCODES_REQUESTED: return {
@@ -157,6 +219,24 @@ export default function search(state = defaults, action) {
       searchedLocationPairs: [],
       extraZipcodes_status: processErr(action.error),
     };
+    case types.SEARCH_SYNC_PREVQUERY: return {
+      ...state,
+      prevQuery: {
+        searchedText: state.searchedText,
+        keywords: state.keywords,
+        raise: state.raise,
+        location: state.location,
+        extraZipcodes: state.extraZipcodes,
+        extraLocations: state.extraLocations,
+        searchedCityState: state.searchedCityState,
+        searchedLocationPairs: state.searchedLocationPairs,
+        onlyLocal: state.onlyLocal,
+        remote: state.remote,
+        onlyLeads: state.onlyLeads,
+        onlyOpen: state.onlyOpen,
+        onlyDiverse: state.onlyDiverse,
+      },
+    };
     case types.SEARCH_GET_RESULTS_REQUESTED:
       parsedResults = validInvestors.map(i => {
         const calcedMatch = calcMatch({ investor: i, ...state });
@@ -165,7 +245,11 @@ export default function search(state = defaults, action) {
           ...calcedMatch,
         };
       })
-        .filter(f => f.matches.percentage_match > (state.searchedText ? 0 : 9))
+        .filter(f => f.matches.percentage_match > (
+          state.searchedText
+            || state.onlyLeads
+            || state.onlyOpen
+            || state.onlyDiverse ? 0 : 9))
         .sort((a, b) => b.matches.percentage_match - a.matches.percentage_match);
 
       return {

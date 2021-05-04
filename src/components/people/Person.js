@@ -6,7 +6,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { capitalizeFirstLetter } from '../../utils';
 import StageIcon from './StageIcon';
 import RaiseBullet from './RaiseBullet';
-import { cb_logo_imagePrefix } from '../../constants';
+import { cb_logo_imagePrefix, cb_founder_imagePrefix } from '../../constants';
 
 function randomKey() {
   return String(Math.floor(Math.random() * 100000000));
@@ -48,9 +48,10 @@ function Matches(props) {
 
 export default function Person(props) {
   const {
-    uuid,
+    permalink,
     name,
     image_url = '',
+    image_id = '',
     primary_job_title = '',
     primary_organization = {},
     // isLead = false,
@@ -65,17 +66,23 @@ export default function Person(props) {
   } = props;
 
   let {
+    uuid,
     primary_organization_name,
     primary_organization_logo,
   } = props;
 
+  // account for investors keyed by their permalink
+  if (!uuid) uuid = permalink;
+
+  const founderImageURL = image_url || `${cb_founder_imagePrefix}${image_id}`;
+
   // Sometimes the logo is an image_id instead of an URL
-  const imageIDURL = primary_organization.image_id
+  const logoImageURL = primary_organization.image_id
     ? `${cb_logo_imagePrefix}${primary_organization.image_id}` : '';
 
   primary_organization_logo = primary_organization_logo
     || primary_organization.image_url
-    || imageIDURL
+    || logoImageURL
     || '';
   primary_organization_name = primary_organization_name
     || primary_organization.name
@@ -134,7 +141,7 @@ export default function Person(props) {
         type="button"
         data-track={`${capPath}Person`}
       >
-        <div className="thumb" style={{ backgroundImage: `url(${image_url})` }} />
+        <div className="thumb" style={{ backgroundImage: `url(${founderImageURL})` }} />
         <div className="content">
           {sortedBy !== 'next' && (
             <div>
@@ -224,9 +231,11 @@ export default function Person(props) {
 }
 
 Person.defaultProps = {
-  uuid: 'not found',
+  uuid: '',
+  permalink: '',
   name: '',
   image_url: '',
+  image_id: '',
   primary_job_title: '',
   primary_organization: {
     id: '',
@@ -259,8 +268,10 @@ Person.defaultProps = {
 
 Person.propTypes = {
   uuid: PropTypes.string,
+  permalink: PropTypes.string,
   name: PropTypes.string,
   image_url: PropTypes.string,
+  image_id: PropTypes.string,
   primary_job_title: PropTypes.string,
   primary_organization: PropTypes.objectOf(PropTypes.oneOfType([
     PropTypes.string,
