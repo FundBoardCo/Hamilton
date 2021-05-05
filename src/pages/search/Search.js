@@ -140,7 +140,6 @@ export default function Search() {
       restore: prevQuery.onlyOpen,
     },
   ];
-  console.log(searchQuery);
 
   const [detailsOpen, setDetailsOpen] = useState(false);
   const [page, setPage] = useState(1);
