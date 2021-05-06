@@ -88,7 +88,7 @@ export default function SearchMenu() {
   const [locationValid, setLocationValid] = useState(true);
 
   const extraZipcodes_status = useSelector(state => state.search.extraZipcodes_status);
-  const searchedLocationPairs = useSelector(state => state.searchedLocationPairs) || [];
+  const searchedLocationPairs = useSelector(state => state.search.searchedLocationPairs) || [];
 
   const storedRemote = useSelector(state => state.search.remote) || false;
 
