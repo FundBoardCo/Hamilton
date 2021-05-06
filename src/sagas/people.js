@@ -1,3 +1,4 @@
+import Parse from 'parse';
 import {
   call,
   put,
@@ -34,12 +35,16 @@ export function* watchPeopleGet() {
 }
 
 function getFounders(permalinks) {
+  /*
   const params = {};
   params.endpoint = 'appCgVbPCI4BvRLZn';
   params.table = 'founders';
   const findQueries = permalinks.map(p => `{permalink}='${p}'`).join();
   params.filterByFormula = `OR(${findQueries})`;
   return axios.get(`/.netlify/functions/airtable_get_table?${toQueryString(params)}`);
+   */
+  const params = { permalinks };
+  return Parse.Cloud.run('getFoundersByPermalink', params);
 }
 
 function* workFoundersGet(action) {
@@ -50,15 +55,13 @@ function* workFoundersGet(action) {
       const startup = startups.pop();
       const { uuid } = startup;
       const permalinks = startup.founder_permalinks?.split(',') || [];
-      const result = yield call(getFounders, permalinks);
-      const { data } = result;
-      // catch airtable errors
-      if (data.error) {
-        trackErr(data.error);
-        yield put({ type: types.FOUNDERS_FAILED, error: data.error });
-      } else {
-        yield put({ type: types.FOUNDERS_SUCCEEDED, data, orgUUID: uuid });
-      }
+      const results = yield call(getFounders, permalinks);
+      console.log(results);
+      const founders = results.map(r => {
+        const founder = r && typeof r.toJSON === 'function' ? r.toJSON() : {};
+        return founder;
+      });
+      yield put({ type: types.FOUNDERS_SUCCEEDED, founders, orgUUID: uuid });
     }
     yield put({ type: types.FOUNDERS_COMPLETED });
   } catch (error) {
@@ -71,33 +74,37 @@ export function* watchFoundersGet() {
   yield takeLatest(types.FOUNDERS_REQUESTED, workFoundersGet);
 }
 
-function getStartups(uuids) {
+function getStartups(permalinks) {
+  /*
   const params = {};
   params.endpoint = 'appCgVbPCI4BvRLZn';
   params.table = 'startups';
   const findQueries = uuids.map(u => `{uuid}='${u}'`).join();
   params.filterByFormula = `OR(${findQueries})`;
   return axios.get(`/.netlify/functions/airtable_get_table?${toQueryString(params)}`);
+   */
+
+  const params = { permalinks };
+  return Parse.Cloud.run('getStartupsByPermalink', params);
 }
 
 function* workStartupsGet(action) {
-  const { uuids } = action;
+  const { permalinks } = action;
+  let startups = [];
 
   try {
-    if (!Array.isArray(uuids) || !uuids.length) {
+    if (!Array.isArray(permalinks) || !permalinks.length) {
       throw new Error('An array of startups uuids is required.');
     }
-    const result = yield call(getStartups, uuids);
-    const { data } = result;
-    // catch airtable errors
-    if (data.error) {
-      trackErr(data.error);
-      yield put({ type: types.STARTUPS_FAILED, error: data.error });
-    } else {
-      yield put({ type: types.STARTUPS_SUCCEEDED, data });
-      const startups = data.records.map(r => r.fields);
-      yield put({ type: types.FOUNDERS_REQUESTED, startups });
-    }
+    const results = yield call(getStartups, permalinks);
+    console.log(results);
+    startups = results.map(r => {
+      const startup = r && typeof r.toJSON === 'function' ? r.toJSON() : {};
+      return startup;
+    });
+
+    yield put({ type: types.STARTUPS_SUCCEEDED, startups });
+    yield put({ type: types.FOUNDERS_REQUESTED, startups });
   } catch (error) {
     trackErr(error);
     yield put({ type: types.STARTUPS_FAILED, error });

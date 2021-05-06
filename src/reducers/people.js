@@ -3,16 +3,18 @@ import { processErr } from '../utils';
 
 function processStartups(action, state) {
   const newStartups = { ...state.startups };
-  action.data.records.forEach(r => {
-    newStartups[r.fields.uuid] = { ...r.fields };
+  const { startups } = action;
+
+  startups.forEach(r => {
+    newStartups[r.uuid] = { ...r };
   });
   return newStartups;
 }
 
 function processFounders(action, state) {
   const startups = { ...state.startups };
-  const founders = action.data.records.map(r => r.fields);
-  startups[action.orgUUID].founders = founders;
+  const { founders, orgUUID } = action;
+  startups[orgUUID].founders = founders;
   return startups;
 }
 

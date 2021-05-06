@@ -17,7 +17,7 @@ import { getSafeVar } from '../../utils';
 
 export default function Board() {
   const userUpdateStatus = useSelector(state => state.user.update_status);
-  const people = useSelector(state => state.people.records);
+  const people = useSelector(state => state.people.records) || {};
   const getOwnInvestorsStatus = useSelector(
     state => state.investors.getOwnInvestors_status,
   );
@@ -28,7 +28,6 @@ export default function Board() {
   const allowIn = loggedIn && typeof place === 'number' && (place <= MINPLACE || overridePlace);
   const userUUID = useSelector(state => state.user.uuid);
   const startups = useSelector(state => state.people.startups);
-  console.log(startups);
   const startupsStatus = useSelector(state => state.people.get_startups_status);
 
   const [sortBy, setSortBy] = useState('status');
@@ -214,17 +213,20 @@ export default function Board() {
   };
 
   useEffect(() => {
-    let uuids = [];
+    let permalinks = [];
     Object.keys(ownInvestors).forEach(o => {
-      uuids = [...new Set([
-        ...uuids,
-        ...people[o]?.startups.map(s => s.uuid),
+      const personStartups = people[o]?.startups || [];
+      permalinks = [...new Set([
+        ...permalinks,
+        ...personStartups.map(s => s.permalink),
       ])];
     });
-    dispatch({
-      type: types.STARTUPS_REQUESTED,
-      uuids,
-    });
+    if (permalinks.length) {
+      dispatch({
+        type: types.STARTUPS_REQUESTED,
+        permalinks,
+      });
+    }
   }, [dispatch, ownInvestors, people]);
 
   return (
