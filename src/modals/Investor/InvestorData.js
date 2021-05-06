@@ -76,7 +76,7 @@ export default function InvestorData(props) {
     num_partner_investments = 0,
     investor_type = [],
     // investments = [],
-    // is_lead_investor = false,
+    is_lead_investor = false,
     // is_open = false,
     // is_impact = false,
     // isBoard = false,
@@ -229,7 +229,7 @@ export default function InvestorData(props) {
           <ul>
             <RaiseBullet
               faIcon="flag"
-              bool={investments_led > 0}
+              bool={investments_led > 0 || is_lead_investor}
               text={`They have led ${cur_investments_led} investments at their current org. They have led ${investments_led} investments overall, and been a partner in ${num_partner_investments} investments.`}
             />
             <RaiseBullet
