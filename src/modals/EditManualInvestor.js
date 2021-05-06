@@ -17,7 +17,7 @@ export default function EditManualInvestor() {
   const modalProps = useSelector(state => state.modal.modalProps);
   const userUUID = useSelector(state => state.user.uuid);
 
-  const {uuid, objectId} = modalProps;
+  const { uuid, objectId } = modalProps;
 
   const [validated, setValidated] = useState(false);
 
@@ -42,6 +42,8 @@ export default function EditManualInvestor() {
     name: modalProps.name,
     primary_job_title: modalProps.primary_job_title,
     primary_organization_name: pOrgName,
+    is_lead_investor: modalProps.is_lead_investor,
+    accepts_direct_outreach: modalProps.accepts_direct_outreach,
     linkedin: modalProps.linkedin,
     twitter: modalProps.twitter,
     permalink: cbLink,
@@ -54,6 +56,7 @@ export default function EditManualInvestor() {
     primary_job_title,
     primary_organization_name,
     is_lead_investor,
+    accepts_direct_outreach,
     linkedin,
     twitter,
     permalink,
@@ -82,6 +85,11 @@ export default function EditManualInvestor() {
       label: 'Potential Lead Investor?',
       type: 'checkbox',
       value: is_lead_investor,
+    },
+    accepts_direct_outreach: {
+      label: 'Are they open to direct outreach?',
+      type: 'checkbox',
+      value: accepts_direct_outreach,
     },
     linkedin: {
       label: 'LinkedIn Page',
@@ -139,6 +147,7 @@ export default function EditManualInvestor() {
         primary_job_title,
         primary_organization_name,
         is_lead_investor,
+        accepts_direct_outreach,
         linkedin,
         twitter,
         permalink: parseCBLink(permalink),
