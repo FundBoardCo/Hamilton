@@ -216,24 +216,42 @@ export function calcMatch(opts) {
   let percentageMatch = keywords.length ? matches.keywords.length / keywords.length : 0;
   let matchDivisor = 1;
 
-  if (raise && matches.raise) {
+  if (raise) {
     let raiseDiff = raise - raise_median;
     if (raiseDiff < 0) raiseDiff *= -1;
     let raiseAdd = 0;
-    if (raiseDiff <= 5000000) raiseAdd = 0.11;
-    if (raiseDiff <= 4000000) raiseAdd = 0.21;
-    if (raiseDiff <= 3500000) raiseAdd = 0.32;
-    if (raiseDiff <= 3000000) raiseAdd = 0.41;
-    if (raiseDiff <= 2500000) raiseAdd = 0.52;
-    if (raiseDiff <= 2000000) raiseAdd = 0.61;
-    if (raiseDiff <= 1750000) raiseAdd = 0.72;
-    if (raiseDiff <= 1500000) raiseAdd = 0.81;
-    if (raiseDiff <= 1250000) raiseAdd = 0.85;
-    if (raiseDiff <= 1000000) raiseAdd = 0.91;
-    if (raiseDiff <= 750000) raiseAdd = 0.96;
-    if (raiseDiff <= 500000) raiseAdd = 1;
+
+    // use a different scale if the raise is below 1 million
+    if (raise < 1000000) {
+      if (raiseDiff <= 300000) raiseAdd = 0.05;
+      if (raiseDiff <= 200000) raiseAdd = 0.10;
+      if (raiseDiff <= 150000) raiseAdd = 0.20;
+      if (raiseDiff <= 100000) raiseAdd = 0.31;
+      if (raiseDiff <= 750000) raiseAdd = 0.42;
+      if (raiseDiff <= 500000) raiseAdd = 0.53;
+      if (raiseDiff <= 400000) raiseAdd = 0.64;
+      if (raiseDiff <= 300000) raiseAdd = 0.75;
+      if (raiseDiff <= 200000) raiseAdd = 0.86;
+      if (raiseDiff <= 100000) raiseAdd = 0.97;
+      if (raiseDiff <= 50000) raiseAdd = 1;
+    } else {
+      if (raiseDiff <= 5000000) raiseAdd = 0.05;
+      if (raiseDiff <= 4500000) raiseAdd = 0.10;
+      if (raiseDiff <= 4000000) raiseAdd = 0.20;
+      if (raiseDiff <= 3500000) raiseAdd = 0.31;
+      if (raiseDiff <= 3000000) raiseAdd = 0.42;
+      if (raiseDiff <= 2500000) raiseAdd = 0.53;
+      if (raiseDiff <= 2000000) raiseAdd = 0.64;
+      if (raiseDiff <= 1500000) raiseAdd = 0.75;
+      if (raiseDiff <= 1000000) raiseAdd = 0.86;
+      if (raiseDiff <= 750000) raiseAdd = 0.97;
+      if (raiseDiff <= 500000) raiseAdd = 1;
+    }
+
     percentageMatch += raiseAdd;
     matchDivisor += 1; // add divisor for raise;
+    // fudge the raise.match so near misses are counted
+    if (raiseAdd > 0.8) matches.raise = true;
   }
 
   if (location && searchedCityState) {

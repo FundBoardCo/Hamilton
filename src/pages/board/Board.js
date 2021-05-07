@@ -85,25 +85,26 @@ export default function Board() {
   Object.keys(ownInvestors).forEach(i => {
     const person = people[i] ? { ...people[i] } : {};
     const investorStatus = ownInvestors[i] || {};
-    investorList.push({
+    const merged = {
       ...person,
       uuid: i,
       ...investorStatus, // merges in manual data
       investorStatus,
-    });
-    const org = person.primary_organization || {};
+    }
+    investorList.push(merged);
+    const org = merged.primary_organization || {};
     const location = [];
-    if (person.location_city) location.push(person.location_city);
-    if (person.location_state) location.push(person.location_state);
+    if (merged.location_city) location.push(merged.location_city);
+    if (merged.location_state) location.push(merged.location_state);
     const noteValues = investorStatus.notes ? Object.values(investorStatus.notes) : [];
     const notesForCSV = noteValues
       .filter(n => !n.next).map(n => `${n.text} ${n.date || ''}`).join(' || ');
     const nextForCSV = noteValues
       .filter(n => n.next).map(n => `${n.text} ${n.date || ''}`).join(' || ');
     const csvPer = {};
-    csvPer['Investor Name'] = person.name || '';
-    csvPer.Title = person.primary_job_title || '';
-    csvPer.Organization = org.name || '';
+    csvPer['Investor Name'] = merged.name || '';
+    csvPer.Title = merged.primary_job_title || '';
+    csvPer.Organization = org.name || merged.primary_organization_name || '';
     csvPer.Priority = '';
     csvPer['Introed By'] = investorStatus.intro_name || '';
     csvPer['Introer Email'] = investorStatus.intro_email || '';
@@ -112,12 +113,12 @@ export default function Board() {
     csvPer.Amount = investorStatus.amount || '';
     csvPer['Next Steps'] = nextForCSV;
     csvPer.Notes = notesForCSV;
-    csvPer['Potential Lead'] = person.is_lead_investor ? 'Yes' : '';
-    csvPer['Open to Direct Outreach'] = person.is_open ? 'Yes' : '';
+    csvPer['Potential Lead'] = merged.is_lead_investor ? 'Yes' : '';
+    csvPer['Open to Direct Outreach'] = merged.is_open ? 'Yes' : '';
     csvPer.Location = location.join(', ');
-    csvPer.LinkedIn = person.linkedin || '';
-    csvPer.Twitter = person.twitter || '';
-    csvPer.CrunchBase = person.permalink ? `https://www.crunchbase.com/person/${person.permalink}` : '';
+    csvPer.LinkedIn = merged.linkedin || '';
+    csvPer.Twitter = merged.twitter || '';
+    csvPer.CrunchBase = merged.permalink ? `https://www.crunchbase.com/person/${merged.permalink}` : '';
     csvList.push(csvPer);
   });
 
