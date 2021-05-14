@@ -178,9 +178,15 @@ export function calcMatch(opts) {
     cur_investments_led = 0,
     investor_type,
     // startups = [],
-    primary_organization_name = '',
+    primary_job_title,
     primary_organization = {},
   } = investor;
+
+  let { primary_organization_name } = investor;
+
+  primary_organization_name = primary_organization_name
+    || primary_organization?.name
+    || primary_organization?.value;
 
   const iKeywords = Array.isArray(investor.keywords)
     ? investor.keywords.map(ik => ik.trim().toLowerCase()) : [];
@@ -214,7 +220,7 @@ export function calcMatch(opts) {
   matches.keywords = [...new Set([...matches.keywords])];
 
   let percentageMatch = keywords.length ? matches.keywords.length / keywords.length : 0;
-  let matchDivisor = 1;
+  let matchDivisor = keywords.length ? 1 : 0;
 
   if (raise) {
     let raiseDiff = raise - raise_median;
@@ -339,9 +345,15 @@ export function calcMatch(opts) {
     && (
       !raise_median
       || (!Array.isArray(investor_type) || !investor_type.length)
+      || !primary_job_title
+      || !primary_organization_name
     )) percentageMatch = 0;
 
-  percentageMatch = Math.floor((percentageMatch / matchDivisor) * 100);
+  if (matchDivisor) {
+    percentageMatch = Math.floor((percentageMatch / matchDivisor) * 100);
+  } else {
+    percentageMatch = 0;
+  }
 
   matches.percentage_match = percentageMatch;
   matches.matchDivisor = matchDivisor;
