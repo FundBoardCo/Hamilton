@@ -359,7 +359,7 @@ export default function Public(props) {
               <div className="d-flex justify-content-center mb-4">
                 <Button
                   variant="primary"
-                  className="btnNoMax"
+                  className="btnNoMax btnBigger"
                   onClick={onGoToSearch}
                   data-track="PublicFindInvestors"
                 >
