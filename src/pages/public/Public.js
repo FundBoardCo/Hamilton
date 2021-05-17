@@ -11,6 +11,7 @@ import GenericModal from '../../modals/GenericModal';
 import { MINPLACE, STAGEPROPS } from '../../constants';
 import ExampleOfIntro from '../../imgs/ExampleOfIntro.jpg';
 import ExampleOfIntroMobile from '../../imgs/ExampleOfIntroMobile.jpg';
+import ExampleOfSearch from '../../imgs/Board-Lisa-Data.png';
 
 export default function Public(props) {
   const { match } = props;
@@ -348,51 +349,28 @@ export default function Public(props) {
           {userState === 'new' && (
             <div>
               <div className="mt-3 mb-4">
-                <h1 className="headline">Welcome to FundBoard!</h1>
+                <h1 className="headline">Find Investors Fast</h1>
                 <div className="tagline">
                   <p>
-                    <strong className="text-primary">
-                      Search
-                    </strong>
-                    &nbsp;for investors that want to invest in your startup.
-                  </p>
-                  <p>
-                    <strong className="text-primary">
-                      Save
-                    </strong>
-                    &nbsp;them to your FundBoard.
-                  </p>
-                  <p>
-                    <strong className="text-primary">
-                      Share
-                    </strong>
-                    &nbsp;them to get warm introductions.
+                    Uncover investors that write checks for startups like yours
                   </p>
                 </div>
               </div>
               <div className="d-flex justify-content-center mb-4">
                 <Button
-                  variant="secondary"
-                  className="btnNoMax"
+                  variant="primary"
+                  className="btnNoMax btnBigger"
                   onClick={onGoToSearch}
                   data-track="PublicFindInvestors"
                 >
-                  Step 1: Find Investors
+                  Try It Now
                 </Button>
               </div>
               <img
-                className="d-none d-md-inline responsiveImg mt-1 mb-4"
-                src={ExampleOfIntro}
-                alt="A screenshot of someone providing an introduction to an investor on your FundBoard"
+                className="responsiveImg mt-1 mb-4"
+                src={ExampleOfSearch}
+                alt="A screenshot of an example investor you might find when searching with FundBoard."
               />
-              <img
-                className="d-md-none responsiveImg mb-1"
-                src={ExampleOfIntroMobile}
-                alt="A screenshot of someone providing an introduction to an investor on your FundBoard"
-              />
-              <p className="text-center txs-1">
-                <i>This is just a screenshot. Find some investors to get intros for real.</i>
-              </p>
             </div>
           )}
           {userState === 'newWithInvestors' && (

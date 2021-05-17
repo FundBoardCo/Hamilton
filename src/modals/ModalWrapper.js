@@ -29,7 +29,7 @@ export default function ModalWrapper() {
         path="/search/:uuid"
         component={Investor}
       />
-      { !loggedIn && <Route path={['/board', '/profile']} component={Login} /> }
+      { !loggedIn && <Route path={['/board', '/profile', '/search']} component={Login} /> }
       { loggedIn && !allowIn && <Route path={['/board']} component={WaitList} /> }
       { openModal === 'login' && <Route path="/" component={Login} /> }
       { openModal === 'howToIntro' && <Route path="/board" component={Welcome} /> }

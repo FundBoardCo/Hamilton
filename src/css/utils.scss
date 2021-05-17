@@ -138,6 +138,15 @@ html#ov body {
     }
   }
 
+  .btn.btnBigger {
+    font-size: $h4;
+    font-weight: 700;
+
+    @media (min-width: $mediaXs) {
+      font-size: $h3;
+    }
+  }
+
   .input-group > .input-group-append > .btn {
     border-radius: $pad1;
     border-top-left-radius: 0;
