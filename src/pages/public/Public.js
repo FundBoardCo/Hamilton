@@ -222,6 +222,10 @@ export default function Public(props) {
   const history = useHistory();
 
   const onGoToSearch = () => {
+    window.gtag('event', 'click', {
+      event_category: 'CTA',
+      event_label: 'Try It Now',
+    });
     history.push('introSearch');
   };
 
