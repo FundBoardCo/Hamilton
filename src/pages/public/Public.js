@@ -57,17 +57,21 @@ export default function Public(props) {
     };
 
   async function activateOptimize() {
-    await window.dataLayer.push({ event: 'optimize.activate' });
-    const intervalId = setInterval(() => {
-      if (window.google_optimize !== undefined) {
-        const optVar = window.google_optimize.get('UA-163041446-2');
-        console.log(`optVar is ${optVar}`);
-        setVariant(optVar);
-        clearInterval(intervalId);
-      } else {
-        console.log('WARNING: Google Optimize is not loaded.');
-      }
-    }, 100);
+    if (window.dataLayer) {
+      await window.dataLayer.push({ event: 'optimize.activate' });
+      const intervalId = setInterval(() => {
+        if (window.google_optimize !== undefined) {
+          const optVar = window.google_optimize.get('8bc6yrknTtS4dcjH91SKZQ');
+          console.log(`optVar is ${optVar}`);
+          setVariant(optVar);
+          clearInterval(intervalId);
+        } else {
+          console.log('WARNING: Google Optimize is not loaded.');
+        }
+      }, 100);
+    } else {
+      console.log('WARNING: No window.datalayer found');
+    }
   }
 
   useEffect(() => {
