@@ -9,8 +9,6 @@ import * as types from '../../actions/types';
 import DismissibleStatus from '../../components/DismissibleStatus';
 import GenericModal from '../../modals/GenericModal';
 import { MINPLACE, STAGEPROPS } from '../../constants';
-import ExampleOfIntro from '../../imgs/ExampleOfIntro.jpg';
-import ExampleOfIntroMobile from '../../imgs/ExampleOfIntroMobile.jpg';
 import ExampleOfSearch from '../../imgs/Board-Lisa-Data.png';
 
 export default function Public(props) {
@@ -48,6 +46,30 @@ export default function Public(props) {
   if (pageUUID) investorIDs = Object.keys(public_records) || [];
 
   const [showConfirmHide, setShowConfirmHide] = useState(false);
+
+  const [variant, setVariant] = useState(0);
+
+  const experimentalData = variant
+    ? {
+      CTAText: 'Find Your Investors',
+    } : {
+      CTAText: 'Try It Now',
+    };
+
+  async function activateOptimize() {
+    await window.dataLayer.push({ event: 'optimize.activate' });
+    const intervalId = setInterval(() => {
+      if (window.google_optimize !== undefined) {
+        const optVar = window.google_optimize.get('UA-163041446-2');
+        setVariant(optVar);
+        clearInterval(intervalId);
+      }
+    }, 100);
+  }
+
+  useEffect(() => {
+    activateOptimize();
+  }, []);
 
   // make sure to show the page uuid in the URL if there is one.
   if (!uuid && pageUUID) {
@@ -224,7 +246,7 @@ export default function Public(props) {
   const onGoToSearch = () => {
     window.gtag('event', 'click', {
       event_category: 'CTA',
-      event_label: 'Try It Now',
+      event_label: 'CTA_Search',
     });
     history.push('introSearch');
   };
@@ -367,7 +389,7 @@ export default function Public(props) {
                   onClick={onGoToSearch}
                   data-track="PublicFindInvestors"
                 >
-                  Try It Now
+                  {experimentalData.CTAText}
                 </Button>
               </div>
               <img
