@@ -59,13 +59,18 @@ export default function Public(props) {
   async function activateOptimize() {
     if (window.dataLayer) {
       await window.dataLayer.push({ event: 'optimize.activate' });
+      let tries = 0;
       const intervalId = setInterval(() => {
         if (window.google_optimize !== undefined) {
           const optVar = window.google_optimize.get('8bc6yrknTtS4dcjH91SKZQ');
           console.log(`optVar is ${optVar}`);
           setVariant(optVar);
           clearInterval(intervalId);
+        } else if (tries > 50) {
+          setVariant(0);
+          console.log('WARNING: Google Optimize was not loaded and timed out.');
         } else {
+          tries += 1;
           console.log('WARNING: Google Optimize is not loaded.');
         }
       }, 100);
