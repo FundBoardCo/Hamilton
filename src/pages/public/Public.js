@@ -61,8 +61,11 @@ export default function Public(props) {
     const intervalId = setInterval(() => {
       if (window.google_optimize !== undefined) {
         const optVar = window.google_optimize.get('UA-163041446-2');
+        console.log(`optVar is ${optVar}`);
         setVariant(optVar);
         clearInterval(intervalId);
+      } else {
+        console.log('WARNING: Google Optimize is not loaded.');
       }
     }, 100);
   }
@@ -173,11 +176,6 @@ export default function Public(props) {
       dispatch({
         type: types.PEOPLE_GET_REQUEST,
         ids,
-      });
-    } else {
-      dispatch({
-        type: types.SEARCH_GET_RANDOM_REQUESTED,
-        count: 5,
       });
     }
   }, [pageUUID, loggedOutInvestorIDs, public_records, dispatch]);
