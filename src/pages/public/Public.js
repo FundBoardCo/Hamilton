@@ -47,7 +47,7 @@ export default function Public(props) {
 
   const [showConfirmHide, setShowConfirmHide] = useState(false);
 
-  const [variant, setVariant] = useState(0);
+  const [variant, setVariant] = useState();
 
   const experimentalData = variant
     ? {
@@ -385,14 +385,16 @@ export default function Public(props) {
                 </div>
               </div>
               <div className="d-flex justify-content-center mb-4">
-                <Button
-                  variant="primary"
-                  className="btnNoMax btnBigger"
-                  onClick={onGoToSearch}
-                  data-track="PublicFindInvestors"
-                >
-                  {experimentalData.CTAText}
-                </Button>
+                {variant !== undefined && (
+                  <Button
+                    variant="primary"
+                    className="btnNoMax btnBigger"
+                    onClick={onGoToSearch}
+                    data-track="PublicFindInvestors"
+                  >
+                    {experimentalData.CTAText}
+                  </Button>
+                )}
               </div>
               <img
                 className="responsiveImg mt-1 mb-4"
