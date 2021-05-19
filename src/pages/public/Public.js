@@ -65,7 +65,7 @@ export default function Public(props) {
           const optVar = window.google_optimize.get('8bc6yrknTtS4dcjH91SKZQ');
           setVariant(optVar);
           clearInterval(intervalId);
-        } else if (tries > 20) {
+        } else if (tries > 10) {
           setVariant(0);
         } else {
           tries += 1;
