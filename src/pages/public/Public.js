@@ -63,19 +63,15 @@ export default function Public(props) {
       const intervalId = setInterval(() => {
         if (window.google_optimize !== undefined) {
           const optVar = window.google_optimize.get('8bc6yrknTtS4dcjH91SKZQ');
-          console.log(`optVar is ${optVar}`);
           setVariant(optVar);
           clearInterval(intervalId);
-        } else if (tries > 50) {
+        } else if (tries > 20) {
           setVariant(0);
-          console.log('WARNING: Google Optimize was not loaded and timed out.');
         } else {
           tries += 1;
-          console.log('WARNING: Google Optimize is not loaded.');
         }
       }, 100);
     } else {
-      console.log('WARNING: No window.datalayer found');
     }
   }
 
