@@ -386,16 +386,14 @@ export default function Public(props) {
                 </div>
               </div>
               <div className="d-flex justify-content-center mb-4">
-                {variant !== undefined && (
-                  <Button
-                    variant="primary"
-                    className="btnNoMax btnBigger"
-                    onClick={onGoToSearch}
-                    data-track="PublicFindInvestors"
-                  >
-                    {experimentalData.CTAText}
-                  </Button>
-                )}
+                <Button
+                  variant="primary"
+                  className={`btnNoMax btnBigger variant-${variant} ${variant === undefined ? 'op-1' : ''}`}
+                  onClick={onGoToSearch}
+                  data-track="PublicFindInvestors"
+                >
+                  {variant !== undefined ? experimentalData.CTAText : 'Loading...'}
+                </Button>
               </div>
               <img
                 className="responsiveImg mt-1 mb-4"
