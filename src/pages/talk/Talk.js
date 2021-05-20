@@ -136,7 +136,7 @@ export default function Talk() {
             </span>
             <Button
               variant="secondary"
-              className={`${thumbsUp ? '' : 'op-1'} mr-2`}
+              className={`${thumbsUp ? '' : 'op-3'} mr-2`}
               onClick={() => onThumbsClick(true)}
               data-track="TalkThumbsUp"
             >
@@ -145,7 +145,7 @@ export default function Talk() {
             </Button>
             <Button
               variant="danger"
-              className={thumbsUp ? 'op-1' : ''}
+              className={thumbsUp ? 'op-3' : ''}
               onClick={() => onThumbsClick(false)}
               data-track="TalkThumbsDown"
             >

@@ -9,8 +9,6 @@ import * as types from '../../actions/types';
 import DismissibleStatus from '../../components/DismissibleStatus';
 import GenericModal from '../../modals/GenericModal';
 import { MINPLACE, STAGEPROPS } from '../../constants';
-import ExampleOfIntro from '../../imgs/ExampleOfIntro.jpg';
-import ExampleOfIntroMobile from '../../imgs/ExampleOfIntroMobile.jpg';
 import ExampleOfSearch from '../../imgs/Board-Lisa-Data.png';
 
 export default function Public(props) {
@@ -48,6 +46,38 @@ export default function Public(props) {
   if (pageUUID) investorIDs = Object.keys(public_records) || [];
 
   const [showConfirmHide, setShowConfirmHide] = useState(false);
+
+  const [variant, setVariant] = useState();
+
+  const experimentalData = variant
+    ? {
+      CTAText: 'Find Your Investors',
+    } : {
+      CTAText: 'Try It Now',
+    };
+
+  async function activateOptimize() {
+    if (window.dataLayer) {
+      await window.dataLayer.push({ event: 'optimize.activate' });
+      let tries = 0;
+      const intervalId = setInterval(() => {
+        if (window.google_optimize !== undefined) {
+          const optVar = window.google_optimize.get('8bc6yrknTtS4dcjH91SKZQ');
+          setVariant(optVar);
+          clearInterval(intervalId);
+        } else if (tries > 10) {
+          setVariant(0);
+        } else {
+          tries += 1;
+        }
+      }, 100);
+    } else {
+    }
+  }
+
+  useEffect(() => {
+    activateOptimize();
+  }, []);
 
   // make sure to show the page uuid in the URL if there is one.
   if (!uuid && pageUUID) {
@@ -152,11 +182,6 @@ export default function Public(props) {
         type: types.PEOPLE_GET_REQUEST,
         ids,
       });
-    } else {
-      dispatch({
-        type: types.SEARCH_GET_RANDOM_REQUESTED,
-        count: 5,
-      });
     }
   }, [pageUUID, loggedOutInvestorIDs, public_records, dispatch]);
 
@@ -224,7 +249,7 @@ export default function Public(props) {
   const onGoToSearch = () => {
     window.gtag('event', 'click', {
       event_category: 'CTA',
-      event_label: 'Try It Now',
+      event_label: 'CTA_Search',
     });
     history.push('introSearch');
   };
@@ -363,11 +388,11 @@ export default function Public(props) {
               <div className="d-flex justify-content-center mb-4">
                 <Button
                   variant="primary"
-                  className="btnNoMax btnBigger"
+                  className={`btnNoMax btnBigger variant-${variant} ${variant === undefined ? 'op-1' : ''}`}
                   onClick={onGoToSearch}
                   data-track="PublicFindInvestors"
                 >
-                  Try It Now
+                  {variant !== undefined ? experimentalData.CTAText : 'Loading...'}
                 </Button>
               </div>
               <img
