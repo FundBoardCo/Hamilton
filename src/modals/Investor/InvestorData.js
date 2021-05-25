@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import PropTypes from 'prop-types';
 import Spinner from 'react-bootstrap/Spinner';
@@ -14,7 +14,7 @@ import {
   convertKeyTags,
   calcMatch,
 } from '../../utils';
-// import * as types from '../../actions/types';
+import * as types from '../../actions/types';
 import NameTag from '../../components/people/PersonNameTag';
 import RaiseBullet from '../../components/people/RaiseBullet';
 import { cb_founder_imagePrefix } from '../../constants';
@@ -82,6 +82,8 @@ export default function InvestorData(props) {
     // isBoard = false,
   } = data;
 
+  console.log(data);
+
   const twitterName = getSafeVar(() => twitter.substr(twitter.lastIndexOf('/') + 1), '');
 
   const searchState = useSelector((state => state.search));
@@ -100,8 +102,10 @@ export default function InvestorData(props) {
 
   const percentageMatch = `${matches.percentage_match || 0}%`;
 
-  const founders = [];
+  const fetchedStartups = useSelector(state => state.startups[uuid]);
 
+  const founders = [];
+  /*
   startups.forEach(s => {
     if (Array.isArray(s.founder_identifiers)) {
       s.founder_identifiers.forEach(f => {
@@ -120,10 +124,20 @@ export default function InvestorData(props) {
       });
     }
   });
+   */
+  const startupPermalinks = startups.map(s => s.permalink);
 
   const [invalidOpen, setInvalidOpen] = useState(false);
 
   const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch({
+      type: types.STARTUPS_GET_REQUESTED,
+      permalinks: startupPermalinks,
+      investor_uuid: uuid,
+    });
+  }, [startupPermalinks, dispatch]);
 
   const reportInvalid = reason => dispatch({
     type: 'PERSON_PUT_INVALID_REQUESTED',
