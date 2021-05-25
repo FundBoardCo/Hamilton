@@ -48,6 +48,7 @@ function* workUserCreate(action) {
     yield put({ type: types.USER_CREATE_SUCCEEDED, data });
     window.heap.identify(email);
     window.heap.addUserProperties({ email });
+    window.heap.track('User_Create_Succeeded');
     // safe add any investors saved locally
     yield put({ type: types.USER_POST_SAFEADDINVESTORS_REQUESTED });
   } catch (error) {
@@ -83,6 +84,7 @@ function* workUserLogin(action) {
     yield put({ type: types.USER_LOGIN_SUCCEEDED, data });
     window.heap.identify(email);
     window.heap.addUserProperties({ email });
+    window.heap.track('User_Login_Succeeded');
     yield put({ type: types.USER_GET_PROFILE_REQUESTED });
     // safe add any investors saved locally
     yield put({ type: types.USER_POST_SAFEADDINVESTORS_REQUESTED });
@@ -109,6 +111,7 @@ function* workUserReset(action) {
   try {
     yield call(resetPassword, email);
     yield put({ type: types.USER_RESETPASSWORD_SUCCEEDED });
+    window.heap.track('User_Reset_Succeeded');
   } catch (error) {
     trackErr(error);
     yield put({ type: types.USER_RESETPASSWORD_FAILED, error });
@@ -139,6 +142,7 @@ function* workUserDelete() {
   try {
     yield call(userDelete, params);
     yield put({ type: types.USER_DELETE_SUCCEEDED });
+    window.heap.track('User_Delete_Succeeded');
   } catch (error) {
     trackErr(error);
     yield put({ type: types.USER_DELETE_FAILED, error });
@@ -176,6 +180,7 @@ function* workUserUpdate(action) {
     const results = yield call(userUpdate, params);
     const data = results.toJSON();
     yield put({ type: types.USER_UPDATE_SUCCEEDED, data });
+    window.heap.track('User_Update_Succeeded');
   } catch (error) {
     trackErr(error);
     yield put({ type: types.USER_UPDATE_FAILED, error });
@@ -204,6 +209,7 @@ function* workUserProfileDataPost(action) {
       type: types.USER_POST_PROFILE_SUCCEEDED,
       data,
     });
+    window.heap.track('User_ProfilePost_Succeeded');
   } catch (error) {
     trackErr(error);
     yield put({
@@ -232,6 +238,7 @@ function* workUserProfileDataGet() {
       type: types.USER_GET_PROFILE_SUCCEEDED,
       data,
     });
+    window.heap.track('User_ProfileGet_Succeeded');
   } catch (error) {
     trackErr(error);
     yield put({
