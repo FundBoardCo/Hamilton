@@ -3,9 +3,9 @@ import { useDispatch, useSelector } from 'react-redux';
 import DatePicker from 'react-datepicker';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
+import moment from 'moment';
 import * as types from '../../actions/types';
 import { aFormDate } from '../../utils';
-import moment from "moment";
 
 const noteTypes = [
   {

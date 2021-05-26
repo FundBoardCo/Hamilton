@@ -5,8 +5,8 @@ import {
   select,
   takeLatest,
 } from 'redux-saga/effects';
-import { v4 as uuidv4, v5 as uuidv5 } from 'uuid';
-import { getSafeVar, toQueryString, trackErr } from '../utils';
+import { v4 as uuidv4 } from 'uuid';
+import { toQueryString, trackErr } from '../utils';
 import * as types from '../actions/types';
 
 const getEmail = state => state.user.email;
@@ -179,4 +179,3 @@ function* workUserManualInvestorsGet(action) {
 export function* watchUserManualInvestorsGet() {
   yield takeLatest(types.USER_GET_MANUALINVESTORS_REQUESTED, workUserManualInvestorsGet);
 }
-
