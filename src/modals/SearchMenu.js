@@ -256,6 +256,10 @@ export default function SearchMenu() {
     if (formNode.checkValidity() !== false) {
       getResults();
       history.push('/search');
+    } else {
+      const firstInvalid = formNode.querySelector(':invalid');
+      const wrapper = firstInvalid.closest('.inputWrapper');
+      wrapper.scrollIntoView({ behavior: 'smooth' });
     }
   };
 
@@ -407,7 +411,7 @@ export default function SearchMenu() {
               />
             </Form.Group>
           </div>
-          <div className="mb-5">
+          <div className="mb-5 inputWrapper">
             <SectionTitle
               faIcon="rocket"
               text="Raising"
@@ -473,31 +477,31 @@ export default function SearchMenu() {
               />
             </Form.Group>
           </div>
-          <SectionTitle
-            faIcon="map-marker-alt"
-            text="Location"
-            subText="The Zip Code of your office or home"
-          />
-          <Form.Group controlId="LocationInput">
-            <Form.Label className="sr-only">
-              My Zip Code (5 digit)
-            </Form.Label>
-            <Form.Control
-              maxLength={5}
-              pattern="[0-9]{5}"
-              type="text"
-              placeholder="zip code"
-              value={locationValue}
-              onChange={e => onLocationChange(e)}
-              isInvalid={validated && !locationValid}
-              data-track="LocationInput"
+          <div className="inputWrapper">
+            <SectionTitle
+              faIcon="map-marker-alt"
+              text="Location"
+              subText="The Zip Code of your office or home"
             />
-            <Form.Control.Feedback type="invalid">
-              Please enter a valid zip code.
-            </Form.Control.Feedback>
-          </Form.Group>
-          <div className={`mb-3 ${extraZipcodesClass}`}>
-            {`Status: ${extraZipcodesText}`}
+            <Form.Group controlId="LocationInput">
+              <Form.Label className="sr-only">My Zip Code (5 digit)</Form.Label>
+              <Form.Control
+                maxLength={5}
+                pattern="[0-9]{5}"
+                type="text"
+                placeholder="zip code"
+                value={locationValue}
+                onChange={e => onLocationChange(e)}
+                isInvalid={validated && !locationValid}
+                data-track="LocationInput"
+              />
+              <Form.Control.Feedback type="invalid">
+                Please enter a valid zip code.
+              </Form.Control.Feedback>
+            </Form.Group>
+            <div className={`mb-3 ${extraZipcodesClass}`}>
+              {`Status: ${extraZipcodesText}`}
+            </div>
           </div>
           <Form.Group
             controlId="LocationBoolCheckbox"
