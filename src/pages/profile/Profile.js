@@ -10,6 +10,7 @@ import * as types from '../../actions/types';
 import DismissibleStatus from '../../components/DismissibleStatus';
 import FormInput from '../../components/FormInput';
 import { MINPLACE } from '../../constants';
+import ProfileDetails from '../../components/ProfileDetails';
 
 function LinkInput(props) {
   const {
@@ -83,20 +84,20 @@ export default function Profile() {
 
   const initialInputState = {
     password: '',
-    name: profile.name || '',
-    title: profile.primary_job_title || '',
-    orgName: profile.primary_organization_name || '',
-    orgURL: profile.primary_organization_homepage || '',
-    orgLogoURL: profile.primary_organization_logo || '',
-    desc: profile.description || '',
-    linkedin: profile.linkedin || '',
-    twitter: profile.twitter || '',
-    permalink: profile.permalink || '',
-    links: profile.links || [],
-    remote: profile.remote !== undefined ? !!profile.remote : !!searchRemote,
-    location_city: profile.location_city || '',
-    location_state: profile.location_state || '',
-    team_size: profile.team_size || 1,
+    name: '',
+    title: '',
+    orgName: '',
+    orgURL: '',
+    orgLogoURL: '',
+    desc: '',
+    linkedin: '',
+    twitter: '',
+    permalink: '',
+    links: [],
+    remote: !!searchRemote,
+    location_city: '',
+    location_state: '',
+    team_size: 1,
   };
 
   const [inputState, setInputState] = useState(initialInputState);
@@ -410,6 +411,28 @@ export default function Profile() {
     };
   }
 
+  const profileProps = {
+    publicValidated,
+    handlePublicSubmit,
+    publicInputs1,
+    onInputChange,
+    showPublicInputs,
+    inputState,
+    publicInputs2,
+    publicInputs3,
+    currentUpdate,
+    LinkInput,
+    setLinkText,
+    setLinkURL,
+    removeLink,
+    addLink,
+    updateStatus,
+    setShowPublicInputs,
+    btnProps,
+    updateProfileStatus,
+    profile,
+  };
+
   return (
     <Row id="PageProfile" className="pageContainer">
       <Col xs={12} md={8} className="mr-auto ml-auto">
@@ -470,107 +493,7 @@ export default function Profile() {
                 />
               )}
             </div>
-            <Form
-              className="mb-5 mb-md-4"
-              noValidate
-              validated={publicValidated}
-              onSubmit={handlePublicSubmit}
-            >
-              {Object.keys(publicInputs1).map(k => (
-                <FormInput
-                  onChange={onInputChange}
-                  key={k}
-                  iKey={k}
-                  {...publicInputs1[k]}
-                />
-              ))}
-              {showPublicInputs && (
-                <div>
-                  <Form.Group controlId="DescriptionInput">
-                    <Form.Label>A Short Bio or Description</Form.Label>
-                    <Form.Control
-                      as="textarea"
-                      placeholder="More information about you that would be relevant to someone making an intro."
-                      name="desc"
-                      value={inputState.desc}
-                      onChange={e => onInputChange(e)}
-                      data-track="ProfileDescription"
-                    />
-                  </Form.Group>
-                  {Object.keys(publicInputs2).map(k => (
-                    <FormInput
-                      onChange={onInputChange}
-                      key={k}
-                      iKey={k}
-                      {...publicInputs2[k]}
-                    />
-                  ))}
-                  <h5>Additional Links</h5>
-                  {inputState.links.map((l, i) => (
-                    <LinkInput
-                      text={l.text}
-                      url={l.url}
-                      key={l.key}
-                      linkIndex={i}
-                      onLinkTextChange={setLinkText}
-                      onLinkURLChange={setLinkURL}
-                      onLinkRemove={removeLink}
-                    />
-                  ))}
-                  <Button
-                    variant="link"
-                    className="text-secondary mb-4"
-                    type="button"
-                    onClick={addLink}
-                    data-track="ProfileAddLink"
-                  >
-                    Add another link
-                  </Button>
-                  {Object.keys(publicInputs3).map(k => (
-                    <FormInput
-                      onChange={onInputChange}
-                      key={k}
-                      iKey={k}
-                      {...publicInputs3[k]}
-                    />
-                  ))}
-                </div>
-              )}
-              {currentUpdate === 'public' && (
-                <DismissibleStatus
-                  status={updateStatus}
-                  statusPrefix="Updating Profile"
-                  dissmissAction={types.USER_UPDATE_DISSMISSED}
-                />
-              )}
-              <div className="d-flex flex-grow-1 flex-column flex-md-row align-items-center">
-                <Button
-                  variant="link"
-                  className="txs-2 tx-md-1 mb-4 mb-md-0"
-                  onClick={() => setShowPublicInputs(!showPublicInputs)}
-                  data-track={`ProfileShowOptions-${showPublicInputs ? 'Hide' : 'Show'}`}
-                >
-                  <FontAwesomeIcon
-                    icon={showPublicInputs ? 'eye-slash' : 'eye'}
-                    className="mr-2"
-                  />
-                  {`${showPublicInputs ? 'Hide' : 'Show'} Additional Options`}
-                </Button>
-                <Button
-                  className="btnMobile100 ml-auto"
-                  type="submit"
-                  data-track="ProfileUpdateFounderData"
-                  {...btnProps.updateFounderData}
-                >
-                  {btnProps.updateFounderData.text}
-                </Button>
-              </div>
-              <DismissibleStatus
-                status={updateProfileStatus}
-                statusPrefix="Updating FundBoard"
-                dissmissAction={types.USER_POST_PROFILE_DISMISSED}
-              />
-            </Form>
+            <ProfileDetails {...profileProps} />
           </section>
         )}
         <section className="mb-5 mb-md-4">
