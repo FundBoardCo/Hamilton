@@ -102,30 +102,29 @@ export default function InvestorData(props) {
 
   const percentageMatch = `${matches.percentage_match || 0}%`;
 
-  const fetchedStartups = useSelector(state => state.startups[uuid]);
+  const fetchedStartups = useSelector(state => state.startups.startupsCB);
+  console.log(fetchedStartups);
 
   const founders = [];
-  /*
-  startups.forEach(s => {
-    if (Array.isArray(s.founder_identifiers)) {
-      s.founder_identifiers.forEach(f => {
-        // don't add the same founder twice
-        const allPermalinks = founders.map(fp => fp.permalink);
-        if (!allPermalinks.includes(f.permalink)) {
+  Object.values(fetchedStartups)
+    .filter(f => startups.map(s => s.permalink).includes(f.permalink))
+    .forEach(iS => {
+      if (Array.isArray(iS.founders)) {
+        iS.founders.forEach(f => {
           founders.push({
-            name: f.value,
+            name: f.name,
             permalink: f.permalink,
+            twitter: f.twitter,
+            facebook: f.facebook,
+            linkedin: f.linkedin,
             image_url: `${cb_founder_imagePrefix}${f.image_id}`,
-            org_name: s.name,
-            org_permalink: s.permalink,
-            logo_url: s.image_url,
+            org_name: iS.name,
+            org_permalink: iS.permalink,
+            logo_url: iS.image_url,
           });
-        }
-      });
-    }
-  });
-   */
-  const startupPermalinks = startups.map(s => s.permalink);
+        });
+      }
+    });
 
   const [invalidOpen, setInvalidOpen] = useState(false);
 
@@ -133,11 +132,10 @@ export default function InvestorData(props) {
 
   useEffect(() => {
     dispatch({
-      type: types.STARTUPS_GET_REQUESTED,
-      permalinks: startupPermalinks,
-      investor_uuid: uuid,
+      type: types.STARTUPSCB_GET_REQUESTED,
+      permalinks: startups.map(s => s.permalink),
     });
-  }, [startupPermalinks, dispatch]);
+  }, [startups, dispatch]);
 
   const reportInvalid = reason => dispatch({
     type: 'PERSON_PUT_INVALID_REQUESTED',

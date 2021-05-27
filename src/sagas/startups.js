@@ -18,36 +18,34 @@ function* workFoundersGet(action) {
 
   try {
     const data = yield call(getFounders, permalinks);
-    yield put({ type: types.FOUNDERS_GET_SUCCEEDED, data });
+    yield put({ type: types.FOUNDERSCB_GET_SUCCEEDED, data });
   } catch (error) {
     trackErr(error);
-    yield put({ type: types.FOUNDERS_GET_FAILED, error });
+    yield put({ type: types.FOUNDERSCB_GET_FAILED, error });
   }
 }
 
 export function* watchFoundersGet() {
-  yield takeLatest(types.FOUNDERS_GET_REQUEST, workFoundersGet);
+  yield takeLatest(types.FOUNDERSCB_GET_REQUESTED, workFoundersGet);
 }
 
-function getStartups(permalinks) {
-  if (!Array.isArray(permalinks)) throw new Error('An array of permalinks is required.');
-  const params = { permalinks };
-  return Parse.Cloud.run('getStartupsByPermalink', params);
+function getStartups(params) {
+  return Parse.Cloud.run('getStartups', params);
 }
 
 function* workStartupsGet(action) {
-  const { permalinks } = action;
+  const { permalinks, uuids } = action;
+  const params = { permalinks, uuids };
 
   try {
-    const data = yield call(getStartups, permalinks);
-    yield put({ type: types.STARTUPS_GET_SUCCEEDED, data });
-    // TODO trigger get founders here, success should include the startup permalink
+    const data = yield call(getStartups, params);
+    yield put({ type: types.STARTUPSCB_GET_SUCCEEDED, data });
   } catch (error) {
     trackErr(error);
-    yield put({ type: types.STARTUPS_GET_FAILED, error });
+    yield put({ type: types.STARTUPSCB_GET_FAILED, error });
   }
 }
 
 export function* watchStartupsGet() {
-  yield takeLatest(types.STARTUPS_GET_REQUEST, workStartupsGet);
+  yield takeLatest(types.STARTUPSCB_GET_REQUESTED, workStartupsGet);
 }
