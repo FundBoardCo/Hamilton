@@ -576,7 +576,7 @@ export default function Profile() {
         <section className="mb-5 mb-md-4">
           <h2 className="sectionHead">Hide Your FundBoard</h2>
           <p>
-            If you want to hide your investors only you can seet them, set them to hidden here.
+            If you want to hide your investors only you can see them, set them to hidden here.
             Your FundBoard link will still be viewable, but none of your investors will be shown
             except to you.
           </p>
