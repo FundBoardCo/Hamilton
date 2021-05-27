@@ -7,7 +7,7 @@ import InputGroup from 'react-bootstrap/InputGroup';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Button from 'react-bootstrap/Button';
 import FormControl from 'react-bootstrap/FormControl';
-import { statusIsError, getSearchLocations } from '../utils';
+import { statusIsError } from '../utils';
 import * as types from '../actions/types';
 import { ZIPDISTANCE } from '../constants';
 

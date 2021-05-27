@@ -35,7 +35,7 @@ function parseOneRecord(action) {
     } : {};
 }
  */
-
+/*
 function convertRecords(recs) {
   const newRecs = {};
   recs.forEach(r => {
@@ -70,11 +70,9 @@ function convertRecords(recs) {
   });
   return { ...newRecs };
 }
+ */
 
 export default function manageRaise(state = defaults, action) {
-  // let newRecords = {};
-  const { data } = action;
-
   switch (action.type) {
     case types.PUBLIC_GET_PROFILE_REQUESTED: return {
       ...state,
