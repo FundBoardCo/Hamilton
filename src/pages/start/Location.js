@@ -82,7 +82,7 @@ export default function Location() {
     getResults();
     history.push('/search');
   };
-  
+
   const onSearchKeyPress = e => {
     if (e.key === 'Enter') {
       getResults();
