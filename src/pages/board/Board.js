@@ -1,5 +1,10 @@
-import React, { useEffect, useState, useCallback } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import React, {
+  useEffect,
+  useState,
+  useCallback,
+  useMemo,
+} from 'react';
+import { useSelector, useDispatch, shallowEqual } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import Papa from 'papaparse';
 import FileSaver from 'file-saver';
@@ -8,12 +13,12 @@ import Button from 'react-bootstrap/Button';
 import Col from 'react-bootstrap/Col';
 import FormControl from 'react-bootstrap/FormControl';
 import InputGroup from 'react-bootstrap/InputGroup';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Person from '../../components/people/Person';
 import * as types from '../../actions/types';
 import DismissibleStatus from '../../components/DismissibleStatus';
 import { MINPLACE, STAGEPROPS } from '../../constants';
 import { getSafeVar } from '../../utils';
-import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 
 export default function Board() {
   const userUpdateStatus = useSelector(state => state.user.update_status);
@@ -21,7 +26,10 @@ export default function Board() {
   const getOwnInvestorsStatus = useSelector(
     state => state.investors.getOwnInvestors_status,
   );
-  const ownInvestors = useSelector(state => state.investors.ownInvestors) || {};
+  // TODO: we should refactor this view to fix this issue below
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const ownInvestors = useSelector(state => state.investors.ownInvestors, shallowEqual) || {};
+
   const loggedIn = useSelector(state => state.user.sessionToken);
   const place = useSelector(state => state.user.place);
   const overridePlace = useSelector(state => state.user.overridePlace);
@@ -90,7 +98,7 @@ export default function Board() {
       uuid: i,
       ...investorStatus, // merges in manual data
       investorStatus,
-    }
+    };
     investorList.push(merged);
     const org = merged.primary_organization || {};
     const location = [];
@@ -167,7 +175,7 @@ export default function Board() {
   }
 
   const csv = Papa.unparse(Object.values(csvList));
-  const csvData = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+  const csvData = useMemo(() => new Blob([csv], { type: 'text/csv;charset=utf-8;' }), [csv]);
 
   const onCSVClick = useCallback(() => {
     FileSaver.saveAs(csvData, 'MyFundBoard.csv');

@@ -83,6 +83,13 @@ export default function Location() {
     history.push('/search');
   };
 
+  const onSearchKeyPress = e => {
+    if (e.key === 'Enter') {
+      getResults();
+      history.push('/search');
+    }
+  };
+
   let extraZipcodesText = extraZipcodes_status;
 
   if (!searchLocation) extraZipcodesText = 'waiting for your zip code.';
@@ -109,6 +116,7 @@ export default function Location() {
                 placeholder="zip code"
                 value={locationValue}
                 onChange={e => onLocationChange(e)}
+                onKeyPress={e => onSearchKeyPress(e)}
                 isInvalid={validated && !isValid}
                 data-track="IntroSearchZipCode"
               />

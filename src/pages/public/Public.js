@@ -24,6 +24,8 @@ export default function Public(props) {
   const people = useSelector(state => state.people.records) || {};
   const peopleGetStatus = useSelector(state => state.people.get_status);
 
+  // TODO: refactor to fix the issue below
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const loggedOutInvestorIDs = useSelector(state => state.investors.loggedOutInvestorIDs) || [];
   const loggedOutInvestors = loggedOutInvestorIDs.map(lo => people[lo]);
 
@@ -41,6 +43,8 @@ export default function Public(props) {
   const isMyPage = pageUUID === user.uuid;
   const boardPublic = profile.board_public;
 
+  // TODO: refactor to fix the issue below
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const public_records = useSelector(state => state.founders.publicInvestors) || {};
   let investorIDs = [];
   if (pageUUID) investorIDs = Object.keys(public_records) || [];
@@ -71,7 +75,6 @@ export default function Public(props) {
           tries += 1;
         }
       }, 100);
-    } else {
     }
   }
 
