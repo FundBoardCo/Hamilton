@@ -151,27 +151,29 @@ const ProfileDetails = props => {
     }
   };
 
+  const checkLinks = inputState.links && inputState.links.length ? inputState.links : profile.links;
+
   const setLinkText = (text, index) => {
-    const newLinks = [...inputState.links];
+    const newLinks = [...checkLinks];
     newLinks[index].text = text;
     setInputState(prevState => ({ ...prevState, links: newLinks }));
   };
 
   const setLinkURL = (url, index) => {
-    const newLinks = [...inputState.links];
+    const newLinks = [...checkLinks];
     newLinks[index].url = url;
     setInputState(prevState => ({ ...prevState, links: newLinks }));
   };
 
   const removeLink = i => {
-    const newLinks = [...inputState.links];
+    const newLinks = [...checkLinks];
     newLinks.splice(i, 1);
     setInputState(prevState => ({ ...prevState, links: newLinks }));
   };
 
   const addLink = () => {
     const newLinks = [
-      ...(inputState.links ? inputState.links : []),
+      ...checkLinks,
       {
         text: '',
         url: '',
@@ -180,8 +182,6 @@ const ProfileDetails = props => {
     ];
     setInputState(prevState => ({ ...prevState, links: newLinks }));
   };
-
-  const userLinks = inputState.links && inputState.length ? inputState.links : profile.links;
 
   return (
     <Form
@@ -231,13 +231,13 @@ const ProfileDetails = props => {
                 onChange={onInputChange}
                 key={k.field}
                 iKey={k.field}
-                {...k}
+                {...inputData}
               />
             );
           })}
           <h5>Additional Links</h5>
           {
-            userLinks.map((l, i) => (
+            checkLinks.map((l, i) => (
               <LinkInput
                 text={l.text}
                 url={l.url}
@@ -270,7 +270,7 @@ const ProfileDetails = props => {
                 onChange={onInputChange}
                 key={k.field}
                 iKey={k.field}
-                {...k}
+                {...inputData}
               />
             );
           })}
