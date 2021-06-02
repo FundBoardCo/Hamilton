@@ -63,6 +63,7 @@ export default function Person(props) {
     matches = {},
     investorStatus = {},
     is_lead_investor,
+    alreadyOnBoard = false,
   } = props;
 
   let {
@@ -151,6 +152,12 @@ export default function Person(props) {
                 )}
                 {name || uuid}
               </h1>
+              {alreadyOnBoard && (
+              <p>
+                <FontAwesomeIcon icon="check" color="green" />
+                &nbsp;already on your FundBoard
+              </p>
+              )}
             </div>
           )}
           {sortedBy !== 'next' && (
@@ -264,6 +271,7 @@ Person.defaultProps = {
   sortedBy: '',
   investorStatus: {},
   is_lead_investor: false,
+  alreadyOnBoard: false,
 };
 
 Person.propTypes = {
@@ -302,6 +310,7 @@ Person.propTypes = {
     intro: PropTypes.objectOf(PropTypes.string),
   }),
   is_lead_investor: PropTypes.bool,
+  alreadyOnBoard: PropTypes.bool,
 };
 
 Matches.defaultProps = {

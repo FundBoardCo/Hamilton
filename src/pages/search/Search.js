@@ -54,7 +54,9 @@ export default function Search() {
   const investorIds = Object.keys(ownInvestors);
   const loggedOutInvestorIDs = useSelector(state => state.investors.loggedOutInvestorIDs) || [];
   const numInvestors = investorIds.length ? investorIds.length : loggedOutInvestorIDs.length;
-  const searchResults = rawResults.filter(s => !investorIds.includes(s.uuid));
+  const [showOnBoard, setShowOnBoard] = useState(false);
+  const searchResults = showOnBoard
+    ? rawResults : rawResults.filter(s => !investorIds.includes(s.uuid));
   // search query values
   const searchedText = useSelector(state => state.search.searchedText);
   const searchKeywords = useSelector(state => state.search.keywords) || [];
@@ -225,6 +227,19 @@ export default function Search() {
             <a href="/public">board.</a>
           </span>
         )}
+        <Button
+          variant="link"
+          onClick={() => setShowOnBoard(!showOnBoard)}
+        >
+          <strong className="txs-3">
+            <FontAwesomeIcon
+              icon={showOnBoard ? 'eye-slash' : 'eye'}
+              className="mr-2"
+            />
+            {showOnBoard ? 'Hide ' : 'Show '}
+            investors already on my FundBoard
+          </strong>
+        </Button>
       </div>
       <DismissibleStatus
         status={searchStatus}
@@ -247,10 +262,12 @@ export default function Search() {
       <div className="results">
         {searchResults.map((r, i) => {
           const investorStatus = ownInvestors[r.uuid] || {};
+          const alreadyOnBoard = investorIds.includes(r.uuid);
           const personProps = {
             ...r,
             ...investorStatus, // overwrite with user's data
             investorStatus,
+            alreadyOnBoard,
           };
           if (i >= page * 100) return null;
           return (
