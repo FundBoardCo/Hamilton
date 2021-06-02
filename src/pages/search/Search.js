@@ -55,8 +55,8 @@ export default function Search() {
   const loggedOutInvestorIDs = useSelector(state => state.investors.loggedOutInvestorIDs) || [];
   const numInvestors = investorIds.length ? investorIds.length : loggedOutInvestorIDs.length;
   const [showOnBoard, setShowOnBoard] = useState(false);
-  // eslint-disable-next-line max-len
-  const searchResults = showOnBoard ? rawResults : rawResults.filter(s => !investorIds.includes(s.uuid));
+  const searchResults = showOnBoard
+    ? rawResults : rawResults.filter(s => !investorIds.includes(s.uuid));
   // search query values
   const searchedText = useSelector(state => state.search.searchedText);
   const searchKeywords = useSelector(state => state.search.keywords) || [];
@@ -150,10 +150,6 @@ export default function Search() {
     setDetailsOpen(!detailsOpen);
   };
 
-  const onShowBoardClick = () => {
-    setShowOnBoard(!showOnBoard);
-  };
-
   const history = useHistory();
 
   const dispatch = useDispatch();
@@ -231,7 +227,10 @@ export default function Search() {
             <a href="/public">board.</a>
           </span>
         )}
-        <Button variant="link" onClick={onShowBoardClick}>
+        <Button
+          variant="link"
+          onClick={() => setShowOnBoard(!showOnBoard)}
+        >
           <strong className="txs-3">
             <FontAwesomeIcon
               icon={showOnBoard ? 'eye-slash' : 'eye'}
