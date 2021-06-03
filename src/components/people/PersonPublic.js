@@ -2,7 +2,6 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { useDispatch } from 'react-redux';
 import { useLocation } from 'react-router';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { v4 as uuidv4 } from 'uuid';
 import { capitalizeFirstLetter } from '../../utils';
 import * as types from '../../actions/types';
@@ -78,18 +77,6 @@ export default function Person(props) {
     }
   };
 
-  const validationProps = {};
-
-  if (status === 'ACTIVE') {
-    validationProps.classes = 'text-secondary';
-    validationProps.faIcon = 'star';
-  }
-
-  if (status === 'INACTIVE') {
-    validationProps.classes = 'text-danger';
-    validationProps.faIcon = 'ban';
-  }
-
   return (
     <div className="personWrapper Board Public">
       <button
@@ -103,10 +90,10 @@ export default function Person(props) {
         <div className="content">
           <div>
             <h1>
-              {validationProps.faIcon && (
-                <FontAwesomeIcon icon={validationProps.faIcon} className={`mr-1 ${validationProps.classes}`} />
-              )}
               {name || uuid}
+              {status === 'ACTIVE' && (
+                <span className="verifiedBadge">verified</span>
+              )}
             </h1>
           </div>
           <div className="d-flex details">

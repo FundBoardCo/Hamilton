@@ -63,6 +63,16 @@ html#ov body {
           margin-bottom: 0;
         }
 
+        .verifiedBadge {
+          font-size: $txMd;
+          color: $col-bright;
+          background-color: $col-secondary;
+          border-radius: $pad2;
+          padding: 0 $pad2;
+          margin-left: $pad2;
+          vertical-align: middle;
+        }
+
         .details {
           margin-top: auto;
 
@@ -112,6 +122,10 @@ html#ov body {
 
           h1 {
             font-size: $h3;
+          }
+
+          .verifiedBadge {
+            font-size: $tx;
           }
 
           .details {

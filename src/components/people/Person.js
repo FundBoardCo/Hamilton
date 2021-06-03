@@ -120,18 +120,6 @@ export default function Person(props) {
     notes = [];
   }
 
-  const validationProps = {};
-
-  if (status === 'ACTIVE') {
-    validationProps.classes = 'text-secondary';
-    validationProps.faIcon = 'star';
-  }
-
-  if (status === 'INACTIVE') {
-    validationProps.classes = 'text-danger';
-    validationProps.faIcon = 'ban';
-  }
-
   if (sortedBy === 'next' && !next.length) return null;
 
   return (
@@ -147,10 +135,10 @@ export default function Person(props) {
           {sortedBy !== 'next' && (
             <div>
               <h1>
-                {validationProps.faIcon && (
-                <FontAwesomeIcon icon={validationProps.faIcon} className={`mr-1 ${validationProps.classes}`} />
-                )}
                 {name || uuid}
+                {status === 'ACTIVE' && (
+                <span className="verifiedBadge">verified</span>
+                )}
               </h1>
               {alreadyOnBoard && (
               <p>
