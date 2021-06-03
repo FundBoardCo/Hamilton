@@ -92,7 +92,10 @@ export default function Person(props) {
             <h1>
               {name || uuid}
               {status === 'ACTIVE' && (
-                <span className="verifiedBadge">verified</span>
+                <>
+                  <br className="d-md-none" />
+                  <span className="verifiedBadge">verified</span>
+                </>
               )}
             </h1>
           </div>
