@@ -149,11 +149,6 @@ const ProfileDetails = props => {
     setPublicValidated(true);
     if (form.checkValidity() !== false) {
       const params = {
-        primary_job_title: inputState.title,
-        primary_organization_name: inputState.orgName,
-        primary_organization_homepage: inputState.orgURL,
-        primary_organization_logo: inputState.orgLogoURL,
-        description: inputState.desc,
         remote: !!inputState.remote,
         ...inputState,
       };
