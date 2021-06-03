@@ -6,7 +6,10 @@ import {
   takeLatest,
 } from 'redux-saga/effects';
 import { v5 as uuidv5 } from 'uuid';
-import { isPlainObject, trackErr } from '../utils';
+import {
+  isPlainObject, sanitizeObject, trackErr,
+} from '../utils';
+import { PROFILE_INPUT_KEYS } from '../constants';
 import * as types from '../actions/types';
 
 const getUserObjectId = state => state.user.objectId;
@@ -200,10 +203,11 @@ async function updateProfile(params) {
 
 function* workUserProfileDataPost(action) {
   const { params } = action;
-  params.uuid = yield select(getUserUUID);
+  const payloadParams = sanitizeObject(params, PROFILE_INPUT_KEYS);
+  payloadParams.uuid = yield select(getUserUUID);
 
   try {
-    const results = yield call(updateProfile, params);
+    const results = yield call(updateProfile, payloadParams);
     const data = results.toJSON();
     yield put({
       type: types.USER_POST_PROFILE_SUCCEEDED,
