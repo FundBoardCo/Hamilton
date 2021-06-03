@@ -45,5 +45,23 @@ export const STAGEPROPS = {
   },
 };
 
+export const PROFILE_INPUT_KEYS = [
+  'description',
+  'linkedin',
+  'links',
+  'location_city',
+  'location_state',
+  'name',
+  'permalink',
+  'primary_job_title',
+  'primary_organization_homepage',
+  'primary_organization_logo',
+  'primary_organization_name',
+  'remote',
+  'team_size',
+  'twitter',
+  'uuid',
+];
+
 export const cb_founder_imagePrefix = 'https://res-3.cloudinary.com/crunchbase-production/image/upload/c_thumb,h_170,w_170,f_auto,g_faces,z_0.7,b_white,q_auto:eco/';
 export const cb_logo_imagePrefix = 'https://res-3.cloudinary.com/crunchbase-production/image/upload/c_lpad,h_170,w_170,f_auto,b_white,q_auto:eco/';
