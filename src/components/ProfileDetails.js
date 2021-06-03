@@ -103,7 +103,7 @@ const profileInputs = [
 
 const ProfileDetails = props => {
   const { profile } = props;
-  const [inputState, setInputState] = useState({});
+  const [inputState, setInputState] = useState(profile);
   const [currentUpdate, setCurrentUpdate] = useState();
   const [publicValidated, setPublicValidated] = useState(false);
   const [showPublicInputs, setShowPublicInputs] = useState(false);
