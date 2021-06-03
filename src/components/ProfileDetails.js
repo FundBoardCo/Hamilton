@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -182,6 +182,10 @@ const ProfileDetails = props => {
     ];
     setInputState(prevState => ({ ...prevState, links: newLinks }));
   };
+
+  useEffect(() => {
+    setInputState(profile);
+  }, [profile]);
 
   return (
     <Form
