@@ -156,7 +156,8 @@ const ProfileDetails = props => {
     }
   };
 
-  const checkLinks = inputState.links && inputState.links.length ? inputState.links : profile.links;
+  const checkLinks = Array.isArray(inputState.links)
+    && inputState.links.length ? inputState.links : [];
 
   const setLinkText = (text, index) => {
     const newLinks = [...checkLinks];
