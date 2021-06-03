@@ -42,6 +42,7 @@ export default function Profile() {
   const updateStatus = useSelector(state => state.user.update_status);
   const getProfileStatus = useSelector(state => state.user.get_profile_status);
   const deleteStatus = useSelector(state => state.user.delete_status);
+  const searchRemote = useSelector(state => state.search.remote) || false;
 
   const [inputState, setInputState] = useState(initialInputState);
 
@@ -248,7 +249,11 @@ export default function Profile() {
                 />
               )}
             </div>
-            <ProfileDetails profile={profile} />
+            <ProfileDetails profile={{
+              ...profile,
+              remote: profile.remote !== undefined ? !!profile.remote : !!searchRemote,
+            }}
+            />
           </section>
         )}
         <section className="mb-5 mb-md-4">
