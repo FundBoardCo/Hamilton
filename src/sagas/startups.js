@@ -35,7 +35,7 @@ function getStartups(params) {
 
 function* workStartupsGet(action) {
   const { permalinks, uuids } = action;
-  const params = { permalinks, uuids };
+  const params = { permalinks, uuids, includeFounders: true };
 
   try {
     const data = yield call(getStartups, params);
