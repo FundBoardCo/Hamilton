@@ -387,3 +387,15 @@ export function isEmptyish(val) {
   }
   return emptyish;
 }
+
+export function sanitizeObject(data, keys) {
+  const transformed = {};
+
+  keys.forEach(el => {
+    if (el === 'remote') {
+      transformed[el] = data[el] || false;
+    } else transformed[el] = data[el] || '';
+  });
+
+  return transformed;
+}
