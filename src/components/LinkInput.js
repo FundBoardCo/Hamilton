@@ -22,11 +22,11 @@ const LinkInput = props => {
             placeholder="A label for the link"
             value={text}
             onChange={e => onLinkTextChange(e.target.value, linkIndex)}
-            data-track="ProfileLinkInput"
+            data-track="ProfileLinkTextInput"
             isInvalid={!text && url}
           />
           <Form.Control.Feedback type="invalid">
-            Please enter a valid url.
+            Please enter a valid Url.
           </Form.Control.Feedback>
         </Form.Group>
       </Col>
@@ -35,10 +35,10 @@ const LinkInput = props => {
           <Form.Label>Link URL</Form.Label>
           <Form.Control
             type="url"
-            placeholder="The URL for the link"
+            placeholder="Enter URL, e.g. http://..."
             value={url}
             onChange={e => onLinkURLChange(e.target.value, linkIndex)}
-            data-track="ProfileLinkInput"
+            data-track="ProfileLinkURLInput"
             isInvalid={text && !url}
           />
           <Form.Control.Feedback type="invalid">
