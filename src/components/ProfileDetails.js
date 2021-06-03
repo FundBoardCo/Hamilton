@@ -201,11 +201,8 @@ const ProfileDetails = props => {
       onSubmit={handlePublicSubmit}
     >
       {publicInputs1.map(k => {
-        const inputData = k;
-
-        if (Object.keys(profile).includes(k.field) && !!(k.field)) {
-          inputData.value = inputState[k.field] || profile[k.field];
-        }
+        const inputData = { ...k };
+        inputData.value = inputState[k.field] || '';
 
         return (
           <FormInput
@@ -230,11 +227,8 @@ const ProfileDetails = props => {
             />
           </Form.Group>
           {publicInputs2.map(k => {
-            const inputData = k;
-
-            if (Object.keys(profile).includes(k.field) && !!(k.field)) {
-              inputData.value = inputState[k.field] || profile[k.field];
-            }
+            const inputData = { ...k };
+            inputData.value = inputState[k.field] || '';
 
             return (
               <FormInput
@@ -269,11 +263,8 @@ const ProfileDetails = props => {
             Add another link
           </Button>
           {publicInputs3.map(k => {
-            const inputData = k;
-
-            if (Object.keys(profile).includes(k.field) && !!(k.field)) {
-              inputData.value = inputState[k.field] || profile[k.field];
-            }
+            const inputData = { ...k };
+            inputData.value = inputState[k.field] || '';
 
             return (
               <FormInput
