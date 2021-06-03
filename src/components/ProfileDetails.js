@@ -220,8 +220,8 @@ const ProfileDetails = props => {
             <Form.Control
               as="textarea"
               placeholder="More information about you that would be relevant to someone making an intro."
-              name="desc"
-              value={inputState.desc || profile.desc}
+              name="description"
+              value={inputState.description || ''}
               onChange={e => onInputChange(e)}
               data-track="ProfileDescription"
             />
@@ -324,18 +324,12 @@ ProfileDetails.defaultProps = {
 ProfileDetails.propTypes = {
   profile: PropTypes.shape({
     createdAt: PropTypes.string,
-    desc: PropTypes.string,
     description: PropTypes.string,
     linkedin: PropTypes.string,
     links: [],
     location_city: PropTypes.string,
     location_state: PropTypes.string,
     name: PropTypes.string,
-    objectId: PropTypes.string,
-    orgLogoURL: PropTypes.string,
-    orgName: PropTypes.string,
-    orgURL: PropTypes.string,
-    password: PropTypes.string,
     permalink: PropTypes.string,
     primary_job_title: PropTypes.string,
     primary_organization_homepage: PropTypes.string,
@@ -343,7 +337,6 @@ ProfileDetails.propTypes = {
     primary_organization_name: PropTypes.string,
     remote: PropTypes.bool,
     team_size: PropTypes.number,
-    title: PropTypes.string,
     twitter: PropTypes.string,
     updatedAt: PropTypes.string,
     user: PropTypes.shape({
