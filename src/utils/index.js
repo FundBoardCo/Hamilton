@@ -392,9 +392,7 @@ export function sanitizeObject(data, keys) {
   const transformed = {};
 
   keys.forEach(el => {
-    if (el === 'remote') {
-      transformed[el] = data[el] || false;
-    } else transformed[el] = data[el] || '';
+    transformed[el.field] = data[el.field] || el.default;
   });
 
   return transformed;
