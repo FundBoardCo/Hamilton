@@ -110,19 +110,9 @@ const ProfileDetails = props => {
   const updateProfileStatus = useSelector(state => state.user.updateProfile_status);
   const updateStatus = useSelector(state => state.user.update_status);
 
-  const publicInputs1 = [];
-  const publicInputs2 = [];
-  const publicInputs3 = [];
-
-  profileInputs.forEach(el => {
-    if (el.section === 'one') {
-      publicInputs1.push(el);
-    } else if (el.section === 'two') {
-      publicInputs2.push(el);
-    } else if (el.section === 'three') {
-      publicInputs3.push(el);
-    }
-  });
+  const publicInputs1 = profileInputs.filter(el => el.section === 'one');
+  const publicInputs2 = profileInputs.filter(el => el.section === 'two');
+  const publicInputs3 = profileInputs.filter(el => el.section === 'three');
 
   const dispatch = useDispatch();
 
