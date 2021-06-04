@@ -139,8 +139,8 @@ const ProfileDetails = props => {
     setPublicValidated(true);
     if (form.checkValidity() !== false) {
       const params = {
-        remote: !!inputState.remote,
         ...inputState,
+        remote: !!inputState.remote,
       };
       updateFounderData(params);
     }
