@@ -46,21 +46,21 @@ export const STAGEPROPS = {
 };
 
 export const PROFILE_INPUT_KEYS = [
-  'description',
-  'linkedin',
-  'links',
-  'location_city',
-  'location_state',
-  'name',
-  'permalink',
-  'primary_job_title',
-  'primary_organization_homepage',
-  'primary_organization_logo',
-  'primary_organization_name',
-  'remote',
-  'team_size',
-  'twitter',
-  'uuid',
+  { field: 'description', default: '' },
+  { field: 'linkedin', default: '' },
+  { field: 'links', default: [] },
+  { field: 'location_city', default: '' },
+  { field: 'location_state', default: '' },
+  { field: 'name', default: '' },
+  { field: 'permalink', default: '' },
+  { field: 'primary_job_title', default: '' },
+  { field: 'primary_organization_homepage', default: '' },
+  { field: 'primary_organization_logo', default: '' },
+  { field: 'primary_organization_name', default: '' },
+  { field: 'remote', default: false },
+  { field: 'team_size', default: 1 },
+  { field: 'twitter', default: '' },
+  { field: 'uuid', default: '' },
 ];
 
 export const cb_founder_imagePrefix = 'https://res-3.cloudinary.com/crunchbase-production/image/upload/c_thumb,h_170,w_170,f_auto,g_faces,z_0.7,b_white,q_auto:eco/';
