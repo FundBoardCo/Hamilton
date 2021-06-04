@@ -70,6 +70,7 @@ export default function user(state = defaults, action) {
     case types.USER_CREATE_DISSMISSED: return {
       ...state,
       create_status: '',
+      init_status: 'done',
     };
     case types.USER_LOGIN_REQUESTED: return {
       ...defaults, // clear any old data

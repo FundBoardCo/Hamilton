@@ -16,11 +16,14 @@ export default function Login() {
     create_status,
     login_status,
     reset_status,
+    init_status,
   } = user;
 
   const openModal = useSelector(state => state.modal.openModal);
   const modalProps = useSelector(state => state.modal.modalProps) || {};
+  // const initStatus = useSelector(state => state.init_status);
   const { extraText, initialMode } = modalProps;
+  window.console.log('modalProps ', modalProps);
 
   const [mode, setMode] = useState(initialMode || 'login');
 
@@ -29,6 +32,7 @@ export default function Login() {
 
   const [emailValue, setEmailValue] = useState(email);
   const [password, setPassword] = useState('');
+  const [initStatus, setInitStatus] = useState(init_status);
 
   const dispatch = useDispatch();
 
@@ -49,6 +53,20 @@ export default function Login() {
       type: types.USER_RESETPASSWORD_DISSMISSED,
     });
   }, [dispatch]);
+
+  useEffect(() => {
+    window.console.log('emailValue', emailValue);
+    if (emailValue) {
+      window.console.log('set to login');
+      setMode('login');
+    } else {
+      setMode('create');
+    }
+  }, [emailValue]);
+
+  useEffect(() => {
+    setInitStatus(initStatus);
+  }, [initStatus]);
 
   const create = () => dispatch({
     type: types.USER_CREATE_REQUESTED,
@@ -145,6 +163,7 @@ export default function Login() {
       onClick: onCreateClick,
     },
   };
+  window.console.log('mode ', { mode, login_status, emailValue });
 
   if (mode === 'login') {
     // this isn't currently doing anything because the modal closes on login
@@ -199,6 +218,11 @@ export default function Login() {
   }
 
   const cookiesEnabled = navigator.cookieEnabled;
+  window.console.log('initStatus ', initStatus);
+
+  useEffect(() => {
+    window.console.log('initStatus ', initStatus);
+  });
 
   return (
     <Modal
@@ -210,111 +234,115 @@ export default function Login() {
       className="modal-login"
       onHide={closeModal}
     >
-      <Modal.Header closeButton>
-        <Modal.Title>
-          <h2>{mode === 'create' ? 'Create Account' : 'Log In'}</h2>
-        </Modal.Title>
-      </Modal.Header>
-      <Modal.Body>
-        {extraText && (
-          <div>
-            {extraText}
-          </div>
-        )}
-        {mode === 'reset' && (
-          <div className="mb-2">
-            We had to rebuild the backend for the beta, if you made an account in our alpha you
-            might need to make a new account if resetting your password doesn’t work.
-          </div>
-        )}
-        <Form
-          noValidate
-          validated={started && validated}
-          onSubmit={handleSubmit}
-        >
-          <Form.Group controlId="EmailInput">
-            <Form.Label className="sr-only">Email Address</Form.Label>
-            <Form.Control
-              required
-              type="email"
-              placeholder="email address"
-              value={emailValue}
-              onChange={e => onEmailChange(e)}
-              data-track={`LoginEmail-${mode}`}
-            />
-            <Form.Control.Feedback type="invalid">
-              Please enter a valid email address.
-            </Form.Control.Feedback>
-          </Form.Group>
-          {['login', 'create'].includes(mode) && (
-            <Form.Group controlId="PasswordInput">
-              <Form.Label className="sr-only">Password</Form.Label>
-              <Form.Control
-                required
-                type="password"
-                placeholder="password"
-                value={password}
-                pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}"
-                onChange={e => onPasswordChange(e)}
-                data-track={`LoginPassword-${mode}`}
+      { initStatus === 'done' && (
+        <>
+          <Modal.Header closeButton>
+            <Modal.Title>
+              <h2>{mode === 'create' ? 'Create Account' : 'Log In'}</h2>
+            </Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            {extraText && (
+              <div>
+                {extraText}
+              </div>
+            )}
+            {mode === 'reset' && (
+              <div className="mb-2">
+                We had to rebuild the backend for the beta, if you made an account in our alpha you
+                might need to make a new account if resetting your password doesn’t work.
+              </div>
+            )}
+            <Form
+              noValidate
+              validated={started && validated}
+              onSubmit={handleSubmit}
+            >
+              <Form.Group controlId="EmailInput">
+                <Form.Label className="sr-only">Email Address</Form.Label>
+                <Form.Control
+                  required
+                  type="email"
+                  placeholder="email address"
+                  value={emailValue}
+                  onChange={e => onEmailChange(e)}
+                  data-track={`LoginEmail-${mode}`}
+                />
+                <Form.Control.Feedback type="invalid">
+                  Please enter a valid email address.
+                </Form.Control.Feedback>
+              </Form.Group>
+              {['login', 'create'].includes(mode) && (
+              <Form.Group controlId="PasswordInput">
+                <Form.Label className="sr-only">Password</Form.Label>
+                <Form.Control
+                  required
+                  type="password"
+                  placeholder="password"
+                  value={password}
+                  pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}"
+                  onChange={e => onPasswordChange(e)}
+                  data-track={`LoginPassword-${mode}`}
+                />
+                <Form.Text className="text-muted">
+                  {/* eslint-disable-next-line max-len */}
+                  Enter a password with 8 or more characters, and at least one upper and lower case letter and number.
+                </Form.Text>
+                <Form.Control.Feedback type="invalid">
+                  Please enter a valid password.
+                </Form.Control.Feedback>
+              </Form.Group>
+              )}
+              {['login', 'create'].includes(mode) && (
+              <div className="d-flex justify-content-end mb-4">
+                <Button
+                  variant="link"
+                  onClick={onResetClick}
+                >
+                  <span className="txs-2">Reset my password</span>
+                </Button>
+              </div>
+              )}
+              {!cookiesEnabled && (
+              <div className="text-warning">
+                You need to enable cookies in order to log in successfully.
+              </div>
+              )}
+              <Status
+                statusPrefix="Create account:"
+                status={create_status}
+                dissmissAction={types.USER_CREATE_DISSMISSED}
               />
-              <Form.Text className="text-muted">
-                {/* eslint-disable-next-line max-len */}
-                Enter a password with 8 or more characters, and at least one upper and lower case letter and number.
-              </Form.Text>
-              <Form.Control.Feedback type="invalid">
-                Please enter a valid password.
-              </Form.Control.Feedback>
-            </Form.Group>
-          )}
-          {['login', 'create'].includes(mode) && (
-            <div className="d-flex justify-content-end mb-4">
-              <Button
-                variant="link"
-                onClick={onResetClick}
-              >
-                <span className="txs-2">Reset my password</span>
-              </Button>
-            </div>
-          )}
-          {!cookiesEnabled && (
-            <div className="text-warning">
-              You need to enable cookies in order to log in successfully.
-            </div>
-          )}
-          <Status
-            statusPrefix="Create account:"
-            status={create_status}
-            dissmissAction={types.USER_CREATE_DISSMISSED}
-          />
-          <Status
-            statusPrefix="Log in:"
-            status={login_status}
-            dissmissAction={types.USER_LOGIN_DISSMISSED}
-          />
-          <Status
-            statusPrefix="Reset password:"
-            status={reset_status}
-            dissmissAction={types.USER_RESETPASSWORD_DISSMISSED}
-          />
-          <div className="footerBtnWrapper">
-            <Button
-              className="mr-3 btnNoMax"
-              data-track={`LoginLoginBtn-${mode}`}
-              {...btnProps.login}
-            >
-              {btnProps.login.text}
-            </Button>
-            <Button
-              className="btnNoMax"
-              data-track={`LoginCreateBtn-${mode}`}
-              {...btnProps.create}
-            >
-              {btnProps.create.text}
-            </Button>
-          </div>
-        </Form>
-      </Modal.Body>
+              <Status
+                statusPrefix="Log in:"
+                status={login_status}
+                dissmissAction={types.USER_LOGIN_DISSMISSED}
+              />
+              <Status
+                statusPrefix="Reset password:"
+                status={reset_status}
+                dissmissAction={types.USER_RESETPASSWORD_DISSMISSED}
+              />
+              <div className="footerBtnWrapper">
+                <Button
+                  className="mr-3 btnNoMax"
+                  data-track={`LoginLoginBtn-${mode}`}
+                  {...btnProps.login}
+                >
+                  {btnProps.login.text}
+                </Button>
+                <Button
+                  className="btnNoMax"
+                  data-track={`LoginCreateBtn-${mode}`}
+                  {...btnProps.create}
+                >
+                  {btnProps.create.text}
+                </Button>
+              </div>
+            </Form>
+          </Modal.Body>
+        </>
+      )}
     </Modal>
   );
 }

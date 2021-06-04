@@ -152,6 +152,8 @@ function App() {
     type: types.MODAL_SET_OPEN,
     modal: 'login',
   });
+  window.console.log('loggedIn ', loggedIn);
+  window.console.log('firstTime ', firstTime);
 
   return (
     <Router>
