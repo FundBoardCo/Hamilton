@@ -26,7 +26,7 @@ const LinkInput = props => {
             isInvalid={!text && url}
           />
           <Form.Control.Feedback type="invalid">
-            Please enter a valid Url.
+            Please enter a valid URL.
           </Form.Control.Feedback>
         </Form.Group>
       </Col>
@@ -42,7 +42,7 @@ const LinkInput = props => {
             isInvalid={text && !url}
           />
           <Form.Control.Feedback type="invalid">
-            Please enter a valid url.
+            Please enter a valid URL.
           </Form.Control.Feedback>
         </Form.Group>
       </Col>
