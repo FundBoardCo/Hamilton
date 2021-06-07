@@ -205,6 +205,18 @@ export default function Talk() {
             </a>
           </li>
           <li className="mb-2">
+            Join&nbsp;
+            <a
+              href="https://launchpass.com/raisehubcommunity"
+              target="_blank"
+              rel="noopener noreferrer"
+              data-track="TalkLink-FundBoardSlack"
+            >
+              RaiseHub
+            </a>
+            , our community for founders like you.
+          </li>
+          <li className="mb-2">
             Or follow us on Twitter:&nbsp;
             <a
               href="https://twitter.com/teamfundboard"
