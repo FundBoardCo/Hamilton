@@ -145,9 +145,11 @@ export default function Investor(props) {
     ? {
       text: 'Pin to my FundBoard',
       icon: 'thumbtack',
+      track_exp: 1,
     } : {
       text: 'Save to my FundBoard',
       icon: 'plus',
+      track_exp: 0,
     };
 
   const addBtnProps = {
@@ -155,6 +157,7 @@ export default function Investor(props) {
     bgCol: isOnBoard ? 'bg-warning' : 'bg-secondary',
     track: isOnBoard ? 'remove' : 'add',
     faIcon: isOnBoard ? 'minus' : addBtnExperiment.icon,
+    track_exp: addBtnExperiment.track_exp,
   };
 
   return (
@@ -199,6 +202,7 @@ export default function Investor(props) {
             type="button"
             onClick={toggleInvestor}
             data-track={`${path}InvestorAdd-${addBtnProps.track}`}
+            data-track-exp={addBtnProps.track_exp}
           >
             <FontAwesomeIcon icon={addBtnProps.faIcon} className="mr-2" />
             {addBtnProps.text}
