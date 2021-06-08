@@ -34,7 +34,7 @@ export default function ModalWrapper() {
       { !loggedIn && <Route path="/search" render={props => <Login {...props} initialMode={newUser ? 'create' : 'login'} />} />}
       { !loggedIn && <Route path={['/board', '/profile']} component={Login} /> }
       { loggedIn && !allowIn && <Route path={['/board']} component={WaitList} /> }
-      { openModal === 'login' && <Route path="/" component={Login} /> }
+      { openModal === 'login' && <Route path="/" component={Login} />}
       { openModal === 'howToIntro' && <Route path="/board" component={Welcome} /> }
       { openModal === 'makeIntro' && <Route path={['/', '/public']} component={MakeIntro} />}
       { openModal === 'founder' && <Route path="/public" component={Founder} />}
