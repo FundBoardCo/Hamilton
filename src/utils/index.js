@@ -387,3 +387,13 @@ export function isEmptyish(val) {
   }
   return emptyish;
 }
+
+export function sanitizeObject(data, keys) {
+  const transformed = {};
+
+  keys.forEach(el => {
+    transformed[el.field] = data[el.field] || el.default;
+  });
+
+  return transformed;
+}
