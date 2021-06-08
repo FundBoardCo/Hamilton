@@ -146,7 +146,7 @@ export default function Investor(props) {
   }, []);
 
   let addBtnExperiment = {
-    text: '...',
+    text: 'Loading...',
     icon: '',
   };
 
