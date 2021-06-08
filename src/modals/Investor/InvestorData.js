@@ -103,24 +103,23 @@ export default function InvestorData(props) {
   const percentageMatch = `${matches.percentage_match || 0}%`;
 
   const fetchedStartups = useSelector(state => state.startups.startupsCB);
-  console.log(fetchedStartups);
 
   const founders = [];
   Object.values(fetchedStartups)
-    .filter(f => startups.map(s => s.permalink).includes(f.permalink))
-    .forEach(iS => {
-      if (Array.isArray(iS.founders)) {
-        iS.founders.forEach(f => {
+    .filter(fs => startups.map(s => s.permalink).includes(fs.permalink))
+    .forEach(investedStartup => {
+      if (Array.isArray(investedStartup.founders)) {
+        investedStartup.founders.forEach(f => {
           founders.push({
             name: f.name,
             permalink: f.permalink,
             twitter: f.twitter,
             facebook: f.facebook,
             linkedin: f.linkedin,
-            image_url: `${cb_founder_imagePrefix}${f.image_id}`,
-            org_name: iS.name,
-            org_permalink: iS.permalink,
-            logo_url: iS.image_url,
+            image_url: f.image_url || `${cb_founder_imagePrefix}${f.image_id}`,
+            org_name: investedStartup.name,
+            org_permalink: investedStartup.permalink,
+            logo_url: investedStartup.image_url,
           });
         });
       }
