@@ -123,13 +123,17 @@ export default function Investor(props) {
     if (window.dataLayer) {
       await window.dataLayer.push({ event: 'optimize.activate' });
       let tries = 0;
+      let optVar;
       const intervalId = setInterval(() => {
         if (window.google_optimize !== undefined) {
-          const optVar = window.google_optimize.get('znMZZp0yS46z9_j-FFGhlw');
+          optVar = window.google_optimize.get('znMZZp0yS46z9_j-FFGhlw');
+        }
+        if (optVar !== undefined) {
           setVariant(optVar);
           clearInterval(intervalId);
-        } else if (tries > 10) {
+        } else if (tries >= 5) {
           setVariant(0);
+          clearInterval(intervalId);
         } else {
           tries += 1;
         }
@@ -141,23 +145,31 @@ export default function Investor(props) {
     activateOptimize();
   }, []);
 
-  const addBtnExperiment = variant
-    ? {
-      text: 'Pin to my FundBoard',
-      icon: 'thumbtack',
-      track_exp: 1,
-    } : {
+  let addBtnExperiment = {
+    text: '...',
+    icon: '',
+  };
+
+  if (variant === 0) {
+    addBtnExperiment = {
       text: 'Save to my FundBoard',
       icon: 'plus',
-      track_exp: 0,
     };
+  }
+
+  if (variant === 1) {
+    addBtnExperiment = {
+      text: 'Pin to my FundBoard',
+      icon: 'thumbtack',
+    };
+  }
 
   const addBtnProps = {
     text: isOnBoard ? 'Remove from my Fundboard' : addBtnExperiment.text,
     bgCol: isOnBoard ? 'bg-warning' : 'bg-secondary',
     track: isOnBoard ? 'remove' : 'add',
     faIcon: isOnBoard ? 'minus' : addBtnExperiment.icon,
-    track_exp: addBtnExperiment.track_exp,
+    track_exp: variant,
   };
 
   return (
@@ -204,7 +216,9 @@ export default function Investor(props) {
             data-track={`${path}InvestorAdd-${addBtnProps.track}`}
             data-track-exp={addBtnProps.track_exp}
           >
-            <FontAwesomeIcon icon={addBtnProps.faIcon} className="mr-2" />
+            {addBtnProps.faIcon && (
+              <FontAwesomeIcon icon={addBtnProps.faIcon} className="mr-2" />
+            )}
             {addBtnProps.text}
           </button>
         )}
