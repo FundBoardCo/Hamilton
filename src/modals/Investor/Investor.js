@@ -169,7 +169,6 @@ export default function Investor(props) {
     bgCol: isOnBoard ? 'bg-warning' : 'bg-secondary',
     track: isOnBoard ? 'remove' : 'add',
     faIcon: isOnBoard ? 'minus' : addBtnExperiment.icon,
-    track_exp: variant,
   };
 
   return (
@@ -214,7 +213,7 @@ export default function Investor(props) {
             type="button"
             onClick={toggleInvestor}
             data-track={`${path}InvestorAdd-${addBtnProps.track}`}
-            data-track-exp={addBtnProps.track_exp}
+            data-track-exp={variant}
           >
             {addBtnProps.faIcon && (
               <FontAwesomeIcon icon={addBtnProps.faIcon} className="mr-2" />
