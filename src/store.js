@@ -101,7 +101,7 @@ const rootReducer = combineReducers({
 const persistedReducer = persistReducer(persistConfig, rootReducer);
 const logger = ({ getState }) => next => action => {
   if (process.env.NODE_ENV === 'development' || process.env.REACT_APP_ENV === 'DEV') {
-    window.console.log({ previous: getState(), action, type: action.type });
+    window.console.log({ type: action.type, saga: { previous: getState(), action } });
   }
   next(action);
 };
