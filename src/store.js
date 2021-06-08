@@ -99,9 +99,11 @@ const rootReducer = combineReducers({
 });
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
-const logger = () => next => action => {
+const logger = ({ getState }) => next => action => {
+  if (process.env.NODE_ENV === 'development' || process.env.REACT_APP_ENV === 'DEV') {
+    window.console.log({ previous: getState(), action, type: action.type });
+  }
   next(action);
-  window.console.log(action);
 };
 
 const sagaMiddleware = createSagaMiddleware();
