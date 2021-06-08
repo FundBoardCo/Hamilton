@@ -17,6 +17,8 @@ export default function ModalWrapper() {
   const overridePlace = useSelector(state => state.user.overridePlace);
   const allowIn = typeof place === 'number' && (place <= MINPLACE || overridePlace);
   const openModal = useSelector(state => state.modal.openModal);
+  const userEmail = useSelector(state => state.user.email);
+  const newUser = !loggedIn && !userEmail;
 
   return (
     <Switch>
@@ -29,7 +31,8 @@ export default function ModalWrapper() {
         path="/search/:uuid"
         component={Investor}
       />
-      { !loggedIn && <Route path={['/board', '/profile', '/search']} component={Login} /> }
+      { !loggedIn && <Route path="/search" render={props => <Login {...props} initialMode={newUser ? 'create' : 'login'} />} />}
+      { !loggedIn && <Route path={['/board', '/profile']} component={Login} /> }
       { loggedIn && !allowIn && <Route path={['/board']} component={WaitList} /> }
       { openModal === 'login' && <Route path="/" component={Login} /> }
       { openModal === 'howToIntro' && <Route path="/board" component={Welcome} /> }
