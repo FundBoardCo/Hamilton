@@ -2,9 +2,10 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 
 ## Available Scripts
 
-In the project directory, you can run:
+To run this from the project directory, you can use `npm start` or `yarn start`, with the following environmental variables:
 
-### `yarn start`
+`AIRTABLE_APIKEY=keym1B881Ly2v7cNw ZIPCODECLIENTKEY=js-IQnw1s8a35CYiI4clJrcM1yIvqTyyciNZfDHMIrhOY2ViLWXTjzYVzYEdkPjwRqD WEBFLOW_APIKEY=2e8fe02c04a1efed83d95be4a36ba6bf201fbdef86d7c3b449eba7268c694302 REACT_APP_ENV=DEV npm start
+`
 
 Runs the app in the development mode.<br />
 Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
