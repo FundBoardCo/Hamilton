@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Form, Button } from 'react-bootstrap';
+import is from 'is_js';
 import FormInput from './FormInput';
 import DismissibleStatus from './DismissibleStatus';
 import btnProps from '../utils/profileUtils';
@@ -249,6 +250,7 @@ const ProfileDetails = props => {
             type="button"
             onClick={addLink}
             data-track="ProfileAddLink"
+            disabled={!inputState.links.every(el => el.text && is.url(el.url))}
           >
             Add another link
           </Button>
