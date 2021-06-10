@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import PropTypes from 'prop-types';
 import { useHistory } from 'react-router';
 import { useSelector, useDispatch } from 'react-redux';
 import Form from 'react-bootstrap/Form';
@@ -9,7 +10,8 @@ import Status from '../components/DismissibleStatus';
 
 let prevMode = '';
 
-export default function Login() {
+export default function Login(props) {
+  const { initialMode } = props;
   const user = useSelector(state => state.user) || {};
   const {
     email = '',
@@ -20,10 +22,9 @@ export default function Login() {
 
   const openModal = useSelector(state => state.modal.openModal);
   const modalProps = useSelector(state => state.modal.modalProps) || {};
-  const { extraText, initialMode } = modalProps;
+  const { extraText } = modalProps;
 
   const [mode, setMode] = useState(initialMode || 'login');
-
   const [validated, setValidated] = useState(false);
   const [started, setStarted] = useState(false);
 
@@ -217,15 +218,15 @@ export default function Login() {
       </Modal.Header>
       <Modal.Body>
         {extraText && (
-          <div>
-            {extraText}
-          </div>
+        <div>
+          {extraText}
+        </div>
         )}
         {mode === 'reset' && (
-          <div className="mb-2">
-            We had to rebuild the backend for the beta, if you made an account in our alpha you
-            might need to make a new account if resetting your password doesn’t work.
-          </div>
+        <div className="mb-2">
+          We had to rebuild the backend for the beta, if you made an account in our alpha you
+          might need to make a new account if resetting your password doesn’t work.
+        </div>
         )}
         <Form
           noValidate
@@ -318,3 +319,11 @@ export default function Login() {
     </Modal>
   );
 }
+
+Login.defaultProps = {
+  initialMode: '',
+};
+
+Login.propTypes = {
+  initialMode: PropTypes.string,
+};
