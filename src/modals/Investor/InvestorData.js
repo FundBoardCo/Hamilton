@@ -17,6 +17,7 @@ import {
 import * as types from '../../actions/types';
 import NameTag from '../../components/people/PersonNameTag';
 import RaiseBullet from '../../components/people/RaiseBullet';
+import DismissibleStatus from '../../components/DismissibleStatus';
 import { cb_founder_imagePrefix } from '../../constants';
 
 const matchData = [
@@ -82,8 +83,6 @@ export default function InvestorData(props) {
     // isBoard = false,
   } = data;
 
-  console.log(data);
-
   const twitterName = getSafeVar(() => twitter.substr(twitter.lastIndexOf('/') + 1), '');
 
   const searchState = useSelector((state => state.search));
@@ -102,10 +101,11 @@ export default function InvestorData(props) {
 
   const percentageMatch = `${matches.percentage_match || 0}%`;
 
-  const fetchedStartups = useSelector(state => state.startups.startupsCB);
+  const startupsCB = useSelector(state => state.startups.startupsCB);
+  const startupsCBStatus = useSelector(state => state.startups.get_startupsCB_status);
 
   const founders = [];
-  Object.values(fetchedStartups)
+  Object.values(startupsCB)
     .filter(fs => startups.includes(fs.uuid))
     .forEach(investedStartup => {
       if (Array.isArray(investedStartup.founders)) {
@@ -113,9 +113,6 @@ export default function InvestorData(props) {
           founders.push({
             name: f.name,
             permalink: f.permalink,
-            twitter: f.twitter,
-            facebook: f.facebook,
-            linkedin: f.linkedin,
             image_url: f.image_url || `${cb_founder_imagePrefix}${f.image_id}`,
             org_name: investedStartup.name,
             org_permalink: investedStartup.permalink,
@@ -257,6 +254,14 @@ export default function InvestorData(props) {
           </ul>
         )}
       </section>
+      {Array.isArray(startups) && startups.length > 0 && (
+        <DismissibleStatus
+          status={startupsCBStatus}
+          showSuccess={false}
+          statusPrefix="Loading founders data"
+          dissmissAction={types.STARTUPSCB_GET_DISMISSED}
+        />
+      )}
       {Array.isArray(founders) && founders.length > 0 && (
         <section className="funded mb-4">
           <h3 className="sectionHead">Founders They&apos;ve Funded</h3>
