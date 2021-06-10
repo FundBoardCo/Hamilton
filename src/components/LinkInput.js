@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Form, Col } from 'react-bootstrap/';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import is from 'is_js';
 
 const LinkInput = props => {
   const {
@@ -23,7 +24,7 @@ const LinkInput = props => {
             value={text}
             onChange={e => onLinkTextChange(e.target.value, linkIndex)}
             data-track="ProfileLinkTextInput"
-            isInvalid={!text && url}
+            isInvalid={!text && is.url(url)}
           />
           <Form.Control.Feedback type="invalid">
             Please enter a valid URL.
@@ -39,7 +40,7 @@ const LinkInput = props => {
             value={url}
             onChange={e => onLinkURLChange(e.target.value, linkIndex)}
             data-track="ProfileLinkURLInput"
-            isInvalid={text && !url}
+            isInvalid={text && is.not.url(url)}
           />
           <Form.Control.Feedback type="invalid">
             Please enter a valid URL.
