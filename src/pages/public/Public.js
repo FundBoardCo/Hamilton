@@ -64,13 +64,17 @@ export default function Public(props) {
     if (window.dataLayer) {
       await window.dataLayer.push({ event: 'optimize.activate' });
       let tries = 0;
+      let optVar;
       const intervalId = setInterval(() => {
         if (window.google_optimize !== undefined) {
-          const optVar = window.google_optimize.get('8bc6yrknTtS4dcjH91SKZQ');
+          optVar = window.google_optimize.get('8bc6yrknTtS4dcjH91SKZQ');
+        }
+        if (optVar !== undefined) {
           setVariant(optVar);
           clearInterval(intervalId);
-        } else if (tries > 10) {
+        } else if (tries >= 5) {
           setVariant(0);
+          clearInterval(intervalId);
         } else {
           tries += 1;
         }
@@ -391,9 +395,10 @@ export default function Public(props) {
               <div className="d-flex justify-content-center mb-4">
                 <Button
                   variant="primary"
-                  className={`btnNoMax btnBigger variant-${variant} ${variant === undefined ? 'op-1' : ''}`}
+                  className="btnNoMax btnBigger"
                   onClick={onGoToSearch}
                   data-track="PublicFindInvestors"
+                  data-track-exp={variant}
                 >
                   {variant !== undefined ? experimentalData.CTAText : 'Loading...'}
                 </Button>
