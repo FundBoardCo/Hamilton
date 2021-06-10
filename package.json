@@ -20,6 +20,7 @@
     "file-saver": "^2.0.5",
     "install": "^0.13.0",
     "install-peerdeps": "^2.0.2",
+    "is_js": "^0.9.0",
     "jquery": "^3.6.0",
     "moment": "^2.29.1",
     "node-fetch": "^2.6.1",
