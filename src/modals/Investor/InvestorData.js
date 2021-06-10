@@ -106,7 +106,7 @@ export default function InvestorData(props) {
 
   const founders = [];
   Object.values(fetchedStartups)
-    .filter(fs => startups.map(s => s.permalink).includes(fs.permalink))
+    .filter(fs => startups.includes(fs.uuid))
     .forEach(investedStartup => {
       if (Array.isArray(investedStartup.founders)) {
         investedStartup.founders.forEach(f => {
@@ -132,7 +132,7 @@ export default function InvestorData(props) {
   useEffect(() => {
     dispatch({
       type: types.STARTUPSCB_GET_REQUESTED,
-      permalinks: startups.map(s => s.permalink),
+      uuids: startups,
     });
   }, [startups, dispatch]);
 
