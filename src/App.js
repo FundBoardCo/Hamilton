@@ -168,8 +168,8 @@ function App() {
             {(!firstTime || loggedIn) && (
               <Nav.Link
                 as={NavLink}
-                href="/public"
-                to="/public"
+                href="/board"
+                to="/board"
                 className="board"
                 data-track="navBoard"
               >
