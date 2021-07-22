@@ -12,6 +12,7 @@ import user, { userResets } from './reducers/user';
 import modal from './reducers/modal';
 import people, { peopleResets } from './reducers/people';
 import manageRaise from './reducers/manageRaise';
+import startups, { startupsResets } from './reducers/startups';
 
 const configDefaults = {
   storage,
@@ -80,6 +81,12 @@ const searchConfig = {
   blacklist: Object.keys(searchResets),
 };
 
+const startupsConfig = {
+  ...configDefaults,
+  key: 'startups',
+  blacklist: Object.keys(startupsResets),
+};
+
 const userConfig = {
   ...configDefaults,
   key: 'user',
@@ -95,13 +102,20 @@ const rootReducer = combineReducers({
   modal: persistReducer(modalConfig, modal),
   people: persistReducer(peopleConfig, people),
   search: persistReducer(searchConfig, search),
+  startups: persistReducer(startupsConfig, startups),
   user: persistReducer(userConfig, user),
 });
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
+const logger = ({ getState }) => next => action => {
+  if (process.env.NODE_ENV === 'development' || process.env.REACT_APP_ENV === 'DEV') {
+    window.console.log({ type: action.type, saga: { previous: getState(), action } });
+  }
+  next(action);
+};
 
 const sagaMiddleware = createSagaMiddleware();
-export const store = createStore(persistedReducer, applyMiddleware(sagaMiddleware));
+export const store = createStore(persistedReducer, applyMiddleware(sagaMiddleware, logger));
 export const persistor = persistStore(store);
 
 export default store;

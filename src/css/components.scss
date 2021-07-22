@@ -63,6 +63,15 @@ html#ov body {
           margin-bottom: 0;
         }
 
+        .verifiedBadge {
+          font-size: 0.7rem;
+          color: $col-bright;
+          background-color: $col-secondary;
+          border-radius: $pad2;
+          padding: 0 $pad2;
+          vertical-align: middle;
+        }
+
         .details {
           margin-top: auto;
 
@@ -87,7 +96,11 @@ html#ov body {
           }
         }
 
-        @media (min-width: $mediaXs) {
+        @media (min-width: $mediaXs) {          
+          h1 {
+            margin-bottom: $pad1;
+          }
+          
           .details {
             .orgText {
               font-size: 0.7rem;
@@ -105,6 +118,13 @@ html#ov body {
             .orgText {
               font-size: $txMd;
             }
+          }
+        }
+
+        @media (min-width: $mediaMd) {
+          .verifiedBadge {
+            margin-left: $pad1;
+            font-size: $txMd;
           }
         }
 
@@ -241,6 +261,12 @@ html#ov body {
 
             .orgText {
               font-size: $txMd;
+            }
+          }
+
+          @media (min-width: $mediaXs) {
+            h1 {
+              margin-bottom: $pad1;
             }
           }
 

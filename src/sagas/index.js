@@ -50,6 +50,10 @@ import {
 import {
   watchPeopleGet,
 } from './people';
+import {
+  watchStartupsGet,
+  watchFoundersGet,
+} from './startups';
 
 function getInfo(params) {
   return axios.get(`/.netlify/functions/webflow_get_blog?${toQueryString(params)}`);
@@ -140,5 +144,7 @@ export default function* rootSaga() {
     fork(watchSendFeedback),
     fork(watchGetInfo),
     fork(watchPeopleGet),
+    fork(watchFoundersGet),
+    fork(watchStartupsGet),
   ]);
 }

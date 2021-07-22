@@ -63,6 +63,7 @@ export default function Person(props) {
     matches = {},
     investorStatus = {},
     is_lead_investor,
+    alreadyOnBoard = false,
   } = props;
 
   let {
@@ -119,18 +120,6 @@ export default function Person(props) {
     notes = [];
   }
 
-  const validationProps = {};
-
-  if (status === 'ACTIVE') {
-    validationProps.classes = 'text-secondary';
-    validationProps.faIcon = 'star';
-  }
-
-  if (status === 'INACTIVE') {
-    validationProps.classes = 'text-danger';
-    validationProps.faIcon = 'ban';
-  }
-
   if (sortedBy === 'next' && !next.length) return null;
 
   return (
@@ -146,11 +135,20 @@ export default function Person(props) {
           {sortedBy !== 'next' && (
             <div>
               <h1>
-                {validationProps.faIcon && (
-                <FontAwesomeIcon icon={validationProps.faIcon} className={`mr-1 ${validationProps.classes}`} />
-                )}
                 {name || uuid}
+                {status === 'ACTIVE' && (
+                  <>
+                    <br className="d-md-none" />
+                    <span className="verifiedBadge">verified</span>
+                  </>
+                )}
               </h1>
+              {alreadyOnBoard && (
+              <p>
+                <FontAwesomeIcon icon="check" color="green" />
+                &nbsp;already on your FundBoard
+              </p>
+              )}
             </div>
           )}
           {sortedBy !== 'next' && (
@@ -264,6 +262,7 @@ Person.defaultProps = {
   sortedBy: '',
   investorStatus: {},
   is_lead_investor: false,
+  alreadyOnBoard: false,
 };
 
 Person.propTypes = {
@@ -302,6 +301,7 @@ Person.propTypes = {
     intro: PropTypes.objectOf(PropTypes.string),
   }),
   is_lead_investor: PropTypes.bool,
+  alreadyOnBoard: PropTypes.bool,
 };
 
 Matches.defaultProps = {

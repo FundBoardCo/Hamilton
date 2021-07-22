@@ -56,6 +56,7 @@ import {
   faStar,
   faThumbsDown,
   faThumbsUp,
+  faThumbtack,
   faTimes,
   faTrashAlt,
   faUser,
@@ -127,6 +128,7 @@ library.add(
   faStar,
   faThumbsDown,
   faThumbsUp,
+  faThumbtack,
   faTimes,
   faTrashAlt,
   faUser,
@@ -166,8 +168,8 @@ function App() {
             {(!firstTime || loggedIn) && (
               <Nav.Link
                 as={NavLink}
-                href="/public"
-                to="/public"
+                href="/board"
+                to="/board"
                 className="board"
                 data-track="navBoard"
               >

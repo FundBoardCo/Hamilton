@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import PropTypes from 'prop-types';
 import Spinner from 'react-bootstrap/Spinner';
@@ -14,9 +14,10 @@ import {
   convertKeyTags,
   calcMatch,
 } from '../../utils';
-// import * as types from '../../actions/types';
+import * as types from '../../actions/types';
 import NameTag from '../../components/people/PersonNameTag';
 import RaiseBullet from '../../components/people/RaiseBullet';
+import DismissibleStatus from '../../components/DismissibleStatus';
 import { cb_founder_imagePrefix } from '../../constants';
 
 const matchData = [
@@ -100,30 +101,37 @@ export default function InvestorData(props) {
 
   const percentageMatch = `${matches.percentage_match || 0}%`;
 
-  const founders = [];
+  const startupsCB = useSelector(state => state.startups.startupsCB);
+  const startupsCBStatus = useSelector(state => state.startups.get_startupsCB_status);
 
-  startups.forEach(s => {
-    if (Array.isArray(s.founder_identifiers)) {
-      s.founder_identifiers.forEach(f => {
-        // don't add the same founder twice
-        const allPermalinks = founders.map(fp => fp.permalink);
-        if (!allPermalinks.includes(f.permalink)) {
+  const founders = [];
+  Object.values(startupsCB)
+    .filter(fs => startups.includes(fs.uuid))
+    .forEach(investedStartup => {
+      if (Array.isArray(investedStartup.founders)) {
+        investedStartup.founders.forEach(f => {
           founders.push({
-            name: f.value,
+            name: f.name,
             permalink: f.permalink,
-            image_url: `${cb_founder_imagePrefix}${f.image_id}`,
-            org_name: s.name,
-            org_permalink: s.permalink,
-            logo_url: s.image_url,
+            image_url: f.image_url || `${cb_founder_imagePrefix}${f.image_id}`,
+            org_name: investedStartup.name,
+            org_permalink: investedStartup.permalink,
+            logo_url: investedStartup.image_url,
           });
-        }
-      });
-    }
-  });
+        });
+      }
+    });
 
   const [invalidOpen, setInvalidOpen] = useState(false);
 
   const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch({
+      type: types.STARTUPSCB_GET_REQUESTED,
+      uuids: startups,
+    });
+  }, [startups, dispatch]);
 
   const reportInvalid = reason => dispatch({
     type: 'PERSON_PUT_INVALID_REQUESTED',
@@ -246,6 +254,14 @@ export default function InvestorData(props) {
           </ul>
         )}
       </section>
+      {Array.isArray(startups) && startups.length > 0 && (
+        <DismissibleStatus
+          status={startupsCBStatus}
+          showSuccess={false}
+          statusPrefix="Loading founders data"
+          dissmissAction={types.STARTUPSCB_GET_DISMISSED}
+        />
+      )}
       {Array.isArray(founders) && founders.length > 0 && (
         <section className="funded mb-4">
           <h3 className="sectionHead">Founders They&apos;ve Funded</h3>

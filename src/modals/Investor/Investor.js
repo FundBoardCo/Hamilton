@@ -117,11 +117,58 @@ export default function Investor(props) {
     }
   };
 
+  const [variant, setVariant] = useState();
+
+  async function activateOptimize() {
+    if (window.dataLayer) {
+      await window.dataLayer.push({ event: 'optimize.activate' });
+      let tries = 0;
+      let optVar;
+      const intervalId = setInterval(() => {
+        if (window.google_optimize !== undefined) {
+          optVar = window.google_optimize.get('znMZZp0yS46z9_j-FFGhlw');
+        }
+        if (optVar !== undefined) {
+          setVariant(optVar);
+          clearInterval(intervalId);
+        } else if (tries >= 5) {
+          setVariant(0);
+          clearInterval(intervalId);
+        } else {
+          tries += 1;
+        }
+      }, 100);
+    }
+  }
+
+  useEffect(() => {
+    activateOptimize();
+  }, []);
+
+  let addBtnExperiment = {
+    text: 'Loading...',
+    icon: '',
+  };
+
+  if (variant === 0) {
+    addBtnExperiment = {
+      text: 'Save to my FundBoard',
+      icon: 'plus',
+    };
+  }
+
+  if (variant === 1) {
+    addBtnExperiment = {
+      text: 'Pin to my FundBoard',
+      icon: 'thumbtack',
+    };
+  }
+
   const addBtnProps = {
-    text: isOnBoard ? 'Remove from my Fundboard' : 'Save to my FundBoard',
+    text: isOnBoard ? 'Remove from my Fundboard' : addBtnExperiment.text,
     bgCol: isOnBoard ? 'bg-warning' : 'bg-secondary',
     track: isOnBoard ? 'remove' : 'add',
-    faIcon: isOnBoard ? 'minus' : 'plus',
+    faIcon: isOnBoard ? 'minus' : addBtnExperiment.icon,
   };
 
   return (
@@ -166,8 +213,11 @@ export default function Investor(props) {
             type="button"
             onClick={toggleInvestor}
             data-track={`${path}InvestorAdd-${addBtnProps.track}`}
+            data-track-exp={variant}
           >
-            <FontAwesomeIcon icon={addBtnProps.faIcon} className="mr-2" />
+            {addBtnProps.faIcon && (
+              <FontAwesomeIcon icon={addBtnProps.faIcon} className="mr-2" />
+            )}
             {addBtnProps.text}
           </button>
         )}

@@ -361,6 +361,18 @@ export function calcMatch(opts) {
   return { matches };
 }
 
+export function convertArrayToKeyedByUUID(arr) {
+  // expects an array of objects with uuid values.
+  if (!Array.isArray(arr)) {
+    throw new Error('convertArrayToKeyedByUUID must be provied a valid array of objects.');
+  }
+  const obj = {};
+  arr.forEach(a => {
+    obj[a.uuid] = { ...a };
+  });
+  return obj;
+}
+
 export function parseB4AObject(result) {
   return result && typeof result.toJSON === 'function' ? result.toJSON() : {};
 }
@@ -386,4 +398,14 @@ export function isEmptyish(val) {
     emptyish = !Object.keys(val).length;
   }
   return emptyish;
+}
+
+export function sanitizeObject(data, keys) {
+  const transformed = {};
+
+  keys.forEach(el => {
+    transformed[el.field] = data[el.field] || el.default;
+  });
+
+  return transformed;
 }
